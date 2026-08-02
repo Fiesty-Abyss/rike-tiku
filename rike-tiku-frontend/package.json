@@ -1,0 +1,25 @@
+{
+  "name": "rike-tiku-frontend",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "type-check": "vue-tsc --noEmit",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "axios": "1.19.0",
+    "element-plus": "2.14.3",
+    "pinia": "4.0.2",
+    "vue": "3.5.40",
+    "vue-router": "5.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.0",
+    "@vitejs/plugin-vue": "6.0.8",
+    "typescript": "6.0.3",
+    "vite": "8.2.0",
+    "vue-tsc": "3.3.9"
+  }
+}

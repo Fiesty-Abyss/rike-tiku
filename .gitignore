@@ -1,0 +1,26 @@
+# IDE metadata
+.idea/
+.vscode/
+*.iml
+
+# Local secrets and environment overrides
+.env
+.env.*
+!.env.example
+application-local.yml
+application-local.yaml
+application-local.properties
+
+# Java build output
+**/target/
+*.log
+
+# Node.js build output
+**/node_modules/
+**/dist/
+**/.vite/
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
