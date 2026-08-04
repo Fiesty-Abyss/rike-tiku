@@ -5,71 +5,69 @@
 ## 当前基线
 
 - 设计基线：V3.0
-- 当前轮次：题库核心数据库模型第一版
+- 当前轮次：GitHub公开仓库与账号、教学组织数据库模型
 - 当前状态：DONE_VERIFIED
-- Git 分支：`main`
-- 远程仓库：未配置
-- 本轮实施提交：`39ea9c7`（`feat(database): add question core model`）
+- 功能分支：`feat/database-user-teaching`
+- 远程仓库：`https://github.com/Fiesty-Abyss/rike-tiku`
+- 仓库可见性：PUBLIC
+- 实现提交：`56cb779`（`feat(database): add user and teaching organization model`）
 
 ## 本轮已完成
 
 | 内容 | 状态 | 证据 |
 |---|---|---|
-| 阅读交接、V3.0、后端、Git和三科清洗数据 | DONE_VERIFIED | 三份XLSX均为10题；JSON附件审计合计196个对象且原报告路径有效 |
-| 题库ER与字段字典 | DONE_VERIFIED | `docs/QUESTION_DATABASE_MODEL_V1.md` |
-| Flyway迁移 | DONE_VERIFIED | MySQL实际执行V1-V4，`flyway_schema_history`全部success=1 |
-| 10张题库业务表 | DONE_VERIFIED | information_schema查询结果与允许清单完全一致 |
-| 最小MyBatis-Plus实体与Mapper | DONE_VERIFIED | `KeMu`、`TiMu`、`TiMuFuJian`及对应Mapper实际查询通过 |
-| Excel/JSON字段映射 | DONE_VERIFIED | 19列Excel映射及结构化JSON附件映射已记录 |
-| 三科最小真实样本 | DONE_VERIFIED | 物理Q14、化学Q7、生物Q1，各1题，均为PENDING |
-| 附件引用验证 | DONE_VERIFIED | 物理公式对象F107的正文位置、相对路径、SHA-256与Mapper查询通过 |
-| 后端测试与打包 | DONE_VERIFIED | 8 tests通过；可执行JAR生成；临时端口健康检查UP/UP |
+| GitHub公开仓库和main基线 | DONE_VERIFIED | `Fiesty-Abyss/rike-tiku`，基线提交`58fd551`已推送 |
+| 公开资料安全检查 | DONE_VERIFIED | 文本、OOXML、164个PDF及9个旧DOC扫描；无真实密钥和学生隐私 |
+| V3.0公开脱敏副本 | DONE_VERIFIED | 原件保留本地且忽略；公开副本替换1处本机弱口令字面值，Word导出53页逐页总览正常 |
+| 账号、角色和档案模型 | DONE_VERIFIED | Flyway V5成功；5张表、3个基础角色、审核人外键 |
+| 班级和三元任课模型 | DONE_VERIFIED | Flyway V6成功；3张表，有效主班级和任课三元唯一约束 |
+| 最小MyBatis-Plus映射 | DONE_VERIFIED | 5个Entity/Mapper及审计字段填充处理器 |
+| 数据库自动化测试 | DONE_VERIFIED | 16 tests，0 failures，0 errors |
+| 空数据库全迁移 | DONE_VERIFIED | 随机临时库V1–V6执行成功，18张业务表、3道样本；测试后临时库已删除 |
+| 结构文档和快照 | DONE_VERIFIED | `DATABASE_MODEL_V2.md`、ER图、真实`mysqldump --no-data`快照 |
+| Maven打包和JAR健康 | DONE_VERIFIED | `mvn clean package`成功；18083端口返回UP/UP后已停止进程 |
 
 ## 当前数据库事实
 
-- 数据库：`rike_tiku`，MySQL 8.4.10。
-- 字符集：`utf8mb4`；排序规则：`utf8mb4_0900_ai_ci`。
-- Flyway：12.4.0，当前版本v4。
-- 业务表：`ke_mu`、`zhi_shi_dian`、`dao_ru_pi_ci`、`ti_mu`、`ti_mu_xuan_xiang`、`ti_mu_jie_xi`、`ti_mu_zhi_shi_dian`、`ti_mu_fu_jian`、`ti_mu_lai_yuan`、`ti_mu_shen_he_ji_lu`。
-- 系统表：`flyway_schema_history`。
-- 数据量：3题、12选项、3标准解析、1附件、9分项来源、3审核轨迹。
-- 三道题和三条标准解析全部为`PENDING`；正式30题未导入。
-
-## 明确未实施
-
-以下内容保持NOT_STARTED：
-
-- 题库CRUD、导入API和人工审核API
-- 用户、角色、学生、教师、班级和任课关系
-- 登录、注册和JWT
-- 练习、判分、错题和学习统计
-- AI Provider、DeepSeek、Redis、MinIO、WebSocket、Docker和微服务
-- 任何前端页面变更
-- 完整30题导入
+- MySQL：8.4.10；数据库：`rike_tiku`。
+- 字符集/排序规则：`utf8mb4` / `utf8mb4_0900_ai_ci`。
+- Flyway：12.4.0；当前版本v6；V1–V6全部success=1。
+- 业务表：18张；另有Flyway系统表 `flyway_schema_history`。
+- 新增表：`yong_hu`、`jiao_se`、`yong_hu_jiao_se`、`xue_sheng_dang_an`、`jiao_shi_dang_an`、`ban_ji`、`ban_ji_xue_sheng`、`ren_ke_guan_xi`。
+- 初始化数据：只增加 `STUDENT`、`TEACHER`、`ADMIN` 三个角色；没有创建真实用户、档案、班级或任课关系。
+- 原题库：3题、12选项、3标准解析、1附件、9来源、3条原审核轨迹；3题均为 `PENDING`。
 
 ## 本轮测试结论
 
-- `mvn clean test`：PASS，8 tests，0 failures，0 errors。
-- `mvn test -Dtest=QuestionDatabaseModelTest`：PASS，4 tests。
-- `mvn clean package`：PASS，8 tests并生成可执行JAR。
-- Flyway迁移：PASS，V1-V4实际执行/校验。
-- 数据库表范围：PASS，10张业务表与清单完全一致。
-- MyBatis-Plus查询：PASS。
-- 三科样本及PENDING状态：PASS。
-- 自动判分例外：PASS，事务测试证明`shi_fou_ke_zi_dong_pan_fen=0`可保存。
-- 难度约束：PASS，数据库拒绝难度4。
-- 附件对象位置：PASS，F107记录位置等于解析正文中的实际位置。
-- 打包JAR健康检查：PASS，临时地址`http://localhost:18082/api/v1/health`返回UP/UP，验证后进程已停止。
+- `mvn clean test`：PASS，16/16。
+- `mvn clean package`：PASS，16/16并生成可执行JAR。
+- V5、V6迁移：PASS。
+- 空库V1–V6：PASS。
+- 原题库10表和3题回归：PASS。
+- 用户名、角色码、学号、工号、班级编码唯一：PASS。
+- 一个用户多个角色、重复用户角色拒绝：PASS。
+- 一个用户最多一份学生/教师档案：PASS。
+- 重复有效班级学生关系拒绝、一个有效主班级、退出历史保留：PASS。
+- 任课三元关系唯一、跨班同科、同班不同科、无关系不授权：PASS。
+- 审核人外键、自动填充、逻辑删除、事务回滚：PASS。
+- JAR启动和健康接口：PASS，`status=UP`、`database=UP`。
+
+## 明确未实施
+
+- 登录Controller、JWT签发、注册和账号CRUD
+- 学生Excel导入和教师导入
+- 前端登录页、权限菜单和角色工作台
+- 题库业务API、练习、判分、错题和统计
+- AI Provider、DeepSeek、Redis、MinIO、WebSocket、Docker和微服务
+- 完整30题导入或发布
 
 ## 已知事项
 
-- 首次测试只加入`flyway-core`，在Spring Boot 4.1模块化结构下没有触发自动配置，数据库保持为空；改用官方`spring-boot-starter-flyway`后迁移成功。该失败没有手工建表。
-- 第二次测试仅因MySQL检查约束错误在Spring JDBC中被翻译为更通用的`DataAccessException`而断言失败；约束本身已正确拒绝非法难度。调整测试断言后完整复测通过。
-- MySQL首次执行包含`TINYINT(1)`的迁移时提示整数显示宽度弃用；不影响MySQL 8.4约束和读写。已执行迁移不可静默改写，后续新迁移可逐步改为不带显示宽度的`TINYINT`。
-- 默认端口8081在一次JAR验证时曾被PID 33576的现存Java进程占用，本轮没有终止来源不明的进程；改用18082完成验证并只停止本轮进程。最终端口复查时8081已自行释放。
-- JDK 25下Mockito/Byte Buddy仍输出动态Agent兼容性预警，测试实际通过。
-- `ti_mu_lai_yuan.quan_li_zhuang_tai`暂为`COPYRIGHT_UNKNOWN`，在版权人工核验前不得发布样本。
+- V1/V2旧迁移仍会产生MySQL整数显示宽度弃用警告；已执行迁移没有改写，V5/V6使用无显示宽度的 `TINYINT`。
+- JDK 25下Mockito/Byte Buddy仍输出动态Agent兼容性警告，测试实际通过。
+- 题库资料权利状态为 `COPYRIGHT_UNKNOWN`，只作学习、开发和人工审核候选；仓库不声明已获公开传播授权。
+- 公共仓库首次推送约252 MB资料，耗时较长但最终成功；没有使用强推。
 
-## 下一步
+## 下一步唯一任务
 
-本轮已停止。未开始题库API、完整导入或前端页面；下一任务由用户另行指定。
+实现后端统一认证与JWT登录基础，覆盖账号状态、首次登录改密门禁和三角色鉴权测试；本轮不再继续。
