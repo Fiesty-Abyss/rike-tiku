@@ -1,0 +1,387 @@
+package com.neu.riketiku.renzheng;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+import com.jayway.jsonpath.JsonPath;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.Statement;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
+
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+class RenZhengJiChengTest {
+    private static final String DATABASE_PASSWORD = requiredEnvironment("RIKE_TIKU_DB_PASSWORD");
+    private static final String DATABASE_USERNAME = environment("RIKE_TIKU_DB_USERNAME", "root");
+    private static final String DATABASE_HOST = environment("RIKE_TIKU_DB_HOST", "localhost");
+    private static final String DATABASE_PORT = environment("RIKE_TIKU_DB_PORT", "3306");
+    private static final String TEST_JWT_SECRET =
+            "automated-test-only-jwt-secret-with-more-than-32-bytes";
+    private static final String SCHEMA =
+            "rike_tiku_auth_test_" + UUID.randomUUID().toString().replace("-", "");
+    private static final String JDBC_OPTIONS =
+            "?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai";
+    private static final String ADMIN_URL =
+            "jdbc:mysql://" + DATABASE_HOST + ":" + DATABASE_PORT + "/mysql" + JDBC_OPTIONS;
+    private static final String TEST_URL =
+            "jdbc:mysql://" + DATABASE_HOST + ":" + DATABASE_PORT + "/" + SCHEMA + JDBC_OPTIONS;
+    private static final BCryptPasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder(4);
+
+    static {
+        try (Connection connection = DriverManager.getConnection(ADMIN_URL, DATABASE_USERNAME, DATABASE_PASSWORD);
+             Statement statement = connection.createStatement()) {
+            statement.execute("CREATE DATABASE `" + SCHEMA
+                    + "` CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci");
+        } catch (Exception exception) {
+            throw new ExceptionInInitializerError(exception);
+        }
+    }
+
+    @DynamicPropertySource
+    static void databaseProperties(DynamicPropertyRegistry registry) {
+        registry.add("spring.datasource.url", () -> TEST_URL);
+        registry.add("spring.datasource.username", () -> DATABASE_USERNAME);
+        registry.add("spring.datasource.password", () -> DATABASE_PASSWORD);
+        registry.add("app.jwt.secret", () -> TEST_JWT_SECRET);
+        registry.add("app.jwt.expiration-seconds", () -> 7200L);
+    }
+
+    @AfterAll
+    static void dropTemporaryDatabase() throws Exception {
+        try (Connection connection = DriverManager.getConnection(ADMIN_URL, DATABASE_USERNAME, DATABASE_PASSWORD);
+             Statement statement = connection.createStatement()) {
+            statement.execute("DROP DATABASE IF EXISTS `" + SCHEMA + "`");
+        }
+    }
+
+    @Value("${local.server.port}")
+    private int port;
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
+    @Test
+    void threeRolesAndMultipleRolesShouldComeOnlyFromDatabase() throws Exception {
+        long student = insertUser("student", "StudentPass1", false, "ENABLED", "STUDENT");
+        insertStudentProfile(student, "学生甲");
+        insertUser("teacher", "TeacherPass1", false, "ENABLED", "TEACHER");
+        insertUser("admin", "AdminPass1", false, "ENABLED", "ADMIN");
+        long multiRole = insertUser("multi", "MultiRolePass1", false, "ENABLED", "STUDENT");
+        addRole(multiRole, "TEACHER", "ACTIVE");
+
+        assertLoginRole("student", "StudentPass1", "STUDENT", "STUDENT");
+        assertLoginRole("teacher", "TeacherPass1", "TEACHER", "TEACHER");
+        assertLoginRole("admin", "AdminPass1", "ADMIN", "ADMIN");
+
+        TestResponse multi = login("multi", "MultiRolePass1", "STUDENT");
+        assertThat(multi.status()).isEqualTo(200);
+        List<?> roles = JsonPath.read(multi.body(), "$.user.roles");
+        assertThat(asStrings(roles)).containsExactly("STUDENT", "TEACHER");
+
+        TestResponse escalation = login("student", "StudentPass1", "ADMIN");
+        assertError(escalation, 403, "ROLE_MISMATCH");
+        Integer adminRelations = jdbcTemplate.queryForObject("""
+                SELECT COUNT(*) FROM yong_hu_jiao_se yhjs
+                JOIN jiao_se js ON js.id=yhjs.jiao_se_id
+                WHERE yhjs.yong_hu_id=? AND js.jiao_se_dai_ma='ADMIN'
+                """, Integer.class, student);
+        assertThat(adminRelations).isZero();
+    }
+
+    @Test
+    void invalidCredentialsAndUnavailableAccountsShouldBeRejected() throws Exception {
+        insertUser("valid", "ValidPass1", false, "ENABLED", "STUDENT");
+        insertUser("disabled", "DisabledPass1", false, "DISABLED", "STUDENT");
+        insertUser("locked", "LockedPass1", false, "LOCKED", "STUDENT");
+        insertUserWithoutRole("no_role", "NoRolePass1", "ENABLED");
+        long disabledRelation = insertUserWithoutRole("disabled_relation", "RelationPass1", "ENABLED");
+        addRole(disabledRelation, "STUDENT", "DISABLED");
+        long deletedUser = insertUser("deleted", "DeletedPass1", false, "ENABLED", "STUDENT");
+        jdbcTemplate.update("UPDATE yong_hu SET yi_shan_chu=1 WHERE id=?", deletedUser);
+
+        assertError(login("missing", "SomePass1", "STUDENT"), 401, "INVALID_CREDENTIALS");
+        assertError(login("valid", "WrongPass1", "STUDENT"), 401, "INVALID_CREDENTIALS");
+        assertError(login("disabled", "DisabledPass1", "STUDENT"), 403, "ACCOUNT_DISABLED");
+        assertError(login("locked", "LockedPass1", "STUDENT"), 403, "ACCOUNT_LOCKED");
+        assertError(login("no_role", "NoRolePass1", "STUDENT"), 403, "ACCOUNT_HAS_NO_ROLE");
+        assertError(login("disabled_relation", "RelationPass1", "STUDENT"),
+                403, "ACCOUNT_HAS_NO_ROLE");
+        assertError(login("deleted", "DeletedPass1", "STUDENT"), 401, "INVALID_CREDENTIALS");
+
+        insertUser("disabled_role", "DisabledRolePass1", false, "ENABLED", "ADMIN");
+        jdbcTemplate.update("UPDATE jiao_se SET zhuang_tai='DISABLED' WHERE jiao_se_dai_ma='ADMIN'");
+        try {
+            assertError(login("disabled_role", "DisabledRolePass1", "ADMIN"),
+                    403, "ACCOUNT_HAS_NO_ROLE");
+        } finally {
+            jdbcTemplate.update("UPDATE jiao_se SET zhuang_tai='ACTIVE' WHERE jiao_se_dai_ma='ADMIN'");
+        }
+    }
+
+    @Test
+    void jwtShouldAuthenticateAndEnforceRoleBoundaries() throws Exception {
+        long studentId = insertUser("role_student", "StudentPass1", false, "ENABLED", "STUDENT");
+        insertStudentProfile(studentId, "学生甲");
+        insertUser("role_teacher", "TeacherPass1", false, "ENABLED", "TEACHER");
+        insertUser("role_admin", "AdminPass1", false, "ENABLED", "ADMIN");
+
+        String studentToken = token(login("role_student", "StudentPass1", "STUDENT"));
+        String teacherToken = token(login("role_teacher", "TeacherPass1", "TEACHER"));
+        String adminToken = token(login("role_admin", "AdminPass1", "ADMIN"));
+
+        assertThat(get("/api/v1/test/student", studentToken).status()).isEqualTo(200);
+        assertError(get("/api/v1/test/teacher", studentToken), 403, "ACCESS_DENIED");
+        assertError(get("/api/v1/test/admin", studentToken), 403, "ACCESS_DENIED");
+        assertError(get("/api/v1/test/admin", teacherToken), 403, "ACCESS_DENIED");
+        assertThat(get("/api/v1/test/admin", adminToken).status()).isEqualTo(200);
+        assertError(get("/api/v1/test/student", null), 401, "UNAUTHENTICATED");
+
+        TestResponse me = get("/api/v1/auth/me", studentToken);
+        assertThat(me.status()).isEqualTo(200);
+        assertThat((String) JsonPath.read(me.body(), "$.username")).isEqualTo("role_student");
+        assertThat((String) JsonPath.read(me.body(), "$.displayName")).isEqualTo("学生甲");
+        List<?> meRoles = JsonPath.read(me.body(), "$.roles");
+        assertThat(asStrings(meRoles)).containsExactly("STUDENT");
+    }
+
+    @Test
+    void expiredAndTamperedTokensShouldBeRejectedWithoutLeakingToken() throws Exception {
+        long userId = insertUser("token_user", "TokenPass1", false, "ENABLED", "STUDENT");
+        String validToken = token(login("token_user", "TokenPass1", "STUDENT"));
+        String tampered = validToken.substring(0, validToken.length() - 1)
+                + (validToken.endsWith("a") ? "b" : "a");
+        TestResponse tamperedResponse = get("/api/v1/auth/me", tampered);
+        assertError(tamperedResponse, 401, "TOKEN_INVALID");
+        assertThat(tamperedResponse.body()).doesNotContain(tampered);
+
+        Instant now = Instant.now();
+        String expired = Jwts.builder()
+                .subject("token_user")
+                .claim("uid", userId)
+                .claim("roles", List.of("STUDENT"))
+                .claim("mustChangePassword", false)
+                .issuedAt(Date.from(now.minusSeconds(60)))
+                .expiration(Date.from(now.minusSeconds(1)))
+                .signWith(Keys.hmacShaKeyFor(TEST_JWT_SECRET.getBytes(StandardCharsets.UTF_8)), Jwts.SIG.HS256)
+                .compact();
+        assertError(get("/api/v1/auth/me", expired), 401, "TOKEN_EXPIRED");
+    }
+
+    @Test
+    void firstLoginGateShouldAllowOnlyMeAndPasswordChange() throws Exception {
+        long userId = insertUser("first_gate", "InitialPass1", true, "ENABLED", "STUDENT");
+        insertStudentProfile(userId, "学生甲");
+        TestResponse login = login("first_gate", "InitialPass1", "STUDENT");
+        assertThat(login.status()).isEqualTo(200);
+        assertThat((Boolean) JsonPath.read(login.body(), "$.mustChangePassword")).isTrue();
+        String accessToken = token(login);
+
+        assertThat(get("/api/v1/auth/me", accessToken).status()).isEqualTo(200);
+        assertError(get("/api/v1/test/student", accessToken), 403, "MUST_CHANGE_PASSWORD");
+    }
+
+    @Test
+    void passwordChangeShouldValidateInputAndReplaceHashAtomically() throws Exception {
+        long userId = insertUser("change_user", "InitialPass1", true, "ENABLED", "STUDENT");
+        String initialHash = passwordHash(userId);
+        String initialToken = token(login("change_user", "InitialPass1", "STUDENT"));
+
+        assertError(changePassword(initialToken, "WrongPass1", "NewPassword2", "NewPassword2"),
+                400, "OLD_PASSWORD_INCORRECT");
+        assertError(changePassword(initialToken, "InitialPass1", "NewPassword2", "DifferentPass2"),
+                400, "PASSWORD_CONFIRMATION_MISMATCH");
+        assertError(changePassword(initialToken, "InitialPass1", "InitialPass1", "InitialPass1"),
+                400, "PASSWORD_UNCHANGED");
+        assertError(changePassword(initialToken, "InitialPass1", "onlyletters", "onlyletters"),
+                400, "PASSWORD_POLICY_VIOLATION");
+
+        TestResponse changed = changePassword(
+                initialToken, "InitialPass1", "NewPassword2", "NewPassword2");
+        assertThat(changed.status()).isEqualTo(200);
+        assertThat((Boolean) JsonPath.read(changed.body(), "$.mustChangePassword")).isFalse();
+        String newToken = token(changed);
+
+        String changedHash = passwordHash(userId);
+        assertThat(changedHash).isNotEqualTo(initialHash);
+        assertThat(PASSWORD_ENCODER.matches("NewPassword2", changedHash)).isTrue();
+        Boolean firstLogin = jdbcTemplate.queryForObject(
+                "SELECT shi_fou_shou_ci_deng_lu FROM yong_hu WHERE id=?", Boolean.class, userId);
+        LocalDateTime changedAt = jdbcTemplate.queryForObject(
+                "SELECT mi_ma_xiu_gai_shi_jian FROM yong_hu WHERE id=?", LocalDateTime.class, userId);
+        assertThat(firstLogin).isFalse();
+        assertThat(changedAt).isNotNull();
+        assertError(login("change_user", "InitialPass1", "STUDENT"), 401, "INVALID_CREDENTIALS");
+        assertThat(login("change_user", "NewPassword2", "STUDENT").status()).isEqualTo(200);
+        assertThat(get("/api/v1/test/student", newToken).status()).isEqualTo(200);
+    }
+
+    @Test
+    void successfulLoginShouldUpdateAuditTimeAndHealthShouldRemainPublic() throws Exception {
+        long userId = insertUser("audit_user", "AuditPass1", false, "ENABLED", "ADMIN");
+        assertThat(login("audit_user", "AuditPass1", "ADMIN").status()).isEqualTo(200);
+        LocalDateTime loginAt = jdbcTemplate.queryForObject(
+                "SELECT zui_hou_deng_lu_shi_jian FROM yong_hu WHERE id=?", LocalDateTime.class, userId);
+        assertThat(loginAt).isNotNull();
+
+        TestResponse health = get("/api/v1/health", null);
+        assertThat(health.status()).isEqualTo(200);
+        assertThat(health.body()).contains("\"status\":\"UP\"", "\"database\":\"UP\"");
+        assertError(post("/api/v1/auth/login", "{}", null), 400, "INVALID_REQUEST");
+    }
+
+    private void assertLoginRole(String username, String password, String expectedRole, String returnedRole)
+            throws Exception {
+        TestResponse response = login(username, password, expectedRole);
+        assertThat(response.status()).isEqualTo(200);
+        assertThat((String) JsonPath.read(response.body(), "$.tokenType")).isEqualTo("Bearer");
+        assertThat((Integer) JsonPath.read(response.body(), "$.expiresIn")).isEqualTo(7200);
+        List<?> responseRoles = JsonPath.read(response.body(), "$.user.roles");
+        assertThat(asStrings(responseRoles)).contains(returnedRole);
+        assertThat((String) JsonPath.read(response.body(), "$.accessToken")).isNotBlank();
+    }
+
+    private TestResponse login(String username, String password, String expectedRole) throws Exception {
+        return post("/api/v1/auth/login", """
+                {"username":"%s","password":"%s","expectedRole":"%s"}
+                """.formatted(username, password, expectedRole), null);
+    }
+
+    private TestResponse changePassword(
+            String accessToken,
+            String oldPassword,
+            String newPassword,
+            String confirmPassword) throws Exception {
+        return post("/api/v1/auth/change-initial-password", """
+                {"oldPassword":"%s","newPassword":"%s","confirmPassword":"%s"}
+                """.formatted(oldPassword, newPassword, confirmPassword), accessToken);
+    }
+
+    private TestResponse get(String path, String accessToken) throws Exception {
+        HttpRequest.Builder builder = HttpRequest.newBuilder().uri(URI.create(baseUrl() + path)).GET();
+        addAuthorization(builder, accessToken);
+        return send(builder.build());
+    }
+
+    private TestResponse post(String path, String body, String accessToken) throws Exception {
+        HttpRequest.Builder builder = HttpRequest.newBuilder()
+                .uri(URI.create(baseUrl() + path))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(body));
+        addAuthorization(builder, accessToken);
+        return send(builder.build());
+    }
+
+    private void addAuthorization(HttpRequest.Builder builder, String accessToken) {
+        if (accessToken != null) {
+            builder.header("Authorization", "Bearer " + accessToken);
+        }
+    }
+
+    private TestResponse send(HttpRequest request) throws Exception {
+        HttpResponse<String> response = HttpClient.newHttpClient()
+                .send(request, HttpResponse.BodyHandlers.ofString());
+        return new TestResponse(response.statusCode(), response.body());
+    }
+
+    private String token(TestResponse response) {
+        assertThat(response.status()).isEqualTo(200);
+        return JsonPath.read(response.body(), "$.accessToken");
+    }
+
+    private void assertError(TestResponse response, int status, String code) {
+        assertThat(response.status()).isEqualTo(status);
+        assertThat((String) JsonPath.read(response.body(), "$.code")).isEqualTo(code);
+        assertThat(response.body()).doesNotContain("SQLException", "SELECT ", "java.");
+    }
+
+    private long insertUser(
+            String username,
+            String password,
+            boolean firstLogin,
+            String status,
+            String role) {
+        long userId = insertUserWithoutRole(username, password, status, firstLogin);
+        addRole(userId, role, "ACTIVE");
+        return userId;
+    }
+
+    private long insertUserWithoutRole(String username, String password, String status) {
+        return insertUserWithoutRole(username, password, status, false);
+    }
+
+    private long insertUserWithoutRole(
+            String username,
+            String password,
+            String status,
+            boolean firstLogin) {
+        jdbcTemplate.update("""
+                INSERT INTO yong_hu(
+                    yong_hu_ming,mi_ma_zhai_yao,zhang_hao_zhuang_tai,shi_fou_shou_ci_deng_lu
+                ) VALUES (?,?,?,?)
+                """, username, PASSWORD_ENCODER.encode(password), status, firstLogin);
+        return jdbcTemplate.queryForObject("SELECT LAST_INSERT_ID()", Long.class);
+    }
+
+    private void addRole(long userId, String role, String relationStatus) {
+        jdbcTemplate.update("""
+                INSERT INTO yong_hu_jiao_se(yong_hu_id,jiao_se_id,zhuang_tai)
+                SELECT ?,id,? FROM jiao_se WHERE jiao_se_dai_ma=?
+                """, userId, relationStatus, role);
+    }
+
+    private void insertStudentProfile(long userId, String name) {
+        String suffix = UUID.randomUUID().toString().replace("-", "").substring(0, 10);
+        jdbcTemplate.update("""
+                INSERT INTO xue_sheng_dang_an(yong_hu_id,xue_hao,xing_ming,nian_ji)
+                VALUES (?,?,?,'高一')
+                """, userId, "S" + suffix, name);
+    }
+
+    private String passwordHash(long userId) {
+        return jdbcTemplate.queryForObject(
+                "SELECT mi_ma_zhai_yao FROM yong_hu WHERE id=?", String.class, userId);
+    }
+
+    private String baseUrl() {
+        return "http://localhost:" + port;
+    }
+
+    private List<String> asStrings(List<?> values) {
+        return values.stream().map(String::valueOf).toList();
+    }
+
+    private static String environment(String name, String defaultValue) {
+        String value = System.getenv(name);
+        return value == null || value.isBlank() ? defaultValue : value;
+    }
+
+    private static String requiredEnvironment(String name) {
+        String value = System.getenv(name);
+        if (value == null || value.isBlank()) {
+            throw new IllegalStateException(name + " is required for MySQL integration tests");
+        }
+        return value;
+    }
+
+    private record TestResponse(int status, String body) {
+    }
+}
