@@ -1,0 +1,196 @@
+CREATE TABLE dao_ru_pi_ci (
+    id BIGINT NOT NULL AUTO_INCREMENT COMMENT '主键',
+    pi_ci_bian_hao VARCHAR(64) NOT NULL COMMENT '批次业务编号',
+    dao_ru_lei_xing VARCHAR(32) NOT NULL DEFAULT 'QUESTION' COMMENT '导入对象类型',
+    yuan_shi_wen_jian_ming VARCHAR(255) NOT NULL COMMENT '原始文件名',
+    yuan_shi_wen_jian_lu_jing VARCHAR(1000) NULL COMMENT '仓库相对路径或受控存储路径',
+    wen_jian_ha_xi CHAR(64) NULL COMMENT '原始文件SHA-256',
+    zong_ji_lu_shu INT NOT NULL DEFAULT 0,
+    cheng_gong_shu INT NOT NULL DEFAULT 0,
+    shi_bai_shu INT NOT NULL DEFAULT 0,
+    zhuang_tai VARCHAR(16) NOT NULL COMMENT 'UPLOADED/VALIDATED/IMPORTED/FAILED',
+    bei_zhu VARCHAR(1000) NULL,
+    chuang_jian_shi_jian DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    geng_xin_shi_jian DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+    PRIMARY KEY (id),
+    UNIQUE KEY uk_dao_ru_pi_ci_bian_hao (pi_ci_bian_hao),
+    CONSTRAINT ck_dao_ru_pi_ci_zhuang_tai CHECK (zhuang_tai IN ('UPLOADED', 'VALIDATED', 'IMPORTED', 'FAILED')),
+    CONSTRAINT ck_dao_ru_pi_ci_ji_shu CHECK (
+        zong_ji_lu_shu >= 0 AND cheng_gong_shu >= 0 AND shi_bai_shu >= 0
+        AND cheng_gong_shu + shi_bai_shu <= zong_ji_lu_shu
+    )
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='导入批次';
+
+CREATE TABLE ti_mu (
+    id BIGINT NOT NULL AUTO_INCREMENT COMMENT '主键',
+    ke_mu_id BIGINT NOT NULL COMMENT '科目',
+    fu_ti_mu_id BIGINT NULL COMMENT '结构化子题的母题',
+    dao_ru_pi_ci_id BIGINT NULL COMMENT '导入批次',
+    ti_mu_lei_xing VARCHAR(32) NOT NULL COMMENT 'SINGLE_CHOICE/MULTIPLE_CHOICE/FILL_BLANK',
+    shi_yong_mo_shi VARCHAR(32) NOT NULL COMMENT 'ONLINE_PRACTICE/TOPIC_LEARNING',
+    ti_gan LONGTEXT NOT NULL COMMENT '题干正文，保留附件对象标记',
+    zheng_que_da_an JSON NOT NULL COMMENT '按题型定义的版本化答案JSON',
+    nan_du TINYINT NOT NULL COMMENT '1 easy，2 medium，3 hard',
+    nan_du_shuo_ming VARCHAR(500) NULL COMMENT '难度判定说明',
+    shi_fou_ke_zi_dong_pan_fen TINYINT(1) NOT NULL DEFAULT 1,
+    zhuang_tai VARCHAR(16) NOT NULL DEFAULT 'DRAFT' COMMENT 'DRAFT/PENDING/PUBLISHED/DISABLED',
+    nei_rong_ha_xi CHAR(64) NOT NULL COMMENT '规范化题干与选项SHA-256',
+    chuang_jian_shi_jian DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    geng_xin_shi_jian DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+    yi_shan_chu TINYINT(1) NOT NULL DEFAULT 0,
+    PRIMARY KEY (id),
+    UNIQUE KEY uk_ti_mu_nei_rong_ha_xi (ke_mu_id, nei_rong_ha_xi),
+    KEY idx_ti_mu_ke_mu_zhuang_tai_nan_du (ke_mu_id, zhuang_tai, nan_du),
+    KEY idx_ti_mu_fu_ti_mu (fu_ti_mu_id),
+    KEY idx_ti_mu_dao_ru_pi_ci (dao_ru_pi_ci_id),
+    CONSTRAINT fk_ti_mu_ke_mu FOREIGN KEY (ke_mu_id) REFERENCES ke_mu (id),
+    CONSTRAINT fk_ti_mu_fu_ti_mu FOREIGN KEY (fu_ti_mu_id) REFERENCES ti_mu (id),
+    CONSTRAINT fk_ti_mu_dao_ru_pi_ci FOREIGN KEY (dao_ru_pi_ci_id) REFERENCES dao_ru_pi_ci (id),
+    CONSTRAINT ck_ti_mu_lei_xing CHECK (ti_mu_lei_xing IN ('SINGLE_CHOICE', 'MULTIPLE_CHOICE', 'FILL_BLANK')),
+    CONSTRAINT ck_ti_mu_shi_yong_mo_shi CHECK (shi_yong_mo_shi IN ('ONLINE_PRACTICE', 'TOPIC_LEARNING')),
+    CONSTRAINT ck_ti_mu_nan_du CHECK (nan_du IN (1, 2, 3)),
+    CONSTRAINT ck_ti_mu_ke_pan_fen CHECK (shi_fou_ke_zi_dong_pan_fen IN (0, 1)),
+    CONSTRAINT ck_ti_mu_zhuang_tai CHECK (zhuang_tai IN ('DRAFT', 'PENDING', 'PUBLISHED', 'DISABLED')),
+    CONSTRAINT ck_ti_mu_yi_shan_chu CHECK (yi_shan_chu IN (0, 1)),
+    CONSTRAINT ck_ti_mu_da_an_json CHECK (JSON_TYPE(zheng_que_da_an) = 'OBJECT')
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='题目主表';
+
+CREATE TABLE ti_mu_xuan_xiang (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    ti_mu_id BIGINT NOT NULL,
+    xuan_xiang_biao_shi VARCHAR(16) NOT NULL COMMENT 'A/B/C/D或未来更多标识',
+    xuan_xiang_nei_rong LONGTEXT NOT NULL,
+    shi_fou_zheng_que TINYINT(1) NOT NULL DEFAULT 0,
+    pai_xu INT NOT NULL,
+    chuang_jian_shi_jian DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    geng_xin_shi_jian DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+    yi_shan_chu TINYINT(1) NOT NULL DEFAULT 0,
+    PRIMARY KEY (id),
+    UNIQUE KEY uk_ti_mu_xuan_xiang_biao_shi (ti_mu_id, xuan_xiang_biao_shi),
+    KEY idx_ti_mu_xuan_xiang_pai_xu (ti_mu_id, pai_xu),
+    CONSTRAINT fk_ti_mu_xuan_xiang_ti_mu FOREIGN KEY (ti_mu_id) REFERENCES ti_mu (id),
+    CONSTRAINT ck_ti_mu_xuan_xiang_zheng_que CHECK (shi_fou_zheng_que IN (0, 1)),
+    CONSTRAINT ck_ti_mu_xuan_xiang_pai_xu CHECK (pai_xu >= 1),
+    CONSTRAINT ck_ti_mu_xuan_xiang_yi_shan_chu CHECK (yi_shan_chu IN (0, 1))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='题目选项';
+
+CREATE TABLE ti_mu_jie_xi (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    ti_mu_id BIGINT NOT NULL,
+    jie_xi_lei_xing VARCHAR(16) NOT NULL COMMENT 'STANDARD/TEACHER/AI',
+    jie_xi_nei_rong LONGTEXT NOT NULL COMMENT '解析正文，保留附件对象标记',
+    ban_ben_hao INT NOT NULL DEFAULT 1,
+    zhuang_tai VARCHAR(16) NOT NULL DEFAULT 'DRAFT',
+    chuang_jian_shi_jian DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    geng_xin_shi_jian DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+    yi_shan_chu TINYINT(1) NOT NULL DEFAULT 0,
+    PRIMARY KEY (id),
+    UNIQUE KEY uk_ti_mu_jie_xi_ban_ben (ti_mu_id, jie_xi_lei_xing, ban_ben_hao),
+    CONSTRAINT fk_ti_mu_jie_xi_ti_mu FOREIGN KEY (ti_mu_id) REFERENCES ti_mu (id),
+    CONSTRAINT ck_ti_mu_jie_xi_lei_xing CHECK (jie_xi_lei_xing IN ('STANDARD', 'TEACHER', 'AI')),
+    CONSTRAINT ck_ti_mu_jie_xi_ban_ben CHECK (ban_ben_hao >= 1),
+    CONSTRAINT ck_ti_mu_jie_xi_zhuang_tai CHECK (zhuang_tai IN ('DRAFT', 'PENDING', 'PUBLISHED', 'DISABLED')),
+    CONSTRAINT ck_ti_mu_jie_xi_yi_shan_chu CHECK (yi_shan_chu IN (0, 1))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='题目解析版本';
+
+CREATE TABLE ti_mu_zhi_shi_dian (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    ti_mu_id BIGINT NOT NULL,
+    zhi_shi_dian_id BIGINT NOT NULL,
+    shi_fou_zhu_yao TINYINT(1) NOT NULL DEFAULT 0,
+    pai_xu INT NOT NULL DEFAULT 1,
+    chuang_jian_shi_jian DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    geng_xin_shi_jian DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+    yi_shan_chu TINYINT(1) NOT NULL DEFAULT 0,
+    PRIMARY KEY (id),
+    UNIQUE KEY uk_ti_mu_zhi_shi_dian (ti_mu_id, zhi_shi_dian_id),
+    KEY idx_ti_mu_zhi_shi_dian_fan_cha (zhi_shi_dian_id, ti_mu_id),
+    CONSTRAINT fk_ti_mu_zhi_shi_dian_ti_mu FOREIGN KEY (ti_mu_id) REFERENCES ti_mu (id),
+    CONSTRAINT fk_ti_mu_zhi_shi_dian_zhi_shi_dian FOREIGN KEY (zhi_shi_dian_id) REFERENCES zhi_shi_dian (id),
+    CONSTRAINT ck_ti_mu_zhi_shi_dian_zhu_yao CHECK (shi_fou_zhu_yao IN (0, 1)),
+    CONSTRAINT ck_ti_mu_zhi_shi_dian_pai_xu CHECK (pai_xu >= 1),
+    CONSTRAINT ck_ti_mu_zhi_shi_dian_yi_shan_chu CHECK (yi_shan_chu IN (0, 1))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='题目与知识点多对多关系';
+
+CREATE TABLE ti_mu_fu_jian (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    ti_mu_id BIGINT NOT NULL,
+    ti_mu_xuan_xiang_id BIGINT NULL COMMENT '关联位置为OPTION时使用',
+    ti_mu_jie_xi_id BIGINT NULL COMMENT '关联位置为STANDARD_ANALYSIS时使用',
+    guan_lian_wei_zhi VARCHAR(32) NOT NULL COMMENT 'QUESTION/OPTION/STANDARD_ANALYSIS/ANSWER',
+    fu_jian_lei_xing VARCHAR(16) NOT NULL COMMENT 'IMAGE/FORMULA/OTHER',
+    yuan_shi_wen_jian_ming VARCHAR(255) NOT NULL,
+    xiang_dui_lu_jing VARCHAR(1000) NOT NULL COMMENT '文件系统相对路径，不保存BLOB',
+    nei_rong_ha_xi CHAR(64) NOT NULL COMMENT '附件SHA-256',
+    dui_xiang_biao_shi VARCHAR(64) NULL COMMENT '例如I126、F107，与正文对象标记对应',
+    zheng_wen_zi_fu_wei_zhi INT NULL COMMENT '对象标记在关联正文中的1基字符位置',
+    yuan_shi_ye_ma VARCHAR(32) NULL,
+    fu_jian_shuo_ming VARCHAR(1000) NULL,
+    pai_xu INT NOT NULL,
+    zhuang_tai VARCHAR(16) NOT NULL DEFAULT 'ACTIVE',
+    chuang_jian_shi_jian DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    geng_xin_shi_jian DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+    yi_shan_chu TINYINT(1) NOT NULL DEFAULT 0,
+    PRIMARY KEY (id),
+    UNIQUE KEY uk_ti_mu_fu_jian_dui_xiang (ti_mu_id, guan_lian_wei_zhi, dui_xiang_biao_shi),
+    KEY idx_ti_mu_fu_jian_pai_xu (ti_mu_id, guan_lian_wei_zhi, pai_xu),
+    KEY idx_ti_mu_fu_jian_xuan_xiang (ti_mu_xuan_xiang_id),
+    KEY idx_ti_mu_fu_jian_jie_xi (ti_mu_jie_xi_id),
+    CONSTRAINT fk_ti_mu_fu_jian_ti_mu FOREIGN KEY (ti_mu_id) REFERENCES ti_mu (id),
+    CONSTRAINT fk_ti_mu_fu_jian_xuan_xiang FOREIGN KEY (ti_mu_xuan_xiang_id) REFERENCES ti_mu_xuan_xiang (id),
+    CONSTRAINT fk_ti_mu_fu_jian_jie_xi FOREIGN KEY (ti_mu_jie_xi_id) REFERENCES ti_mu_jie_xi (id),
+    CONSTRAINT ck_ti_mu_fu_jian_wei_zhi CHECK (guan_lian_wei_zhi IN ('QUESTION', 'OPTION', 'STANDARD_ANALYSIS', 'ANSWER')),
+    CONSTRAINT ck_ti_mu_fu_jian_lei_xing CHECK (fu_jian_lei_xing IN ('IMAGE', 'FORMULA', 'OTHER')),
+    CONSTRAINT ck_ti_mu_fu_jian_pai_xu CHECK (pai_xu >= 1),
+    CONSTRAINT ck_ti_mu_fu_jian_zhuang_tai CHECK (zhuang_tai IN ('ACTIVE', 'DISABLED', 'MISSING')),
+    CONSTRAINT ck_ti_mu_fu_jian_yi_shan_chu CHECK (yi_shan_chu IN (0, 1)),
+    CONSTRAINT ck_ti_mu_fu_jian_guan_lian CHECK (
+        (guan_lian_wei_zhi = 'OPTION' AND ti_mu_xuan_xiang_id IS NOT NULL AND ti_mu_jie_xi_id IS NULL)
+        OR (guan_lian_wei_zhi = 'STANDARD_ANALYSIS' AND ti_mu_xuan_xiang_id IS NULL AND ti_mu_jie_xi_id IS NOT NULL)
+        OR (guan_lian_wei_zhi IN ('QUESTION', 'ANSWER') AND ti_mu_xuan_xiang_id IS NULL AND ti_mu_jie_xi_id IS NULL)
+    )
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='题目附件引用';
+
+CREATE TABLE ti_mu_lai_yuan (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    ti_mu_id BIGINT NOT NULL,
+    nei_rong_lei_xing VARCHAR(32) NOT NULL COMMENT 'QUESTION/ANSWER/STANDARD_ANALYSIS',
+    lai_yuan_lei_xing VARCHAR(32) NOT NULL COMMENT 'REAL_EXAM/AI_GENERATED/TEACHER_CREATED',
+    lai_yuan_ming_cheng VARCHAR(500) NOT NULL,
+    lai_yuan_di_zhi VARCHAR(1000) NULL COMMENT 'URL或受控文件相对路径',
+    nian_fen SMALLINT NULL,
+    di_qu VARCHAR(100) NULL,
+    shi_juan_ming_cheng VARCHAR(500) NULL,
+    ti_hao VARCHAR(64) NULL,
+    quan_li_zhuang_tai VARCHAR(32) NOT NULL,
+    quan_li_yi_ju VARCHAR(1000) NULL,
+    huo_qu_shi_jian DATETIME(3) NULL COMMENT '未知时保持NULL，不猜测',
+    chuang_jian_shi_jian DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    geng_xin_shi_jian DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+    yi_shan_chu TINYINT(1) NOT NULL DEFAULT 0,
+    PRIMARY KEY (id),
+    UNIQUE KEY uk_ti_mu_lai_yuan_nei_rong (ti_mu_id, nei_rong_lei_xing),
+    KEY idx_ti_mu_lai_yuan_shi_juan (nian_fen, di_qu, shi_juan_ming_cheng),
+    CONSTRAINT fk_ti_mu_lai_yuan_ti_mu FOREIGN KEY (ti_mu_id) REFERENCES ti_mu (id),
+    CONSTRAINT ck_ti_mu_lai_yuan_nei_rong CHECK (nei_rong_lei_xing IN ('QUESTION', 'ANSWER', 'STANDARD_ANALYSIS')),
+    CONSTRAINT ck_ti_mu_lai_yuan_lei_xing CHECK (lai_yuan_lei_xing IN ('REAL_EXAM', 'AI_GENERATED', 'TEACHER_CREATED')),
+    CONSTRAINT ck_ti_mu_lai_yuan_quan_li CHECK (quan_li_zhuang_tai IN ('AUTHORIZED', 'OPEN_LICENSE', 'PUBLIC_OFFICIAL', 'USER_PROVIDED', 'COPYRIGHT_UNKNOWN', 'RESTRICTED')),
+    CONSTRAINT ck_ti_mu_lai_yuan_yi_shan_chu CHECK (yi_shan_chu IN (0, 1))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='题目分项来源与权利状态';
+
+CREATE TABLE ti_mu_shen_he_ji_lu (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    ti_mu_id BIGINT NOT NULL,
+    shen_he_dong_zuo VARCHAR(32) NOT NULL COMMENT 'SUBMITTED/APPROVED/REJECTED/DISABLED',
+    yuan_zhuang_tai VARCHAR(16) NULL,
+    mu_biao_zhuang_tai VARCHAR(16) NOT NULL,
+    shen_he_ren_id BIGINT NULL COMMENT '用户模块建立后再加外键',
+    shen_he_yi_jian VARCHAR(2000) NULL,
+    chuang_jian_shi_jian DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    PRIMARY KEY (id),
+    KEY idx_ti_mu_shen_he_ji_lu (ti_mu_id, chuang_jian_shi_jian),
+    CONSTRAINT fk_ti_mu_shen_he_ji_lu_ti_mu FOREIGN KEY (ti_mu_id) REFERENCES ti_mu (id),
+    CONSTRAINT ck_ti_mu_shen_he_dong_zuo CHECK (shen_he_dong_zuo IN ('SUBMITTED', 'APPROVED', 'REJECTED', 'DISABLED')),
+    CONSTRAINT ck_ti_mu_shen_he_yuan_zhuang_tai CHECK (yuan_zhuang_tai IS NULL OR yuan_zhuang_tai IN ('DRAFT', 'PENDING', 'PUBLISHED', 'DISABLED')),
+    CONSTRAINT ck_ti_mu_shen_he_mu_biao_zhuang_tai CHECK (mu_biao_zhuang_tai IN ('DRAFT', 'PENDING', 'PUBLISHED', 'DISABLED'))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='题目审核轨迹';
