@@ -1,94 +1,111 @@
 # AI 开发交接
 
-更新时间：2026-08-02
+更新时间：2026-08-04
 
-## 1. 本轮原始目标
+## 1. 本轮唯一目标
 
-只初始化前后端基础工程，创建空数据库并完成真实连通性验证；禁止实现正式业务表、账号业务、题库、AI、缓存、文件服务、WebSocket、Docker 或微服务。
+基于V3.0和三科真实清洗数据，完成题库核心数据库第一版设计；只通过Flyway创建允许的业务表，提供最小MyBatis-Plus映射与自动化测试，并真实导入物理、化学、生物各1题。禁止完整30题导入、前端、用户、练习和AI业务。
 
 ## 2. 实际完成内容
 
-- 在 `E:/BISHE2026/rike-tiku-backend` 创建 Maven/Spring Boot 后端，根包为 `com.neu.riketiku`。
-- 在 `E:/BISHE2026/rike-tiku-frontend` 创建 Vue 3/TypeScript/Vite 前端。
-- 创建 MySQL 数据库 `rike_tiku`，未创建任何表。
-- 后端提供 `GET /api/v1/health`，通过 JDBC `SELECT 1` 真实检查数据库。
-- 数据库不可达时返回 HTTP 503，响应为 `{"status":"DOWN","database":"DOWN"}`。
-- Spring Security 仅放行健康接口和 OpenAPI；未实现登录或 JWT。
-- CORS 仅允许配置的开发 Origin，默认 `http://localhost:8080`。
-- 前端通过 Axios 调用后端，显示应用和数据库状态。
-- 初始化本地 Git 仓库，分支 `main`，未配置远程，未 push。
+- 阅读`DEVELOPMENT_STATUS.md`、`AI_HANDOFF.md`、V3.0、当前后端和Git状态。
+- 读取物理/化学/生物三份`待审核_清洗版.xlsx`，每份10题、19个检查字段。
+- 读取对应JSON、质量报告和附件目录；确认题干/解析对象标记与附件记录可一一对应。
+- 读取用户允许的两个历史任务，确认公式/图片常为独立对象、题干与答案解析必须分项追溯、异常母题不能自动进入MVP。
+- 创建ER关系、完整字段字典、答案扩展方案和Excel/JSON映射文档。
+- 引入Spring Boot 4.1的Flyway starter与MySQL模块，由Flyway真实创建10张业务表。
+- 创建最小实体`KeMu`、`TiMu`、`TiMuFuJian`和3个`BaseMapper`。
+- 真实写入物理2023新课标Q14、化学2023新课标Q7、生物2023新课标Q1；均为`PENDING`。
+- 写入1个物理真实公式附件F107，保存相对路径、SHA-256、对象标识、顺序和正文字符位置。
+- 建立4个数据库模型测试，覆盖表范围、迁移数、三科样本、Mapper、答案JSON、附件位置、自动判分例外和难度约束。
 
-## 3. 关键地址
+## 3. 关键设计决定
 
-- 前端：`http://localhost:8080`
-- 后端：`http://localhost:8081`
-- 健康接口：`http://localhost:8081/api/v1/health`
-- 数据库：`localhost:3306/rike_tiku`
+- 数据库表/字段全部使用`pinyin_snake_case`，没有V1.0大驼峰表。
+- 正确答案使用受控JSON而不是EAV：单选/多选保存`optionLabels`，未来填空按`blanks[].acceptedAnswers`扩展。
+- 难度固定1/2/3映射easy/medium/hard。
+- `SUBJECTIVE`只允许`TOPIC_LEARNING`且必须不自动判分，用于未来保留和拆分结构异常母题；异常Q34本轮没有入库。
+- 标准解析是独立`STANDARD`记录，未来`AI`解析不能覆盖标准解析。
+- 附件不存BLOB，正文对象标记+对象标识+字符位置+顺序共同定位。
+- 题干、答案、标准解析各有独立来源行；当前权利状态保守设为`COPYRIGHT_UNKNOWN`。
+- 用户模块不在本轮范围，因此审核人ID暂不设外键，后续用户迁移建立后再补。
 
-## 4. 配置与密钥
+## 4. 新增和修改文件
 
-- 真实数据库密码没有写入 Git 跟踪文件。
-- 后端通过环境变量 `RIKE_TIKU_DB_PASSWORD` 读取本机密码。
-- 示例配置位于 `rike-tiku-backend/.env.example`，只含占位符。
-- 前端 API 地址通过 `VITE_API_BASE_URL` 配置，示例位于 `rike-tiku-frontend/.env.example`。
+新增：
 
-## 5. 实际技术版本
+- `docs/QUESTION_DATABASE_MODEL_V1.md`
+- `rike-tiku-backend/src/main/resources/db/migration/V1__create_subject_and_knowledge_tables.sql`
+- `rike-tiku-backend/src/main/resources/db/migration/V2__create_question_core_tables.sql`
+- `rike-tiku-backend/src/main/resources/db/migration/V3__insert_three_subject_question_samples.sql`
+- `rike-tiku-backend/src/main/resources/db/migration/V4__allow_subjective_topic_learning.sql`
+- `rike-tiku-backend/src/main/java/com/neu/riketiku/tiku/entity/KeMu.java`
+- `rike-tiku-backend/src/main/java/com/neu/riketiku/tiku/entity/TiMu.java`
+- `rike-tiku-backend/src/main/java/com/neu/riketiku/tiku/entity/TiMuFuJian.java`
+- `rike-tiku-backend/src/main/java/com/neu/riketiku/tiku/mapper/KeMuMapper.java`
+- `rike-tiku-backend/src/main/java/com/neu/riketiku/tiku/mapper/TiMuMapper.java`
+- `rike-tiku-backend/src/main/java/com/neu/riketiku/tiku/mapper/TiMuFuJianMapper.java`
+- `rike-tiku-backend/src/test/java/com/neu/riketiku/tiku/QuestionDatabaseModelTest.java`
 
-- Java：25.0.2 LTS
-- Maven：3.9.11
-- Spring Boot：4.1.0
-- MyBatis-Plus：3.5.17
-- SpringDoc OpenAPI：3.0.3
-- MySQL Server：8.4.10
-- Node.js：24.15.0
-- npm：11.12.1
-- Vue：3.5.40
-- Vite：8.2.0
-- TypeScript：6.0.3
-- Element Plus：2.14.3
-- Pinia：4.0.2
-- Vue Router：5.2.0
-- Axios：1.19.0
+修改：
 
-## 6. 测试与验证
+- `.gitignore`：忽略任务本地检查目录`.codex_work/`。
+- `rike-tiku-backend/pom.xml`：增加Flyway starter和MySQL模块。
+- `rike-tiku-backend/src/main/resources/application.yml`：启用迁移、校验并禁用clean。
+- `docs/DEVELOPMENT_STATUS.md`
+- `docs/AI_HANDOFF.md`
 
-| 检查 | 结果 |
-|---|---|
-| `mvn clean test` | PASS，4/4 |
-| `mvn clean package` | PASS |
-| 数据库连接 | PASS |
-| 健康接口 HTTP 测试 | PASS |
-| 数据库不可达返回 DOWN | PASS，HTTP 503 |
-| `npm ci` | PASS |
-| `npm run type-check` | PASS |
-| `npm run build` | PASS |
-| 前端开发服务器 | PASS |
-| CORS 白名单 | PASS |
-| 非白名单 Origin | PASS，HTTP 403 |
-| 浏览器 Axios 联调 | PASS，页面显示 UP/UP，控制台无异常 |
+删除：无。
 
-## 7. 过程中发现并修复的问题
+前端文件：无变化。
 
-- 数据库测试构造器最初缺少 Spring 注入标记，首次 `mvn clean test` 失败；增加 `@Autowired` 后完整复测通过。
-- TypeScript 7.0.2 与 `vue-tsc` 3.3.9 不兼容；降级至 6.0.3 后类型检查通过。
-- 首次 npm 安装超时留下不完整依赖目录；使用 `npm ci` 从锁文件重建后通过。
-- 联调进程占用 JAR 时一次 `mvn clean package` 无法清理；停止联调进程后重新执行并通过。
+## 5. 数据库结果
 
-## 8. Git
+- MySQL：8.4.10；数据库`rike_tiku`。
+- 字符集/排序规则：`utf8mb4` / `utf8mb4_0900_ai_ci`。
+- Flyway：12.4.0，schema版本v4，4条迁移全部success=1。
+- 业务表10张；另有Flyway系统表`flyway_schema_history`。
+- 样本数据：3题、12选项、3标准解析、3知识点关联、1附件、9来源、3审核记录。
+- 没有完整30题导入，没有其他业务表。
 
-- 仓库根目录：`E:/BISHE2026`
+## 6. 实际执行命令与结果
+
+- 三科XLSX通过工作区表格运行时导入检查：PASS，均含`题目检查`和`质量统计`工作表。
+- `mvn clean test`（首次）：FAIL，Flyway自动配置未装配，数据库仍为空。
+- `mvn clean test`（第二次）：FAIL，迁移V1-V3成功，4个新测试中3通过；非法难度确实被数据库拒绝，但异常类型断言过窄。
+- `mvn clean test`（修正后）：PASS，8/8。
+- `mvn test -Dtest=QuestionDatabaseModelTest`：PASS，4/4，并实际迁移至v4。
+- `mvn clean package`：PASS，8/8，可执行JAR生成。
+- MySQL information_schema/Flyway/样本聚合查询：PASS，表和行数与设计一致。
+- 物理F107文件SHA-256：`a15be0633cd8b36cdc7c68d16a1df43dc050d34661edad049931136e89e15b1f`，与数据库一致。
+- 默认端口JAR启动：该次FAIL，8081当时被现存Java进程占用；未终止该进程，最终端口复查时已自行释放。
+- 临时端口18082启动和`GET /api/v1/health`：PASS，`status=UP`、`database=UP`；本轮进程已停止。
+
+执行测试时只在进程环境变量中注入本机数据库密码，没有写入Git文件。实际密码不应出现在提交、日志说明或启动配置中。
+
+## 7. 已知问题和风险
+
+- `TINYINT(1)`首次迁移有MySQL显示宽度弃用警告，但功能和约束正常；已执行迁移文件不得改写，后续用新迁移演进。
+- 8081曾被PID 33576的Java进程占用，最终复查时已经释放；本轮没有越权终止来源不明的进程。
+- 原始附件目前仍位于用户题库目录，数据库只保存相对路径。正式文件存储策略尚未实现。
+- 三道样本为数据库结构验证数据，不代表版权或学科人工审核通过；必须保持`PENDING`。
+- 目前只为最小读取链路创建3组实体/Mapper；其余表等正式题库服务开发时按用例补实体，避免本轮提前开发CRUD。
+- JDK 25 Mockito动态Agent预警仍存在。
+
+## 8. Git状态
+
+- 仓库：`E:/BISHE2026`
 - 分支：`main`
-- 远程：无
-- 实施提交：`0877cac`（`chore: initialize frontend and backend foundations`）
-- 未执行 push
+- 远程：无，不得push。
+- 上一轮HEAD：`81cbc38`。
+- 本轮实施提交：`39ea9c7`（`feat(database): add question core model`）。
+- 状态与交接文档在实施提交之后单独提交；以当前`git log -1`确认最终HEAD。
+- 用户原有DOCX、`脚本/`、`题库/`保持未跟踪，不纳入本轮提交。
 
-## 9. 已知问题
+## 9. 下一步唯一任务
 
-- 无阻塞问题。
-- MyBatis-Plus 的“未发现 Mapper”警告符合本轮范围。
-- Vite 包体积警告不影响技术验证，后续正式页面开发再优化。
-- JDK 25 的 Mockito 动态 Agent 预警需要在未来升级测试依赖时复核。
+未设置。本轮完成后停止，不继续开发题库API、导入全量数据或前端页面。
 
-## 10. 下一步唯一任务
+## 10. 下一位AI接管提示
 
-未设置。本轮完成后停止，等待用户下达新的唯一任务。
+先读取`docs/DEVELOPMENT_STATUS.md`、`docs/AI_HANDOFF.md`和`docs/QUESTION_DATABASE_MODEL_V1.md`，再检查Flyway历史、Git状态和本轮提交。不要修改已应用的V1-V4迁移；任何结构变化必须新增迁移。三道样本仍是PENDING且权利状态未知，不得发布或扩展为完整30题。等待用户给出新的唯一任务后再行动。
