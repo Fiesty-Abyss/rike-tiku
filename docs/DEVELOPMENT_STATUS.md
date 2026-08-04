@@ -6,11 +6,12 @@
 
 - 设计基线：V3.0
 - 当前轮次：后端统一认证与JWT登录基础
-- 当前状态：DONE_VERIFIED（代码、数据库集成测试、打包和JAR运行）；PR待创建，未合并
+- 当前状态：DONE_VERIFIED（代码、数据库集成测试、打包和JAR运行）；PR #4为草稿，未合并
 - 基线分支：`main`
 - 本轮实现分支：`feat/backend-auth-jwt`
 - 开始时HEAD：`74af93327f8fd41a15401cab3fa87475a4bd1f0a`
 - 远程仓库：`https://github.com/Fiesty-Abyss/rike-tiku`
+- Pull Request：[#4](https://github.com/Fiesty-Abyss/rike-tiku/pull/4)，DRAFT，未合并
 - 当前Flyway：V6；本轮没有新增或修改迁移
 
 ## 本轮已完成
