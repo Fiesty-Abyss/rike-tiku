@@ -2,9 +2,21 @@
 
 更新时间：2026-08-04
 
-## 1. 本轮唯一目标
+## 1. 当前修复轮唯一目标
 
-创建公开GitHub仓库，并以V3.0为基线完成账号、角色、档案、班级、班级学生历史和教师—班级—科目三元任课关系数据库模型。只创建数据库验证所需最小Entity/Mapper，不实现登录、JWT、导入、前端或AI业务。
+修复IDEA本地启动说明缺口。用户从IDEA直接运行后端时出现 `using password: NO`，原因是IDEA进程未获得数据库密码环境变量。本轮只补文档和安全示例并重新验证现有后端，不修改数据库、Flyway、业务模型或运行时配置行为。
+
+实际配置以 `application.yml` 为准：数据库使用 `RIKE_TIKU_DB_HOST`、`RIKE_TIKU_DB_PORT`、`RIKE_TIKU_DB_NAME`、`RIKE_TIKU_DB_USERNAME` 和 `RIKE_TIKU_DB_PASSWORD`；项目不读取 `RIKE_TIKU_DB_URL`。本地默认条件下只需提供密码变量。
+
+修复轮结果：
+
+- 后端 `.env.example` 已明确标注不会被自动加载，并补齐后端端口示例。
+- 后端README已增加IDEA Run Configuration逐步说明、实际变量表、PowerShell启动和 `using password: NO/YES` 排查。
+- 根README已区分后端环境变量与前端Vite `.env.local` 的加载方式。
+- `mvn clean test`：PASS，16/16；`mvn clean package`：PASS，16/16。
+- 空密码JAR启动：按预期失败，退出码1并显示 `using password: NO`。
+- 注入密码的JAR启动：PASS；临时端口18085健康接口返回 `UP/UP`，随后已停止进程。
+- IDEA图形界面人工启动：`AWAITING_USER_VERIFICATION`，不得写成PASS。
 
 ## 2. 实际完成
 

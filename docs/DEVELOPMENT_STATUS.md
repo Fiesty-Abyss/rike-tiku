@@ -5,9 +5,10 @@
 ## 当前基线
 
 - 设计基线：V3.0
-- 当前轮次：GitHub公开仓库与账号、教学组织数据库模型
-- 当前状态：DONE_VERIFIED
-- 当前分支：`main`
+- 当前轮次：IDEA本地启动配置说明修复与验证
+- 当前状态：DONE_VERIFIED（命令行与JAR）；IDEA人工启动为AWAITING_USER_VERIFICATION
+- 当前集成分支：`main`
+- 本轮实现分支：`fix/local-development-startup`
 - 远程仓库：`https://github.com/Fiesty-Abyss/rike-tiku`
 - 仓库可见性：PUBLIC
 - 实现提交：`56cb779`（`feat(database): add user and teaching organization model`）
@@ -40,6 +41,9 @@
 
 ## 本轮测试结论
 
+- IDEA启动说明与实际 `application.yml` 变量名核对：PASS。
+- 缺失密码启动：PASS（应用退出码1，明确显示 `using password: NO`，未错误启动）。
+- IDEA图形界面人工启动：AWAITING_USER_VERIFICATION（需用户按README在本机运行配置中填写密码）。
 - `mvn clean test`：PASS，16/16。
 - `mvn clean package`：PASS，16/16并生成可执行JAR。
 - V5、V6迁移：PASS。
@@ -51,7 +55,7 @@
 - 重复有效班级学生关系拒绝、一个有效主班级、退出历史保留：PASS。
 - 任课三元关系唯一、跨班同科、同班不同科、无关系不授权：PASS。
 - 审核人外键、自动填充、逻辑删除、事务回滚：PASS。
-- JAR启动和健康接口：PASS，`status=UP`、`database=UP`。
+- JAR启动和健康接口：PASS，临时端口18085返回 `status=UP`、`database=UP`，验证后进程已停止。
 
 ## 明确未实施
 
@@ -64,11 +68,16 @@
 
 ## 已知事项
 
+- IDEA 直接启动时必须在 Run Configuration 中提供 `RIKE_TIKU_DB_PASSWORD`；`.env.example` 不会被 Spring Boot 或 IDEA 自动加载。命令行、JAR 和健康检查已重新验证，IDEA 图形界面操作仍需用户按文档人工复核。
 - V1/V2旧迁移仍会产生MySQL整数显示宽度弃用警告；已执行迁移没有改写，V5/V6使用无显示宽度的 `TINYINT`。
 - JDK 25下Mockito/Byte Buddy仍输出动态Agent兼容性警告，测试实际通过。
 - 题库资料权利状态为 `COPYRIGHT_UNKNOWN`，只作学习、开发和人工审核候选；仓库不声明已获公开传播授权。
 - 公共仓库首次推送约252 MB资料，耗时较长但最终成功；没有使用强推。
 
+## 本轮边界
+
+只补充安全的本地启动说明并验证现有后端，不修改数据库、Flyway、业务模型或运行时配置行为，不开发登录和JWT。
+
 ## 下一步唯一任务
 
-实现后端统一认证与JWT登录基础，覆盖账号状态、首次登录改密门禁和三角色鉴权测试；本轮不再继续。
+用户先按后端README完成一次IDEA人工启动并确认健康接口 `UP/UP`；确认后，下一开发轮只实现后端统一认证与JWT登录基础。
