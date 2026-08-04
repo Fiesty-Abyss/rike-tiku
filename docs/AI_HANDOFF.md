@@ -35,6 +35,8 @@
 
 实现提交：`56cb779 feat(database): add user and teaching organization model`
 
+Pull Request：`https://github.com/Fiesty-Abyss/rike-tiku/pull/1`，状态 `MERGED`；远程功能分支已删除，当前分支为 `main`。
+
 新增迁移：
 
 - `V5__create_user_role_and_profile_tables.sql`
