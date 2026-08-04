@@ -1,0 +1,497 @@
+[
+  {
+    "subject": "生物",
+    "year": 2023,
+    "region": "全国",
+    "paperName": "2023年高考真题——理综（新课标卷）",
+    "questionNumber": "1",
+    "questionType": "单选题",
+    "content": "葡萄糖是人体所需的一种单糖。下列关于人体内葡萄糖的叙述，错误的是（ ）",
+    "options": [
+      {
+        "label": "A",
+        "content": "葡萄糖是人体血浆的重要组成成分，其含量受激素的调节"
+      },
+      {
+        "label": "B",
+        "content": "葡萄糖是机体能量的重要来源，能经自由扩散通过细胞膜"
+      },
+      {
+        "label": "C",
+        "content": "血液中的葡萄糖进入肝细胞可被氧化分解或转化为肝糖原"
+      },
+      {
+        "label": "D",
+        "content": "血液中的葡萄糖进入人体脂肪组织细胞可转变为甘油三酯"
+      }
+    ],
+    "questionImages": [],
+    "correctAnswer": "B",
+    "standardAnalysis": "【分析】葡萄糖是细胞生命活动所需要的主要能源物质，常被形容为“生命的燃料”。\n【详解】A、葡萄糖是人体血浆的重要组成成分，血液中的糖称为血糖，血糖含量受胰岛素、胰高血糖素等激素的调节，A正确；\nB、葡萄糖是细胞生命活动所需要的主要能源物质，是机体能量的重要来源，葡萄糖通过细胞膜进入红细胞是协助扩散，进入小肠上皮细胞为主动运输，进入组织细胞一般通过协助扩散，B错误；\nCD、血糖浓度升高时，在胰岛素作用下，血糖可以进入肝细胞进行氧化分解并合成肝糖原，进入脂肪组织细胞转变为甘油三酯，CD正确。\n故选B。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "分子与细胞>细胞的物质输入和输出>葡萄糖运输"
+    ],
+    "difficultyLevel": "easy",
+    "difficultyReason": "考查葡萄糖运输的直接识记或单步判断，条件明确，运算与推理量较小。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（新课标卷）Word版含解析.doc",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（新课标卷）Word版含解析.doc"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "生物",
+    "year": 2023,
+    "region": "全国",
+    "paperName": "2023年高考真题——理综（新课标卷）",
+    "questionNumber": "3",
+    "questionType": "单选题",
+    "content": "人体内的免疫细胞是体液免疫和细胞免疫过程的重要参与者。下列叙述正确的是（ ）\n①免疫细胞表面的受体可识别细菌、病毒等入侵机体的病原体\n②树突状细胞能够处理和呈递抗原，淋巴细胞不能呈递抗原\n③辅助性T细胞参与体液免疫过程而不参与细胞免疫过程\n④体液免疫可产生记忆B细胞，细胞免疫可产生记忆T细胞\n⑤某些致病细菌感染人体既可引发体液免疫又可引发细胞免疫",
+    "options": [
+      {
+        "label": "A",
+        "content": "①②④"
+      },
+      {
+        "label": "B",
+        "content": "①④⑤"
+      },
+      {
+        "label": "C",
+        "content": "②③⑤"
+      },
+      {
+        "label": "D",
+        "content": "③④⑤"
+      }
+    ],
+    "questionImages": [],
+    "correctAnswer": "B",
+    "standardAnalysis": "【分析】免疫细胞是执行免疫功能的细胞，它们来自骨髓的造血干细胞，包括各种类型的白细胞，如淋巴细胞、树突状细胞和巨噬细胞等。\n【详解】①病原体进入机体后，其表面一些特定的蛋白质等物质，能够与免疫细胞表面的受体结合，从而引发免疫反应，故免疫细胞表面的受体可识别细菌、病毒等入侵机体的病原体，①正确；\n②B细胞、树突状细胞和巨噬细胞都能够处理和呈递抗原，B细胞属于淋巴细胞，②错误；\n③辅助性T细胞在体液免疫过程中，辅助性T细胞表面的特定分子发生变化与B细胞结合作为激活B细胞的第二信号，并且分裂分化，分泌细胞因子促进B细胞的分裂、分化过程；在细胞免疫过程中，辅助性T细胞分泌细胞因子促进细胞毒性T细胞增殖分化。因此辅助性T细胞既参与体液免疫又参与细胞免疫过程，③错误；\n④体液免疫过程中，B细胞活化后开始增殖分化，一小部分分化为记忆B细胞；细胞免疫过程中，细胞毒性T细胞分裂并分化，形成新的细胞毒性T细胞和记忆T细胞，④正确；\n⑤某些致病细菌是寄生在宿主细胞内的，感染人体时既可引发体液免疫又可引发细胞免疫，⑤正确。\n综上所述，①④⑤正确。\n故选B。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "稳态与环境>免疫调节>体液免疫与细胞免疫"
+    ],
+    "difficultyLevel": "medium",
+    "difficultyReason": "需要提取题干或图表信息，并结合体液免疫与细胞免疫完成两步左右的判断或计算。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（新课标卷）Word版含解析.doc",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（新课标卷）Word版含解析.doc"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "生物",
+    "year": 2023,
+    "region": "全国",
+    "paperName": "2023年高考真题——理综（新课标卷）",
+    "questionNumber": "5",
+    "questionType": "单选题",
+    "content": "某研究小组从野生型高秆（显性）玉米中获得了2个矮秆突变体，为了研究这2个突变体的基因型，该小组让这2个矮秆突变体（亲本）杂交得F₁，F₁自交得F₂，发现F₂中表型及其比例是高秆:矮秆:极矮秆=9:6:1。若用A、B表示显性基因，则下列相关推测错误的是（ ）",
+    "options": [
+      {
+        "label": "A",
+        "content": "亲本的基因型为aaBB和AAbb，F₁的基因型为AaBb"
+      },
+      {
+        "label": "B",
+        "content": "F₂矮秆的基因型有aaBB、AAbb、aaBb、Aabb，共4种"
+      },
+      {
+        "label": "C",
+        "content": "基因型是AABB的个体为高秆，基因型是aabb的个体为极矮秆"
+      },
+      {
+        "label": "D",
+        "content": "F₂矮秆中纯合子所占比例为1/2，F₂高秆中纯合子所占比例为1/16"
+      }
+    ],
+    "questionImages": [],
+    "correctAnswer": "D",
+    "standardAnalysis": "【分析】由题干信息可知，2个矮秆突变体（亲本）杂交得F₁，F₁自交得F₂，发现F₂中表型及其比例是高秆:矮秆:极矮秆=9:6:1，符合9:3:3:1的变式，因此控制两个矮秆突变体的基因遵循基因的自由组合定律。\n【详解】A、F₂中表型及其比例是高秆:矮秆:极矮秆=9:6:1，符合9:3:3:1的变式，因此控制两个矮秆突变体的基因遵循基因的自由组合定律，即高秆基因型为A_B_，矮秆基因型为A_bb、aaB_，极矮秆基因型为aabb，因此可推知亲本的基因型为aaBB和AAbb，F₁的基因型为AaBb，A正确；\nB、矮秆基因型为A_bb、aaB_，因此F₂矮秆的基因型有aaBB、AAbb、aaBb、Aabb，共4种，B正确；\nC、由F₂中表型及其比例可知基因型是AABB的个体为高秆，基因型是aabb的个体为极矮秆，C正确；\nD、F₂矮秆基因型为A_bb、aaB_共6份，纯合子基因型为aaBB、AAbb共2份，因此矮秆中纯合子所占比例为1/3，F₂高秆基因型为A_B_共9份，纯合子为AABB共1份，因此高秆中纯合子所占比例为1/9，D错误。\n故选D。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "遗传与进化>遗传规律>基因互作"
+    ],
+    "difficultyLevel": "hard",
+    "difficultyReason": "需要综合多个条件，围绕基因互作进行多环节推理、定量计算或实验分析。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（新课标卷）Word版含解析.doc",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（新课标卷）Word版含解析.doc"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "生物",
+    "year": 2023,
+    "region": "全国",
+    "paperName": "2023年高考真题——理综（全国甲卷）",
+    "questionNumber": "1",
+    "questionType": "单选题",
+    "content": "物质输入和输出细胞都需要经过细胞膜。下列有关人体内物质跨膜运输的叙述，正确的是（ ）",
+    "options": [
+      {
+        "label": "A",
+        "content": "乙醇是有机物，不能通过自由扩散方式跨膜进入细胞"
+      },
+      {
+        "label": "B",
+        "content": "血浆中的K⁺进入红细胞时需要载体蛋白并消耗ATP"
+      },
+      {
+        "label": "C",
+        "content": "抗体在浆细胞内合成时消耗能量，其分泌过程不耗能"
+      },
+      {
+        "label": "D",
+        "content": "葡萄糖可通过主动运输但不能通过协助扩散进入细胞"
+      }
+    ],
+    "questionImages": [],
+    "correctAnswer": "B",
+    "standardAnalysis": "【分析】自由扩散：物质通过简单的扩散进出细胞的方式，如氧气、二氧化碳、脂溶性小分子。\n主动运输：逆浓度梯度的运输。消耗能量，需要有载体蛋白。\n【详解】A、乙醇是有机物，与细胞膜中磷脂相似相溶，可以通过扩散方式进入细胞，A错误；\nB、血浆中K⁺量低，红细胞内K⁺含量高，逆浓度梯度为主动运输，需要消耗ATP并需要载体蛋白，B正确；\nC、抗体为分泌蛋白，分泌过程为胞吐，需要消耗能量，C错误；\nD、葡萄糖进入小肠上皮细胞等为主动运输，进入哺乳动物成熟的红细胞为协助扩散，D错误。\n故选B。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "分子与细胞>细胞的物质输入和输出>跨膜运输"
+    ],
+    "difficultyLevel": "easy",
+    "difficultyReason": "考查跨膜运输的直接识记或单步判断，条件明确，运算与推理量较小。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（全国甲卷）Word版含解析.doc",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（全国甲卷）Word版含解析.doc"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "生物",
+    "year": 2023,
+    "region": "全国",
+    "paperName": "2023年高考真题——理综（全国甲卷）",
+    "questionNumber": "4",
+    "questionType": "单选题",
+    "content": "探究植物细胞的吸水和失水实验是高中学生常做的实验。某同学用紫色洋葱鳞片叶外表皮为材料进行实验，探究蔗糖溶液，清水处理外表皮后，外表皮细胞原生质体和液泡的体积及细胞液浓度的变化。图中所提到的原生质体是指植物细胞不包括细胞壁的部分。下列示意图中能够正确表示实验结果的是（ ）",
+    "options": [
+      {
+        "label": "A",
+        "content": "〔图片对象 I003〕"
+      },
+      {
+        "label": "B",
+        "content": "〔图片对象 I004〕"
+      },
+      {
+        "label": "C",
+        "content": "〔图片对象 I005〕"
+      },
+      {
+        "label": "D",
+        "content": "〔图片对象 I006〕"
+      }
+    ],
+    "questionImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\生物\\母题库\\images\\2023_national_a\\q04_2023全国甲卷_题干_image_003.png",
+        "sourcePage": "3",
+        "description": "Word第3页，第4题2023全国甲卷_题干中的图片对象"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\生物\\母题库\\images\\2023_national_a\\q04_2023全国甲卷_题干_image_004.png",
+        "sourcePage": "3",
+        "description": "Word第3页，第4题2023全国甲卷_题干中的图片对象"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\生物\\母题库\\images\\2023_national_a\\q04_2023全国甲卷_题干_image_005.png",
+        "sourcePage": "3",
+        "description": "Word第3页，第4题2023全国甲卷_题干中的图片对象"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\生物\\母题库\\images\\2023_national_a\\q04_2023全国甲卷_题干_image_006.png",
+        "sourcePage": "3",
+        "description": "Word第3页，第4题2023全国甲卷_题干中的图片对象"
+      }
+    ],
+    "correctAnswer": "C",
+    "standardAnalysis": "【分析】1、质壁分离与复原的原理：成熟的植物细胞构成渗透系统，可发生渗透作用。\n2、质壁分离的原因分析：外因：外界溶液浓度>细胞液浓度；内因：原生质层相当于一层半透膜，细胞壁的伸缩性小于原生质层。\n【详解】AB、用30%蔗糖处理之后，细胞失水，原生质体和细胞液的体积都会减小，细胞液浓度上升；用清水处理之后，细胞吸水，原生质体和细胞液体积会扩大，细胞液浓度下降，AB错误。\nCD、随着所用蔗糖浓度上升，当蔗糖浓度超过细胞液浓度之后，细胞就会开始失水，原生质体和细胞液体积下降，细胞液浓度上升，故C正确，D错误。\n故选C。\n【点睛】外界溶液浓度高，细胞失水，细胞体积减小，细胞液浓度增大。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "实验与探究>细胞实验>植物细胞吸水和失水"
+    ],
+    "difficultyLevel": "medium",
+    "difficultyReason": "需要提取题干或图表信息，并结合植物细胞吸水和失水完成两步左右的判断或计算。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（全国甲卷）Word版含解析.doc",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（全国甲卷）Word版含解析.doc"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "生物",
+    "year": 2023,
+    "region": "全国",
+    "paperName": "2023年高考真题——理综（全国甲卷）",
+    "questionNumber": "5",
+    "questionType": "单选题",
+    "content": "在生态系统中，生产者所固定的能量可以沿着食物链传递，食物链中的每个环节即为一个营养级。下列关于营养级的叙述，错误的是（ ）",
+    "options": [
+      {
+        "label": "A",
+        "content": "同种动物在不同食物链中可能属于不同营养级"
+      },
+      {
+        "label": "B",
+        "content": "作为生产者的绿色植物所固定的能量来源于太阳"
+      },
+      {
+        "label": "C",
+        "content": "作为次级消费者的肉食性动物属于食物链的第二营养级"
+      },
+      {
+        "label": "D",
+        "content": "能量从食物链第一营养级向第二营养级只能单向流动"
+      }
+    ],
+    "questionImages": [],
+    "correctAnswer": "C",
+    "standardAnalysis": "【分析】生态系统的能量流动是单向的、逐级递减的，沿着食物链和食物网流动；生产者为第一营养级，初级消费者为第二营养级，次级消费者为第三营养级。\n【详解】A、杂食动物既会捕食植物，又会捕食动物，如果捕食植物，就是第二营养级，捕食动物，就是第三营养级或更高营养级，所以不同食物链中的动物会处于不同的营养级，A正确；\nB、绿色植物进行的是光合作用，能量来源于太阳，B正确；\nC、次级消费者是第三营养级，初级消费者是第二营养级，第一营养级是生产者，C错误；\nD、因为第一营养级是植物，第二营养级是动物，食物链是单向的，能量流动也就是单向的，D正确。\n故选C。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "稳态与环境>生态系统>营养级与能量流动"
+    ],
+    "difficultyLevel": "easy",
+    "difficultyReason": "考查营养级与能量流动的直接识记或单步判断，条件明确，运算与推理量较小。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（全国甲卷）Word版含解析.doc",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（全国甲卷）Word版含解析.doc"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "生物",
+    "year": 2024,
+    "region": "全国",
+    "paperName": "2024年高考真题——理综（新课标卷）",
+    "questionNumber": "2",
+    "questionType": "单选题",
+    "content": "干旱缺水条件下，植物可通过减小气孔开度减少水分散失。下列叙述错误的是（ ）",
+    "options": [
+      {
+        "label": "A",
+        "content": "叶片萎蔫时叶片中脱落酸的含量会降低"
+      },
+      {
+        "label": "B",
+        "content": "干旱缺水时进入叶肉细胞的〔公式对象 F004〕会减少"
+      },
+      {
+        "label": "C",
+        "content": "植物细胞失水时胞内结合水与自由水比值增大"
+      },
+      {
+        "label": "D",
+        "content": "干旱缺水不利于植物对营养物质的吸收和运输"
+      }
+    ],
+    "questionImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\生物\\母题库\\images\\2024_new_standard\\q02_2024新课标卷_题干_formula_004.png",
+        "sourcePage": "1",
+        "description": "Word第1页，第2题2024新课标卷_题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      }
+    ],
+    "correctAnswer": "A",
+    "standardAnalysis": "【分析】干旱缺水条件下气孔开度减小，植物吸收的二氧化碳会减少，植物的光合速率会降低，同时植物体内水分含量减少，各种需要水分参与的生理反应都会减弱，植物根细胞的吸水能力增强，植物缺水主要是自由水大量失去。\n【详解】A、叶片萎蔫时，叶片中的脱落酸(ABA)含量会增加，达到一定程度叶片可能会脱落，A错误；\nB、干旱缺水时，植物气孔开度减小，吸收的二氧化碳会减少，植物的光合速率会降低，B正确；\nC、植物细胞失水时主要失去自由水，自由水含量下降，结合水与自由水比值会增大，C正确；\nD、缺水会影响植物体内各种需要水分参与的生理反应，植物对营养物质的吸收和运输往往需要水分参与，缺水不利于该过程，D正确。\n故选A。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "稳态与环境>植物生命活动调节>气孔与水分代谢"
+    ],
+    "difficultyLevel": "medium",
+    "difficultyReason": "需要提取题干或图表信息，并结合气孔与水分代谢完成两步左右的判断或计算。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\理综\\新增\\2024年高考新课标理综真题（解析版）.docx",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\理综\\新增\\2024年高考新课标理综真题（解析版）.docx"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "生物",
+    "year": 2024,
+    "region": "全国",
+    "paperName": "2024年高考真题——理综（新课标卷）",
+    "questionNumber": "4",
+    "questionType": "单选题",
+    "content": "采用稻田养蟹的生态农业模式既可提高水稻产量又可收获螃蟹。下列叙述错误的是（ ）",
+    "options": [
+      {
+        "label": "A",
+        "content": "该模式中水稻属于第一营养级"
+      },
+      {
+        "label": "B",
+        "content": "该模式中水稻和螃蟹处于相同生态位"
+      },
+      {
+        "label": "C",
+        "content": "该模式可促进水稻对二氧化碳的吸收"
+      },
+      {
+        "label": "D",
+        "content": "该模式中碳循环在无机环境和生物间进行"
+      }
+    ],
+    "questionImages": [],
+    "correctAnswer": "B",
+    "standardAnalysis": "【分析】稻田养蟹的模式中蟹能清除稻田杂草，吃掉部分害虫，其排泄物还能改善稻田土壤状况，促进水稻生长，提高水稻的品质;水稻则为蟹生长提供了丰富的天然饵料和良好的栖息环境。“稻蟹共生”为充分利用人工新建的农田生态系统。\n【详解】A、在稻田养蟹的生态农业模式中，水稻属于生产者，属于第一营养级，A正确；\nB、这个模式中，水稻和螃蟹处于不同的生态位，因为它们消耗不同的资源。水稻是水生植物，吸收水分和矿物质，而螃蟹是水生动物，以植物残渣和小型水生动物为食，B错误；\nC、这种模式确实可以促进水稻对二氧化碳的吸收，因为螃蟹在稻田中活动可以改善土壤通气状况，有利于水稻根系呼吸作用，进而促进二氧化碳的吸收，C正确；\nD、碳循环在稻田生态系统中包括无机环境和生物两个部分。水稻通过光合作用将无机碳（二氧化碳）转化为有机物，螃蟹则通过呼吸作用将有机物中的碳以二氧化碳的形式释放回大气中，从而完成了碳在生态系统中的循环，D正确。\n故选B。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "稳态与环境>生态系统>生态农业"
+    ],
+    "difficultyLevel": "easy",
+    "difficultyReason": "考查生态农业的直接识记或单步判断，条件明确，运算与推理量较小。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\理综\\新增\\2024年高考新课标理综真题（解析版）.docx",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\理综\\新增\\2024年高考新课标理综真题（解析版）.docx"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "生物",
+    "year": 2024,
+    "region": "全国",
+    "paperName": "2024年高考真题——理综（新课标卷）",
+    "questionNumber": "5",
+    "questionType": "单选题",
+    "content": "某种二倍体植物的P₁和P₂植株杂交得F₁，F₁自交得F₂。对个体的DNA进行PCR检测，产物的电泳结果如图所示，其中①～⑧为部分F₂个体，上部2条带是一对等位基因的扩增产物，下部2条带是另一对等位基因的扩增产物，这2对等位基因位于非同源染色体上。下列叙述错误的是（ ）\n〔图片对象 I006〕",
+    "options": [
+      {
+        "label": "A",
+        "content": "①②个体均为杂合体，F₂中③所占的比例大于⑤"
+      },
+      {
+        "label": "B",
+        "content": "还有一种F₂个体的PCR产物电泳结果有3条带"
+      },
+      {
+        "label": "C",
+        "content": "③和⑦杂交子代的PCR产物电泳结果与②⑧电泳结果相同"
+      },
+      {
+        "label": "D",
+        "content": "①自交子代的PCR产物电泳结果与④电泳结果相同的占〔公式对象 F008〕"
+      }
+    ],
+    "questionImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\生物\\母题库\\images\\2024_new_standard\\q05_2024新课标卷_题干_image_006.png",
+        "sourcePage": "3",
+        "description": "Word第3页，第5题2024新课标卷_题干中的图片对象"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\生物\\母题库\\images\\2024_new_standard\\q05_2024新课标卷_题干_formula_008.png",
+        "sourcePage": "3",
+        "description": "Word第3页，第5题2024新课标卷_题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      }
+    ],
+    "correctAnswer": "D",
+    "standardAnalysis": "【分析】基因自由组合定律的实质是：位于非同源染色体上的非等位基因的分离或自由组合是互不干扰的；在减数分裂过程中，同源染色体上的等位基因彼此分离的同时，非同源染色体上的非等位基因自由组合。\n【详解】A、由题可知，这2对等位基因位于非同源染色体上，假设A/a为上部两条带的等位基因，B/b为下部两条带的等位基因，由电泳图可知P₁为AAbb，P₂为aaBB，F₁为AaBb，F₂中①AaBB②Aabb都为杂合子，③AABb占F₂的比例为〔公式对象 F009〕，⑤AABB占F₂的比例为〔公式对象 F010〕，A正确；\nB、电泳图中的F₂的基因型依次为：AaBB、Aabb、AABb、aaBB、AABB、AAbb、aabb、AaBb，未出现的基因型为aaBb，其个体PCR产物电泳结果有3条带，B正确；\nC、③AABb和⑦aabb杂交后代为Aabb、 AaBb，其PCR产物电泳结果与②⑧电泳结果相同，C正确；\nD、①AaBB自交子代为，AABB（〔公式对象 F011〕）、AaBB（〔公式对象 F012〕）、aaBB（〔公式对象 F013〕），其PCR产物电泳结果与④aaBB电泳结果相同的占〔公式对象 F014〕，D错误。\n故选D。",
+    "analysisImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\生物\\母题库\\images\\2024_new_standard\\q05_2024新课标卷_答案解析_formula_009.png",
+        "sourcePage": "4",
+        "description": "Word第4页，第5题2024新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\生物\\母题库\\images\\2024_new_standard\\q05_2024新课标卷_答案解析_formula_010.png",
+        "sourcePage": "4",
+        "description": "Word第4页，第5题2024新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\生物\\母题库\\images\\2024_new_standard\\q05_2024新课标卷_答案解析_formula_011.png",
+        "sourcePage": "4",
+        "description": "Word第4页，第5题2024新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\生物\\母题库\\images\\2024_new_standard\\q05_2024新课标卷_答案解析_formula_012.png",
+        "sourcePage": "4",
+        "description": "Word第4页，第5题2024新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\生物\\母题库\\images\\2024_new_standard\\q05_2024新课标卷_答案解析_formula_013.png",
+        "sourcePage": "4",
+        "description": "Word第4页，第5题2024新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\生物\\母题库\\images\\2024_new_standard\\q05_2024新课标卷_答案解析_formula_014.png",
+        "sourcePage": "4",
+        "description": "Word第4页，第5题2024新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      }
+    ],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "遗传与进化>遗传规律>PCR电泳与自由组合"
+    ],
+    "difficultyLevel": "hard",
+    "difficultyReason": "需要综合多个条件，围绕PCR电泳与自由组合进行多环节推理、定量计算或实验分析。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\理综\\新增\\2024年高考新课标理综真题（解析版）.docx",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\理综\\新增\\2024年高考新课标理综真题（解析版）.docx"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "生物",
+    "year": 2024,
+    "region": "全国",
+    "paperName": "2024年高考真题——理综（新课标卷）",
+    "questionNumber": "6",
+    "questionType": "单选题",
+    "content": "用一定量的液体培养基培养某种细菌，活细菌数随时间的变化趋势如图所示，其中Ⅰ～Ⅳ表示细菌种群增长的4个时期。下列叙述错误的是（ ）\n〔图片对象 I015〕",
+    "options": [
+      {
+        "label": "A",
+        "content": "培养基中的细菌不能通过有丝分裂进行增殖"
+      },
+      {
+        "label": "B",
+        "content": "Ⅱ期细菌数量增长快，存在“J”形增长阶段"
+      },
+      {
+        "label": "C",
+        "content": "Ⅲ期细菌没有增殖和死亡，总数保持相对稳定"
+      },
+      {
+        "label": "D",
+        "content": "Ⅳ期细菌数量下降的主要原因有营养物质匮乏"
+      }
+    ],
+    "questionImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\生物\\母题库\\images\\2024_new_standard\\q06_2024新课标卷_题干_image_015.png",
+        "sourcePage": "4",
+        "description": "Word第4页，第6题2024新课标卷_题干中的图片对象"
+      }
+    ],
+    "correctAnswer": "C",
+    "standardAnalysis": "【分析】分析题图：细菌种群增长开始时呈现S曲线，达到K值后，由于营养物质消耗、代谢产物积累，种群数量逐渐下降。\n【详解】A、有丝分裂是真核细胞的增殖方式，细菌是原核细胞，进行二分裂，所以培养基中的细菌不能通过有丝分裂进行增殖，A正确；\nB、Ⅱ期由于资源充足，细菌经过一段的调整适应，种群增长可能会短暂出现“J”形的增长，B正确；\nC、Ⅲ期细菌的增殖速率和死亡速率基本相等，总数保持相对稳定，C错误；\nD、Ⅳ期培养基中营养物质含量减少和代谢产物积累，细菌种群数量会下降，D正确。\n故选C。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "生物技术实践>微生物培养>细菌种群增长曲线"
+    ],
+    "difficultyLevel": "medium",
+    "difficultyReason": "需要提取题干或图表信息，并结合细菌种群增长曲线完成两步左右的判断或计算。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\理综\\新增\\2024年高考新课标理综真题（解析版）.docx",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\理综\\新增\\2024年高考新课标理综真题（解析版）.docx"
+    },
+    "reviewStatus": "待审核"
+  }
+]

@@ -1,0 +1,188 @@
+{
+  "batch": [
+    "2024新课标卷"
+  ],
+  "addedPapers": [
+    {
+      "paper": "2024新课标卷",
+      "paperName": "2024年高考真题——理综（新课标卷）",
+      "sourceFile": "E:\\BISHE2026\\题库\\理综\\新增\\2024年高考新课标理综真题（解析版）.docx",
+      "sourceSha256Before": "9a759c062fbc684888ea6a1e9359da5af4f1ec89f08e565f488b6b912d8fb803",
+      "sourceSha256After": "9a759c062fbc684888ea6a1e9359da5af4f1ec89f08e565f488b6b912d8fb803",
+      "sourceUnchanged": true
+    }
+  ],
+  "method": {
+    "sourcePriority": "高质量Word解析版",
+    "compatibilityStep": "Word只读生成临时旧格式兼容副本，再保存为DOCX结构副本；现有Word解析模块保持不变。",
+    "parserFlowModified": false,
+    "dataModelModified": false,
+    "databaseConnected": false,
+    "formulaPolicy": "公式无法可靠文本化时保留对象标记和预览图片，不猜测。"
+  },
+  "newQuestions": {
+    "bySubject": {
+      "物理": 13,
+      "化学": 11,
+      "生物": 11
+    },
+    "total": 35
+  },
+  "objects": {
+    "wordObjects": 470,
+    "formulaObjects": 399,
+    "pictureObjects": 56,
+    "restoredGlyphObjects": 15,
+    "usedFormulaObjects": 399,
+    "usedPictureObjects": 53,
+    "unusedDecorativePictureObjects": 3,
+    "extractedPreviewImages": 452,
+    "bySubject": {
+      "物理": {
+        "questionFormulaObjects": 46,
+        "analysisFormulaObjects": 84,
+        "questionPictureObjects": 13,
+        "analysisPictureObjects": 1,
+        "questionImages": 59,
+        "analysisImages": 85
+      },
+      "化学": {
+        "questionFormulaObjects": 60,
+        "analysisFormulaObjects": 194,
+        "questionPictureObjects": 13,
+        "analysisPictureObjects": 22,
+        "questionImages": 73,
+        "analysisImages": 216
+      },
+      "生物": {
+        "questionFormulaObjects": 9,
+        "analysisFormulaObjects": 6,
+        "questionPictureObjects": 4,
+        "analysisPictureObjects": 0,
+        "questionImages": 13,
+        "analysisImages": 6
+      }
+    }
+  },
+  "quality": {
+    "questionNumberMissing": 0,
+    "coreContentMissing": 0,
+    "answerMissing": 0,
+    "analysisMissing": 0,
+    "imagePathMissing": 0,
+    "questionNumberMismatch": 0,
+    "answerAnalysisMismatch": 0,
+    "objectImageMismatch": 0,
+    "warnings": [],
+    "visualPagesChecked": [
+      2,
+      7,
+      15,
+      28,
+      36
+    ],
+    "visualResult": "关键页面未见裁切、重叠；公式、结构式和题图可见。"
+  },
+  "masterBefore": {
+    "物理": {
+      "questions": 27,
+      "sha256": "1b196f6c65db84dd62d5ca83f157f0330d070d2f763c6d2d1512900822aa9fc9"
+    },
+    "化学": {
+      "questions": 23,
+      "sha256": "cd0ab043b785bd9b6dbc07f486f5b66a870d4a852486527035b7783b15916703"
+    },
+    "生物": {
+      "questions": 23,
+      "sha256": "41ebe30a0b42e5b78947f0cbf92fd221674ce3b254205e870c603d7c42125592"
+    }
+  },
+  "masterAfter": {
+    "物理": {
+      "questions": 40,
+      "sha256": "cec106960c6b1f4dd4762728ace2e933bf94e37124c1bf5927df843e01d10c1e",
+      "validation": {
+        "questions": 40,
+        "byPaper": {
+          "2023新课标卷": 13,
+          "2023全国甲卷": 14
+        },
+        "byType": {
+          "单选题": 15,
+          "多选题": 9,
+          "实验填空题": 6,
+          "解答题": 10
+        },
+        "questionImages": 142,
+        "analysisImages": 263,
+        "formulaAndPictureMarkers": 405,
+        "imageRecords": 405,
+        "missingContent": 0,
+        "missingAnswer": 0,
+        "missingAnalysis": 0,
+        "pendingReview": 40,
+        "imagePathsValid": true
+      }
+    },
+    "化学": {
+      "questions": 34,
+      "sha256": "08904054d192048c3c072a55fa720f51a5b5df1fc32ff2de6e46274b67404355",
+      "validation": {
+        "questions": 34,
+        "byPaper": {
+          "2023新课标卷": 11,
+          "2023全国甲卷": 12
+        },
+        "byType": {
+          "单选题": 21,
+          "多选题": 0,
+          "实验填空题": 0,
+          "解答题": 13
+        },
+        "questionImages": 320,
+        "analysisImages": 506,
+        "formulaAndPictureMarkers": 826,
+        "imageRecords": 826,
+        "missingContent": 0,
+        "missingAnswer": 0,
+        "missingAnalysis": 0,
+        "pendingReview": 34,
+        "imagePathsValid": true
+      }
+    },
+    "生物": {
+      "questions": 34,
+      "sha256": "2d02dbd3ebdb1929925da4329675b93e06301af9e8df968db836550af3d74677",
+      "validation": {
+        "questions": 34,
+        "byPaper": {
+          "2023新课标卷": 11,
+          "2023全国甲卷": 12
+        },
+        "byType": {
+          "单选题": 18,
+          "多选题": 0,
+          "实验填空题": 0,
+          "解答题": 16
+        },
+        "questionImages": 23,
+        "analysisImages": 6,
+        "formulaAndPictureMarkers": 29,
+        "imageRecords": 29,
+        "missingContent": 0,
+        "missingAnswer": 0,
+        "missingAnalysis": 0,
+        "pendingReview": 34,
+        "imagePathsValid": true
+      }
+    }
+  },
+  "outputs": {
+    "物理": "E:\\BISHE2026\\题库\\物理\\母题库\\physics_master.json",
+    "化学": "E:\\BISHE2026\\题库\\化学\\母题库\\chemistry_master.json",
+    "生物": "E:\\BISHE2026\\题库\\生物\\母题库\\biology_master.json"
+  },
+  "candidateAudit": {
+    "2022全国甲卷": "未纳入本批：答案解析为卷末集中式排版，不满足现有逐题答案解析结构；为遵守不修改解析流程，本批不强行转换。"
+  }
+}

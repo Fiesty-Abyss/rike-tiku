@@ -1,0 +1,2646 @@
+[
+  {
+    "subject": "物理",
+    "year": 2021,
+    "region": "浙江",
+    "paperName": "2021年浙江省物理选考（6月）物理试卷",
+    "questionNumber": "12",
+    "questionType": "单选题",
+    "content": "用激光笔照射透明塑料制成的光盘边缘时观察到的现象如图所示。入射点 O和两出射点 P、Q 恰好位于光盘边缘等间隔的三点处，空气中的四条细光束分别为入射光束 a、反射光束 b、出射光束 c和 d、已知光束 a和 b 间的夹角为 90°，则（）",
+    "options": [
+      {
+        "label": "A",
+        "content": "光盘材的折射率 2n ="
+      },
+      {
+        "label": "B",
+        "content": "光在光盘内的速度为真空中光速的三分之二"
+      },
+      {
+        "label": "C",
+        "content": "光束 b、c和 d的强度之和等于光束 a的强度"
+      },
+      {
+        "label": "D",
+        "content": "光束 c的强度小于 O点处折射光束 OP 的强度"
+      }
+    ],
+    "questionImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\解析结果\\images\\物理_2021_浙江_2021年浙江省物理选考_6月_物理试卷_q12_p03_01.png",
+        "sourcePage": "3",
+        "description": "2021年浙江省物理选考（6月）物理试卷原卷第3页，第12题题目区域内插图"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\解析结果\\images\\物理_2021_浙江_2021年浙江省物理选考_6月_物理试卷_q12_p03_02.png",
+        "sourcePage": "3",
+        "description": "2021年浙江省物理选考（6月）物理试卷原卷第3页，第12题题目区域内插图"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\解析结果\\images\\物理_2021_浙江_2021年浙江省物理选考_6月_物理试卷_q12_p03_03.png",
+        "sourcePage": "3",
+        "description": "2021年浙江省物理选考（6月）物理试卷原卷第3页，第12题题目区域内插图"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\解析结果\\images\\物理_2021_浙江_2021年浙江省物理选考_6月_物理试卷_q12_p04_04.png",
+        "sourcePage": "4",
+        "description": "2021年浙江省物理选考（6月）物理试卷原卷第4页，第12题题目区域内插图"
+      }
+    ],
+    "correctAnswer": "D",
+    "standardAnalysis": "A．如图所示由几何关系可得入射角为 45i = o 折射角为 30r = o 根据折射定律有 2 sin 45 2 21sin 30 2 n = = = o o 所以 A错误； B．根据 2 2 cv c n= = 所以 B错误； C．光束在 b、c和 d的强度之和小于光束 a的强度，因为在 Q处光还有反射光线，所以 C错误； D．光束 c的强度与反射光线 PQ 强度之和等于折身光线 OP的强度，所以 D正确；故选 D。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "光学",
+      "光的传播与波动性"
+    ],
+    "difficultyLevel": "medium",
+    "difficultyReason": "需要结合题目信息完成两步以上判断。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\物理\\2021年高考试卷\\2021年浙江省物理选考（6月）物理试卷（原卷版）.pdf",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\物理\\2021年高考试卷\\2021年浙江省物理选考（6月）物理试卷（解析版）.pdf"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2021,
+    "region": "山东",
+    "paperName": "2021年高考真题【品优教学】物理（山东卷）",
+    "questionNumber": "7",
+    "questionType": "单选题",
+    "content": "用平行单色光垂直照射一层透明薄膜，观察到如图所示明暗相间的干涉条纹。下列关于该区域薄膜厚度 d 随坐标 x的变化图像，可能正确的是（）",
+    "options": [
+      {
+        "label": "A",
+        "content": ""
+      },
+      {
+        "label": "B",
+        "content": ""
+      },
+      {
+        "label": "C",
+        "content": ""
+      },
+      {
+        "label": "D",
+        "content": ""
+      }
+    ],
+    "questionImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\解析结果\\images\\物理_2021_山东_2021年高考真题_品优教学_物理_山东卷_q07_p04_01.png",
+        "sourcePage": "4",
+        "description": "2021年高考真题【品优教学】物理（山东卷）原卷第4页，第7题题目区域内插图"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\解析结果\\images\\物理_2021_山东_2021年高考真题_品优教学_物理_山东卷_q07_p04_02.png",
+        "sourcePage": "4",
+        "description": "2021年高考真题【品优教学】物理（山东卷）原卷第4页，第7题题目区域内插图"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\解析结果\\images\\物理_2021_山东_2021年高考真题_品优教学_物理_山东卷_q07_p05_03.png",
+        "sourcePage": "5",
+        "description": "2021年高考真题【品优教学】物理（山东卷）原卷第5页，第7题题目区域内插图"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\解析结果\\images\\物理_2021_山东_2021年高考真题_品优教学_物理_山东卷_q07_p05_04.png",
+        "sourcePage": "5",
+        "description": "2021年高考真题【品优教学】物理（山东卷）原卷第5页，第7题题目区域内插图"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\解析结果\\images\\物理_2021_山东_2021年高考真题_品优教学_物理_山东卷_q07_p05_05.png",
+        "sourcePage": "5",
+        "description": "2021年高考真题【品优教学】物理（山东卷）原卷第5页，第7题题目区域内插图"
+      }
+    ],
+    "correctAnswer": "D",
+    "standardAnalysis": "从薄膜的上下表面分别反射的两列光是相干光，其光程差为△x=2d，即光程差为薄膜厚度的 2 倍，当光程差△x=nλ时此处表现为亮条纹，故相邻亮条纹之间的薄膜的厚度差为 1 2 λ，在图中相邻亮条纹（或暗条纹）之间的距离变大，则薄膜层的厚度之间变小，因条纹宽度逐渐变宽，则厚度不是均匀变小。故选 D。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "光学",
+      "光的传播与波动性"
+    ],
+    "difficultyLevel": "easy",
+    "difficultyReason": "主要考查单一基础概念或规律的直接应用。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\物理\\2021年高考试卷\\2021年高考真题【品优教学】物理（山东卷)（原卷版）.pdf",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\物理\\2021年高考试卷\\2021年高考真题【品优教学】物理（山东卷)（含解析版）.pdf"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2020,
+    "region": "全国",
+    "paperName": "2020年全国统一高考物理试卷（新课标ⅰ）",
+    "questionNumber": "15",
+    "questionType": "多选题",
+    "content": "在下列现象中，可以用多普勒效应解释的有",
+    "options": [
+      {
+        "label": "A",
+        "content": "雷雨天看到闪电后，稍过一会儿才能听到雷声"
+      },
+      {
+        "label": "B",
+        "content": "超声波被血管中的血流反射后，探测器接收到的超声波频率发生变化"
+      },
+      {
+        "label": "C",
+        "content": "观察者听到远去的列车发出的汽笛声，音调会变低"
+      },
+      {
+        "label": "D",
+        "content": "同一声源发出的声波，在空气和水中传播的速度不同"
+      },
+      {
+        "label": "E",
+        "content": "天文学上观察到双星（相距较近、均绕它们连线上某点做圆周运动的两颗恒星）光谱随时间的周期性变化"
+      }
+    ],
+    "questionImages": [],
+    "correctAnswer": "BCE",
+    "standardAnalysis": "多普勒效应是由于振源与观察者之间存在着相对运动，使观察者接受到的频率不同于振源频率的现象，据此判断即可。解：A、发生雷电时，人们利用看见闪电与听见雷声的时间间隔来估算自己与雷电发生处之间的距离是通过光速远大于声速，用这个时间间隔乘声速来估算的，故它不属于多普勒效应的应用，故 A 错误； B、医生向人体内发射频率已知的超声波，根据接收到的被血管中的血流反射后的超声波的频率变化，判断血流的速度是否正常也属于声波多普勒效应的应用，故 B 正确； C、根据多普勒效应可知，当波源和观察者间距变小，观察者接收到的频率一定比波源频率高；当波源和观察者距变大，观察者接收到的频率一定比波源频率低，因此观察者听到远去的列车发出的汽笛声，音调会变低，属于多普勒效应，故 C 正确； D、同一声源发出的声波，在空气和水中传播的速度不同，是由于介质折射率不同导致的，与多普勒效应无关，故 D 错误； E、天文学上观察到双星（相距较近、均绕它们连线上某点做圆周运动的两颗恒星）光谱随时间的周期性变化，可通过接收的光频率变化来判定双星运动情况，属于光波的多普勒效应的原理应用，故 E 正确；故选：BCE。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "光学",
+      "光的传播与波动性"
+    ],
+    "difficultyLevel": "medium",
+    "difficultyReason": "需要公式推导、实验数据处理或多个判断步骤。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\物理\\高考物理全国123卷\\2020年全国统一高考物理试卷（新课标ⅰ）（含解析版）.pdf",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\物理\\高考物理全国123卷\\2020年全国统一高考物理试卷（新课标ⅰ）（含解析版）.pdf"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2017,
+    "region": "全国",
+    "paperName": "2017年全国统一高考物理试卷（新课标ⅱ）",
+    "questionNumber": "15",
+    "questionType": "多选题",
+    "content": "在双缝干涉实验中，用绿色激光照射在双缝上，在缝后的屏幕上显示出干涉图样．若要增大干涉图样中两相邻亮条纹的间距，可选用的方法是",
+    "options": [
+      {
+        "label": "A",
+        "content": "改用红色激光"
+      },
+      {
+        "label": "B",
+        "content": "改用蓝色激光"
+      },
+      {
+        "label": "C",
+        "content": "减小双缝间距"
+      },
+      {
+        "label": "D",
+        "content": "将屏幕向远离双缝的位置移动"
+      },
+      {
+        "label": "E",
+        "content": "将光源向远离双缝的位置移动"
+      }
+    ],
+    "questionImages": [],
+    "correctAnswer": "ACD",
+    "standardAnalysis": "根据双缝干涉条纹的间距公式，得出影响条纹间距的因素，从而分析判断． 解：根据双缝干涉条纹间距公式知，增大入射光的波长、减小双缝间距，以及增大屏幕与双缝的距离，可以增大条纹的间距，由于红光的波长大于绿光的波长，可知换用红色激光可以增大条纹间距，故 ACD 正确， BE 错误。故选：ACD。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "光学",
+      "光的传播与波动性"
+    ],
+    "difficultyLevel": "easy",
+    "difficultyReason": "主要考查单一基础概念或规律的直接应用。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\物理\\高考物理全国123卷\\2017年全国统一高考物理试卷（新课标ⅱ）（含解析版）.pdf",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\物理\\高考物理全国123卷\\2017年全国统一高考物理试卷（新课标ⅱ）（含解析版）.pdf"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2013,
+    "region": "全国",
+    "paperName": "2013年全国统一高考物理试卷（大纲版）",
+    "questionNumber": "1",
+    "questionType": "单选题",
+    "content": "（6 分）下列现象中，属于光的衍射现象的是（）",
+    "options": [
+      {
+        "label": "A",
+        "content": "雨后天空出现彩虹"
+      },
+      {
+        "label": "B",
+        "content": "通过一个狭缝观察日光灯可看到彩色条纹"
+      },
+      {
+        "label": "C",
+        "content": "海市蜃楼现象"
+      },
+      {
+        "label": "D",
+        "content": "日光照射在肥皂泡上出现彩色条纹"
+      }
+    ],
+    "questionImages": [],
+    "correctAnswer": "B",
+    "standardAnalysis": "在天空出现彩虹种现象叫做光的色散现象，过一个狭缝观察日光灯可看到彩色条纹，属于单缝衍射，市蜃楼现象属于光的折射，肥皂泡上出现彩色条纹属于光的干涉． 解：A、雨过天晴时，常在天空出现彩虹，这是太阳光通过悬浮在空气中细小的水珠折射而成的，白光经水珠折射以后，分成各种彩色光，这种现象叫做光的色散现象，A 错误； B、通过一个狭缝观察日光灯可看到彩色条纹，属于单缝衍射，B 正确； C、海市蜃楼现象属于光的折射，C 错误； D、日光照射在肥皂泡上出现彩色条纹属于光的干涉，D 正确。故选：B。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "光学",
+      "光的传播与波动性"
+    ],
+    "difficultyLevel": "easy",
+    "difficultyReason": "主要考查单一基础概念或规律的直接应用。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\物理\\高考物理全国123卷\\2013年全国统一高考物理试卷（大纲版）（含解析版）.pdf",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\物理\\高考物理全国123卷\\2013年全国统一高考物理试卷（大纲版）（含解析版）.pdf"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2008,
+    "region": "全国",
+    "paperName": "2008年全国统一高考物理试卷（全国卷ⅱ）",
+    "questionNumber": "2",
+    "questionType": "单选题",
+    "content": "（6 分）一束单色光斜射到一厚平板玻璃的一个表面上，经两次折射后从玻璃板另一个表面射出，出射光线相对于入射光线侧移了一段距离，在下列情况下，出射光线侧移距离最大的是（）",
+    "options": [
+      {
+        "label": "A",
+        "content": "红光以 30°的入射角入射"
+      },
+      {
+        "label": "B",
+        "content": "红光以 45°的入射角入射"
+      },
+      {
+        "label": "C",
+        "content": "紫光以 30°的入射角入射"
+      },
+      {
+        "label": "D",
+        "content": "紫光以 45°的入射角入射"
+      }
+    ],
+    "questionImages": [],
+    "correctAnswer": "D",
+    "standardAnalysis": "作出光路图，根据折射定律结合几何关系求出侧移，从而判断出哪种情况出射光线的侧移距离最大． 解：画出光的两次折射的光路图，由题意知 O2A 为侧移距离△x．根据几何关系有： ① 又有 ② （1）若为同一色光，则 n 相同，则 i增加且 i 比 r增加得快，得知 sin（i r﹣ ）＞ 0 且增加，且增加。故 A、C 错误。（2）若入射角相同，由①②两式可得得知 n增加，△x增加。知 B 错误，D 正确。故选：D。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "光学",
+      "光的传播与波动性"
+    ],
+    "difficultyLevel": "medium",
+    "difficultyReason": "需要结合题目信息完成两步以上判断。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\物理\\高考物理全国123卷\\2008年全国统一高考物理试卷（全国卷ⅱ）（含解析版）.pdf",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\物理\\高考物理全国123卷\\2008年全国统一高考物理试卷（全国卷ⅱ）（含解析版）.pdf"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2021,
+    "region": "浙江",
+    "paperName": "2021年浙江省物理选考（6月）物理试卷",
+    "questionNumber": "2",
+    "questionType": "单选题",
+    "content": "用高速摄影机拍摄的四张照片如图所示，下列说法正确的是（）",
+    "options": [
+      {
+        "label": "A",
+        "content": "研究甲图中猫在地板上行走的速度时，猫可视为质点"
+      },
+      {
+        "label": "B",
+        "content": "研究乙图中水珠形状形成的原因时，旋转球可视为质点"
+      },
+      {
+        "label": "C",
+        "content": "研究丙图中飞翔鸟儿能否停在树桩上时，鸟儿可视为质点"
+      },
+      {
+        "label": "D",
+        "content": "研究丁图中马术运动员和马能否跨越障碍物时，马可视为质点"
+      }
+    ],
+    "questionImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\解析结果\\images\\物理_2021_浙江_2021年浙江省物理选考_6月_物理试卷_q02_p01_01.png",
+        "sourcePage": "1",
+        "description": "2021年浙江省物理选考（6月）物理试卷原卷第1页，第2题题目区域内插图"
+      }
+    ],
+    "correctAnswer": "A",
+    "standardAnalysis": "A．研究甲图中猫在地板上行走的速度时，猫的大小可忽略不计，可将猫看做质点，选项 A正确； B．研究乙图中水珠形状形成的原因时，旋转球的大小和形状不能忽略，旋转球不能看做质点，选项 B错误； C．研究图丙中飞翔鸟儿能否停在树桩上时，鸟儿的大小不能忽略，不能将鸟儿看做质点，选项 C错误； D．研究丁图中马术运动员和马能否跨越障碍物时，马的大小不能忽略不计，不能把马看做质点，选项 D错误。故选 A。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "力学",
+      "机械振动与机械波"
+    ],
+    "difficultyLevel": "easy",
+    "difficultyReason": "主要考查单一基础概念或规律的直接应用。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\物理\\2021年高考试卷\\2021年浙江省物理选考（6月）物理试卷（原卷版）.pdf",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\物理\\2021年高考试卷\\2021年浙江省物理选考（6月）物理试卷（解析版）.pdf"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2021,
+    "region": "全国",
+    "paperName": "2021年高考全国甲卷物理试题",
+    "questionNumber": "5",
+    "questionType": "单选题",
+    "content": "2021年 2月，执行我国火星探测任务的“天问一号”探测器在成功实施三次近火制动后，进入运行周期约为 1.8×105s的椭圆形停泊轨道，轨道与火星表面的最近距离约为 2.8×105m。已知火星半径约为 3.4×106m，火星表面处自由落体的加速度大小约为 3.7m/s2，则“天问一号”的停泊轨道与火星表面的最远距离约为（）",
+    "options": [
+      {
+        "label": "A",
+        "content": "6×105m"
+      },
+      {
+        "label": "B",
+        "content": "6×106m"
+      },
+      {
+        "label": "C",
+        "content": "6×107m"
+      },
+      {
+        "label": "D",
+        "content": "6×108m"
+      }
+    ],
+    "questionImages": [],
+    "correctAnswer": "C",
+    "standardAnalysis": "忽略火星自转则 2 GMm mgR = ① 可知 2GM gR= 设与为 1.8×105s的椭圆形停泊轨道周期相同的圆形轨道半径为 r，由万引力提供向心力可知 2 2 2 4GMm m rr T p= ② 设近火点到火星中心为 1 1R R d= + ③ 设远火点到火星中心为 2 2R R d= + ④ 由开普勒第三定律可知 31 2 2 2 ( )3 2 R R r T T + = ⑤ 由以上分析可得 7 2 6 10 md » × 故选 C。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "力学",
+      "万有引力与天体运动"
+    ],
+    "difficultyLevel": "medium",
+    "difficultyReason": "需要结合两个相关规律或逐项完成多步判断。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\物理\\2021年高考试卷\\2021年高考全国甲卷物理试题（原卷版）A3.pdf",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\物理\\2021年高考试卷\\2021年高考全国甲卷物理试题（解析版）A3.pdf"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2021,
+    "region": "山东",
+    "paperName": "2021年高考真题【品优教学】物理（山东卷）",
+    "questionNumber": "5",
+    "questionType": "单选题",
+    "content": "从“玉兔”登月到“祝融”探火，我国星际探测事业实现了由地月系到行星际的跨越。已知火星质量约为月球的 9 倍，半径约为月球的 2 倍，“祝融”火星车的质量约为“玉兔” 月球车的 2 倍。在着陆前，“祝融”和“玉兔”都会经历一个由着陆平台支撑的悬停过程。悬停时，“祝融”与“玉兔”所受陆平台的作用力大小之比为（）",
+    "options": [
+      {
+        "label": "A",
+        "content": "9∶1"
+      },
+      {
+        "label": "B",
+        "content": "9∶2"
+      },
+      {
+        "label": "C",
+        "content": "36∶1"
+      },
+      {
+        "label": "D",
+        "content": "72∶1"
+      }
+    ],
+    "questionImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\解析结果\\images\\物理_2021_山东_2021年高考真题_品优教学_物理_山东卷_q05_p03_01.png",
+        "sourcePage": "3",
+        "description": "2021年高考真题【品优教学】物理（山东卷）原卷第3页，第5题题目区域内插图"
+      }
+    ],
+    "correctAnswer": "B",
+    "standardAnalysis": "悬停时所受平台的作用力等于万有引力，根据 2 mMF G R= 可得 2 2 2 9 9= : = 2= 2 2 M m M mF G GF R R ×月祝融祝融火玉兔月玉兔火故选 B。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "力学",
+      "万有引力与天体运动"
+    ],
+    "difficultyLevel": "medium",
+    "difficultyReason": "需要结合两个相关规律或逐项完成多步判断。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\物理\\2021年高考试卷\\2021年高考真题【品优教学】物理（山东卷)（原卷版）.pdf",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\物理\\2021年高考试卷\\2021年高考真题【品优教学】物理（山东卷)（含解析版）.pdf"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2020,
+    "region": "全国",
+    "paperName": "2020年全国统一高考物理试卷（新课标ⅰ）",
+    "questionNumber": "1",
+    "questionType": "单选题",
+    "content": "（6 分）行驶中的汽车如果发生剧烈碰撞，车内的安全气囊会被弹出并瞬间充满气体。若碰撞后汽车的速度在很短时间内减小为零，关于安全气囊在此过程中的作用，下列说法正确的是（）",
+    "options": [
+      {
+        "label": "A",
+        "content": "增加了司机单位面积的受力大小"
+      },
+      {
+        "label": "B",
+        "content": "减少了碰撞前后司机动量的变化量"
+      },
+      {
+        "label": "C",
+        "content": "将司机的动能全部转换成汽车的动能"
+      },
+      {
+        "label": "D",
+        "content": "延长了司机的受力时间并增大了司机的受力面积"
+      }
+    ],
+    "questionImages": [],
+    "correctAnswer": "D",
+    "standardAnalysis": "在碰撞过程中，司机动量的变化量是一定的，都等于△p＝mv，但安全气囊会延长作用时间，增加受力面积；再根据动量定理分析即可。解：ABD、在碰撞过程中，司机的动量的变化量是一定的，但安全气囊会增加作用的时间，根据动量定理 Ft＝△p可知，可以减小司机受到的冲击力 F，同时安全气囊会增大司机的受力面积，则司机单位面积的受力大小减小，故 AB 错误，D 正确。 C、安全气囊只是延长了作用时间，减小了司机的受力，将司机的动能转换成气囊的弹性势能，故 C 错误。故选：D。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "力学",
+      "动量与能量综合"
+    ],
+    "difficultyLevel": "medium",
+    "difficultyReason": "需要结合题目信息完成两步以上判断。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\物理\\高考物理全国123卷\\2020年全国统一高考物理试卷（新课标ⅰ）（含解析版）.pdf",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\物理\\高考物理全国123卷\\2020年全国统一高考物理试卷（新课标ⅰ）（含解析版）.pdf"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2018,
+    "region": "全国",
+    "paperName": "2018年全国统一高考物理试卷（新课标ⅲ）",
+    "questionNumber": "2",
+    "questionType": "单选题",
+    "content": "（6 分）为了探测引力波， “天琴计划”预计发射地球卫星 P，其轨道半径约为地球半径的 16 倍；另一地球卫星 Q 的轨道半径约为地球半径的 4 倍。P 与 Q 的周期之比约为（）",
+    "options": [
+      {
+        "label": "A",
+        "content": "2：1"
+      },
+      {
+        "label": "B",
+        "content": "4：1"
+      },
+      {
+        "label": "C",
+        "content": "8：1"
+      },
+      {
+        "label": "D",
+        "content": "16：1"
+      }
+    ],
+    "questionImages": [],
+    "correctAnswer": "C",
+    "standardAnalysis": "由题得到卫星 P 与 Q 的轨道半径之比，由开普勒第三定律求周期之比。解：根据题意可得 P 与 Q 的轨道半径之比为： rP：rQ=4：1 根据开普勒第三定律有： =k 得： = 可得周期之比为： TP：TQ=8：1 故 C 正确，ABD 错误。故选：C。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "力学",
+      "万有引力与天体运动"
+    ],
+    "difficultyLevel": "medium",
+    "difficultyReason": "需要结合两个相关规律或逐项完成多步判断。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\物理\\高考物理全国123卷\\2018年全国统一高考物理试卷（新课标ⅲ）（含解析版）.pdf",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\物理\\高考物理全国123卷\\2018年全国统一高考物理试卷（新课标ⅲ）（含解析版）.pdf"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2016,
+    "region": "全国",
+    "paperName": "2016年全国统一高考物理试卷（新课标ⅲ）",
+    "questionNumber": "1",
+    "questionType": "单选题",
+    "content": "（6 分）关于行星运动的规律，下列说法符合史实的是（）",
+    "options": [
+      {
+        "label": "A",
+        "content": "开普勒在牛顿定律的基础上，导出了行星运动的规律"
+      },
+      {
+        "label": "B",
+        "content": "开普勒在天文观测数据的基础上，总结出了行星运动的规律"
+      },
+      {
+        "label": "C",
+        "content": "开普勒总结出了行星运动的规律，找出了行星按照这些规律运动的原因"
+      },
+      {
+        "label": "D",
+        "content": "开普勒总结出了行星运动的规律，发现了万有引力定律"
+      }
+    ],
+    "questionImages": [],
+    "correctAnswer": "B",
+    "standardAnalysis": "根据物理学史和常识解答，记住著名物理学家的主要贡献即可． 解：开普勒在他的导师第谷天文观测数据的基础上，总结出了行星运动的规律，但并未找出了行星按照这些规律运动的原因；牛顿在开普勒行星运动定律的基础上推导出万有引力定律，故 ACD错误，B 正确。故选：B。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "力学",
+      "万有引力与天体运动"
+    ],
+    "difficultyLevel": "medium",
+    "difficultyReason": "需要结合两个相关规律或逐项完成多步判断。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\物理\\高考物理全国123卷\\2016年全国统一高考物理试卷（新课标ⅲ）（含解析版）.pdf",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\物理\\高考物理全国123卷\\2016年全国统一高考物理试卷（新课标ⅲ）（含解析版）.pdf"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2014,
+    "region": "全国",
+    "paperName": "2014年全国统一高考物理试卷（新课标ⅰ）",
+    "questionNumber": "15",
+    "questionType": "多选题",
+    "content": "图（a）为一列简谐横波在 t=2s 时的波形图，图（ b）为媒质中平衡位置在 x=1.5m 处的质点的振动图象，P 是平衡位置为 x=2m 的质点，下列说法正确的是",
+    "options": [
+      {
+        "label": "A",
+        "content": "波速为 0.5m/s"
+      },
+      {
+        "label": "B",
+        "content": "波的传播方向向右"
+      },
+      {
+        "label": "C",
+        "content": "0～2s 时间内，P运动的路程为 8cm"
+      },
+      {
+        "label": "D",
+        "content": "0～2s 时间内，P 向 y轴正方向运动"
+      },
+      {
+        "label": "E",
+        "content": "当 t=7s 时，P恰好回到平衡位置"
+      }
+    ],
+    "questionImages": [],
+    "correctAnswer": "ACE",
+    "standardAnalysis": "先根据质点的振动图象，判断波的传播方向，再根据波长和周期求波速据波形成的条件和特点分析各质点的振动情况。解：A、由图（a）可知该简谐横波波长为 2m，由图（b）知周期为 4s，则波速为 v= = =0.5m/s，故 A 正确； B、根据图（b）的振动图象可知，在 x=1.5m 处的质点在 t=2s 时振动方向向下，所以该波向左传播，故 B 错误； C、由于t=2s 时，质点 P 在波谷，且 2s=0.5T，所以质点 P 的路程为 2A=8cm，故 C 正确； D、由于该波向左传播，由图（a）可知 t=2s 时，质点 P 已经在波谷，所以可知 0 ～2s 时间内，P 向 y轴负方向运动，故 D 错误； E、当 t=7s 时，△t=5s=1 ，P恰好回平衡位置，故 E 正确。故选：ACE。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "力学",
+      "机械振动与机械波"
+    ],
+    "difficultyLevel": "medium",
+    "difficultyReason": "需要公式推导、实验数据处理或多个判断步骤。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\物理\\高考物理全国123卷\\2014年全国统一高考物理试卷（新课标ⅰ）（含解析版）.pdf",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\物理\\高考物理全国123卷\\2014年全国统一高考物理试卷（新课标ⅰ）（含解析版）.pdf"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2013,
+    "region": "全国",
+    "paperName": "2013年全国统一高考物理试卷（大纲版）",
+    "questionNumber": "6",
+    "questionType": "多选题",
+    "content": "（6 分）将甲乙两小球先后以同样的速度在距地面不同高度处竖直向上抛出，抛出时间间隔 2s，它们运动的图象分别如直线甲乙所示。则",
+    "options": [
+      {
+        "label": "A",
+        "content": "t=2s 时，两球的高度相差一定为 40m"
+      },
+      {
+        "label": "B",
+        "content": "t=4s 时，两球相对于各自的抛出点的位移相等"
+      },
+      {
+        "label": "C",
+        "content": "两球从抛出至落到地面所用的时间间隔相等第 2 页（共 22 页）"
+      },
+      {
+        "label": "D",
+        "content": "甲球从抛出至到达最高点的时间间隔与乙球相等"
+      }
+    ],
+    "questionImages": [],
+    "correctAnswer": "BD",
+    "standardAnalysis": "速度时间图象与时间轴所围的“面积”表示质点的位移，但不能反映物体初始的位置．由图直接读出物体运动的时间． 解：A、根据速度时间图象与时间轴所围的“面积”表示质点的位移，知 t=2s 时，甲球通过的位移为 x甲= ×（30+10）×2m=40m，乙的位移为零，两球位移之差等于 40m，但两球初始的高度未知，故 t=2s 时两球的高度相差不一定为 40m。故 A 错误。 B、t=4s 时，甲球相对于抛出点的位移为 ×30×3﹣ ×10×1=40m，乙球相对于抛出点的位移为 ×（30+10）×2m=40m，故两球相对于各自的抛出点的位移相等。故 B 正确。 C、两球从不同的高度以同样的速度竖直向上抛出，根据竖直上抛运动的规律 x= h=v﹣ 0t﹣ ，h 是抛出点距地面的高度，可知两球从抛出至落到地面所用的时间间隔 t 不相等。故 C 错误。 D、由图知，甲球从抛出至到达最高点的时间间隔与乙球相等，都是 3s。故 D 正确。故选：BD。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "力学",
+      "机械振动与机械波"
+    ],
+    "difficultyLevel": "medium",
+    "difficultyReason": "需要公式推导、实验数据处理或多个判断步骤。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\物理\\高考物理全国123卷\\2013年全国统一高考物理试卷（大纲版）（含解析版）.pdf",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\物理\\高考物理全国123卷\\2013年全国统一高考物理试卷（大纲版）（含解析版）.pdf"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2012,
+    "region": "全国",
+    "paperName": "2012年全国统一高考物理试卷（大纲版）",
+    "questionNumber": "7",
+    "questionType": "多选题",
+    "content": "（6 分）一列简谐横波沿 x 轴正方向传播，图（a）是 t=0 时刻的波形图，图（b）和图（c）分别是 x 轴上某两处质点的振动图象．由此可知，这两质点平衡位置之间的距离可能是",
+    "options": [
+      {
+        "label": "A",
+        "content": "m"
+      },
+      {
+        "label": "B",
+        "content": "m"
+      },
+      {
+        "label": "C",
+        "content": "1m"
+      },
+      {
+        "label": "D",
+        "content": "m"
+      }
+    ],
+    "questionImages": [],
+    "correctAnswer": "BD",
+    "standardAnalysis": "熟练应用由质点振动关系判断质点间距公式，把振动图象和波动图象联系起来． 解：图（b）所示质点在 t=0 时在正向最大位移处，图（c）所示质点在 t=0 时，x= 0.05﹣ （振幅的一半），运动方向沿 y 轴负方向，结合波形图找到对应的点，若图（ c ）所示质点在图（ b ）所示质点的左侧有，当 n=0 时，B 正确；若图（c）所示质点在图（b）所示质点的右侧有，当 n=0 时，D 正确。故选：BD。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "力学",
+      "机械振动与机械波"
+    ],
+    "difficultyLevel": "easy",
+    "difficultyReason": "主要考查单一基础概念或规律的直接应用。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\物理\\高考物理全国123卷\\2012年全国统一高考物理试卷（大纲版）（含解析版）.pdf",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\物理\\高考物理全国123卷\\2012年全国统一高考物理试卷（大纲版）（含解析版）.pdf"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2011,
+    "region": "全国",
+    "paperName": "2011年全国统一高考物理试卷（新课标）",
+    "questionNumber": "2",
+    "questionType": "多选题",
+    "content": "（6 分）质点开始时做匀速直线运动，从某时刻起受到一恒力作用．此后，该质点的动能可能",
+    "options": [
+      {
+        "label": "A",
+        "content": "一直增大"
+      },
+      {
+        "label": "B",
+        "content": "先逐渐减小至零，再逐渐增大"
+      },
+      {
+        "label": "C",
+        "content": "先逐渐增大至某一最大值，再逐渐减小"
+      },
+      {
+        "label": "D",
+        "content": "先逐渐减小至某一非零的最小值，再逐渐增大"
+      }
+    ],
+    "questionImages": [],
+    "correctAnswer": "ABD",
+    "standardAnalysis": "一质点开始时做匀速直线运动，说明质点所受合力为 0，从某时刻起受到一恒力作用，这个恒力就是质点的合力． 根据这个恒力与速度的方向关系确定质点动能的变化情况． 解：A、如果恒力与运动方向相同，那么质点做匀加速运动，动能一直变大，故 A 正确。 B、如果恒力与运动方向相反，那么质点先做匀减速运动，速度减到 0，质点在恒力作用下沿着恒力方向做匀加速运动，动能再逐渐增大。故 B 正确。 C、如果恒力方向与原来运动方向不在同一直线上，那么将速度沿恒力方向所在直线和垂直恒力方向分解，其中恒力与一个速度方向相同，这个方向速度就会增加，另一个方向速度不变，那么合速度就会增加，不会减小。故 C 错误。 D、如果恒力方向与原来运动方向不在同一直线上，那么将速度沿恒力方向所在直线和垂直恒力方向分解，其中恒力与一个速度方向相反，这个方向速度就会减小，另一个方向速度不变，那么合速度就会减小，当恒力方向速度减到 0 时，另一个方向还有速度，所以速度到最小值时不为 0，然后恒力方向速度又会增加，合速度又在增加，即动能增大。故 D 正确。故选：ABD。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "力学",
+      "机械振动与机械波"
+    ],
+    "difficultyLevel": "medium",
+    "difficultyReason": "需要公式推导、实验数据处理或多个判断步骤。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\物理\\高考物理全国123卷\\2011年全国统一高考物理试卷（新课标）（含解析版）.pdf",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\物理\\高考物理全国123卷\\2011年全国统一高考物理试卷（新课标）（含解析版）.pdf"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2009,
+    "region": "全国",
+    "paperName": "2009年全国统一高考物理试卷（全国卷ⅰ）",
+    "questionNumber": "8",
+    "questionType": "多选题",
+    "content": "（6 分）质量为 M 的物块以速度 V 运动，与质量为 m 的静止物块发生正撞，碰撞后两者的动量正好相等，两者质量之比可能为",
+    "options": [
+      {
+        "label": "A",
+        "content": "2"
+      },
+      {
+        "label": "B",
+        "content": "3"
+      },
+      {
+        "label": "C",
+        "content": "4"
+      },
+      {
+        "label": "D",
+        "content": "5 二、解答题（共 5 小题，满分 72 分）"
+      }
+    ],
+    "questionImages": [],
+    "correctAnswer": "AB",
+    "standardAnalysis": "根据动量守恒定律，以及在碰撞的过程中动能不增加，通过这两个关系判断两个物体的质量关系． 解：根据动量守恒和能量守恒得，设碰撞后两者的动量都为 P，则总动量为 2P，根据动量和动能的关系有：P2=2mEK，根据能量的关系得，由于动能不增加，则有：，得 1≤ ，故 A、B 正确，C、D 错误。故选：AB。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "力学",
+      "动量与能量综合"
+    ],
+    "difficultyLevel": "medium",
+    "difficultyReason": "需要结合题目信息完成两步以上判断。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\物理\\高考物理全国123卷\\2009年全国统一高考物理试卷（全国卷ⅰ）（含解析版）.pdf",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\物理\\高考物理全国123卷\\2009年全国统一高考物理试卷（全国卷ⅰ）（含解析版）.pdf"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2009,
+    "region": "全国",
+    "paperName": "2009年全国统一高考物理试卷（全国卷ⅱ）",
+    "questionNumber": "1",
+    "questionType": "多选题",
+    "content": "（6 分）下列关于简谐振动和简谐波的说法，正确的是",
+    "options": [
+      {
+        "label": "A",
+        "content": "媒质中质点振动的周期一定和相应的波的周期相等"
+      },
+      {
+        "label": "B",
+        "content": "媒质中质点振动的速度一定和相应的波的波速相等"
+      },
+      {
+        "label": "C",
+        "content": "波的传播方向一定和媒质中质点振动的方向一致"
+      },
+      {
+        "label": "D",
+        "content": "横波的波峰与波谷在振动方向上的距离一定是质点振幅的两倍"
+      }
+    ],
+    "questionImages": [],
+    "correctAnswer": "AD",
+    "standardAnalysis": "简谐波传播过程中，介质中质点做简谐振动，介质中质点振动的周期一定和相应的波的周期相等．质点振动的速度与波的波速是两回事．纵波的传播方向一定和介质中质点振动的方向在同一直线上．横波的波峰与波谷在振动方向上的距离是质点振幅的两倍． 解：A、简谐波传播过程中，介质中质点在波源驱动力作用做受迫振动，振动周期都等于波的振动周期。故 A 正确。 B、简谐波在同一均匀介质中传播时速度不变，而质点做简谐运动的速度随时间做周期性变化。故 B 错误。 C、纵波的传播方向一定和介质中质点振动的方向在同一直线上，但不是总是一致。故 C 错误。 D、横波的波峰与波谷在振动方向上的距离是质点振幅的两倍。故 D 正确。故选：AD。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "力学",
+      "机械振动与机械波"
+    ],
+    "difficultyLevel": "medium",
+    "difficultyReason": "需要公式推导、实验数据处理或多个判断步骤。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\物理\\高考物理全国123卷\\2009年全国统一高考物理试卷（全国卷ⅱ）（含解析版）.pdf",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\物理\\高考物理全国123卷\\2009年全国统一高考物理试卷（全国卷ⅱ）（含解析版）.pdf"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2021,
+    "region": "全国",
+    "paperName": "2021年全国统一高考物理试卷（新课标ⅰ）",
+    "questionNumber": "13",
+    "questionType": "多选题",
+    "content": "如图，一定量的理想气体从状态 ( )0 0 0a p V T，，经热力学过程 ab、 bc、 ca后又回到状态 a。对于 ab、 bc、 ca 三个过程，下列说法正确的是",
+    "options": [
+      {
+        "label": "A",
+        "content": "ab过程中，气体始终吸热"
+      },
+      {
+        "label": "B",
+        "content": "ca过程中，气体始终放热"
+      },
+      {
+        "label": "C",
+        "content": "ca过程中，气体对外界做功"
+      },
+      {
+        "label": "D",
+        "content": "bc过程中，气体的温度先降低后升高"
+      },
+      {
+        "label": "E",
+        "content": "bc过程中，气体的温度先升高后降低"
+      }
+    ],
+    "questionImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\解析结果\\images\\物理_2021_全国_2021年全国统一高考物理试卷_新课标_q13_p12_01.png",
+        "sourcePage": "12",
+        "description": "2021年全国统一高考物理试卷（新课标ⅰ）原卷第12页，第13题题目区域内插图"
+      }
+    ],
+    "correctAnswer": "ABE",
+    "standardAnalysis": "A．由理想气体的 p V- 图可知，理想气体经历 ab过程，体积不变，则 0W = ，而压强增大，由 pV nRT= 可知，理想气体的温度升高，则内能增大，由 U Q WD = + 可知，气体一直吸热，故 A正确； BC．理想气体经历 ca过程为等压压缩，则外界对气体做功 0W > ，由 pV nRT= 知温度降低，即内能减少 0UD < ，由 U Q WD = + 可知， 0Q < ，即气体放热，故 B正确，C错误； DE．由 pV nRT= 可知， p V- 图像的坐标围成的面积反映温度，b 状态和 c 状态的坐标面积相等，而中间状态的坐标面积更大，故 bc过程的温度先升高后降低，故 D错误，E正确；故选 ABE。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "热学",
+      "分子动理论与内能"
+    ],
+    "difficultyLevel": "medium",
+    "difficultyReason": "需要公式推导、实验数据处理或多个判断步骤。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\物理\\2021年高考试卷\\2021年全国统一高考物理试卷（新课标ⅰ）（原卷版）.pdf",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\物理\\2021年高考试卷\\2021年全国统一高考物理试卷（新课标ⅰ）（含解析版）.pdf"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2021,
+    "region": "湖南",
+    "paperName": "2021年湖南省普通高中学业水平选择性考试（湖南卷）",
+    "questionNumber": "15",
+    "questionType": "多选题",
+    "content": "如图，两端开口、下端连通的导热汽缸，用两个轻质绝热活塞（截面积分别为 1S 和 2S ）封闭一定质量的理想气体，活塞与汽缸壁间无摩擦。在左端活塞上缓慢加细沙，活塞从 A 下降 h高度到 B位置时，活塞上细沙的总质量为 m 。在此过程中，用外力 F 作用在右端活塞上，使活塞位置始终不变。整个过程环境温度和大气压强 0p 保持不变，系统始终处于平衡状态，重力加速度为 g 。下列说法正确的是",
+    "options": [
+      {
+        "label": "A",
+        "content": "整个过程，外力 F 做功大于 0，小于 mgh"
+      },
+      {
+        "label": "B",
+        "content": "整个过程，理想气体的分子平均动能保持不变"
+      },
+      {
+        "label": "C",
+        "content": "整个过程，理想气体的内能增大"
+      },
+      {
+        "label": "D",
+        "content": "整个过程，理想气体向外界释放的热量小于( )0 1p S h mgh+"
+      },
+      {
+        "label": "E",
+        "content": "左端活塞到达 B位置时，外力 F 等于 2 1 mgS S"
+      }
+    ],
+    "questionImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\解析结果\\images\\物理_2021_湖南_2021年湖南省普通高中学业水平选择性考试_湖南卷_q15_p05_01.png",
+        "sourcePage": "5",
+        "description": "2021年湖南省普通高中学业水平选择性考试（湖南卷）原卷第5页，第15题题目区域内插图"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\解析结果\\images\\物理_2021_湖南_2021年湖南省普通高中学业水平选择性考试_湖南卷_q15_p05_02.png",
+        "sourcePage": "5",
+        "description": "2021年湖南省普通高中学业水平选择性考试（湖南卷）原卷第5页，第15题题目区域内插图"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\解析结果\\images\\物理_2021_湖南_2021年湖南省普通高中学业水平选择性考试_湖南卷_q15_p05_03.png",
+        "sourcePage": "5",
+        "description": "2021年湖南省普通高中学业水平选择性考试（湖南卷）原卷第5页，第15题题目区域内插图"
+      }
+    ],
+    "correctAnswer": "BDE",
+    "standardAnalysis": "A. 根据做功的两个必要因素有力和在力的方向上有位移，由于活塞 2S 没有移动，可知整个过程，外力 F做功等于 0，A错误； BC. 根据气缸导热且环境温度没有变，可知气缸内的温度也保持不变，则整个过程，理想气体的分子平均动能保持不变，内能不变，B正确，C错误； D. 由内能不变可知理想气体向外界释放的热量等于外界对理想气体做的功： 0 1Q W p S h mgh= < + D正确； E. 左端活塞到达 B 位置时，根据压强平衡可得： 0 0 1 2 mg Fp p S S+ = + 即： 2 1 mgSF S= E正确。故选 BDE。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "热学",
+      "分子动理论与内能"
+    ],
+    "difficultyLevel": "medium",
+    "difficultyReason": "需要结合题目信息完成两步以上判断。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\物理\\2021年高考试卷\\2021年湖南省普通高中学业水平选择性考试（湖南卷）（原卷版）.pdf",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\物理\\2021年高考试卷\\2021年湖南省普通高中学业水平选择性考试（湖南卷）（解析版）.pdf"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2020,
+    "region": "全国",
+    "paperName": "2020年全国统一高考物理试卷（新课标ⅱ）",
+    "questionNumber": "13",
+    "questionType": "多选题",
+    "content": "（5 分）下列关于能量转换过程的叙述，违背热力学第一定律的有，不违背热力学第一定律、但违背热力学第二定律的有。（填正确答案标号）",
+    "options": [
+      {
+        "label": "A",
+        "content": "汽车通过燃烧汽油获得动力并向空气中散热"
+      },
+      {
+        "label": "B",
+        "content": "冷水倒入保温杯后，冷水和杯子的温度都变得更低"
+      },
+      {
+        "label": "C",
+        "content": "某新型热机工作时将从高温热源吸收的热量全部转化为功，而不产生其他影响"
+      },
+      {
+        "label": "D",
+        "content": "冰箱的制冷机工作时从箱内低温环境中提取热量散发到温度较高的室内"
+      }
+    ],
+    "questionImages": [],
+    "correctAnswer": "B；C",
+    "standardAnalysis": "根据热力学第一定律△U＝W+Q 分析是否违背热力学第一定律，根据热力学第二定律的内容分析是否违背热力学第二定律。解：A、汽车通过燃烧汽油获得动力并向空气中散热的过程不违背热力学第一定律，也不违背热力学第二定律； B、冷水倒入保温杯后，冷水和杯子的温度都变得更低需要对外发出热量或对外做功，而保温杯隔断了热传递过程，水也没有对外做功，所以该过程违背热力学第一定律； C、某新型热机工作时将从高温热源吸收的热量全部转化为功，而不产生其他影响，该过程不违背热力学第一定律、但违背热力学第二定律； D、冰箱的制冷机工作时从箱内低温环境中提取热量散发到温度较高的室内，但要消耗电能，引起了其它变化，该过程不违背热力学第一定律、也不违背热力学第二定律。故答案为：B；C。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "热学",
+      "分子动理论与内能"
+    ],
+    "difficultyLevel": "medium",
+    "difficultyReason": "需要公式推导、实验数据处理或多个判断步骤。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\物理\\高考物理全国123卷\\2020年全国统一高考物理试卷（新课标ⅱ）（含解析版）.pdf",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\物理\\高考物理全国123卷\\2020年全国统一高考物理试卷（新课标ⅱ）（含解析版）.pdf"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2013,
+    "region": "全国",
+    "paperName": "2013年全国统一高考物理试卷（大纲版）",
+    "questionNumber": "3",
+    "questionType": "单选题",
+    "content": "（6 分）放射性元素氡（）经 α 衰变成为钋，半衰期为 3.8 天；但勘测表明，经过漫长的地质年代后，目前地壳中仍存在天然的含有放射性元素的矿石，其原因是（）",
+    "options": [
+      {
+        "label": "A",
+        "content": "目前地壳中的主要来自于其它放射元素的衰变"
+      },
+      {
+        "label": "B",
+        "content": "在地球形成的初期，地壳中元素的含量足够高"
+      },
+      {
+        "label": "C",
+        "content": "当衰变产物积累到一定量以后，的增加会减慢的衰变进程"
+      },
+      {
+        "label": "D",
+        "content": "主要存在于地球深处的矿石中，温度和压力改变了它的半衰期"
+      }
+    ],
+    "questionImages": [],
+    "correctAnswer": "A",
+    "standardAnalysis": "放射性元素氡（）经 α 衰变成为钋，半衰期为 3.8 天，目前地壳中仍存在天然的含有放射性元素的矿石，主要来自其它放射性元素的衰变．半衰期的大小由原子核内部因素决定，与所处的物理环境和化学环境无关． 解：A、因为放射性元素氡（）的半衰期比较短，目前地壳中仍存在天然的含有放射性元素的矿石，主要来自其它放射性元素的衰变。故 A 正确，B、C 错误。 D、半衰期的大小与温度、压力无关，由原子核内部因素决定。故 D 错误。故选：A。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "热学",
+      "分子动理论与内能"
+    ],
+    "difficultyLevel": "easy",
+    "difficultyReason": "主要考查单一基础概念或规律的直接应用。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\物理\\高考物理全国123卷\\2013年全国统一高考物理试卷（大纲版）（含解析版）.pdf",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\物理\\高考物理全国123卷\\2013年全国统一高考物理试卷（大纲版）（含解析版）.pdf"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2012,
+    "region": "全国",
+    "paperName": "2012年全国统一高考物理试卷（大纲版）",
+    "questionNumber": "1",
+    "questionType": "多选题",
+    "content": "（6 分）下列关于布朗运动的说法，正确的是",
+    "options": [
+      {
+        "label": "A",
+        "content": "布朗运动是液体分子的无规则运动"
+      },
+      {
+        "label": "B",
+        "content": "液体温度越高，悬浮粒子越小，布朗运动越剧烈"
+      },
+      {
+        "label": "C",
+        "content": "布朗运动是由于液体各部分的温度不同而引起的"
+      },
+      {
+        "label": "D",
+        "content": "布朗运动是由液体分子从各个方向对悬浮粒子撞击作用的不平衡引起的"
+      }
+    ],
+    "questionImages": [],
+    "correctAnswer": "BD",
+    "standardAnalysis": "布朗运动是小微粒受到的分子的撞击的不平衡产生的，是小微粒的运动受温度的影响． 解：A、布朗运动是悬浮颗粒的无规则运动，不是液体分子的运动，故 A 错误； B、液体的温度越高，悬浮颗粒越小，布朗运动越剧烈，故 B 正确； C、D、布朗运动是由于液体分子从各个方向对悬浮粒子撞击作用不平衡引起的，故 C 错误，D 正确。故选：BD。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "热学",
+      "分子动理论与内能"
+    ],
+    "difficultyLevel": "easy",
+    "difficultyReason": "主要考查单一基础概念或规律的直接应用。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\物理\\高考物理全国123卷\\2012年全国统一高考物理试卷（大纲版）（含解析版）.pdf",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\物理\\高考物理全国123卷\\2012年全国统一高考物理试卷（大纲版）（含解析版）.pdf"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2011,
+    "region": "全国",
+    "paperName": "2011年全国统一高考物理试卷（全国卷ⅱ）",
+    "questionNumber": "1",
+    "questionType": "单选题",
+    "content": "（6分）关于一定量的气体，下列叙述正确的是（）",
+    "options": [
+      {
+        "label": "A",
+        "content": "气体吸收的热量可以完全转化为功"
+      },
+      {
+        "label": "B",
+        "content": "气体体积增大时，其内能一定减少"
+      },
+      {
+        "label": "C",
+        "content": "气体从外界吸收热量，其内能一定增加"
+      },
+      {
+        "label": "D",
+        "content": "外界对气体做功，气体内能可能减少"
+      }
+    ],
+    "questionImages": [],
+    "correctAnswer": "A",
+    "standardAnalysis": "解答本题应熟练准确掌握热力学第一定律的内容，明确做功和热传递均可改变物体的内能． 解：根据热力学第一定律，做功和热传递都可以改变内能，所以含有‘一定’的 B和 C错误，而 D正确；理想气体的等温变化是一个内能不变的过程，当体积增大对外做功时同时必须从外界吸热等大的热量，故 A正确；故选 A D。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "热学",
+      "分子动理论与内能"
+    ],
+    "difficultyLevel": "easy",
+    "difficultyReason": "主要考查单一基础概念或规律的直接应用。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\物理\\高考物理全国123卷\\2011年全国统一高考物理试卷（全国卷ⅱ）（含解析版）.pdf",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\物理\\高考物理全国123卷\\2011年全国统一高考物理试卷（全国卷ⅱ）（含解析版）.pdf"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2008,
+    "region": "全国",
+    "paperName": "2008年全国统一高考物理试卷（全国卷ⅰ）",
+    "questionNumber": "6",
+    "questionType": "单选题",
+    "content": "（ 6 分）已知地球半径约为 6.4×106 m，空气的摩尔质量约为 2.9×10 2﹣ kg/mol，一个标准大气压约为 1.0×105 Pa．利用以上数据可估算出地球表面大气在标准状态下的体积为（）",
+    "options": [
+      {
+        "label": "A",
+        "content": "4×1016 m3"
+      },
+      {
+        "label": "B",
+        "content": "4×1018 m3"
+      },
+      {
+        "label": "C",
+        "content": "4×1020 m3"
+      },
+      {
+        "label": "D",
+        "content": "4×1022 m3"
+      }
+    ],
+    "questionImages": [],
+    "correctAnswer": "B",
+    "standardAnalysis": "大气压强是由地球附近大气层中空气的重力产生的，根据大气压强和地球的表面积求出地球周围大气层空气分子的总质量，再求出空气体积． 解：大气压强 P0= ，地球表面积 s=4πR2 则地球周围空气质量为：；由于标准状态下，一摩尔任何气体的体积都是 22.4 升，即摩尔体积为 V=22.4×10 3﹣ m3；故空气密度为：；空气的总体积为 = ；代入解得，V′=4×1018 m3 故选：B。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "热学",
+      "分子动理论与内能"
+    ],
+    "difficultyLevel": "easy",
+    "difficultyReason": "主要考查单一基础概念或规律的直接应用。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\物理\\高考物理全国123卷\\2008年全国统一高考物理试卷（全国卷ⅰ）（含解析版）.pdf",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\物理\\高考物理全国123卷\\2008年全国统一高考物理试卷（全国卷ⅰ）（含解析版）.pdf"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2021,
+    "region": "全国",
+    "paperName": "2021年全国统一高考物理试卷（新课标ⅰ）",
+    "questionNumber": "7",
+    "questionType": "多选题",
+    "content": "四个带电粒子的电荷量和质量分别 ( )q m+ ，、 ( 2 )q m+ ，、 ( 3 3 )q m+ ，、 ( )q m- ，它们先后以相同的速度从坐标原点沿 x轴正方向射入一匀强电场中，电场方向与 y轴平行，不计重力，下列描绘这四个粒子运动轨迹的图像中，可能正确的是",
+    "options": [
+      {
+        "label": "A",
+        "content": ""
+      },
+      {
+        "label": "B",
+        "content": ""
+      },
+      {
+        "label": "C",
+        "content": ""
+      },
+      {
+        "label": "D",
+        "content": ""
+      }
+    ],
+    "questionImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\解析结果\\images\\物理_2021_全国_2021年全国统一高考物理试卷_新课标_q07_p05_01.png",
+        "sourcePage": "5",
+        "description": "2021年全国统一高考物理试卷（新课标ⅰ）原卷第5页，第7题题目区域内插图"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\解析结果\\images\\物理_2021_全国_2021年全国统一高考物理试卷_新课标_q07_p05_02.png",
+        "sourcePage": "5",
+        "description": "2021年全国统一高考物理试卷（新课标ⅰ）原卷第5页，第7题题目区域内插图"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\解析结果\\images\\物理_2021_全国_2021年全国统一高考物理试卷_新课标_q07_p05_03.png",
+        "sourcePage": "5",
+        "description": "2021年全国统一高考物理试卷（新课标ⅰ）原卷第5页，第7题题目区域内插图"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\解析结果\\images\\物理_2021_全国_2021年全国统一高考物理试卷_新课标_q07_p05_04.png",
+        "sourcePage": "5",
+        "description": "2021年全国统一高考物理试卷（新课标ⅰ）原卷第5页，第7题题目区域内插图"
+      }
+    ],
+    "correctAnswer": "AD",
+    "standardAnalysis": "带电粒子在匀强电场中做类平抛运动，加速度为 qEa m= 由类平抛运动规律可知，带电粒子的在电场中运动时间为 0 lt v= 离开电场时，带电粒子的偏转角的正切为 2 0 0 tan y x v at qEl v v mv= = = 因为四个带电的粒子的初速相同，电场强度相同，极板长度相同，所以偏转角只与比荷有关，前面三种带电粒子带正电，第四种带电粒子带负电，所以第四个粒子与前面三个粒子的偏转方向不同；第一种粒子与第三种粒子的比荷相同，所以偏转角相同，轨迹相同，且与第四种粒子的比荷也相同，所以一、三、四粒子偏转角相同，但第四种粒子与前两个粒子的偏转方向相反；第二种粒子的比荷与第一、三种粒子的比荷小，所以第二种粒子比第一、三种粒子的偏转角小，但都还正电，偏转方向相同。故选 AD。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "电磁学",
+      "带电粒子在电磁场中的运动"
+    ],
+    "difficultyLevel": "medium",
+    "difficultyReason": "需要公式推导、实验数据处理或多个判断步骤。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\物理\\2021年高考试卷\\2021年全国统一高考物理试卷（新课标ⅰ）（原卷版）.pdf",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\物理\\2021年高考试卷\\2021年全国统一高考物理试卷（新课标ⅰ）（含解析版）.pdf"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2021,
+    "region": "北京",
+    "paperName": "2021年北京市高考物理试卷",
+    "questionNumber": "9",
+    "questionType": "单选题",
+    "content": "如图所示的平面内，有静止的等量异号点电荷，M、N两点关于两电荷连线对称，M、P 两点关于两电荷连线的中垂线对称。下列说法正确的是（）",
+    "options": [
+      {
+        "label": "A",
+        "content": "M点的场强比 P点的场强大"
+      },
+      {
+        "label": "B",
+        "content": "M点的电势比 N点的电势高"
+      },
+      {
+        "label": "C",
+        "content": "N点的场强与 P点的场强相同"
+      },
+      {
+        "label": "D",
+        "content": "电子在 M点的电势能比在 P点的电势能大"
+      }
+    ],
+    "questionImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\解析结果\\images\\物理_2021_北京_2021年北京市高考物理试卷_q09_p03_01.png",
+        "sourcePage": "3",
+        "description": "2021年北京市高考物理试卷原卷第3页，第9题题目区域内插图"
+      }
+    ],
+    "correctAnswer": "C",
+    "standardAnalysis": "AC．根据等量异种点电荷的电场线分布得： M点的场强与 P点的场强大小相等，N点的场强与 P点的场强大小相等，方向相同，故 A 错误 C正确； BD．根据等量异种点电荷的电势分布特点可知，M点的电势与 N点的电势相等，M点的电势高于 P点的电势，根据 pE q j= 可知，电子在 M点的电势能比在 P点的电势能小，故 BD错误。故选 C。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "电磁学",
+      "静电场"
+    ],
+    "difficultyLevel": "easy",
+    "difficultyReason": "主要考查单一基础概念或规律的直接应用。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\物理\\2021年高考试卷\\2021年北京市高考物理试卷（原卷版）.pdf",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\物理\\2021年高考试卷\\2021年北京市高考物理试卷（含解析版）.pdf"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2021,
+    "region": "北京",
+    "paperName": "2021年北京市高考物理试卷",
+    "questionNumber": "11",
+    "questionType": "单选题",
+    "content": "某同学搬运如图所示的磁电式电流表时，发现表针晃动剧烈且不易停止。按照老师建议，该同学在两接线柱间接一根导线后再次搬运，发现表针晃动明显减弱且能很快停止。下列说法正确的是（）",
+    "options": [
+      {
+        "label": "A",
+        "content": "未接导线时，表针晃动过程中表内线圈不产生感应电动势"
+      },
+      {
+        "label": "B",
+        "content": "未接导线时，表针晃动剧烈是因为表内线圈受到安培力的作用"
+      },
+      {
+        "label": "C",
+        "content": "接上导线后，表针晃动过程中表内线圈不产生感应电动势"
+      },
+      {
+        "label": "D",
+        "content": "接上导线后，表针晃动减弱是因为表内线圈受到安培力的作用"
+      }
+    ],
+    "questionImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\解析结果\\images\\物理_2021_北京_2021年北京市高考物理试卷_q11_p04_01.png",
+        "sourcePage": "4",
+        "description": "2021年北京市高考物理试卷原卷第4页，第11题题目区域内插图"
+      }
+    ],
+    "correctAnswer": "D",
+    "standardAnalysis": "表针晃动时线圈切割磁感线，会产生感应电动势。未接导线时回路不闭合，没有感应电流和安培力；接上导线后形成闭合回路，感应电流受到的安培力阻碍线圈运动，使表针迅速减弱，选D。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "电磁学",
+      "电磁感应"
+    ],
+    "difficultyLevel": "easy",
+    "difficultyReason": "主要考查单一基础概念或规律的直接应用。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\物理\\2021年高考试卷\\2021年北京市高考物理试卷（原卷版）.pdf",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\物理\\2021年高考试卷\\2021年北京市高考物理试卷（含解析版）.pdf"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2021,
+    "region": "河北",
+    "paperName": "2021年河北省普通高中学业水平选择性考试（河北卷）",
+    "questionNumber": "7",
+    "questionType": "单选题",
+    "content": "如图，两光滑导轨水平放置在竖直向下的匀强磁场中，磁感应强度大小为 B，导轨间距最窄处为一狭缝，取狭缝所在处 O点为坐标原点，狭缝右侧两导轨与 x 轴夹角均为q ，一电容为 C的电容器与导轨左端相连，导轨上的金属棒与 x 轴垂直，在外力 F 作用下从 O点开始以速度 v 向右匀速运动，忽略所有电阻，下列说法正确的是（）",
+    "options": [
+      {
+        "label": "A",
+        "content": "通过金属棒的电流为 22 tanBCv q"
+      },
+      {
+        "label": "B",
+        "content": "金属棒到达 0x 时，电容器极板上的电荷量为 0 tanBCvx q"
+      },
+      {
+        "label": "C",
+        "content": "金属棒运动过程中，电容器的上极板带负电"
+      },
+      {
+        "label": "D",
+        "content": "金属棒运动过程中，外力 F做功的功率恒定二、多项选择题：本题共 3小题，每小题 6分，共 18分．在每小题给出的四个选项中，有两个或两个以上选项符合题目要求．全部选对的得 6分，选对但不全的得 3分，有选错的得 0分．"
+      }
+    ],
+    "questionImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\解析结果\\images\\物理_2021_河北_2021年河北省普通高中学业水平选择性考试_河北卷_q07_p02_01.png",
+        "sourcePage": "2",
+        "description": "2021年河北省普通高中学业水平选择性考试（河北卷）原卷第2页，第7题题目区域内插图"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\解析结果\\images\\物理_2021_河北_2021年河北省普通高中学业水平选择性考试_河北卷_q07_p02_02.png",
+        "sourcePage": "2",
+        "description": "2021年河北省普通高中学业水平选择性考试（河北卷）原卷第2页，第7题题目区域内插图"
+      }
+    ],
+    "correctAnswer": "A",
+    "standardAnalysis": "C．根据楞次定律可知电容器的上极板应带正电，C错误； A．由题知导体棒匀速切割磁感线，根据几何关系切割长度为 L = 2xtanθ，x = vt 则产生的感应电动势为 E = 2Bv2ttanθ 由题图可知电容器直接与电源相连，则电容器的电荷量为 Q = CE = 2BCv2ttanθ 则流过导体棒的电流 I = Q t D D = 2BCv2tanθ A正确； B．当金属棒到达 x0 处时，导体棒产生的感应电动势为 E′ = 2Bvx0tanθ 则电容器的电荷量为 Q = CE′ = 2BCvx0tanθ B错误； D．由于导体棒做匀速运动则 F = F 安 = BIL 由选项 A可知流过导体棒的电流 I 恒定，但 L与 t 成正比，则 F为变力，再根据力做功的功率公式 P = Fv 可看出 F为变力，v不变则功率 P 随力 F变化而变化； D错误；故选 A。二、多项选择题：本题共 3小题，每小题 6分，共 18分．在每小题给出的四个选项中，有两个或两个以上选项符合题目要求．全部选对的得 6分，选对但不全的得 3分，有选错的得 0分．",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "电磁学",
+      "电磁感应"
+    ],
+    "difficultyLevel": "medium",
+    "difficultyReason": "需要公式推导、实验数据处理或多个判断步骤。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\物理\\2021年高考试卷\\2021年河北省普通高中学业水平选择性考试（河北卷）（原卷版）.pdf",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\物理\\2021年高考试卷\\2021年河北省普通高中学业水平选择性考试（河北卷）（解析版）.pdf"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2021,
+    "region": "浙江",
+    "paperName": "2021年浙江省物理选考（6月）物理试卷",
+    "questionNumber": "6",
+    "questionType": "单选题",
+    "content": "某书中有如图所示的图，用来表示横截面是“<”形导体右侧的电场线和等势面，其中 a、b是同一条实线上的两点，c是另一条实线上的一点，d是导体尖角右侧表面附近的一点。下列说法正确的是（）",
+    "options": [
+      {
+        "label": "A",
+        "content": "实线表示电场线"
+      },
+      {
+        "label": "B",
+        "content": "离 d点最近的导体表面电荷密度最大"
+      },
+      {
+        "label": "C",
+        "content": "“<”形导体右侧表面附近电场强度方向均相同"
+      },
+      {
+        "label": "D",
+        "content": "电荷从 a点到 c点再到 b点电场力做功一定为零"
+      }
+    ],
+    "questionImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\解析结果\\images\\物理_2021_浙江_2021年浙江省物理选考_6月_物理试卷_q06_p02_01.png",
+        "sourcePage": "2",
+        "description": "2021年浙江省物理选考（6月）物理试卷原卷第2页，第6题题目区域内插图"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\解析结果\\images\\物理_2021_浙江_2021年浙江省物理选考_6月_物理试卷_q06_p02_02.png",
+        "sourcePage": "2",
+        "description": "2021年浙江省物理选考（6月）物理试卷原卷第2页，第6题题目区域内插图"
+      }
+    ],
+    "correctAnswer": "D",
+    "standardAnalysis": "A．处于静电平衡的导体，是个等势体，则整个导体为等势体，由于电场线方向总是与等势面垂直，所以实线不是电场线，是等势面，则 A错误； B．根据等势面的疏密表示场强的强弱，则 d点的场强较弱，并且电场强度越大的地方电荷密度越大，所以 B错误； C．在“<”形导体右侧表面上下部分附近电场强度方向不相同，所以 C错误； D．由于 a、b在同一等势面上，则电荷从 a点到 c点再到 b点电场力做功一定为零，所以 D正确；故选 D。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "电磁学",
+      "静电场"
+    ],
+    "difficultyLevel": "easy",
+    "difficultyReason": "主要考查单一基础概念或规律的直接应用。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\物理\\2021年高考试卷\\2021年浙江省物理选考（6月）物理试卷（原卷版）.pdf",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\物理\\2021年高考试卷\\2021年浙江省物理选考（6月）物理试卷（解析版）.pdf"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2021,
+    "region": "全国",
+    "paperName": "2021年高考全国甲卷物理试题",
+    "questionNumber": "8",
+    "questionType": "多选题",
+    "content": "由相同材料的导线绕成边长相同的甲、乙两个正方形闭合线圈，两线圈的质量相等，但所用导线的横截面积不同，甲线圈的匝数是乙的 2 倍。现两线圈在竖直平面内从同一高度同时由静止开始下落，一段时间后进入一方向垂直于纸面的匀强磁场区域，磁场的上边界水平，如图所示。不计空气阻力，已知下落过程中线圈始终平行于纸面，上、下边保持水平。在线圈下边进入磁场后且上边进入磁场前，可能出现的是",
+    "options": [
+      {
+        "label": "A",
+        "content": "甲和乙都加速运动"
+      },
+      {
+        "label": "B",
+        "content": "甲和乙都减速运动"
+      },
+      {
+        "label": "C",
+        "content": "甲加速运动，乙减速运动"
+      },
+      {
+        "label": "D",
+        "content": "甲减速运动，乙加速运动三、非选择题：第 9～12题为必考题，每个试题考生都必须作答。第13～16题为选考题，考生根据要求作答。（一）必考题"
+      }
+    ],
+    "questionImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\解析结果\\images\\物理_2021_全国_2021年高考全国甲卷物理试题_q08_p02_01.png",
+        "sourcePage": "2",
+        "description": "2021年高考全国甲卷物理试题原卷第2页，第8题题目区域内插图"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\解析结果\\images\\物理_2021_全国_2021年高考全国甲卷物理试题_q08_p03_02.png",
+        "sourcePage": "3",
+        "description": "2021年高考全国甲卷物理试题原卷第3页，第8题题目区域内插图"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\解析结果\\images\\物理_2021_全国_2021年高考全国甲卷物理试题_q08_p03_03.png",
+        "sourcePage": "3",
+        "description": "2021年高考全国甲卷物理试题原卷第3页，第8题题目区域内插图"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\解析结果\\images\\物理_2021_全国_2021年高考全国甲卷物理试题_q08_p03_04.png",
+        "sourcePage": "3",
+        "description": "2021年高考全国甲卷物理试题原卷第3页，第8题题目区域内插图"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\解析结果\\images\\物理_2021_全国_2021年高考全国甲卷物理试题_q08_p04_05.png",
+        "sourcePage": "4",
+        "description": "2021年高考全国甲卷物理试题原卷第4页，第8题题目区域内插图"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\解析结果\\images\\物理_2021_全国_2021年高考全国甲卷物理试题_q08_p04_06.png",
+        "sourcePage": "4",
+        "description": "2021年高考全国甲卷物理试题原卷第4页，第8题题目区域内插图"
+      }
+    ],
+    "correctAnswer": "AB",
+    "standardAnalysis": "设线圈到磁场的高度为 h，线圈的边长为 l，则线圈下边刚进入磁场时，有 = 2v gh 感应电动势为 E nBlv= 两线圈材料相等（设密度为 0r ），质量相同（设为 m ），则 0 4m nl Sr= × × 设材料的电阻率为 r ，则线圈电阻 2 2 0164 n lnlR S m rrr= = 感应电流为 016 E mBvI R nl rr= = 安培力为 2 016 mB vF nBIl rr= = 由牛顿第二定律有 mg F ma- = 联立解得 2 016 F B va g g m rr= - = - 加速度和线圈的匝数、横截面积无关，则甲和乙进入磁场时，具有相同的加速度。当 2 016 B vg rr> 时，甲和乙都加速运动，当 2 016 B vg rr< 时，甲和乙都减速运动，当 2 016 B vg rr= 时都匀速。故选 AB。三、非选择题：第 9～12题为必考题，每个试题考生都必须作答。第13～16题为选考题，考生根据要求作答。（一）必考题",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "电磁学",
+      "恒定电流与电学实验"
+    ],
+    "difficultyLevel": "medium",
+    "difficultyReason": "需要公式推导、实验数据处理或多个判断步骤。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\物理\\2021年高考试卷\\2021年高考全国甲卷物理试题（原卷版）A3.pdf",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\物理\\2021年高考试卷\\2021年高考全国甲卷物理试题（解析版）A3.pdf"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2019,
+    "region": "全国",
+    "paperName": "2019年全国统一高考物理试卷（新课标ⅲ）",
+    "questionNumber": "1",
+    "questionType": "单选题",
+    "content": "（6 分）楞次定律是下列哪个定律在电磁感应现象中的具体体现？（）",
+    "options": [
+      {
+        "label": "A",
+        "content": "电阻定律"
+      },
+      {
+        "label": "B",
+        "content": "库仑定律"
+      },
+      {
+        "label": "C",
+        "content": "欧姆定律"
+      },
+      {
+        "label": "D",
+        "content": "能量守恒定律"
+      }
+    ],
+    "questionImages": [],
+    "correctAnswer": "D",
+    "standardAnalysis": "当线圈与磁体间有相对运动时，根据“来拒去留”可知，磁场力都是阻碍线圈与磁体间的相对运动，有外力对系统做了功，导致其他形式的能转化为线圈的电能；当导体做切割磁感线运动时，安培力总是阻碍导体的运动，导体克服安培力做，把其他形式的能转化为电能，据此即可分析。解：当线圈与磁体间有相对运动时，根据“来拒去留”可知，磁场力都是阻碍线圈与磁体间的相对运动，有外力对系统做了功，导致其他形式的能转化为线圈的电能；当导体做切割磁感线运动时，安培力总是阻碍导体的运动，导体克服安培力做，把其他形式的能转化为电能，所以楞次定律是能量守恒定律在电磁感应现象中的体现，故 D 正确， ABC 错误。故选：D。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "电磁学",
+      "电磁感应"
+    ],
+    "difficultyLevel": "medium",
+    "difficultyReason": "需要结合题目信息完成两步以上判断。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\物理\\高考物理全国123卷\\2019年全国统一高考物理试卷（新课标ⅲ）（含解析版）.pdf",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\物理\\高考物理全国123卷\\2019年全国统一高考物理试卷（新课标ⅲ）（含解析版）.pdf"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2016,
+    "region": "全国",
+    "paperName": "2016年全国统一高考物理试卷（新课标ⅲ）",
+    "questionNumber": "2",
+    "questionType": "单选题",
+    "content": "（6 分）关于静电场的等势面，下列说法正确的是（）",
+    "options": [
+      {
+        "label": "A",
+        "content": "两个电势不同的等势面可能相交"
+      },
+      {
+        "label": "B",
+        "content": "电场线与等势面处处相互垂直"
+      },
+      {
+        "label": "C",
+        "content": "同一等势面上各点电场强度一定相等"
+      },
+      {
+        "label": "D",
+        "content": "将一负的试探电荷从电势较高的等势面移至电势较低的等势面，电场力做正功"
+      }
+    ],
+    "questionImages": [],
+    "correctAnswer": "B",
+    "standardAnalysis": "电场中电势相等的各个点构成的面叫做等势面；沿着等势面移动点电荷电场力不做功．电场线与等势面垂直，且从电势高的等势面指向电势低的等势面．负电荷在等势面高的位置的电势能小． 解：A、沿电场线的方向电势降低，所以电势不同的等势面不可能相交。故 A错误； B、根据电场线与等势面的关系可知，电场线与等势面互相垂直，故 B 正确； C、电场强度的大小与电势的高低没有关系，所以同一等势面上各点电场强度不一定相等，故 C错误； D、负电荷在电势高的位置的电势能小，所以将一负的试探电荷从电势较高的等势面移至电势较低的等势面，电势能增大，电场力做负功，故 D错误。故选：B。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "电磁学",
+      "静电场"
+    ],
+    "difficultyLevel": "medium",
+    "difficultyReason": "需要结合题目信息完成两步以上判断。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\物理\\高考物理全国123卷\\2016年全国统一高考物理试卷（新课标ⅲ）（含解析版）.pdf",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\物理\\高考物理全国123卷\\2016年全国统一高考物理试卷（新课标ⅲ）（含解析版）.pdf"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2014,
+    "region": "全国",
+    "paperName": "2014年全国统一高考物理试卷（新课标ⅱ）",
+    "questionNumber": "6",
+    "questionType": "多选题",
+    "content": "（6 分）关于静电场的电场强度和电势，下列说法正确的是",
+    "options": [
+      {
+        "label": "A",
+        "content": "电场强度的方向处处与等电势面垂直"
+      },
+      {
+        "label": "B",
+        "content": "电场强度为零的地方，电势也为零"
+      },
+      {
+        "label": "C",
+        "content": "随着电场强度的大小逐渐减小，电势也逐渐降低"
+      },
+      {
+        "label": "D",
+        "content": "任一点的电场强度总是指向该点电势降落的方向"
+      }
+    ],
+    "questionImages": [],
+    "correctAnswer": "AD",
+    "standardAnalysis": "电场强度与电势没有直接关系；电场强度的方向与等势面垂直，电场强度的方向是电势降低最快的方向；根据这些知识进行解答． 解：A、电场线与等势面垂直，而电场强度的方向为电场线的方向，所以电场强度的方向与等势面垂直，故 A 正确； B、电场强度与电势没有直接关系，电场强度为零时，电势不一定为零；电势为零，电场强度不一定为零，故 B 错误； C、根据沿着电场线的方向，电势逐渐降低，与电场强度的大小无关，故 C 错误； D、顺着电场线方向电势降低，故 D 正确。故选：AD。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "电磁学",
+      "静电场"
+    ],
+    "difficultyLevel": "easy",
+    "difficultyReason": "主要考查单一基础概念或规律的直接应用。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\物理\\高考物理全国123卷\\2014年全国统一高考物理试卷（新课标ⅱ）（含解析版）.pdf",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\物理\\高考物理全国123卷\\2014年全国统一高考物理试卷（新课标ⅱ）（含解析版）.pdf"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2012,
+    "region": "全国",
+    "paperName": "2012年全国统一高考物理试卷（大纲版）",
+    "questionNumber": "4",
+    "questionType": "单选题",
+    "content": "（6 分）质量分别为 m1 和 m2、电荷量分别为q1 和 q2 的两粒子在同一匀强磁场中做匀速圆周运动，已知两粒子的动量大小相等．下列说法正确的是（）",
+    "options": [
+      {
+        "label": "A",
+        "content": "若 q1=q2，则它们作圆周运动的半径一定相等"
+      },
+      {
+        "label": "B",
+        "content": "若 m1=m2，则它们作圆周运动的半径一定相等"
+      },
+      {
+        "label": "C",
+        "content": "若 q1≠q2，则它们作圆周运动的周期一定不相等"
+      },
+      {
+        "label": "D",
+        "content": "若 m1≠m2，则它们作圆周运动的周期一定不相等"
+      }
+    ],
+    "questionImages": [],
+    "correctAnswer": "A",
+    "standardAnalysis": "带电粒子在磁场中做匀速圆周运动，洛伦兹力提供向心力，根据半径和周期公式即可判断． 解：带电粒子在匀强磁场中做匀速圆周运动，其半径 r= ，已知两粒子动量相等， A、若 q1=q2，则它们的圆周运动半径一定相等，选项 A 正确； B、若 m1=m2，不能确定两粒子电量关系，不能确定半径是否相等，选项 B 错； C、由周期公式 T= 可知：仅由电量或质量关系，无法确定两粒子做圆周运动的周期是否相等，故 C、D 错误。故选：A。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "电磁学",
+      "带电粒子在电磁场中的运动"
+    ],
+    "difficultyLevel": "easy",
+    "difficultyReason": "主要考查单一基础概念或规律的直接应用。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\物理\\高考物理全国123卷\\2012年全国统一高考物理试卷（大纲版）（含解析版）.pdf",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\物理\\高考物理全国123卷\\2012年全国统一高考物理试卷（大纲版）（含解析版）.pdf"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2010,
+    "region": "全国",
+    "paperName": "2010年全国统一高考物理试卷（全国卷ⅰ）",
+    "questionNumber": "3",
+    "questionType": "单选题",
+    "content": "（6 分）关于静电场，下列结论普遍成立的是（）",
+    "options": [
+      {
+        "label": "A",
+        "content": "电场中任意两点之间的电势差只与这两点的场强有关"
+      },
+      {
+        "label": "B",
+        "content": "电场强度大的地方电势高，电场强度小的地方电势低"
+      },
+      {
+        "label": "C",
+        "content": "将正点电荷从场强为零的一点移动到场强为零的另一点，电场力做功为零"
+      },
+      {
+        "label": "D",
+        "content": "在正电荷或负电荷产生的静电场中，场强方向都指向电势降低最快的方向"
+      }
+    ],
+    "questionImages": [],
+    "correctAnswer": "D",
+    "standardAnalysis": "本题主要考查静电场中电场强度和电势的特点，可根据所涉及的知识逐个分析． 解：A、电势差的大小决定于电场线方向上两点间距和电场强度，所以 A 错误； B、在正电荷的电场中，离正电荷近，电场强度大，电势高，离正电荷远，电场强度小，电势低；而在负电荷的电场中，离负电荷近，电场强度大，电势低，离负电荷远，电场强度小，电势高，所以 B 错误； C、场强为零，电势不一定为零，电场中肯定存在场强都为零、电势又不相等的两个点，在这样的两个点之间移动电荷，电场力将做功，所以 C 错误； D、沿电场方向电势降低，而且速度最快，所以 D 正确；故选：D。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "电磁学",
+      "静电场"
+    ],
+    "difficultyLevel": "medium",
+    "difficultyReason": "需要结合题目信息完成两步以上判断。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\物理\\高考物理全国123卷\\2010年全国统一高考物理试卷（全国卷ⅰ）（含解析版）.pdf",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\物理\\高考物理全国123卷\\2010年全国统一高考物理试卷（全国卷ⅰ）（含解析版）.pdf"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2010,
+    "region": "全国",
+    "paperName": "2010年全国统一高考物理试卷（新课标ⅰ）",
+    "questionNumber": "1",
+    "questionType": "多选题",
+    "content": "（6分）在电磁学发展过程中，许多科学家做出了贡献．下列说法正确的是",
+    "options": [
+      {
+        "label": "A",
+        "content": "奥斯特发现了电流磁效应；法拉第发现了电磁感应现象"
+      },
+      {
+        "label": "B",
+        "content": "麦克斯韦预言了电磁波；楞次用实验证实了电磁波的存在"
+      },
+      {
+        "label": "C",
+        "content": "库仑发现了点电荷的相互作用规律：密立根通过油滴实验测定了元电荷的数值"
+      },
+      {
+        "label": "D",
+        "content": "安培发现了磁场对运动电荷的作用规律：洛仑兹发现了磁场对电流的作用规律"
+      }
+    ],
+    "questionImages": [],
+    "correctAnswer": "AC",
+    "standardAnalysis": "本题考查电磁学中的相关物理学史，应掌握在电磁学发展中作出突出贡献的科学家的名字及主要发现． 解：A、奥斯特发现了电流磁效应，法拉第发现了电磁感应现象，故 A正确； B、麦克斯韦预言了电磁波，赫兹用实验证实了电磁波的存在；楞次是发现了电磁感应中的感应电流的方向，故 B 错误； C、库仑发现了点电荷的相互作用规律，密立根测定了元电荷的数值，故 C正确； D、洛仑兹发现磁场对运动电荷作用规律，安培发现了磁场对电流的作用规律，故 D 错误；故 AC正确，BD 错误；故选：AC。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "电磁学",
+      "带电粒子在电磁场中的运动"
+    ],
+    "difficultyLevel": "easy",
+    "difficultyReason": "主要考查单一基础概念或规律的直接应用。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\物理\\高考物理全国123卷\\2010年全国统一高考物理试卷（新课标ⅰ）（含解析版）.pdf",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\物理\\高考物理全国123卷\\2010年全国统一高考物理试卷（新课标ⅰ）（含解析版）.pdf"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2021,
+    "region": "广东",
+    "paperName": "2021年高考真题—— 物理（广东卷）",
+    "questionNumber": "1",
+    "questionType": "单选题",
+    "content": "科学家发现银河系中存在大量的放射性同位素铝 26．铝 26 的半衰期为 72 万年，其衰变方程为 26 26 13 12Al Mg Y→ + ．下列说法正确的是（）",
+    "options": [
+      {
+        "label": "A",
+        "content": "Y 是氦核"
+      },
+      {
+        "label": "B",
+        "content": "Y 是质子"
+      },
+      {
+        "label": "C",
+        "content": "再经过 72 万年，现有的铝 26 衰变一半"
+      },
+      {
+        "label": "D",
+        "content": "再经过 144 万年，现有的铝 26 全部衰变 2．2021 年 4 月，我国自主研发的空间站“天和”核心舱成功发射并入轨运行．若核心舱绕地球的运行可视为匀速圆周运动，已知引力常量，由下列物理量能计算出地球质量的是（） A．核心舱的质量和绕地半径 B．核心舱的质量和绕地周期 C．核心舱的绕地角速度和绕地周期 D．核心舱的绕地线速度和绕地半径"
+      }
+    ],
+    "questionImages": [],
+    "correctAnswer": "C",
+    "standardAnalysis": "AB．根据核反应的质量数和电荷数守恒可知，该核反应是 26 26 0 13 12 1Al Mg e→ + 即 Y是正电子，选项 AB错误； CD．因 72万年是一个半衰期，可知再过 72万年，现有的铝 26衰变一半；再过 144万年，即两个半衰期，现有的铝 26衰变四分之三，选项 C正确，D错误；故选 C。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "近代物理",
+      "原子与原子核"
+    ],
+    "difficultyLevel": "medium",
+    "difficultyReason": "需要结合两个相关规律或逐项完成多步判断。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\物理\\2021年高考试卷\\2021年高考真题—— 物理（广东卷） (原卷版）.pdf",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\物理\\2021年高考试卷\\2021年高考真题—— 物理（广东卷） (解析版）.pdf"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2019,
+    "region": "全国",
+    "paperName": "2019年全国统一高考物理试卷（新课标ⅱ）",
+    "questionNumber": "2",
+    "questionType": "单选题",
+    "content": "（6 分）太阳内部核反应的主要模式之一是质子﹣质子循环，循环的结果可表示为 4 H→ He+2 e+2v 已知 H 和 He 的质量分别为 mp＝1.0078u 和 m α ＝4.0026u，1u＝931MeV/c2，c 为光速。在 4 个 H 转变成 1 个 He 的过程中，释放的能量约为（）",
+    "options": [
+      {
+        "label": "A",
+        "content": "8MeV"
+      },
+      {
+        "label": "B",
+        "content": "16MeV"
+      },
+      {
+        "label": "C",
+        "content": "26MeV"
+      },
+      {
+        "label": "D",
+        "content": "52MeV"
+      }
+    ],
+    "questionImages": [],
+    "correctAnswer": "C",
+    "standardAnalysis": "求出核反应过程中的质量亏损，再根据爱因斯坦质能方程进行求解。解：反应过程中的质量亏损约为： △m＝4mp m﹣ α ＝4×1.0078u 4.0026u﹣ ＝0.0286u，由于 1u＝931MeV/c2，根据爱因斯坦质能方程可得：△E＝△mc2＝26MeV，故 C 正确，ABD 错误。故选：C。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "近代物理",
+      "原子与原子核"
+    ],
+    "difficultyLevel": "medium",
+    "difficultyReason": "需要结合两个相关规律或逐项完成多步判断。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\物理\\高考物理全国123卷\\2019年全国统一高考物理试卷（新课标ⅱ）（含解析版）.pdf",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\物理\\高考物理全国123卷\\2019年全国统一高考物理试卷（新课标ⅱ）（含解析版）.pdf"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2018,
+    "region": "全国",
+    "paperName": "2018年全国统一高考物理试卷（新课标ⅲ）",
+    "questionNumber": "1",
+    "questionType": "单选题",
+    "content": "（6 分）1934 年，约里奥 ﹣居里夫妇用 α 粒子轰击铝核 Al，产生了第一个人工放射性核素 X：α+ Al→n+X．X 的原子序数和质量数分别为（）",
+    "options": [
+      {
+        "label": "A",
+        "content": "15 和 28"
+      },
+      {
+        "label": "B",
+        "content": "15 和 30"
+      },
+      {
+        "label": "C",
+        "content": "16 和 30"
+      },
+      {
+        "label": "D",
+        "content": "17 和 31"
+      }
+    ],
+    "questionImages": [],
+    "correctAnswer": "B",
+    "standardAnalysis": "明确 α 粒子的质量数和电荷数，同时知道核反应中生成中子，再根据核反应方程中质量数和电荷数守恒即可求出 X 的质量数和电荷数。解：设 X 的质量数为 m，电荷数为 n，根据核反应中质量数守恒和电荷数守恒可知： 4+27=1+m； 2+13=0+n 解得：m=30；n=15；故其原子序数为 15，质量数为 30；故 B 正确，ACD 错误。故选：B。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "近代物理",
+      "原子与原子核"
+    ],
+    "difficultyLevel": "medium",
+    "difficultyReason": "需要结合两个相关规律或逐项完成多步判断。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\物理\\高考物理全国123卷\\2018年全国统一高考物理试卷（新课标ⅲ）（含解析版）.pdf",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\物理\\高考物理全国123卷\\2018年全国统一高考物理试卷（新课标ⅲ）（含解析版）.pdf"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2010,
+    "region": "全国",
+    "paperName": "2010年全国统一高考物理试卷（全国卷ⅱ）",
+    "questionNumber": "1",
+    "questionType": "单选题",
+    "content": "（6分）原子核 ZAX与氘核 12H反应生成一个 α粒子和一个质子．由此可知（）",
+    "options": [
+      {
+        "label": "A",
+        "content": "A=2，Z=1"
+      },
+      {
+        "label": "B",
+        "content": "A=2，Z=2"
+      },
+      {
+        "label": "C",
+        "content": "A=3，Z=3"
+      },
+      {
+        "label": "D",
+        "content": "A=3，Z=2"
+      }
+    ],
+    "questionImages": [],
+    "correctAnswer": "D",
+    "standardAnalysis": "解本题的关键是学会书写核反应方程，在核反应过程中，电荷数和质量数是守恒的，根据这两个守恒从而确定 A和 Z的数值． 解：写出该反应的方程有：Z AX+1 2H→2 4He+1 1H 应用质量数与电荷数的守恒得：A+2=4+1，Z+1=2+1，解得 A=3，Z=2，故 ABC 错误，D正确。故选：D。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "近代物理",
+      "原子与原子核"
+    ],
+    "difficultyLevel": "medium",
+    "difficultyReason": "需要结合两个相关规律或逐项完成多步判断。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\物理\\高考物理全国123卷\\2010年全国统一高考物理试卷（全国卷ⅱ）（含解析版）.pdf",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\物理\\高考物理全国123卷\\2010年全国统一高考物理试卷（全国卷ⅱ）（含解析版）.pdf"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2008,
+    "region": "全国",
+    "paperName": "2008年全国统一高考物理试卷（全国卷ⅰ）",
+    "questionNumber": "5",
+    "questionType": "多选题",
+    "content": "（6分）三个原子核 X、Y、Z，X核放出一个正电子后变为 Y核，Y核与质子发生核反应后生成 Z核并放出一个氦核（ He）．则下面说法中正确的是",
+    "options": [
+      {
+        "label": "A",
+        "content": "X核比 Z核多一个质子"
+      },
+      {
+        "label": "B",
+        "content": "X核比 Z核少一个中子"
+      },
+      {
+        "label": "C",
+        "content": "X核的质量数比 Z核质量数大 3"
+      },
+      {
+        "label": "D",
+        "content": "X核与 Z核的总电荷是 Y核电荷的 2倍"
+      }
+    ],
+    "questionImages": [],
+    "correctAnswer": "CD",
+    "standardAnalysis": "根据题意写出核反应方程，再由质量守恒定律和核电荷数守恒来判断各选项． 解：A、设原子核X的质量数为 x，电荷数为 y，根据质量数守恒和电荷数守恒，可得原子核 Y的质量数为 x，电荷数为 y 1﹣ ，原子核 Z的质量数为 x 3﹣ ，电荷数为 y 2﹣ ．由此可得 X核的质子（y）比 Z核的质子（y 2﹣ ）多 2个，故 A错误； B、由 A可得 X核的中子（x y﹣ ）比 Z核的中子（x y 1﹣ ﹣ ）多 1个，故 B错误； C、X核的质量数（x）比 Z核的质量数（x 3﹣ ）多 3个，故 C正确； D、X核与 Z核的总电荷（2y 2﹣ ）是 Y核电荷（y 1﹣ ）的 2倍，故 D正确。故选：CD。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "近代物理",
+      "原子与原子核"
+    ],
+    "difficultyLevel": "medium",
+    "difficultyReason": "需要公式推导、实验数据处理或多个判断步骤。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\物理\\高考物理全国123卷\\2008年全国统一高考物理试卷（全国卷ⅰ）（含解析版）.pdf",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\物理\\高考物理全国123卷\\2008年全国统一高考物理试卷（全国卷ⅰ）（含解析版）.pdf"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2021,
+    "region": "浙江",
+    "paperName": "2021年浙江省物理选考（6月）物理试卷",
+    "questionNumber": "18",
+    "questionType": "实验填空题",
+    "content": "图示是“用双缝干涉测量光的波长”实验的装置。实验中: ①观察到较模糊的干涉条纹，要使条纹变得清晰，值得尝试的是___________。(单选） A.旋转测量头 B.增大单缝与双缝间的距离 C.调节拨杆使单缝与双缝平行 ②要增大观察到的条纹间距，正确的做法是___________ (单选） A.减小单缝与光源间的距离 B.减小单缝与双缝间的距离 C.增大透镜与单缝间的距离 D.增大双缝与测量头间的距离",
+    "options": null,
+    "questionImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\解析结果\\images\\物理_2021_浙江_2021年浙江省物理选考_6月_物理试卷_q18_p05_01.png",
+        "sourcePage": "5",
+        "description": "2021年浙江省物理选考（6月）物理试卷原卷第5页，第18题题目区域内插图"
+      }
+    ],
+    "correctAnswer": "(1). C (2). D",
+    "standardAnalysis": "①[1]若粗调后看不到清晰的干涉条纹，看到的是模糊不清的条纹，则最可能的原因是单缝与双缝不平行；要使条纹变得清晰，值得尝试的是调节拨杆使单缝与双缝平行。故选 C。 ②[2]根据 lx d lD = 可知要增大条纹间距可以增大双缝到光屏的距离 l，减小双缝的间距 d；故选 D。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "光学",
+      "光的传播与波动性"
+    ],
+    "difficultyLevel": "medium",
+    "difficultyReason": "需要公式推导、实验数据处理或多个判断步骤。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\物理\\2021年高考试卷\\2021年浙江省物理选考（6月）物理试卷（原卷版）.pdf",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\物理\\2021年高考试卷\\2021年浙江省物理选考（6月）物理试卷（解析版）.pdf"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2021,
+    "region": "全国",
+    "paperName": "2021年全国统一高考物理试卷（新课标ⅰ）",
+    "questionNumber": "9",
+    "questionType": "实验填空题",
+    "content": "某同学利用图（a）所示装置研究平抛运动的规律。实验时该同学使用频闪仪和照相机对做平抛运动的小球进行拍摄，频闪仪每隔 0.05s 发出一次闪光，某次拍摄后得到的照片如图（b）所示（图中未包括小球刚离开轨道的影像）。图中的背景是放在竖直平面内的带有方格的纸板，纸板与小球轨迹所在平面平行，其上每个方格的边长为5cm。该同学在实验中测得的小球影像的高度差已经在图（b）中标出。完成下列填空：（结果均保留 2位有效数字）（1）小球运动到图（b）中位置 A时，其速度的水平分量大小为___________ m/s，竖直分量大小为___________ m/s；（2）根据图（b）中数据可得，当地重力加速度的大小为___________ 2m/s 。",
+    "options": null,
+    "questionImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\解析结果\\images\\物理_2021_全国_2021年全国统一高考物理试卷_新课标_q09_p07_01.png",
+        "sourcePage": "7",
+        "description": "2021年全国统一高考物理试卷（新课标ⅰ）原卷第7页，第9题题目区域内插图"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\解析结果\\images\\物理_2021_全国_2021年全国统一高考物理试卷_新课标_q09_p08_02.png",
+        "sourcePage": "8",
+        "description": "2021年全国统一高考物理试卷（新课标ⅰ）原卷第8页，第9题题目区域内插图"
+      }
+    ],
+    "correctAnswer": "(1). 1.0 (2). 2.0 (3). 9.7",
+    "standardAnalysis": "（1）[1]因小球水平方向做匀速直线运动，因此速度为 0 0.05 m/s 1.0m/s0.05 xv t= = = [2]竖直方向做自由落体运动，因此 A点的竖直速度可由平均速度等于时间中点的瞬时速度求得 28 5 10 m/s 2.0m/s0.05 4 yv -× ×= = × （2）[3]由竖直方向的自由落体运动可得 3 4 2 1 24 y y y yg T + - -= 代入数据可得 29.7m/sg =",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "力学",
+      "力学实验"
+    ],
+    "difficultyLevel": "medium",
+    "difficultyReason": "需要完成实验原理判断、数据处理或多个操作步骤。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\物理\\2021年高考试卷\\2021年全国统一高考物理试卷（新课标ⅰ）（原卷版）.pdf",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\物理\\2021年高考试卷\\2021年全国统一高考物理试卷（新课标ⅰ）（含解析版）.pdf"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2021,
+    "region": "北京",
+    "paperName": "2021年北京市高考物理试卷",
+    "questionNumber": "15",
+    "questionType": "实验填空题",
+    "content": "物理实验一般都涉及实验目的、实验原理、实验仪器、实验方法、实验操作、数据分析等。例如：（1）实验仪器。用游标卡尺测某金属管的内径，示数如图 1所示。则该金属管的内径为________ mm。（2）数据分析。打点计时器在随物体做匀变速直线运动的纸带上打点，其中一部分如图 2 所示，B、C、D为纸带上标出的连续 3个计数点，相邻计数点之间还有 4个计时点没有标出。打点计时器接在频率为 50Hz的交流电源上。则打 C点时，纸带运动的速度 v_C = ________m/s（结果保留小数点后两位）。（3）实验原理。图 3为“探究加速度与力的关系”的实验装置示意图。认为桶和砂所受的重力等于使小车做匀加速直线运动的合力。实验中平衡了摩擦力后，要求桶和砂的总质量 m比小车质量 M小得多。请分析说明这个要求的理由。",
+    "options": null,
+    "questionImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\解析结果\\images\\物理_2021_北京_2021年北京市高考物理试卷_q15_p05_01.png",
+        "sourcePage": "5",
+        "description": "2021年北京市高考物理试卷原卷第5页，第15题题目区域内插图"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\解析结果\\images\\物理_2021_北京_2021年北京市高考物理试卷_q15_p06_02.png",
+        "sourcePage": "6",
+        "description": "2021年北京市高考物理试卷原卷第6页，第15题题目区域内插图"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\解析结果\\images\\物理_2021_北京_2021年北京市高考物理试卷_q15_p06_03.png",
+        "sourcePage": "6",
+        "description": "2021年北京市高考物理试卷原卷第6页，第15题题目区域内插图"
+      }
+    ],
+    "correctAnswer": "（1）31.4 mm；（2）0.44 m/s；（3）必须满足m≪M，使细绳拉力T近似等于桶和砂的重力mg",
+    "standardAnalysis": "（1）根据游标卡尺主尺和游标读数，金属管内径为 $31.4\\,\\mathrm{mm}$。\n\n（2）相邻计数点时间间隔为 $0.10\\,\\mathrm{s}$，用中间时刻速度公式 $v_C=(x_D-x_B)/(2T)$，得 $v_C=0.44\\,\\mathrm{m/s}$。\n\n（3）设小车质量为 $M$、桶和砂质量为 $m$，系统加速度 $a=mg/(M+m)$，细绳拉力 $T=Ma=Mmg/(M+m)=mg/(1+m/M)$。只有 $m\\ll M$ 时，才有 $T\\approx mg$。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "力学",
+      "力学实验"
+    ],
+    "difficultyLevel": "medium",
+    "difficultyReason": "需要公式推导、实验数据处理或多个判断步骤。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\物理\\2021年高考试卷\\2021年北京市高考物理试卷（原卷版）.pdf",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\物理\\2021年高考试卷\\2021年北京市高考物理试卷（含解析版）.pdf"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2021,
+    "region": "浙江",
+    "paperName": "2021年浙江省物理选考（6月）物理试卷",
+    "questionNumber": "17",
+    "questionType": "实验填空题",
+    "content": "在“验证机械能守恒定律”实验中，小王用如图 1所示的装置，让重物从静止开始下落，打出一条清晰的纸带，其中的一部分如图 2所示。O点是打下的第一个点，A、B、C和 D为另外 4个连续打下的点。 ①为了减小实验误差，对体积和形状相同的重物，实验时选择密度大的理由是___________。 ②已知交流电频率为50Hz ，重物质量为 200g，当地重力加速度 29.80m/sg = ，则从 O点到 C点，重物的重力势能变化量的绝对值 pED = ___________J、C点的动能 kCE = ___________J（计算结果均保留 3 位有效数字）。比较 kCE 与 pED 的大小，出现这一结果的原因可能是___________。 A.工作电压偏高 B.存在空气阻力和摩擦力 C.接通电源前释放了纸带",
+    "options": null,
+    "questionImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\解析结果\\images\\物理_2021_浙江_2021年浙江省物理选考_6月_物理试卷_q17_p04_01.png",
+        "sourcePage": "4",
+        "description": "2021年浙江省物理选考（6月）物理试卷原卷第4页，第17题题目区域内插图"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\解析结果\\images\\物理_2021_浙江_2021年浙江省物理选考_6月_物理试卷_q17_p04_02.png",
+        "sourcePage": "4",
+        "description": "2021年浙江省物理选考（6月）物理试卷原卷第4页，第17题题目区域内插图"
+      }
+    ],
+    "correctAnswer": "(1). 阻力与重力之比更小（或其它合理解释） (2). 0.547 (3). 0.588 (4). C",
+    "standardAnalysis": "①[1]在验证机械能守恒实验时阻力越小越好，因此密度大的阻力与重力之比更小 ②[2]由图中可知 OC 之间的距离为 27.90cmOCx = ，因此机械能的减少量为 p 0.2 9.8 0.2790J 0.547JOCE mgxD = = × × = [3]匀变速运动时间中点的速度等于这段时间的平均速度，因此 0.330 0.233 m/s 2.425m/s2 2 0.02 BD C xv T -= = = × 因此动能的增加量为 2 k 1 1 0.2 2.425 2.425J 0.588J2 2 C cE mv= = × × × = [4]工作电压偏高不会影响实验的误差，存在摩擦力会使重力势能的减少量大于动能的增加量，只有提前释放了纸带，纸带的初速度不为零，下落到同一位置的速度偏大才会导致动能的增加量大于重力势能的减少量。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "力学",
+      "力学实验"
+    ],
+    "difficultyLevel": "medium",
+    "difficultyReason": "需要公式推导、实验数据处理或多个判断步骤。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\物理\\2021年高考试卷\\2021年浙江省物理选考（6月）物理试卷（原卷版）.pdf",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\物理\\2021年高考试卷\\2021年浙江省物理选考（6月）物理试卷（解析版）.pdf"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2021,
+    "region": "湖南",
+    "paperName": "2021年湖南省普通高中学业水平选择性考试（湖南卷）",
+    "questionNumber": "11",
+    "questionType": "实验填空题",
+    "content": "某实验小组利用图（a）所示装置探究加速度与物体所受合外力的关系。主要实验步骤如下：（1）用游标卡尺测量垫块厚度 h，示数如图（b）所示， h = ___________cm ；（2）接通气泵，将滑块轻放在气垫导轨上，调节导轨至水平；（3）在右支点下放一垫块，改变气垫导轨的倾斜角度；（4）在气垫导轨合适位置释放滑块，记录垫块个数 n和滑块对应的加速度 a ；（5）在右支点下增加垫块个数（垫块完全相同），重复步骤（4），记录数据如下表： n 1 2 3 4 5 6 ( ) 2/ m sa -× 0.087 0.180 0.260 0.425 0.519 根据表中数据在图（c）上描点，绘制图线___________。如果表中缺少的第 4组数据是正确的，其应该是___________ 2m/s （保留三位有效数字）。",
+    "options": null,
+    "questionImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\解析结果\\images\\物理_2021_湖南_2021年湖南省普通高中学业水平选择性考试_湖南卷_q11_p03_01.png",
+        "sourcePage": "3",
+        "description": "2021年湖南省普通高中学业水平选择性考试（湖南卷）原卷第3页，第11题题目区域内插图"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\解析结果\\images\\物理_2021_湖南_2021年湖南省普通高中学业水平选择性考试_湖南卷_q11_p04_02.png",
+        "sourcePage": "4",
+        "description": "2021年湖南省普通高中学业水平选择性考试（湖南卷）原卷第4页，第11题题目区域内插图"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\解析结果\\images\\物理_2021_湖南_2021年湖南省普通高中学业水平选择性考试_湖南卷_q11_p04_03.png",
+        "sourcePage": "4",
+        "description": "2021年湖南省普通高中学业水平选择性考试（湖南卷）原卷第4页，第11题题目区域内插图"
+      }
+    ],
+    "correctAnswer": "(1). 1.02 (2). (3). 0.342",
+    "standardAnalysis": "（1）[1]垫块的厚度为 h=1cm+2×0.1mm=1.02cm （5）[2]绘制图线如图； [3]根据 nhmg mal× = 可知 a与 n 成正比关系，则根据图像可知，斜率 0.6 =7 4 ak = 解得 a=0.342m/s2",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "力学",
+      "力学实验"
+    ],
+    "difficultyLevel": "medium",
+    "difficultyReason": "需要公式推导、实验数据处理或多个判断步骤。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\物理\\2021年高考试卷\\2021年湖南省普通高中学业水平选择性考试（湖南卷）（原卷版）.pdf",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\物理\\2021年高考试卷\\2021年湖南省普通高中学业水平选择性考试（湖南卷）（解析版）.pdf"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2021,
+    "region": "山东",
+    "paperName": "2021年高考真题【品优教学】物理（山东卷）",
+    "questionNumber": "13",
+    "questionType": "实验填空题",
+    "content": "某乒乓球爱好者，利用手机研究乒乓球与球台碰撞过程中能量损失的情况。实验步骤如下： ①固定好手机，打开录音功能； ②从一定高度由静止释放乒乓球； ③手机记录下乒乓球与台面碰撞的声音，其随时间（单位：s）的变化图像如图所示。根据声音图像记录的碰撞次序及相应碰撞时刻，如下表所示。碰撞次序 1 2 3 4 5 6 7 碰撞时刻（s） 1.12 1.58 2.00 2.40 2.78 3.14 3.47 根据实验数据，回答下列向题：（1）利用碰撞时间间隔，计算出第 3次碰撞后乒乓球的弹起高度为___________m（保留 2 位有效数字，当地重力加速度 29.80m/sg = ）。（2）设碰撞后弹起瞬间与该次碰撞前瞬间速度大小的比值为 k，则每次碰撞损失的动能为碰撞前动能的___________倍（用 k 表示），第 3次碰撞过程中 k = ___________（保留 2位有效数字）。（3）由于存在空气阻力，第（1）问中计算的弹起高度___________（填“高于”或“低于”）实际弹起高度。",
+    "options": null,
+    "questionImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\解析结果\\images\\物理_2021_山东_2021年高考真题_品优教学_物理_山东卷_q13_p09_01.png",
+        "sourcePage": "9",
+        "description": "2021年高考真题【品优教学】物理（山东卷）原卷第9页，第13题题目区域内插图"
+      }
+    ],
+    "correctAnswer": "①. 0.20 ②. 21 k- ③. 0.95 ④. 高于",
+    "standardAnalysis": "（1）[1]第 3 次碰撞到第 4 次碰撞用时 0 2.40s 2.00s 0.40st = - = ，根据竖直上抛和自由落体运动的对称性可知第 3 次碰撞后乒乓球弹起的高度为 2 2 20 0 1 1( ) 9.8 0.2 m 0.20m2 2 2 th g= = × × » （2）[2]碰撞后弹起瞬间速度为2v ，碰撞前瞬间速度为 1v ，根据题意可知 2 1 v kv = 则每次碰撞损失的动能与碰撞前动能的比值为 2 2 2 1 2 2 2 2 2 1 1 1 1 1 2 2 2 1 11 1 2 2 mv mv mv k mv mv - = - = - [3]第 3 次碰撞前瞬间速度为第 2 次碰后从最高点落地瞬间的速度 2.00 1.58( ) 0.212v gt g g -= = = 第 3 次碰撞后瞬间速度为 2.40 2.00( ) 0.202v gt g g -¢ = ¢ = = 则第 3 次碰撞过程中 0.20 0.950.21 vk v ¢= = » （3）[4]由于存在空气阻力，乒乓球在上升过程中受到向下的阻力和重力，加速度变大，上升的高度变小，所以第（1）问中计算的弹起高度高于实际弹起的高度。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "力学",
+      "动量与能量综合"
+    ],
+    "difficultyLevel": "medium",
+    "difficultyReason": "需要公式推导、实验数据处理或多个判断步骤。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\物理\\2021年高考试卷\\2021年高考真题【品优教学】物理（山东卷)（原卷版）.pdf",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\物理\\2021年高考试卷\\2021年高考真题【品优教学】物理（山东卷)（含解析版）.pdf"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2021,
+    "region": "山东",
+    "paperName": "2021年高考真题【品优教学】物理（山东卷）",
+    "questionNumber": "14",
+    "questionType": "实验填空题",
+    "content": "热敏电阻是传感器中经常使用的元件，某学习小组要探究一热敏电阻的阻值随温度变化的规律。可供选择的器材有：待测热敏电阻 TR （实验温度范围内，阻值约几百欧到几千欧）；电源 E（电动势1.5V，内阻 r 约为 0.5Ω）；电阻箱 R（阻值范围0 ~ 9999.99Ω ）；滑动变阻器 1R （最大阻值 20Ω）；滑动变阻器 2R （最大阻值 2000Ω）；微安表（量程 100μA ，内阻等于 2500Ω）；开关两个，温控装置一套，导线若干。同学们设计了如图甲所示的测量电路，主要实验步骤如下： ①按图示连接电路； ②闭合 1S 、 2S ，调节滑动变阻器滑片 P的位置，使微安表指针满偏； ③保持滑动变阻器滑片 P的位置不变，断开 2S ，调节电阻箱，使微安表指针半偏； ④记录此时的温度和电阻箱的阻值。回答下列问题：（1）为了更准确地测量热敏电阻的阻值，滑动变阻器应选用___________（填“ 1R ”或“ 2R ”）。（2）请用笔画线代替导线，在答题卡上将实物图（不含温控装置）连接成完整电路______ ____。（3）某温度下微安表半偏时，电阻箱的读数为6000.00W，该温度下热敏电阻的测量值为 ___________ Ω（结果保留到个位），该测量值___________（填“大于”或“小于”）真实值。（4）多次实验后，学习小组绘制了如图乙所示的图像。由图像可知。该热敏电阻的阻值随温度的升高逐渐___________（填“增大”或“减小”）。",
+    "options": null,
+    "questionImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\解析结果\\images\\物理_2021_山东_2021年高考真题_品优教学_物理_山东卷_q14_p10_01.png",
+        "sourcePage": "10",
+        "description": "2021年高考真题【品优教学】物理（山东卷）原卷第10页，第14题题目区域内插图"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\解析结果\\images\\物理_2021_山东_2021年高考真题_品优教学_物理_山东卷_q14_p11_02.png",
+        "sourcePage": "11",
+        "description": "2021年高考真题【品优教学】物理（山东卷）原卷第11页，第14题题目区域内插图"
+      }
+    ],
+    "correctAnswer": "①. 1R ②. ③. 3500 ④. 大于 ⑤. 减小",
+    "standardAnalysis": "（1）[1]用半偏法测量热敏电阻的阻值，尽可能让该电路的电压在 S2闭合前、后保持不变，由于该支路与滑动变阻器前半部分并联，滑动变阻器的阻值越小，S2闭合前、后该部分电阻变化越小，从而电压的值变化越小，故滑动变阻器应选 R1 （2）[2]电路连接图如图所示（3）[3]微安表半偏时，该支路的总电阻为原来的 2 倍，即 6000ΩT AR R m+ = 可得 3500ΩTR = [4]当断开 S2，微安表半偏时，由于该支路的电阻增加，电压略有升高，根据欧姆定律，总电阻比原来 2 倍略大，也就是电阻箱的阻值略大于热敏电阻与微安表的总电阻，而认为电阻箱的阻值等于热敏电阻与微安表的总电阻，因此热敏电阻的测量值比真实值偏大。（4）[5]由于是 1ln TR T- 图像，当温度 T升高时， 1 T 减小，从图中可以看出 ln TR 减小，从而 TR 减小，因此热敏电阻随温度的升高逐渐减小。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "热学",
+      "分子动理论与内能"
+    ],
+    "difficultyLevel": "medium",
+    "difficultyReason": "需要公式推导、实验数据处理或多个判断步骤。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\物理\\2021年高考试卷\\2021年高考真题【品优教学】物理（山东卷)（原卷版）.pdf",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\物理\\2021年高考试卷\\2021年高考真题【品优教学】物理（山东卷)（含解析版）.pdf"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2021,
+    "region": "全国",
+    "paperName": "2021年全国统一高考物理试卷（新课标ⅰ）",
+    "questionNumber": "10",
+    "questionType": "实验填空题",
+    "content": "一实验小组利用图（a）所示的电路测量—电池的电动势 E（约1.5V）和内阻 r（小于 2Ω）。图中电压表量程为1V，内阻 380.0ΩVR = ：定值电阻 0 20.0ΩR = ；电阻箱 R，最大阻值为999.9Ω ；S为开关。按电路图连接电路。完成下列填空：（1）为保护电压表，闭合开关前，电阻箱接入电路的电阻值可以选___________ Ω（填 “5.0”或“15.0”）；（2）闭合开关，多次调节电阻箱，记录下阻值 R和电压表的相应读数 U；（3）根据图（a）所示电路，用 R、 0R 、 VR 、E和 r表示 1 U ，得 1 U = ___________；（4）利用测量数据，做 1 RU - 图线，如图（b）所示：（5）通过图（b）可得 E = ___________V（保留 2位小数）， r = ___________ Ω（保留 1位小数）；（6）若将图（a）中的电压表当成理想电表，得到的电源电动势为 E¢，由此产生的误差为 100%E E E ¢ - × = ___________%。",
+    "options": null,
+    "questionImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\解析结果\\images\\物理_2021_全国_2021年全国统一高考物理试卷_新课标_q10_p09_01.png",
+        "sourcePage": "9",
+        "description": "2021年全国统一高考物理试卷（新课标ⅰ）原卷第9页，第10题题目区域内插图"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\解析结果\\images\\物理_2021_全国_2021年全国统一高考物理试卷_新课标_q10_p09_02.png",
+        "sourcePage": "9",
+        "description": "2021年全国统一高考物理试卷（新课标ⅰ）原卷第9页，第10题题目区域内插图"
+      }
+    ],
+    "correctAnswer": "(1). 15.0 (2). 0 0 0 0 ( )1V V V V R R R R rRER R E ER R + + × + + (3). 1.55 (4). 1.0 (5). 5",
+    "standardAnalysis": "（1）[1]为了避免电压表被烧坏，接通电路时电压表两端的电压不能比电表满偏电压大，则由并联电路分压可得 0 0 V V U E U R R R r R R -= + + 代入数据解得 7.5ΩR = 因此选15.0Ω。（3）[2]由闭合回路的欧姆定律可得 ( ) 0 0 V V UE U R r R R R R = + + + 化简可得 0 0 0 0 1 1 V V V V R R R R R rU ER R E ER R + += × + + （5）[3][4]由上面公式可得 0 0 1 19 V V R R kER R E + = = ， 0 0 1 1 19 V V R R rr bE ER R E E ++ = = + 由 1 RU - 图象计算可得 10.034VΩk -= × ， 10.68Vb -= 代入可得 1.55VE » ， 1.0Ωr » （6）[5]如果电压表为理想电压表，则可有 0 0 1 1 1 r RU E ER ER= + + 则此时 1' 20E k= 因此误差为 0 00 0 1 1 20 19 100 =51 19 k k k h - = ×",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "电磁学",
+      "恒定电流与电学实验"
+    ],
+    "difficultyLevel": "medium",
+    "difficultyReason": "需要公式推导、实验数据处理或多个判断步骤。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\物理\\2021年高考试卷\\2021年全国统一高考物理试卷（新课标ⅰ）（原卷版）.pdf",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\物理\\2021年高考试卷\\2021年全国统一高考物理试卷（新课标ⅰ）（含解析版）.pdf"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2021,
+    "region": "北京",
+    "paperName": "2021年北京市高考物理试卷",
+    "questionNumber": "16",
+    "questionType": "实验填空题",
+    "content": "在“测量金属丝的电阻率”实验中，某同学用电流表和电压表测量一金属丝的电阻。（1）该同学先用欧姆表“×1”挡粗测该金属丝的电阻，示数如图 1所示，对应的读数是________ Ω。（2）除电源（电动势 3.0 V，内阻不计）、电压表（量程 0 ~ 3 V，内阻约 3 kΩ）、开关、导线若干外，还提供如下实验器材：",
+    "options": [
+      {
+        "label": "A",
+        "content": "电流表（量程 0 ~ 0.6 A，内阻约 0.1 Ω）"
+      },
+      {
+        "label": "B",
+        "content": "电流表（量程 0 ~ 3.0 A，内阻约 0. 02 Ω）"
+      },
+      {
+        "label": "C",
+        "content": "滑动变阻器（最大阻值 10 Ω，额定电流 2 A）"
+      },
+      {
+        "label": "D",
+        "content": "滑动变阻器（最大阻值 1 kΩ，额定电流 0.5 A）为了调节方便、测量准确，实验中电流表应选用________，滑动变阻器应选用_______。（选填实验器材前对应的字母）（3）该同学测量金属丝两端的电压 U和通过金属丝的电流 I，得到多组数据，并在坐标图上标出，如图 2所示。请作出该金属丝的 U- I图线_____，根据图线得出该金属丝电阻 R =________Ω（结果保留小数点后两位）。（4）用电流传感器测量通过定值电阻的电流，电流随时间变化的图线如图 3所示。将定值电阻替换为小灯泡，电流随时间变化的图线如图 4所示，请分析说明小灯泡的电流为什么随时间呈现这样的变化。（）"
+      }
+    ],
+    "questionImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\解析结果\\images\\物理_2021_北京_2021年北京市高考物理试卷_q16_p06_01.png",
+        "sourcePage": "6",
+        "description": "2021年北京市高考物理试卷原卷第6页，第16题题目区域内插图"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\解析结果\\images\\物理_2021_北京_2021年北京市高考物理试卷_q16_p07_02.png",
+        "sourcePage": "7",
+        "description": "2021年北京市高考物理试卷原卷第7页，第16题题目区域内插图"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\解析结果\\images\\物理_2021_北京_2021年北京市高考物理试卷_q16_p07_03.png",
+        "sourcePage": "7",
+        "description": "2021年北京市高考物理试卷原卷第7页，第16题题目区域内插图"
+      }
+    ],
+    "correctAnswer": "（1）6 Ω；（2）A、C；（3）按数据点作U-I拟合直线，R=5.80 Ω；（4）见解析",
+    "standardAnalysis": "（1）欧姆表使用 $\\times 1$ 挡，读数为 $6\\,\\Omega$。\n\n（2）电源电动势为 $3.0\\,\\mathrm{V}$，回路最大电流约为 $I_{\\max}=3.0/6=0.5\\,\\mathrm{A}$，电流表选 A；为便于调节并提高测量精度，滑动变阻器选 C。\n\n（3）连接 $U$-$I$ 数据点并作拟合直线，斜率给出 $R=U/I=5.80\\,\\Omega$。\n\n（4）刚闭合开关时灯丝温度低、电阻小，电流较大；随后灯丝升温、电阻增大，电流逐渐减小；发热与散热平衡后温度和电阻稳定，电流保持不变。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "电磁学",
+      "恒定电流与电学实验"
+    ],
+    "difficultyLevel": "medium",
+    "difficultyReason": "需要完成实验原理判断、数据处理或多个操作步骤。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\物理\\2021年高考试卷\\2021年北京市高考物理试卷（原卷版）.pdf",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\物理\\2021年高考试卷\\2021年北京市高考物理试卷（含解析版）.pdf"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2021,
+    "region": "河北",
+    "paperName": "2021年河北省普通高中学业水平选择性考试（河北卷）",
+    "questionNumber": "11",
+    "questionType": "实验填空题",
+    "content": "某同学研究小灯泡的伏安特性，实验室提供的器材有；小灯泡（ 6.3V， 0.15A ），直流电源（9V），滑动变阻器，量程合适的电压表和电流表，开关和导线若干，设计的电路如图 1所示。（1）根据图 1，完成图 2中的实物连线______；（2）按照图 1 连线后，闭合开关，小灯泡闪亮一下后熄灭，观察发现灯丝被烧断，原因可能是______（单项选择，填正确答案标号）； A．电流表短路 B．滑动变阻器的滑片接触不良 C．滑动变阻器滑片的初始位置在 b 端（3）更换小灯泡后，该同学正确完成了实验操作，将实验数据描点作图，得到 I U- 图像，其中一部分如图 3所示，根据图像计算出 P点对应状态下小灯泡的电阻为______ Ω（保留三位有效数字）。",
+    "options": null,
+    "questionImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\解析结果\\images\\物理_2021_河北_2021年河北省普通高中学业水平选择性考试_河北卷_q11_p03_01.png",
+        "sourcePage": "3",
+        "description": "2021年河北省普通高中学业水平选择性考试（河北卷）原卷第3页，第11题题目区域内插图"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\解析结果\\images\\物理_2021_河北_2021年河北省普通高中学业水平选择性考试_河北卷_q11_p03_02.png",
+        "sourcePage": "3",
+        "description": "2021年河北省普通高中学业水平选择性考试（河北卷）原卷第3页，第11题题目区域内插图"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\解析结果\\images\\物理_2021_河北_2021年河北省普通高中学业水平选择性考试_河北卷_q11_p04_03.png",
+        "sourcePage": "4",
+        "description": "2021年河北省普通高中学业水平选择性考试（河北卷）原卷第4页，第11题题目区域内插图"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\解析结果\\images\\物理_2021_河北_2021年河北省普通高中学业水平选择性考试_河北卷_q11_p04_04.png",
+        "sourcePage": "4",
+        "description": "2021年河北省普通高中学业水平选择性考试（河北卷）原卷第4页，第11题题目区域内插图"
+      }
+    ],
+    "correctAnswer": "(1). (2). C (3). 27.0",
+    "standardAnalysis": "（1）[1]电流表负极与滑动变阻器的右端的b 位置连接，如图（2）[2]开关闭合，小灯泡闪亮一下后灯丝烧断，说明通过小灯泡的电流过大。 A．电流表内阻非常小，短路几乎不影响通过小灯泡的电流，与灯丝烧断无关，A错误； B．滑动变阻器滑片接触不良，无电流通过小灯泡，B错误； C．滑动变阻器的滑片开始时置于b 端，小灯泡部分分压达到最大，通过电流最大，可能会烧断小灯泡灯丝，C正确；故选 C。（3）根据小灯泡的伏安特性曲线可知在 P点时的电压和电流分别为 2VU = ， 74mAI = 根据欧姆定律 UI R= 可知小灯泡的电阻为 3 2 Ω27.0Ω74 10 UR I -= = = ×",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "电磁学",
+      "恒定电流与电学实验"
+    ],
+    "difficultyLevel": "medium",
+    "difficultyReason": "需要公式推导、实验数据处理或多个判断步骤。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\物理\\2021年高考试卷\\2021年河北省普通高中学业水平选择性考试（河北卷）（原卷版）.pdf",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\物理\\2021年高考试卷\\2021年河北省普通高中学业水平选择性考试（河北卷）（解析版）.pdf"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2021,
+    "region": "广东",
+    "paperName": "2021年高考真题—— 物理（广东卷）",
+    "questionNumber": "12",
+    "questionType": "实验填空题",
+    "content": "（9 分）某小组研究热敏电阻阻值随温度的变化规律．根据实验需要已选用了规格和量程合适的器材． （1）先用多用电表预判热敏电阻阻值随温度的变化趋势．选择适当倍率的欧姆挡．将两表笔______，调节欧姆调零旋钮，使指针指向右边“0 Ω”处．测量时观察到热敏电阻温度越高，相同倍率下多用电表指针向右偏转角度越大，由此可判断热敏电阻阻值随温度的升高而 ____ __． （2）再按图 9 连接好电路进行测量. ①闭合开关 S 前，将滑动变阻器 1R 的滑片滑到_______端（选填“a”或“b”）. 将温控室的温度设置为 T，电阻箱 0R 调为某一阻值 01R .闭合开关 S，调节滑动变阻器 1R ，使电压表和电流表的指针偏转到某一位置.记录此时电压表和电流表的示数、T 和 01R .断开开关 S. 再将电压表与热敏电阻 C 端间的导线改接到 D 端，闭合开关 S.反复调节 0R 和 1R ，使电压表和电流表的示数与上述记录的示数相同.记录此时电阻箱的阻值 02R .断开开关 S. ②实验中记录的阻值 01R _____ 02R （选填“大于”、“小于”或“等于”）.此时热敏电阻阻值 TR = _ ____. （3）改变温控室的温度，测量不同温度时的热敏电阻阻值，可以得到热敏电阻阻值随温度的变化规律.",
+    "options": null,
+    "questionImages": [],
+    "correctAnswer": "(1). 短接 (2). 减小 (3). b (4). 大于 (5). 01 02R R-",
+    "standardAnalysis": "（1）[1][2]选择倍率适当的欧姆档，将两表笔短接；欧姆表指针向右偏转角度越大，则阻值越小，可判断热敏电阻的阻值随温度升高而减小。（2）①[3]闭合开关 S前，应将滑动变阻器 R1的阻值调到最大，即将滑片滑到 b端； ②[4][5]因两次电压表和电流表的示数相同，因为 01 02 TR R R= + 即 01 02TR R R= - 可知 R01大于 R02。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "电磁学",
+      "恒定电流与电学实验"
+    ],
+    "difficultyLevel": "medium",
+    "difficultyReason": "需要公式推导、实验数据处理或多个判断步骤。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\物理\\2021年高考试卷\\2021年高考真题—— 物理（广东卷） (原卷版）.pdf",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\物理\\2021年高考试卷\\2021年高考真题—— 物理（广东卷） (解析版）.pdf"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2009,
+    "region": "全国",
+    "paperName": "2009年全国统一高考物理试卷（全国卷ⅱ）",
+    "questionNumber": "9",
+    "questionType": "实验填空题",
+    "content": "（5 分）某同学利用多用电表测量二极管的反向电阻．完成下列测量步骤：（1）检查多用电表的机械调零． （2）将红、黑表笔分别插入正、负表笔插孔，将选择开关拔至电阻测量挡适当的量程处． （3）将红、黑表笔，进行欧姆调零． （4）测反向电阻时，将表笔接二极管正极，将表笔接二极管负极，读出电表示数． （5）为了得到准确的测量结果，应让电表指针尽量指向表盘（填“左侧”、 “右侧”或“中央”）；否则，在可能的条件下，应重新选择量程，并重复步骤（3）、（4）． （6）测量完成后，将选择开关拔向位置．",
+    "options": null,
+    "questionImages": [],
+    "correctAnswer": "（3）短接；（4）红；黑；（5）中央；（6）Off挡或交流电压最高挡．",
+    "standardAnalysis": "用欧姆表测电阻时，红表笔接电源的负极，黑表笔接电源的正极；使用欧姆表测电阻时，应把红黑表笔短接进行欧姆调零；应选择合适的挡位，使欧姆表指针指在表盘中央附近；多用电表使用完毕，应把选择开关打到 off 挡或交流电压最高挡． 解：（3）将红、黑表笔短接，进行欧姆调零． （4）测反向电阻时，将红表笔接二极管正极，将黑表笔接二极管负极，读出电表示数． （5）为了得到准确的测量结果，应让电表指针尽量指向表盘中央． （6）测量完成后，将选择开关拔向 Off挡或交流电压最高挡位置． 故答案为：（3）短接；（4）红；黑；（5）中央；（6）Off挡或交流电压最高挡．",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "电磁学",
+      "恒定电流与电学实验"
+    ],
+    "difficultyLevel": "hard",
+    "difficultyReason": "包含多个小问，需要综合两个以上规律并进行多步骤推理。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\物理\\高考物理全国123卷\\2009年全国统一高考物理试卷（全国卷ⅱ）（含解析版）.pdf",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\物理\\高考物理全国123卷\\2009年全国统一高考物理试卷（全国卷ⅱ）（含解析版）.pdf"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2021,
+    "region": "北京",
+    "paperName": "2021年北京市高考物理试卷",
+    "questionNumber": "17",
+    "questionType": "解答题",
+    "content": "如图所示，小物块 A、B的质量均为 m = 0.10 kg，B 静止在轨道水平段的末端。A 以水平速度 v₀ 与 B 碰撞，碰后两物块粘在一起水平抛出。抛出点距离水平地面的竖直高度为 h = 0.45 m，两物块落地点距离轨道末端的水平距离为 s = 0.30 m，取重力加速度 g = 10 m/s² 。求：（1）两物块在空中运动的时间 t；（2）两物块碰前 A的速度 v₀的大小；（3）两物块碰撞过程中损失的机械能 ΔE 。",
+    "options": null,
+    "questionImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\解析结果\\images\\物理_2021_北京_2021年北京市高考物理试卷_q17_p08_01.png",
+        "sourcePage": "8",
+        "description": "2021年北京市高考物理试卷原卷第8页，第17题题目区域内插图"
+      }
+    ],
+    "correctAnswer": "（1）0.30 s；（2）2.0 m/s；（3）0.10 J",
+    "standardAnalysis": "（1）竖直方向做自由落体运动，由 $h=\\frac{1}{2}gt^2$ 得 $t=0.30\\,\\mathrm{s}$。\n\n（2）碰后水平速度 $v=s/t=1.0\\,\\mathrm{m/s}$；碰撞过程动量守恒，$mv_0=2mv$，得 $v_0=2.0\\,\\mathrm{m/s}$。\n\n（3）损失的机械能为 $\\Delta E=\\frac{1}{2}mv_0^2-\\frac{1}{2}(2m)v^2=0.10\\,\\mathrm{J}$。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "力学",
+      "动量与能量综合"
+    ],
+    "difficultyLevel": "hard",
+    "difficultyReason": "包含多个小问，需要综合两个以上规律并进行多步骤推理。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\物理\\2021年高考试卷\\2021年北京市高考物理试卷（原卷版）.pdf",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\物理\\2021年高考试卷\\2021年北京市高考物理试卷（含解析版）.pdf"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2021,
+    "region": "浙江",
+    "paperName": "2021年浙江省物理选考（6月）物理试卷",
+    "questionNumber": "21",
+    "questionType": "解答题",
+    "content": "如图所示，水平地面上有一高 0.4mH = 的水平台面，台面上竖直放置倾角 37q = ° 的粗糙直轨道 AB 、水平光滑直轨道 BC、四分之一圆周光滑细圆管道 CD和半圆形光滑轨道 DEF ，它们平滑连接，其中管道 CD的半径 0.1mr = 、圆心在 1O 点，轨道 DEF 的半径 0.2mR = 、圆心在 2O 点， 1O 、D、 2O 和 F点均处在同一水平线上。小滑块从轨道 AB 上距台面高为 h的 P点静止下滑，与静止在轨道 BC 上等质量的小球发生弹性碰撞，碰后小球经管道 CD、轨道 DEF 从 F点竖直向下运动，与正下方固定在直杆上的三棱柱 G 碰撞，碰后速度方向水平向右，大小与碰前相同，最终落在地面上 Q点，已知小滑块与轨道 AB 间的动摩擦因数 1 12m = ，sin 37 0.6° = ，cos37 0.8° = 。（1）若小滑块的初始高度 0.9mh = ，求小滑块到达 B点时速度 0v 的大小；（2）若小球能完成整个运动过程，求 h的最小值 minh ；（3）若小球恰好能过最高点 E，且三棱柱 G的位置上下可调，求落地点 Q与 F点的水平距离 x的最大值 maxx 。",
+    "options": null,
+    "questionImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\解析结果\\images\\物理_2021_浙江_2021年浙江省物理选考_6月_物理试卷_q21_p06_01.png",
+        "sourcePage": "6",
+        "description": "2021年浙江省物理选考（6月）物理试卷原卷第6页，第21题题目区域内插图"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\解析结果\\images\\物理_2021_浙江_2021年浙江省物理选考_6月_物理试卷_q21_p06_02.png",
+        "sourcePage": "6",
+        "description": "2021年浙江省物理选考（6月）物理试卷原卷第6页，第21题题目区域内插图"
+      }
+    ],
+    "correctAnswer": "（1）4m/s；（2） min 0.45mh = ；（3）0.8m",
+    "standardAnalysis": "（1）小滑块在 AB 轨道上运动 0 21cos sin 2 hmgh mg mvm q q- × = 代入数据解得 0 4 4m / s3 ghv = = （2）小滑块与小球碰撞后动量守恒，机械能守恒，因此有 0 A Bmv mv mv= + ， 2 2 2 0 1 1 1 +2 2 2 A Bmv mv mv= 解得 0, 4m/sA Bv v= = 小球沿 CDEF 轨道运动，在最高点可得 2 minEvmg m R= 从 C点到 E点由机械能守恒可得 ( ) 2 2 min min 1 1 2 2 E Bmv mg R r mv+ + = 其中 min min 4 3 B ghv = ，解得 min 0.45mh = （3）设 F点到 G点的距离为 y，小球从 E点到 Q点的运动，由动能定理 2 2 min 1 1 ( )2 2 G Emv mv mg R y= + + 由平抛运动可得 Gx v t= ， 21 2H r y gt+ - = 联立可得水平距离为 2 (0.5 )(0.3 )x y y= - + 由数学知识可得当 0.5 0.3y y- = + 取最小，最小值为 min 0.8mx =",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "力学",
+      "动量与能量综合"
+    ],
+    "difficultyLevel": "hard",
+    "difficultyReason": "包含多个小问，需要综合两个以上规律并进行多步骤推理。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\物理\\2021年高考试卷\\2021年浙江省物理选考（6月）物理试卷（原卷版）.pdf",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\物理\\2021年高考试卷\\2021年浙江省物理选考（6月）物理试卷（解析版）.pdf"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2021,
+    "region": "山东",
+    "paperName": "2021年高考真题【品优教学】物理（山东卷）",
+    "questionNumber": "18",
+    "questionType": "解答题",
+    "content": "如图所示，三个质量均为 m的小物块 A、B、C，放置在水平地面上，A 紧靠竖直墙壁，一劲度系数为 k的轻弹簧将 A、B连接，C 紧靠 B，开始时弹簧处于原长，A、B、C 均静止。现给 C 施加一水平向左、大小为F的恒力，使 B、C一起向左运动，当速度为零时，立即撤去恒力，一段时间后 A 离开墙壁，最终三物块都停止运动。已知A、B、C与地面间的滑动摩擦力大小均为 f，最大静摩擦力等于滑动摩擦力，弹簧始终在弹性限度内。（弹簧的弹性势能可表示为： 2 p 1 2E kx= ，k为弹簧的劲度系数，x为弹簧的形变量）（1）求 B、C向左移动的最大距离 0x 和 B、C分离时 B的动能 kE ；（2）为保证 A能离开墙壁，求恒力的最小值 minF ；（3）若三物块都停止时 B、C 间的距离为 BCx ，从 B、C分离到 B 停止运动的整个过程，B 克服弹簧弹力做的功为 W，通过推导比较 W与 BCfx 的大小；（4）若 5F f= ，请在所给坐标系中，画出 C向右运动过程中加速度 a 随位移 x变化的图像，并在坐标轴上标出开始运动和停止运动时的 a、x值（用 f、k、m 表示），不要求推导过程。以撤去 F时 C的位置为坐标原点，水平向右为正方向。",
+    "options": null,
+    "questionImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\解析结果\\images\\物理_2021_山东_2021年高考真题_品优教学_物理_山东卷_q18_p14_01.png",
+        "sourcePage": "14",
+        "description": "2021年高考真题【品优教学】物理（山东卷）原卷第14页，第18题题目区域内插图"
+      }
+    ],
+    "correctAnswer": "（1） 0 2 4F fx k -= 、 2 2 k 6 8F fF fE k - += ；（2） min 10(3 ) 2F f = + ；（3） BCW fx< ；（4）",
+    "standardAnalysis": "（1）从开始到 B、C向左移动到最大距离的过程中，以 B、C和弹簧为研究对象，由功能关系得 2 0 0 0 12 2Fx fx kx= + 弹簧恢复原长时 B、C分离，从弹簧最短到 B、C分离，以 B、C和弹簧为研究对象，由能量守恒得 2 0 0 k 1 2 22 kx fx E= + 联立方程解得 0 2 4F fx k -= 2 2 k 6 8F fF fE k - += （2）当 A 刚要离开墙时，设弹簧得伸长量为 x，以 A为研究对象，由平衡条件得 kx f= 若 A 刚要离开墙壁时 B 得速度恰好等于零，这种情况下恒力为最小值 minF ，从弹簧恢复原长到 A 刚要离开墙得过程中，以 B和弹簧为研究对象，由能量守恒得 2 k 1 2E kx fx= + 结合第（1）问结果可知 min 10(3 ) 2F f = ± 根据题意舍去 min 10(3 ) 2F f = - ，所以恒力得最小值为 min 10(3 ) 2F f = + （3）从 B、C分离到 B 停止运动，设 B的路程为 Bx ，C的位移为 Cx ，以 B为研究对象，由动能定理得 B k 0W fx E- - = - 以 C为研究对象，由动能定理得 kC 0fx E- = - 由 B、C 得运动关系得 CCB Bx x x> - 联立可知 BCW fx< （4）小物块 B、C向左运动过程中，由动能定理得 2 1 1 1 15 2 0 2fx fx kx- - = 解得撤去恒力瞬间弹簧弹力为 1 6kx f= 则坐标原点的加速度为 1 1 2 6 2 2 2 2 kx f f f fa m m m - -= = = 之后 C开始向右运动过程（B、C 系统未脱离弹簧）加速度为 2 2 kx fa m -= 可知加速度随位移 x为线性关系，随着弹簧逐渐恢复原长， x减小， a减小，弹簧恢复原长时，B和 C分离，之后 C只受地面的滑动摩擦力，加速度为 2 fa m= - 负号表示 C的加速度方向水平向左；从撤去恒力之后到弹簧恢复原长，以 B、C为研究对象，由动能定理得 2 2 1 1 1 1 2 22 2kx fx mv- = × 脱离弹簧瞬间后 C 速度为 v，之后 C受到滑动摩擦力减速至 0，由能量守恒得 2 2 1 2fx mv= 解得脱离弹簧后，C 运动的距离为 2 1 1 2x x= 则 C 最后停止的位移为 1 2 1 3 3 6 9 2 2 f fx x x k k+ = = × = 所以 C向右运动的图象为",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "力学",
+      "牛顿运动定律与弹力"
+    ],
+    "difficultyLevel": "hard",
+    "difficultyReason": "包含多个小问，需要综合两个以上规律并进行多步骤推理。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\物理\\2021年高考试卷\\2021年高考真题【品优教学】物理（山东卷)（原卷版）.pdf",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\物理\\2021年高考试卷\\2021年高考真题【品优教学】物理（山东卷)（含解析版）.pdf"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2021,
+    "region": "全国",
+    "paperName": "2021年全国统一高考物理试卷（新课标ⅰ）",
+    "questionNumber": "12",
+    "questionType": "解答题",
+    "content": "如图，一倾角为a 的光滑固定斜面的顶端放有质量 0.06kgM = 的 U 型导体框，导体框的电阻忽略不计；一电阻 3ΩR = 的金属棒 CD的两端置于导体框上，与导体框构成矩形回路 CDEF ； EF 与斜面底边平行，长度 0.6mL = 。初始时 CD与 EF 相距 0 0.4ms = ，金属棒与导体框同时由静止开始下滑，金属棒下滑距离 1 3 m16s = 后进入一方向垂直于斜面的匀强磁场区域，磁场边界（图中虚线）与斜面底边平行；金属棒在磁场中做匀速运动，直至离开磁场区域。当金属棒离开磁场的瞬间，导体框的 EF 边正好进入磁场，并在匀速运动一段距离后开始加速。已知金属棒与导体框之间始终接触良好，磁场的磁感应强度大小 1TB = ，重力加速度大小取 210m/s ,sin 0.6g a= = 。求：（1）金属棒在磁场中运动时所受安培力的大小；（2）金属棒的质量以及金属棒与导体框之间的动摩擦因数；（3）导体框匀速运动的距离。（二）选考题： [物理—选修 3-3]",
+    "options": null,
+    "questionImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\解析结果\\images\\物理_2021_全国_2021年全国统一高考物理试卷_新课标_q12_p11_01.png",
+        "sourcePage": "11",
+        "description": "2021年全国统一高考物理试卷（新课标ⅰ）原卷第11页，第12题题目区域内插图"
+      }
+    ],
+    "correctAnswer": "（1）0.18N ；（2） 0.02kgm = ， 3 8m = ；（3） 2 5 m18x =",
+    "standardAnalysis": "（1）根据题意可得金属棒和导体框在没有进入磁场时一起做匀加速直线运动，由动能定理可得 ( ) ( ) 2 1 0 1sin 2M m gs M m v a+ = + 代入数据解得 0 3 m/s2v = 金属棒在磁场中切割磁场产生感应电动势，由法拉第电磁感应定律可得 0E BLv= 由闭合回路的欧姆定律可得 EI R= 则导体棒刚进入磁场时受到的安培力为 0.18NF BIL= =安（2）金属棒进入磁场以后因为瞬间受到安培力的作用，根据楞次定律可知金属棒的安培力沿斜面向上，之后金属棒相对导体框向上运动，因此金属棒受到导体框给的沿斜面向下的滑动摩擦力，因匀速运动，可有 sin cosmg mg Fa m a+ = 安此时导体框向下做匀加速运动，根据牛顿第二定律可得 sin cosMg mg Maa m a- = 设磁场区域的宽度为 x，则金属棒在磁场中运动的时间为 0 xt v= 则此时导体框的速度为 1 0v v at= + 则导体框的位移 2 1 0 1 2x v t at= + 因此导体框和金属棒的相对位移为 2 1 1 2x x x atD = - = 由题意当金属棒离开磁场时金属框的上端 EF 刚好进入线框，则有位移关系 0s x x- D = 金属框进入磁场时匀速运动，此时的电动势为 1 1E BLv= ， 1 1 BLvI R= 导体框受到向上的安培力和滑动摩擦力，因此可得 1sin cosMg mg BI La m a= + 联立以上可得 0.3mx = ， 25m/sa = ， 0.02kgm = ， 3 8m = （3）金属棒出磁场以后，速度小于导体框的速度，因此受到向下的摩擦力，做加速运动，则有 1sin cosmg mg maa m a+ = 金属棒向下加速，导体框匀速，当共速时导体框不再匀速，则有 0 1 1 1v a t v+ = 导体框匀速运动的距离为 2 1 1x v t= 代入数据解得 2 2.5 5m m9 18x = = （二）选考题： [物理—选修 3-3]",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "电磁学",
+      "电磁感应"
+    ],
+    "difficultyLevel": "hard",
+    "difficultyReason": "包含多个小问，需要综合两个以上规律并进行多步骤推理。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\物理\\2021年高考试卷\\2021年全国统一高考物理试卷（新课标ⅰ）（原卷版）.pdf",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\物理\\2021年高考试卷\\2021年全国统一高考物理试卷（新课标ⅰ）（含解析版）.pdf"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2021,
+    "region": "北京",
+    "paperName": "2021年北京市高考物理试卷",
+    "questionNumber": "19",
+    "questionType": "解答题",
+    "content": "类比是研究问题的常用方法。（1）情境 1：物体从静止开始下落，除受到重力作用外，还受到一个与运动方向相反的空气阻力 f kv= （k为常量）的作用。其速率 v随时间 t的变化规律可用方程 G k m t D- D vv = （①式）描述，其中 m为物体质量，G为其重力。求物体下落的最大速率 mv 。（2）情境 2：如图 1所示，电源电动势为 E，线圈自感系数为 L，电路中的总电阻为 R。闭合开关 S，发现电路中电流 I随时间 t的变化规律与情境 1中物体速率 v随时间 t的变化规律类似。类比①式，写出电流 I随时间 t变化的方程；并在图 2中定性画出 I - t图线。（3）类比情境1和情境2中的能量转化情况，完成下表。情境 1 情境 2 物体重力势能的减少量物体动能的增加量电阻 R上消耗的电能",
+    "options": null,
+    "questionImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\解析结果\\images\\物理_2021_北京_2021年北京市高考物理试卷_q19_p09_01.png",
+        "sourcePage": "9",
+        "description": "2021年北京市高考物理试卷原卷第9页，第19题题目区域内插图"
+      }
+    ],
+    "correctAnswer": "（1） m G k=v ；（2）a. IE RI L t D- = D ，b. ；（3）见解析",
+    "standardAnalysis": "（1）当物体下落速度达到最大速度 mv 时，加速度为零，有 mG k= v 得 m G k=v （2）a.由闭合电路的欧姆定理有 IE RI L t D- = D b.由自感规律可知，线圈产生的自感电动势阻碍电流，使它逐渐变大，电路稳定后自感现象消失，I - t图线如答图 2 （3）各种能量转化的规律如图所示情境 1 情境 2 电源提供的电能线圈磁场能的增加量克服阻力做功消耗的机械能",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "电磁学",
+      "电磁感应"
+    ],
+    "difficultyLevel": "hard",
+    "difficultyReason": "包含多个小问，需要综合两个以上规律并进行多步骤推理。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\物理\\2021年高考试卷\\2021年北京市高考物理试卷（原卷版）.pdf",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\物理\\2021年高考试卷\\2021年北京市高考物理试卷（含解析版）.pdf"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2021,
+    "region": "湖南",
+    "paperName": "2021年湖南省普通高中学业水平选择性考试（湖南卷）",
+    "questionNumber": "13",
+    "questionType": "解答题",
+    "content": "带电粒子流的磁聚焦和磁控束是薄膜材料制备的关键技术之一、带电粒子流（每个粒子的质量为 m 、电荷量为 q+ ）以初速度v 垂直进入磁场，不计重力及带电粒子之间的相互作用。对处在 xOy 平面内的粒子，求解以下问题。（1）如图（a），宽度为 12r 的带电粒子流沿 x轴正方向射入圆心为 ( )10A r ，、半径为 1r 的圆形匀强磁场中，若带电粒子流经过磁场后都汇聚到坐标原点O，求该磁场磁感应强度 1B 的大小；（2）如图（a），虚线框为边长等于 22r 的正方形，其几何中心位于 ( )20C r -，。在虚线框内设计一个区域面积最小的匀强磁场，使汇聚到O点的带电粒子流经过该区域后宽度变为 22r ，并沿 x轴正方向射出。求该磁场磁感应强度 2B 的大小和方向，以及该磁场区域的面积（无需写出面积最小的证明过程）；（3）如图（b），虛线框Ⅰ和Ⅱ均为边长等于 3r 的正方形，虚线框Ⅲ和Ⅳ均为边长等于 4r 的正方形。在Ⅰ、Ⅱ、Ⅲ和Ⅳ中分别设计一个区域面积最小的匀强磁场，使宽度为 32r 的带电粒子流沿 x轴正方向射入Ⅰ和Ⅱ后汇聚到坐标原点O，再经过Ⅲ和Ⅳ后宽度变为 42r ，并沿 x轴正方向射出，从而实现带电粒子流的同轴控束。求Ⅰ和Ⅲ中磁场磁感应强度的大小，以及Ⅱ和Ⅳ中匀强磁场区域的面积（无需写出面积最小的证明过程）。",
+    "options": null,
+    "questionImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\解析结果\\images\\物理_2021_湖南_2021年湖南省普通高中学业水平选择性考试_湖南卷_q13_p05_01.png",
+        "sourcePage": "5",
+        "description": "2021年湖南省普通高中学业水平选择性考试（湖南卷）原卷第5页，第13题题目区域内插图"
+      }
+    ],
+    "correctAnswer": "（1） 1 mv qr ；（2） 2 mv qr ，垂直与纸面向里， 2 2 2S r= p ；（3） I 3 mvB qr= ， 4 III mvB qr= ， 2 II 3 1( 1)2S r p= - ， 2 IV 4 1( 1)2S r p= -",
+    "standardAnalysis": "（1）粒子垂直 x 进入圆形磁场，在坐标原点O 汇聚，满足磁聚焦的条件，即粒子在磁场中运动的半径等于圆形磁场的半径 1r ，粒子在磁场中运动，洛伦兹力提供向心力 2 1 1 vqvB m r= 解得 1 1 mvB qr= （2）粒子从O点进入下方虚线区域，若要从聚焦的O点飞入然后平行 x轴飞出，为磁发散的过程，即粒子在下方圆形磁场运动的轨迹半径等于磁场半径，粒子轨迹最大的边界如图所示，图中圆形磁场即为最小的匀强磁场区域磁场半径为 2r ，根据 2vqvB m r= 可知磁感应强度为 2 2 mvB qr= 根据左手定则可知磁场的方向为垂直纸面向里，圆形磁场的面积为 2 2 2S r= p （3）粒子在磁场中运动，3和 4为粒子运动的轨迹圆，1和 2为粒子运动的磁场的圆周根据 2vqvB m r= 可知 I和 III中的磁感应强度为 I 3 mvB qr= ， 4 III mvB qr= 图中箭头部分的实线为粒子运动的轨迹，可知磁场的最小面积为叶子形状，取 I 区域如图图中阴影部分面积的一半为四分之一圆周 AOBS ) 与三角形 AOBS 之差，所以阴影部分的面积为 2 2 2 1 3 3 3 1 1 12( ) 2 ( ) ( 1) 4 2 2 AOB AOBS S S r r r p p= - = × - = - ) 类似地可知 IV 区域的阴影部分面积为 2 2 2 IV 4 4 4 1 1 12 ( ) ( 1)4 2 2S r r r p p= × - = - 根据对称性可知 II中的匀强磁场面积为 2 II 3 1( 1)2S r p= -",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "电磁学",
+      "带电粒子在电磁场中的运动"
+    ],
+    "difficultyLevel": "hard",
+    "difficultyReason": "包含多个小问，需要综合两个以上规律并进行多步骤推理。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\物理\\2021年高考试卷\\2021年湖南省普通高中学业水平选择性考试（湖南卷）（原卷版）.pdf",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\物理\\2021年高考试卷\\2021年湖南省普通高中学业水平选择性考试（湖南卷）（解析版）.pdf"
+    },
+    "reviewStatus": "待审核"
+  }
+]

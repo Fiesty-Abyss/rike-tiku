@@ -1,0 +1,34 @@
+{
+  "sourceName": "试卷题干来源名称",
+  "sourceUrl": "local://或合法公开来源的原始地址",
+  "sourceCategory": "USER_PROVIDED",
+  "licenseStatus": "USER_OWNED",
+  "rightsEvidence": "试卷题干的权利或授权说明",
+  "termsCheckedAt": null,
+  "robotsCheckedAt": null,
+  "accessRestrictions": "LOCAL_FILE_ONLY",
+  "subject": "语文",
+  "year": null,
+  "region": null,
+  "paperType": null,
+  "answerSource": {
+    "sourceName": "答案来源名称",
+    "sourceUrl": "local://或合法公开来源的原始地址",
+    "sourceCategory": "USER_PROVIDED",
+    "licenseStatus": "USER_OWNED",
+    "rightsEvidence": "答案的权利或授权说明",
+    "termsCheckedAt": null,
+    "robotsCheckedAt": null,
+    "accessRestrictions": "LOCAL_FILE_ONLY"
+  },
+  "analysisSource": {
+    "sourceName": "解析来源名称",
+    "sourceUrl": "local://或合法公开来源的原始地址",
+    "sourceCategory": "USER_PROVIDED",
+    "licenseStatus": "USER_OWNED",
+    "rightsEvidence": "解析的权利或授权说明",
+    "termsCheckedAt": null,
+    "robotsCheckedAt": null,
+    "accessRestrictions": "LOCAL_FILE_ONLY"
+  }
+}

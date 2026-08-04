@@ -1,0 +1,443 @@
+[
+  {
+    "subject": "物理",
+    "year": 2021,
+    "region": "北京",
+    "paperName": "2021年北京市高考物理试卷",
+    "questionNumber": "4",
+    "questionType": "单选题",
+    "content": "比较 45°C的热水和 100°C的水蒸汽，下列说法正确的是（）",
+    "options": [
+      {
+        "label": "A",
+        "content": "热水分子的平均动能比水蒸汽的大"
+      },
+      {
+        "label": "B",
+        "content": "热水的内能比相同质量的水蒸汽的小"
+      },
+      {
+        "label": "C",
+        "content": "热水分子的速率都比水蒸汽的小"
+      },
+      {
+        "label": "D",
+        "content": "热水分子的热运动比水蒸汽的剧烈"
+      }
+    ],
+    "questionImages": [],
+    "correctAnswer": "B",
+    "standardAnalysis": "温度是分子平均动能的标志。$100\\,^\\circ\\mathrm{C}$ 水蒸气温度更高，分子平均动能和热运动剧烈程度均更大；“所有分子速率都更大”不成立。相同质量的热水变成水蒸气需要吸热，因此热水内能较小，选 B。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "热学",
+      "分子动理论与内能"
+    ],
+    "difficultyLevel": "easy",
+    "difficultyReason": "主要考查单一基础概念或规律的直接应用。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\物理\\2021年高考试卷\\2021年北京市高考物理试卷（原卷版）.pdf",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\物理\\2021年高考试卷\\2021年北京市高考物理试卷（含解析版）.pdf"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2021,
+    "region": "北京",
+    "paperName": "2021年北京市高考物理试卷",
+    "questionNumber": "6",
+    "questionType": "单选题",
+    "content": "2021年 5月，“天问一号”探测器成功在火星软着陆，我国成为世界上第一个首次探测火星就实现“绕、落、巡”三项任务的国家。“天问一号”在火星停泊轨道运行时，近火点距离火星表面 2.8×10² km、远火点距离火星表面 5.9×10⁵ km，则“天问一号” （）",
+    "options": [
+      {
+        "label": "A",
+        "content": "在近火点的加速度比远火点的小"
+      },
+      {
+        "label": "B",
+        "content": "在近火点的运行速度比远火点的小"
+      },
+      {
+        "label": "C",
+        "content": "在近火点的机械能比远火点的小"
+      },
+      {
+        "label": "D",
+        "content": "在近火点通过减速可实现绕火星做圆周运动"
+      }
+    ],
+    "questionImages": [],
+    "correctAnswer": "D",
+    "standardAnalysis": "由 $a=GM/r^2$ 可知近火点加速度较大；由开普勒第二定律可知近火点速度较大；探测器在同一椭圆轨道上运行时机械能不变。近火点速度高于该处圆轨道速度，减速可转入圆轨道，选 D。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "力学",
+      "万有引力与天体运动"
+    ],
+    "difficultyLevel": "medium",
+    "difficultyReason": "需要结合两个相关规律或逐项完成多步判断。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\物理\\2021年高考试卷\\2021年北京市高考物理试卷（原卷版）.pdf",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\物理\\2021年高考试卷\\2021年北京市高考物理试卷（含解析版）.pdf"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2021,
+    "region": "北京",
+    "paperName": "2021年北京市高考物理试卷",
+    "questionNumber": "8",
+    "questionType": "单选题",
+    "content": "如图所示，高速公路上汽车定速巡航（即保持汽车的速率不变）通过路面 abcd，其中 ab 段为平直上坡路面，bc段为水平路面，cd段为平直下坡路面。不考虑整个过程中空气阻力和摩擦阻力的大小变化。下列说法正确的是（）",
+    "options": [
+      {
+        "label": "A",
+        "content": "在 ab段汽车的输出功率逐渐减小"
+      },
+      {
+        "label": "B",
+        "content": "汽车在 ab段的输出功率比 bc段的大"
+      },
+      {
+        "label": "C",
+        "content": "在 cd段汽车的输出功率逐渐减小"
+      },
+      {
+        "label": "D",
+        "content": "汽车在 cd段的输出功率比 bc段的大"
+      }
+    ],
+    "questionImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\解析结果\\images\\物理_2021_北京_2021年北京市高考物理试卷_q08_p03_01.png",
+        "sourcePage": "3",
+        "description": "2021年北京市高考物理试卷原卷第3页，第8题题目区域内插图"
+      }
+    ],
+    "correctAnswer": "B",
+    "standardAnalysis": "汽车定速且各路段坡度不变。上坡段牵引力为 $F_{\\mathrm{up}}=f+mg\\sin\\theta$，功率大于水平路段且保持不变；下坡段牵引力为 $F_{\\mathrm{down}}=f-mg\\sin\\theta$，功率小于水平路段且保持不变，选 B。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "力学",
+      "功和功率"
+    ],
+    "difficultyLevel": "easy",
+    "difficultyReason": "主要考查单一基础概念或规律的直接应用。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\物理\\2021年高考试卷\\2021年北京市高考物理试卷（原卷版）.pdf",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\物理\\2021年高考试卷\\2021年北京市高考物理试卷（含解析版）.pdf"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2021,
+    "region": "北京",
+    "paperName": "2021年北京市高考物理试卷",
+    "questionNumber": "10",
+    "questionType": "单选题",
+    "content": "如图所示，圆盘在水平面内以角速度 ω绕中心轴匀速转动，圆盘上距轴 r 处的P点有一质量为 m的小物体随圆盘一起转动。某时刻圆盘突然停止转动，小物体由 P点滑至圆盘上的某点停止。下列说法正确的是（）",
+    "options": [
+      {
+        "label": "A",
+        "content": "圆盘停止转动前，小物体所受摩擦力的方向沿运动轨迹切线方向"
+      },
+      {
+        "label": "B",
+        "content": "圆盘停止转动前，小物体运动一圈所受摩擦力的冲量大小为 2mωr"
+      },
+      {
+        "label": "C",
+        "content": "圆盘停止转动后，小物体沿圆盘半径方向运动"
+      },
+      {
+        "label": "D",
+        "content": "圆盘停止转动后，小物体整个滑动过程所受摩擦力的冲量大小为 mωr"
+      }
+    ],
+    "questionImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\解析结果\\images\\物理_2021_北京_2021年北京市高考物理试卷_q10_p03_01.png",
+        "sourcePage": "3",
+        "description": "2021年北京市高考物理试卷原卷第3页，第10题题目区域内插图"
+      }
+    ],
+    "correctAnswer": "D",
+    "standardAnalysis": "圆盘转动时，静摩擦力指向圆心并提供向心力；转一周后物体动量不变，合冲量为零。圆盘骤停后物体沿切线方向滑动，摩擦力使其最终停止，冲量大小等于初动量 $I=|\\Delta p|=m\\omega r$，选 D。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "力学",
+      "圆周运动与动量"
+    ],
+    "difficultyLevel": "medium",
+    "difficultyReason": "需要结合两个相关规律或逐项完成多步判断。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\物理\\2021年高考试卷\\2021年北京市高考物理试卷（原卷版）.pdf",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\物理\\2021年高考试卷\\2021年北京市高考物理试卷（含解析版）.pdf"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2021,
+    "region": "北京",
+    "paperName": "2021年北京市高考物理试卷",
+    "questionNumber": "11",
+    "questionType": "单选题",
+    "content": "某同学搬运如图所示的磁电式电流表时，发现表针晃动剧烈且不易停止。按照老师建议，该同学在两接线柱间接一根导线后再次搬运，发现表针晃动明显减弱且能很快停止。下列说法正确的是（）",
+    "options": [
+      {
+        "label": "A",
+        "content": "未接导线时，表针晃动过程中表内线圈不产生感应电动势"
+      },
+      {
+        "label": "B",
+        "content": "未接导线时，表针晃动剧烈是因为表内线圈受到安培力的作用"
+      },
+      {
+        "label": "C",
+        "content": "接上导线后，表针晃动过程中表内线圈不产生感应电动势"
+      },
+      {
+        "label": "D",
+        "content": "接上导线后，表针晃动减弱是因为表内线圈受到安培力的作用"
+      }
+    ],
+    "questionImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\解析结果\\images\\物理_2021_北京_2021年北京市高考物理试卷_q11_p04_01.png",
+        "sourcePage": "4",
+        "description": "2021年北京市高考物理试卷原卷第4页，第11题题目区域内插图"
+      }
+    ],
+    "correctAnswer": "D",
+    "standardAnalysis": "表针晃动时线圈切割磁感线，会产生感应电动势。未接导线时回路不闭合，没有感应电流和安培力；接上导线后形成闭合回路，感应电流受到的安培力阻碍线圈运动，使表针迅速减弱，选D。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "电磁学",
+      "电磁感应"
+    ],
+    "difficultyLevel": "easy",
+    "difficultyReason": "主要考查单一基础概念或规律的直接应用。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\物理\\2021年高考试卷\\2021年北京市高考物理试卷（原卷版）.pdf",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\物理\\2021年高考试卷\\2021年北京市高考物理试卷（含解析版）.pdf"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2021,
+    "region": "北京",
+    "paperName": "2021年北京市高考物理试卷",
+    "questionNumber": "13",
+    "questionType": "单选题",
+    "content": "某同学使用轻弹簧、直尺钢球等制作了一个“竖直加速度测量仪”。如图所示，弹簧上端固定，在弹簧旁沿弹簧长度方向固定一直尺。不挂钢球时，弹簧下端指针位于直尺 20cm 刻度处；下端悬挂钢球，静止时指针位于直尺 40cm刻度处。将直尺不同刻度对应的加速度标在直尺上，就可用此装置直接测量竖直方向的加速度。取竖直向上为正方向，重力加速度大小为 g。下列说法正确的是（）",
+    "options": [
+      {
+        "label": "A",
+        "content": "30cm刻度对应的加速度为 - 0.5g"
+      },
+      {
+        "label": "B",
+        "content": "40cm刻度对应的加速度为 g"
+      },
+      {
+        "label": "C",
+        "content": "50cm刻度对应的加速度为 2g"
+      },
+      {
+        "label": "D",
+        "content": "各刻度对应加速度的值是不均匀的"
+      }
+    ],
+    "questionImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\解析结果\\images\\物理_2021_北京_2021年北京市高考物理试卷_q13_p04_01.png",
+        "sourcePage": "4",
+        "description": "2021年北京市高考物理试卷原卷第4页，第13题题目区域内插图"
+      }
+    ],
+    "correctAnswer": "A",
+    "standardAnalysis": "弹簧原长对应 $20\\,\\mathrm{cm}$；静止在 $40\\,\\mathrm{cm}$ 时，伸长 $20\\,\\mathrm{cm}$，且 $k(0.20\\,\\mathrm{m})=mg$。指针在 $30\\,\\mathrm{cm}$ 时弹力为 $0.5mg$，取向上为正，有 $a=(0.5mg-mg)/m=-0.5g$。加速度与刻度呈线性关系，故选 A。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "力学",
+      "牛顿运动定律与弹力"
+    ],
+    "difficultyLevel": "medium",
+    "difficultyReason": "需要结合两个相关规律或逐项完成多步判断。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\物理\\2021年高考试卷\\2021年北京市高考物理试卷（原卷版）.pdf",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\物理\\2021年高考试卷\\2021年北京市高考物理试卷（含解析版）.pdf"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2021,
+    "region": "北京",
+    "paperName": "2021年北京市高考物理试卷",
+    "questionNumber": "14",
+    "questionType": "单选题",
+    "content": "北京高能光源是我国首个第四代同步辐射光源，计划于 2025年建成。同步辐射光具有光谱范围宽（从远红外到 X光波段，波长范围约为 10⁻⁵ m～10⁻¹¹ m，对应能量范围约为 10⁻¹ eV～10⁵ eV）、光源亮度高、偏振性好等诸多特点，在基础科学研究、应用科学和工艺学等领域已得到广泛应用。速度接近光速的电子在磁场中偏转时，会沿圆弧轨道切线发出电磁辐射，这个现象最初是在同步加速器上观察到的，称为“同步辐射”。以接近光速运动的单个电子能量约为 10⁹ eV，回旋一圈辐射的总能量约为 10⁴ eV。下列说法正确的是（）",
+    "options": [
+      {
+        "label": "A",
+        "content": "同步辐射的机理与氢原子发光的机理一样"
+      },
+      {
+        "label": "B",
+        "content": "用同步辐射光照射氢原子，不能使氢原子电离"
+      },
+      {
+        "label": "C",
+        "content": "蛋白质分子的线度约为 10⁻⁸ m，不能用同步辐射光得到其衍射图样"
+      },
+      {
+        "label": "D",
+        "content": "尽管向外辐射能量，但电子回旋一圈后能量不会明显减小"
+      }
+    ],
+    "questionImages": [],
+    "correctAnswer": "D",
+    "standardAnalysis": "同步辐射来自高速电子在磁场中的加速运动，机理不同于氢原子能级跃迁。同步辐射光子能量可超过氢原子电离能，且波长范围覆盖蛋白质尺度，可用于衍射。电子每圈损失能量约占 $10^{-5}$，能量不会明显减小，选 D。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "近代物理",
+      "原子与原子核"
+    ],
+    "difficultyLevel": "medium",
+    "difficultyReason": "需要结合两个相关规律或逐项完成多步判断。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\物理\\2021年高考试卷\\2021年北京市高考物理试卷（原卷版）.pdf",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\物理\\2021年高考试卷\\2021年北京市高考物理试卷（含解析版）.pdf"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2021,
+    "region": "北京",
+    "paperName": "2021年北京市高考物理试卷",
+    "questionNumber": "15",
+    "questionType": "实验填空题",
+    "content": "物理实验一般都涉及实验目的、实验原理、实验仪器、实验方法、实验操作、数据分析等。例如：（1）实验仪器。用游标卡尺测某金属管的内径，示数如图 1所示。则该金属管的内径为________ mm。（2）数据分析。打点计时器在随物体做匀变速直线运动的纸带上打点，其中一部分如图 2 所示，B、C、D为纸带上标出的连续 3个计数点，相邻计数点之间还有 4个计时点没有标出。打点计时器接在频率为 50Hz的交流电源上。则打 C点时，纸带运动的速度 v_C = ________m/s（结果保留小数点后两位）。（3）实验原理。图 3为“探究加速度与力的关系”的实验装置示意图。认为桶和砂所受的重力等于使小车做匀加速直线运动的合力。实验中平衡了摩擦力后，要求桶和砂的总质量 m比小车质量 M小得多。请分析说明这个要求的理由。",
+    "options": null,
+    "questionImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\解析结果\\images\\物理_2021_北京_2021年北京市高考物理试卷_q15_p05_01.png",
+        "sourcePage": "5",
+        "description": "2021年北京市高考物理试卷原卷第5页，第15题题目区域内插图"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\解析结果\\images\\物理_2021_北京_2021年北京市高考物理试卷_q15_p06_02.png",
+        "sourcePage": "6",
+        "description": "2021年北京市高考物理试卷原卷第6页，第15题题目区域内插图"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\解析结果\\images\\物理_2021_北京_2021年北京市高考物理试卷_q15_p06_03.png",
+        "sourcePage": "6",
+        "description": "2021年北京市高考物理试卷原卷第6页，第15题题目区域内插图"
+      }
+    ],
+    "correctAnswer": "（1）31.4 mm；（2）0.44 m/s；（3）必须满足m≪M，使细绳拉力T近似等于桶和砂的重力mg",
+    "standardAnalysis": "（1）根据游标卡尺主尺和游标读数，金属管内径为 $31.4\\,\\mathrm{mm}$。\n\n（2）相邻计数点时间间隔为 $0.10\\,\\mathrm{s}$，用中间时刻速度公式 $v_C=(x_D-x_B)/(2T)$，得 $v_C=0.44\\,\\mathrm{m/s}$。\n\n（3）设小车质量为 $M$、桶和砂质量为 $m$，系统加速度 $a=mg/(M+m)$，细绳拉力 $T=Ma=Mmg/(M+m)=mg/(1+m/M)$。只有 $m\\ll M$ 时，才有 $T\\approx mg$。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "力学",
+      "力学实验"
+    ],
+    "difficultyLevel": "medium",
+    "difficultyReason": "需要公式推导、实验数据处理或多个判断步骤。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\物理\\2021年高考试卷\\2021年北京市高考物理试卷（原卷版）.pdf",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\物理\\2021年高考试卷\\2021年北京市高考物理试卷（含解析版）.pdf"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2021,
+    "region": "北京",
+    "paperName": "2021年北京市高考物理试卷",
+    "questionNumber": "16",
+    "questionType": "实验填空题",
+    "content": "在“测量金属丝的电阻率”实验中，某同学用电流表和电压表测量一金属丝的电阻。（1）该同学先用欧姆表“×1”挡粗测该金属丝的电阻，示数如图 1所示，对应的读数是________ Ω。（2）除电源（电动势 3.0 V，内阻不计）、电压表（量程 0 ~ 3 V，内阻约 3 kΩ）、开关、导线若干外，还提供如下实验器材： A．电流表（量程 0 ~ 0.6 A，内阻约 0.1 Ω） B．电流表（量程 0 ~ 3.0 A，内阻约 0.02 Ω） C．滑动变阻器（最大阻值 10 Ω，额定电流 2 A） D．滑动变阻器（最大阻值 1 kΩ，额定电流 0.5 A）为了调节方便、测量准确，实验中电流表应选用________，滑动变阻器应选用_______。（选填实验器材前对应的字母）（3）该同学测量金属丝两端的电压 U和通过金属丝的电流 I，得到多组数据，并在坐标图上标出，如图 2所示。请作出该金属丝的 U-I图线_____，根据图线得出该金属丝电阻 R =________Ω（结果保留小数点后两位）。（4）用电流传感器测量通过定值电阻的电流，电流随时间变化的图线如图 3所示。将定值电阻替换为小灯泡，电流随时间变化的图线如图 4所示，请分析说明小灯泡的电流为什么随时间呈现这样的变化。",
+    "options": null,
+    "questionImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\解析结果\\images\\物理_2021_北京_2021年北京市高考物理试卷_q16_p06_01.png",
+        "sourcePage": "6",
+        "description": "2021年北京市高考物理试卷原卷第6页，第16题题目区域内插图"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\解析结果\\images\\物理_2021_北京_2021年北京市高考物理试卷_q16_p07_02.png",
+        "sourcePage": "7",
+        "description": "2021年北京市高考物理试卷原卷第7页，第16题题目区域内插图"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\解析结果\\images\\物理_2021_北京_2021年北京市高考物理试卷_q16_p07_03.png",
+        "sourcePage": "7",
+        "description": "2021年北京市高考物理试卷原卷第7页，第16题题目区域内插图"
+      }
+    ],
+    "correctAnswer": "（1）6 Ω；（2）A、C；（3）按数据点作U-I拟合直线，R=5.80 Ω；（4）见解析",
+    "standardAnalysis": "（1）欧姆表使用 $\\times 1$ 挡，读数为 $6\\,\\Omega$。\n\n（2）电源电动势为 $3.0\\,\\mathrm{V}$，回路最大电流约为 $I_{\\max}=3.0/6=0.5\\,\\mathrm{A}$，电流表选 A；为便于调节并提高测量精度，滑动变阻器选 C。\n\n（3）连接 $U$-$I$ 数据点并作拟合直线，斜率给出 $R=U/I=5.80\\,\\Omega$。\n\n（4）刚闭合开关时灯丝温度低、电阻小，电流较大；随后灯丝升温、电阻增大，电流逐渐减小；发热与散热平衡后温度和电阻稳定，电流保持不变。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "电磁学",
+      "恒定电流与电学实验"
+    ],
+    "difficultyLevel": "medium",
+    "difficultyReason": "需要公式推导、实验数据处理或多个判断步骤。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\物理\\2021年高考试卷\\2021年北京市高考物理试卷（原卷版）.pdf",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\物理\\2021年高考试卷\\2021年北京市高考物理试卷（含解析版）.pdf"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2021,
+    "region": "北京",
+    "paperName": "2021年北京市高考物理试卷",
+    "questionNumber": "17",
+    "questionType": "解答题",
+    "content": "如图所示，小物块 A、B的质量均为 m = 0.10 kg，B 静止在轨道水平段的末端。A 以水平速度 v₀ 与 B 碰撞，碰后两物块粘在一起水平抛出。抛出点距离水平地面的竖直高度为 h = 0.45 m，两物块落地点距离轨道末端的水平距离为 s = 0.30 m，取重力加速度 g = 10 m/s² 。求：（1）两物块在空中运动的时间 t；（2）两物块碰前 A的速度 v₀的大小；（3）两物块碰撞过程中损失的机械能 ΔE 。",
+    "options": null,
+    "questionImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\解析结果\\images\\物理_2021_北京_2021年北京市高考物理试卷_q17_p08_01.png",
+        "sourcePage": "8",
+        "description": "2021年北京市高考物理试卷原卷第8页，第17题题目区域内插图"
+      }
+    ],
+    "correctAnswer": "（1）0.30 s；（2）2.0 m/s；（3）0.10 J",
+    "standardAnalysis": "（1）竖直方向做自由落体运动，由 $h=\\frac{1}{2}gt^2$ 得 $t=0.30\\,\\mathrm{s}$。\n\n（2）碰后水平速度 $v=s/t=1.0\\,\\mathrm{m/s}$；碰撞过程动量守恒，$mv_0=2mv$，得 $v_0=2.0\\,\\mathrm{m/s}$。\n\n（3）损失的机械能为 $\\Delta E=\\frac{1}{2}mv_0^2-\\frac{1}{2}(2m)v^2=0.10\\,\\mathrm{J}$。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "力学",
+      "动量与能量综合"
+    ],
+    "difficultyLevel": "hard",
+    "difficultyReason": "包含多个小问，需要综合两个以上规律并进行多步骤推理。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\物理\\2021年高考试卷\\2021年北京市高考物理试卷（原卷版）.pdf",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\物理\\2021年高考试卷\\2021年北京市高考物理试卷（含解析版）.pdf"
+    },
+    "reviewStatus": "待审核"
+  }
+]

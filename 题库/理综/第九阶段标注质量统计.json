@@ -1,0 +1,440 @@
+{
+  "stage": "第九阶段：母题库知识点与难度标注",
+  "questions": {
+    "物理": 40,
+    "化学": 34,
+    "生物": 34
+  },
+  "totalQuestions": 108,
+  "distributions": {
+    "物理": {
+      "questions": 40,
+      "primaryKnowledge": {
+        "光学": 1,
+        "力学": 17,
+        "实验": 6,
+        "热学": 3,
+        "电磁学": 10,
+        "近代物理": 3
+      },
+      "difficulty": {
+        "easy": 5,
+        "medium": 19,
+        "hard": 16,
+        "null": 0
+      },
+      "nullCounts": {
+        "knowledgePoints": 0,
+        "difficultyLevel": 0,
+        "difficultyReason": 0
+      },
+      "byPaper": {
+        "2023年高考真题——理综（全国甲卷）": 14,
+        "2023年高考真题——理综（新课标卷）": 13,
+        "2024年高考真题——理综（新课标卷）": 13
+      },
+      "byType": {
+        "单选题": 15,
+        "多选题": 9,
+        "实验填空题": 6,
+        "解答题": 10
+      }
+    },
+    "化学": {
+      "questions": 34,
+      "primaryKnowledge": {
+        "化学反应原理": 10,
+        "化学基本概念": 5,
+        "实验化学": 9,
+        "有机化学": 6,
+        "物质结构": 4
+      },
+      "difficulty": {
+        "easy": 4,
+        "medium": 13,
+        "hard": 17,
+        "null": 0
+      },
+      "nullCounts": {
+        "knowledgePoints": 0,
+        "difficultyLevel": 0,
+        "difficultyReason": 0
+      },
+      "byPaper": {
+        "2023年高考真题——理综（全国甲卷）": 12,
+        "2023年高考真题——理综（新课标卷）": 11,
+        "2024年高考真题——理综（新课标卷）": 11
+      },
+      "byType": {
+        "单选题": 21,
+        "解答题": 13
+      }
+    },
+    "生物": {
+      "questions": 34,
+      "primaryKnowledge": {
+        "分子与细胞": 4,
+        "实验与探究": 3,
+        "生物技术实践": 6,
+        "稳态与环境": 15,
+        "遗传与进化": 6
+      },
+      "difficulty": {
+        "easy": 8,
+        "medium": 12,
+        "hard": 14,
+        "null": 0
+      },
+      "nullCounts": {
+        "knowledgePoints": 0,
+        "difficultyLevel": 0,
+        "difficultyReason": 0
+      },
+      "byPaper": {
+        "2023年高考真题——理综（全国甲卷）": 12,
+        "2023年高考真题——理综（新课标卷）": 11,
+        "2024年高考真题——理综（新课标卷）": 11
+      },
+      "byType": {
+        "单选题": 18,
+        "解答题": 16
+      }
+    }
+  },
+  "mvp": {
+    "物理": [
+      {
+        "year": 2023,
+        "paperName": "2023年高考真题——理综（新课标卷）",
+        "questionNumber": "14",
+        "questionType": "单选题",
+        "knowledgePoints": [
+          "力学>机械振动与机械波>波速、波长与频率"
+        ],
+        "difficultyLevel": "easy"
+      },
+      {
+        "year": 2023,
+        "paperName": "2023年高考真题——理综（新课标卷）",
+        "questionNumber": "16",
+        "questionType": "单选题",
+        "knowledgePoints": [
+          "近代物理>光子与原子跃迁>能级差与光子频率"
+        ],
+        "difficultyLevel": "medium"
+      },
+      {
+        "year": 2023,
+        "paperName": "2023年高考真题——理综（新课标卷）",
+        "questionNumber": "22",
+        "questionType": "实验填空题",
+        "knowledgePoints": [
+          "实验>电学实验>电容器充放电",
+          "电磁学>电容器>充放电规律"
+        ],
+        "difficultyLevel": "medium"
+      },
+      {
+        "year": 2023,
+        "paperName": "2023年高考真题——理综（全国甲卷）",
+        "questionNumber": "14",
+        "questionType": "单选题",
+        "knowledgePoints": [
+          "力学>抛体运动>平抛运动"
+        ],
+        "difficultyLevel": "easy"
+      },
+      {
+        "year": 2023,
+        "paperName": "2023年高考真题——理综（全国甲卷）",
+        "questionNumber": "15",
+        "questionType": "单选题",
+        "knowledgePoints": [
+          "近代物理>原子核>核反应中的守恒"
+        ],
+        "difficultyLevel": "easy"
+      },
+      {
+        "year": 2023,
+        "paperName": "2023年高考真题——理综（全国甲卷）",
+        "questionNumber": "18",
+        "questionType": "单选题",
+        "knowledgePoints": [
+          "电磁学>电场>电场线与带电粒子轨迹"
+        ],
+        "difficultyLevel": "medium"
+      },
+      {
+        "year": 2023,
+        "paperName": "2023年高考真题——理综（全国甲卷）",
+        "questionNumber": "34",
+        "questionType": "解答题",
+        "knowledgePoints": [
+          "光学>几何光学>折射、全反射与色散"
+        ],
+        "difficultyLevel": "hard"
+      },
+      {
+        "year": 2024,
+        "paperName": "2024年高考真题——理综（新课标卷）",
+        "questionNumber": "14",
+        "questionType": "单选题",
+        "knowledgePoints": [
+          "力学>运动学>运动图像"
+        ],
+        "difficultyLevel": "medium"
+      },
+      {
+        "year": 2024,
+        "paperName": "2024年高考真题——理综（新课标卷）",
+        "questionNumber": "20",
+        "questionType": "多选题",
+        "knowledgePoints": [
+          "电磁学>电磁感应>交变电流的产生"
+        ],
+        "difficultyLevel": "medium"
+      },
+      {
+        "year": 2024,
+        "paperName": "2024年高考真题——理综（新课标卷）",
+        "questionNumber": "21",
+        "questionType": "多选题",
+        "knowledgePoints": [
+          "热学>理想气体>循环过程与热力学第一定律"
+        ],
+        "difficultyLevel": "medium"
+      }
+    ],
+    "化学": [
+      {
+        "year": 2023,
+        "paperName": "2023年高考真题——理综（新课标卷）",
+        "questionNumber": "7",
+        "questionType": "单选题",
+        "knowledgePoints": [
+          "化学基本概念>化学与社会>材料和文物保护"
+        ],
+        "difficultyLevel": "easy"
+      },
+      {
+        "year": 2023,
+        "paperName": "2023年高考真题——理综（新课标卷）",
+        "questionNumber": "9",
+        "questionType": "单选题",
+        "knowledgePoints": [
+          "物质结构>晶体结构>化学键与晶胞"
+        ],
+        "difficultyLevel": "hard"
+      },
+      {
+        "year": 2023,
+        "paperName": "2023年高考真题——理综（新课标卷）",
+        "questionNumber": "10",
+        "questionType": "单选题",
+        "knowledgePoints": [
+          "化学反应原理>电化学>原电池"
+        ],
+        "difficultyLevel": "medium"
+      },
+      {
+        "year": 2023,
+        "paperName": "2023年高考真题——理综（全国甲卷）",
+        "questionNumber": "8",
+        "questionType": "单选题",
+        "knowledgePoints": [
+          "有机化学>有机物结构与性质>官能团"
+        ],
+        "difficultyLevel": "medium"
+      },
+      {
+        "year": 2023,
+        "paperName": "2023年高考真题——理综（全国甲卷）",
+        "questionNumber": "9",
+        "questionType": "单选题",
+        "knowledgePoints": [
+          "实验化学>基本操作>粗盐提纯与溶液配制"
+        ],
+        "difficultyLevel": "easy"
+      },
+      {
+        "year": 2023,
+        "paperName": "2023年高考真题——理综（全国甲卷）",
+        "questionNumber": "11",
+        "questionType": "单选题",
+        "knowledgePoints": [
+          "物质结构>元素周期律>短周期元素推断"
+        ],
+        "difficultyLevel": "medium"
+      },
+      {
+        "year": 2024,
+        "paperName": "2024年高考真题——理综（新课标卷）",
+        "questionNumber": "8",
+        "questionType": "单选题",
+        "knowledgePoints": [
+          "有机化学>高分子化学>加聚反应与官能团"
+        ],
+        "difficultyLevel": "medium"
+      },
+      {
+        "year": 2024,
+        "paperName": "2024年高考真题——理综（新课标卷）",
+        "questionNumber": "9",
+        "questionType": "单选题",
+        "knowledgePoints": [
+          "实验化学>气体制备与性质验证>铁与水蒸气反应"
+        ],
+        "difficultyLevel": "medium"
+      },
+      {
+        "year": 2024,
+        "paperName": "2024年高考真题——理综（新课标卷）",
+        "questionNumber": "12",
+        "questionType": "单选题",
+        "knowledgePoints": [
+          "化学反应原理>电化学>原电池与催化"
+        ],
+        "difficultyLevel": "medium"
+      },
+      {
+        "year": 2024,
+        "paperName": "2024年高考真题——理综（新课标卷）",
+        "questionNumber": "13",
+        "questionType": "单选题",
+        "knowledgePoints": [
+          "化学反应原理>水溶液中的离子平衡>分布系数与pH"
+        ],
+        "difficultyLevel": "hard"
+      }
+    ],
+    "生物": [
+      {
+        "year": 2023,
+        "paperName": "2023年高考真题——理综（新课标卷）",
+        "questionNumber": "1",
+        "questionType": "单选题",
+        "knowledgePoints": [
+          "分子与细胞>细胞的物质输入和输出>葡萄糖运输"
+        ],
+        "difficultyLevel": "easy"
+      },
+      {
+        "year": 2023,
+        "paperName": "2023年高考真题——理综（新课标卷）",
+        "questionNumber": "3",
+        "questionType": "单选题",
+        "knowledgePoints": [
+          "稳态与环境>免疫调节>体液免疫与细胞免疫"
+        ],
+        "difficultyLevel": "medium"
+      },
+      {
+        "year": 2023,
+        "paperName": "2023年高考真题——理综（新课标卷）",
+        "questionNumber": "5",
+        "questionType": "单选题",
+        "knowledgePoints": [
+          "遗传与进化>遗传规律>基因互作"
+        ],
+        "difficultyLevel": "hard"
+      },
+      {
+        "year": 2023,
+        "paperName": "2023年高考真题——理综（全国甲卷）",
+        "questionNumber": "1",
+        "questionType": "单选题",
+        "knowledgePoints": [
+          "分子与细胞>细胞的物质输入和输出>跨膜运输"
+        ],
+        "difficultyLevel": "easy"
+      },
+      {
+        "year": 2023,
+        "paperName": "2023年高考真题——理综（全国甲卷）",
+        "questionNumber": "4",
+        "questionType": "单选题",
+        "knowledgePoints": [
+          "实验与探究>细胞实验>植物细胞吸水和失水"
+        ],
+        "difficultyLevel": "medium"
+      },
+      {
+        "year": 2023,
+        "paperName": "2023年高考真题——理综（全国甲卷）",
+        "questionNumber": "5",
+        "questionType": "单选题",
+        "knowledgePoints": [
+          "稳态与环境>生态系统>营养级与能量流动"
+        ],
+        "difficultyLevel": "easy"
+      },
+      {
+        "year": 2024,
+        "paperName": "2024年高考真题——理综（新课标卷）",
+        "questionNumber": "2",
+        "questionType": "单选题",
+        "knowledgePoints": [
+          "稳态与环境>植物生命活动调节>气孔与水分代谢"
+        ],
+        "difficultyLevel": "medium"
+      },
+      {
+        "year": 2024,
+        "paperName": "2024年高考真题——理综（新课标卷）",
+        "questionNumber": "4",
+        "questionType": "单选题",
+        "knowledgePoints": [
+          "稳态与环境>生态系统>生态农业"
+        ],
+        "difficultyLevel": "easy"
+      },
+      {
+        "year": 2024,
+        "paperName": "2024年高考真题——理综（新课标卷）",
+        "questionNumber": "5",
+        "questionType": "单选题",
+        "knowledgePoints": [
+          "遗传与进化>遗传规律>PCR电泳与自由组合"
+        ],
+        "difficultyLevel": "hard"
+      },
+      {
+        "year": 2024,
+        "paperName": "2024年高考真题——理综（新课标卷）",
+        "questionNumber": "6",
+        "questionType": "单选题",
+        "knowledgePoints": [
+          "生物技术实践>微生物培养>细菌种群增长曲线"
+        ],
+        "difficultyLevel": "medium"
+      }
+    ]
+  },
+  "constraints": {
+    "protectedFieldsUnchanged": true,
+    "formulaAndObjectImagesUnchanged": true,
+    "reviewStatusAllPending": true,
+    "analysisReviewStatusAllPending": true,
+    "databaseConnected": false,
+    "newPapersAdded": false
+  },
+  "baseline": {
+    "protected": {
+      "物理": "5ddf33eb845b548f321970cd122ab5da4863592c7788587d7c4591f623b514f5",
+      "化学": "37105428751f0a630702bbb690e7fb02cace23cb2e545900c5c3e14dabcc0e96",
+      "生物": "8687be39ca95bf803a281c5f80d5227b1b4abf4f9719bfc05149f2edbfa9111c"
+    },
+    "json": {
+      "物理": "cec106960c6b1f4dd4762728ace2e933bf94e37124c1bf5927df843e01d10c1e",
+      "化学": "08904054d192048c3c072a55fa720f51a5b5df1fc32ff2de6e46274b67404355",
+      "生物": "2d02dbd3ebdb1929925da4329675b93e06301af9e8df968db836550af3d74677"
+    },
+    "xlsx": {
+      "物理": "b8dcd2ca84567101ef5ec4e9fd012a08f0d8e4a06b450abe8d9e82755a656838",
+      "化学": "ec239c1f012ea2adb376fca5d1dcdfa96f1ed240d2683e2b22d3c989238d1bb7",
+      "生物": "f203932332c4ca1c0f533239b2d11df6598f1dbe7d5fdf066980cee12178324c"
+    },
+    "imageDigest": "77345ec1af8ac82066c52ae611956061c39cce28d4b2de9942d36b9ecb24ff71",
+    "imageRecords": 1260
+  }
+}

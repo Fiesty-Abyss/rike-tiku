@@ -1,0 +1,473 @@
+[
+  {
+    "subject": "物理",
+    "year": 2023,
+    "region": "全国",
+    "paperName": "2023年高考真题——理综（新课标卷）",
+    "questionNumber": "15",
+    "questionType": "单选题",
+    "content": "无风时，雨滴受空气阻力的作用在地面附近会以恒定的速率竖直下落。一质量为m的雨滴在地面附近以速率v下落高度h的过程中，克服空气阻力做的功为（重力加速度大小为g）（ ）",
+    "options": [
+      {
+        "label": "A",
+        "content": "0"
+      },
+      {
+        "label": "B",
+        "content": "mgh"
+      },
+      {
+        "label": "C",
+        "content": "〔公式对象 F108〕"
+      },
+      {
+        "label": "D",
+        "content": "〔公式对象 F109〕"
+      }
+    ],
+    "questionImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\物理\\images\\q15_题干_formula_108.png",
+        "sourcePage": "11",
+        "description": "Word第11页，第15题题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\物理\\images\\q15_题干_formula_109.png",
+        "sourcePage": "11",
+        "description": "Word第11页，第15题题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      }
+    ],
+    "correctAnswer": "B",
+    "standardAnalysis": "【详解】在地面附近雨滴做匀速运动，根据动能定理得\n〔公式对象 F110〕\n故雨滴克服空气阻力做功为〔公式对象 F111〕。\n故选B。",
+    "analysisImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\物理\\images\\q15_答案_解析_formula_110.png",
+        "sourcePage": "11",
+        "description": "Word第11页，第15题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\物理\\images\\q15_答案_解析_formula_111.png",
+        "sourcePage": "11",
+        "description": "Word第11页，第15题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      }
+    ],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": null,
+    "difficultyLevel": null,
+    "difficultyReason": null,
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（新课标卷）Word版含解析.doc",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（新课标卷）Word版含解析.doc"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2023,
+    "region": "全国",
+    "paperName": "2023年高考真题——理综（新课标卷）",
+    "questionNumber": "18",
+    "questionType": "单选题",
+    "content": "一电子和一α粒子从铅盒上的小孔O竖直向上射出后，打到铅盒上方水平放置的屏幕P上的a和b两点，a点在小孔O的正上方，b点在a点的右侧，如图所示。已知α粒子的速度约为电子速度的〔公式对象 F122〕，铅盒与屏幕之间存在匀强电场和匀强磁场，则电场和磁场方向可能为（ ）\n〔图片对象 I123〕",
+    "options": [
+      {
+        "label": "A",
+        "content": "电场方向水平向左、磁场方向垂直纸面向里"
+      },
+      {
+        "label": "B",
+        "content": "电场方向水平向左、磁场方向垂直纸面向外"
+      },
+      {
+        "label": "C",
+        "content": "电场方向水平向右、磁场方向垂直纸面向里"
+      },
+      {
+        "label": "D",
+        "content": "电场方向水平向右、磁场方向垂直纸面向外"
+      }
+    ],
+    "questionImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\物理\\images\\q18_题干_formula_122.png",
+        "sourcePage": "13",
+        "description": "Word第13页，第18题题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\物理\\images\\q18_题干_image_123.png",
+        "sourcePage": "13",
+        "description": "Word第13页，第18题题干中的图片对象"
+      }
+    ],
+    "correctAnswer": "C",
+    "standardAnalysis": "【详解】A．带电粒子在电场和磁场中运动，打到a点的粒子电场力和洛伦兹力平衡，当电场向左磁场垂直直面向里时，〔公式对象 F125〕粒子受到向左的电场力和洛伦兹力，电子受到向右的电场力和洛伦兹力均不能满足受力平衡打到a点，A错误；\nB．电场方向向左，磁场方向向外，此时如果〔公式对象 F126〕粒子打在a点则受到向左的电场力和向右的洛伦兹力平衡\n〔公式对象 F127〕\n〔公式对象 F128〕\n则电子速度大，受到向左的洛伦兹力大于向右的电场力向左偏转，同理如果电子打在a点，则〔公式对象 F129〕粒子向左的电场力大于向右的洛伦兹力则向左偏转，均不会打在b点，B错误；\nCD．电场方向向右，磁场垂直纸面向里，如果〔公式对象 F130〕粒子打在a点，即向右的电场力和向左的洛伦兹力平衡\n〔公式对象 F131〕\n〔公式对象 F132〕\n电子速度大，受到向右的洛伦兹力大于向左的电场力向右偏转，同理如果电子打在a，则〔公式对象 F133〕粒子向右的电场力大于向左的洛伦兹力向右偏转，均会打在b点；同理电场向右磁场垂直纸面向外时，〔公式对象 F134〕粒子受到向右的电场力和洛伦兹力，电子受到向左的电场力和洛伦兹力不能受力平衡打到a点，故C正确D错误；\n故选C。",
+    "analysisImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\物理\\images\\q18_答案_解析_formula_125.png",
+        "sourcePage": "13",
+        "description": "Word第13页，第18题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\物理\\images\\q18_答案_解析_formula_126.png",
+        "sourcePage": "13",
+        "description": "Word第13页，第18题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\物理\\images\\q18_答案_解析_formula_127.png",
+        "sourcePage": "13",
+        "description": "Word第13页，第18题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\物理\\images\\q18_答案_解析_formula_128.png",
+        "sourcePage": "13",
+        "description": "Word第13页，第18题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\物理\\images\\q18_答案_解析_formula_129.png",
+        "sourcePage": "13",
+        "description": "Word第13页，第18题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\物理\\images\\q18_答案_解析_formula_130.png",
+        "sourcePage": "13",
+        "description": "Word第13页，第18题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\物理\\images\\q18_答案_解析_formula_131.png",
+        "sourcePage": "13",
+        "description": "Word第13页，第18题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\物理\\images\\q18_答案_解析_formula_132.png",
+        "sourcePage": "13",
+        "description": "Word第13页，第18题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\物理\\images\\q18_答案_解析_formula_133.png",
+        "sourcePage": "13",
+        "description": "Word第13页，第18题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\物理\\images\\q18_答案_解析_formula_134.png",
+        "sourcePage": "14",
+        "description": "Word第14页，第18题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      }
+    ],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": null,
+    "difficultyLevel": null,
+    "difficultyReason": null,
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（新课标卷）Word版含解析.doc",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（新课标卷）Word版含解析.doc"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2023,
+    "region": "全国",
+    "paperName": "2023年高考真题——理综（新课标卷）",
+    "questionNumber": "19",
+    "questionType": "多选题",
+    "content": "使甲、乙两条形磁铁隔开一段距离，静止于水平桌面上，甲的N极正对着乙的S极，甲的质量大于乙的质量，两者与桌面之间的动摩擦因数相等。现同时释放甲和乙，在它们相互接近过程中的任一时刻（ ）\n〔图片对象 I135〕",
+    "options": [
+      {
+        "label": "A",
+        "content": "甲的速度大小比乙的大"
+      },
+      {
+        "label": "B",
+        "content": "甲的动量大小比乙的小"
+      },
+      {
+        "label": "C",
+        "content": "甲的动量大小与乙的相等"
+      },
+      {
+        "label": "D",
+        "content": "甲和乙的动量之和不为零"
+      }
+    ],
+    "questionImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\物理\\images\\q19_题干_image_135.png",
+        "sourcePage": "14",
+        "description": "Word第14页，第19题题干中的图片对象"
+      }
+    ],
+    "correctAnswer": "BD",
+    "standardAnalysis": "【详解】对甲、乙两条形磁铁分别做受力分析，如图所示\n〔图片对象 I136〕\nA．根据牛顿第二定律有\n〔公式对象 F137〕\n〔公式对象 F138〕\n由于\nm甲 > m乙\n所以\na甲 < a乙\n由于两物体运动时间相同，且同时由静止释放，可得\nv甲 < v乙\nA错误；\nBCD．对于整个系统而言，由于μm甲g > μm乙g，合力方向向左，合冲量方向向左，所以合动量方向向左，显然甲的动量大小比乙的小，BD正确、C错误。\n故选BD。",
+    "analysisImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\物理\\images\\q19_答案_解析_image_136.png",
+        "sourcePage": "14",
+        "description": "Word第14页，第19题答案/解析中的图片对象"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\物理\\images\\q19_答案_解析_formula_137.png",
+        "sourcePage": "14",
+        "description": "Word第14页，第19题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\物理\\images\\q19_答案_解析_formula_138.png",
+        "sourcePage": "14",
+        "description": "Word第14页，第19题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      }
+    ],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": null,
+    "difficultyLevel": null,
+    "difficultyReason": null,
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（新课标卷）Word版含解析.doc",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（新课标卷）Word版含解析.doc"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2023,
+    "region": "全国",
+    "paperName": "2023年高考真题——理综（新课标卷）",
+    "questionNumber": "22",
+    "questionType": "实验填空题",
+    "content": "在“观察电容器的充、放电现象”实验中，所用器材如下：电池、电容器、电阻箱、定值电阻、小灯泡、多用电表、电流表、秒表、单刀双掷开关以及导线若干。\n〔图片对象 I154〕\n（1）用多用电表的电压挡检测电池的电压。检测时，红表笔应该与电池的___________（填“正极”或“负极”）接触。\n（2）某同学设计的实验电路如图（a）所示。先将电阻箱的阻值调为〔公式对象 F155〕，将单刀双掷开关S与“1”端相接，记录电流随时间的变化。电容器充电完成后，开关S再与“2”端相接，相接后小灯泡亮度变化情况可能是___________。（填正确答案标号）\nA．迅速变亮，然后亮度趋于稳定\nB．亮度逐渐增大，然后趋于稳定\nC．迅速变亮，然后亮度逐渐减小至熄灭\n（3）将电阻箱的阻值调为〔公式对象 F156〕，再次将开关S与“1”端相接，再次记录电流随时间的变化情况。两次得到的电流I随时间t变化如图（b）中曲线所示，其中实线是电阻箱阻值为___________（填“R₁”或“R₂”）时的结果，曲线与坐标轴所围面积等于该次充电完成后电容器上的___________（填“电压”或“电荷量”）。",
+    "options": null,
+    "questionImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\物理\\images\\q22_题干_image_154.png",
+        "sourcePage": "17",
+        "description": "Word第17页，第22题题干中的图片对象"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\物理\\images\\q22_题干_formula_155.png",
+        "sourcePage": "17",
+        "description": "Word第17页，第22题题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\物理\\images\\q22_题干_formula_156.png",
+        "sourcePage": "17",
+        "description": "Word第17页，第22题题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      }
+    ],
+    "correctAnswer": "①. 正极 ②. C ③. 〔公式对象 F157〕 ④. 电荷量",
+    "standardAnalysis": "【详解】（1）[1]多用电表红表笔流入电流，黑表笔流出电流，故电流表红表笔应该与电池的正极接触；\n（2）[2]电容器充电完成后，开始时两极板电量较多，电势差较大，当闭合“2”接入小灯泡，回路立即形成电流，灯泡的迅速变亮；随着时间的积累，两极板电量变少，电势差变小，流过灯泡的电流减小，直至两极板电荷量为零不带电，则无电流流过小灯泡即熄灭，故选C。\n（3）[3]开始充电时两极板的不带电，两极板电势差为零，设电源内阻为r，则开始充电时有\n〔公式对象 F159〕\n由图像可知开始充电时实线的电流较小，故电路中的电阻较大，因此电阻箱阻值为〔公式对象 F160〕；\n[4]图像的物理意义为充电过程中电流随时间的变化图线，故曲线与坐标轴所围面积等于该次充电完成后电容器上的电荷量。",
+    "analysisImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\物理\\images\\q22_答案_解析_formula_157.png",
+        "sourcePage": "18",
+        "description": "Word第18页，第22题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\物理\\images\\q22_答案_解析_formula_159.png",
+        "sourcePage": "18",
+        "description": "Word第18页，第22题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\物理\\images\\q22_答案_解析_formula_160.png",
+        "sourcePage": "18",
+        "description": "Word第18页，第22题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      }
+    ],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": null,
+    "difficultyLevel": null,
+    "difficultyReason": null,
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（新课标卷）Word版含解析.doc",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（新课标卷）Word版含解析.doc"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2023,
+    "region": "全国",
+    "paperName": "2023年高考真题——理综（新课标卷）",
+    "questionNumber": "23",
+    "questionType": "实验填空题",
+    "content": "一学生小组做“用单摆测量重力加速度的大小”实验。\n〔图片对象 I161〕\n（1）用实验室提供的螺旋测微器测量摆球直径。首先，调节螺旋测微器，拧动微调旋钮使测微螺杆和测砧相触时，发现固定刻度的横线与可动刻度上的零刻度线未对齐，如图（a）所示，该示数为___________mm；螺旋测微器在夹有摆球时示数如图（b）所示，该示数为___________mm，则摆球的直径为___________mm。\n（2）单摆实验的装置示意图如图（c）所示，其中角度盘需要固定在杆上的确定点O处，摆线在角度盘上所指的示数为摆角的大小。若将角度盘固定在O点上方，则摆线在角度盘上所指的示数为5°时，实际摆角___________5°（填“大于”或“小于”）。\n（3）某次实验所用单摆的摆线长度为81.50cm，则摆长为___________cm。实验中观测到从摆球第1次经过最低点到第61次经过最低点的时间间隔为54.60s，则此单摆周期为___________s，该小组测得的重力加速度大小为___________m/s².（结果均保留3位有效数字，π²取9.870）",
+    "options": null,
+    "questionImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\物理\\images\\q23_题干_image_161.png",
+        "sourcePage": "18",
+        "description": "Word第18页，第23题题干中的图片对象"
+      }
+    ],
+    "correctAnswer": "①. 0.006##0.007##0.008 ②. 20.034##20.033##20.035##20.032 ③. 20.027##20.028##20.029 ④. 大于 ⑤. 82.5 ⑥. 1.82 ⑦. 9.83",
+    "standardAnalysis": "【详解】（1）[1]测量前测微螺杆与和测砧相触时，图（a）的示数为\n〔公式对象 F162〕\n[2]螺旋测微器读数是固定刻度读数(0.5mm的整数倍)加可动刻度（0.5mm以下的小数）读数，图中读数为\n〔公式对象 F164〕\n[3]则摆球的直径为\n〔公式对象 F165〕\n（2）[4]角度盘的大小一定，即在规定的位置安装角度盘，测量的摆角准确，但将角度盘固定在规定位置上方，即角度盘到悬挂点的距离变短，同样的角度，摆线在刻度盘上扫过的弧长变短，故摆线在角度盘上所指的示数为5°时，实际摆角大于5°；\n（3）[5]单摆的摆线长度为81.50 cm，则摆长为\n〔公式对象 F166〕\n结果保留三位有效数字，得摆长为82.5cm；\n[6]一次全振动单摆经过最低点两次，故此单摆的周期为\n〔公式对象 F167〕\n[7]由单摆的周期表达式〔公式对象 F168〕得，重力加速度\n〔公式对象 F169〕",
+    "analysisImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\物理\\images\\q23_答案_解析_formula_162.png",
+        "sourcePage": "19",
+        "description": "Word第19页，第23题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\物理\\images\\q23_答案_解析_formula_164.png",
+        "sourcePage": "19",
+        "description": "Word第19页，第23题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\物理\\images\\q23_答案_解析_formula_165.png",
+        "sourcePage": "19",
+        "description": "Word第19页，第23题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\物理\\images\\q23_答案_解析_formula_166.png",
+        "sourcePage": "19",
+        "description": "Word第19页，第23题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\物理\\images\\q23_答案_解析_formula_167.png",
+        "sourcePage": "19",
+        "description": "Word第19页，第23题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\物理\\images\\q23_答案_解析_formula_168.png",
+        "sourcePage": "19",
+        "description": "Word第19页，第23题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\物理\\images\\q23_答案_解析_formula_169.png",
+        "sourcePage": "19",
+        "description": "Word第19页，第23题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      }
+    ],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": null,
+    "difficultyLevel": null,
+    "difficultyReason": null,
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（新课标卷）Word版含解析.doc",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（新课标卷）Word版含解析.doc"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2023,
+    "region": "全国",
+    "paperName": "2023年高考真题——理综（新课标卷）",
+    "questionNumber": "26",
+    "questionType": "解答题",
+    "content": "一边长为L、质量为m的正方形金属细框，每边电阻为R₀，置于光滑的绝缘水平桌面（纸面）上。宽度为2L的区域内存在方向垂直于纸面的匀强磁场，磁感应强度大小为B，两虚线为磁场边界，如图（a）所示。\n（1）使金属框以一定的初速度向右运动，进入磁场。运动过程中金属框的左、右边框始终与磁场边界平行，金属框完全穿过磁场区域后，速度大小降为它初速度的一半，求金属框的初速度大小。\n（2）在桌面上固定两条光滑长直金属导轨，导轨与磁场边界垂直，左端连接电阻R₁ = 2R₀，导轨电阻可忽略，金属框置于导轨上，如图（b）所示。让金属框以与（1）中相同的初速度向右运动，进入磁场。运动过程中金属框的上、下边框处处与导轨始终接触良好。求在金属框整个运动过程中，电阻R₁产生的热量。\n〔图片对象 I191〕",
+    "options": null,
+    "questionImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\物理\\images\\q26_题干_image_191.png",
+        "sourcePage": "22",
+        "description": "Word第22页，第26题题干中的图片对象"
+      }
+    ],
+    "correctAnswer": "（1）〔公式对象 F192〕；（2）〔公式对象 F193〕",
+    "standardAnalysis": "【详解】（1）金属框进入磁场过程中有\n〔公式对象 F194〕\n则金属框进入磁场过程中流过回路的电荷量为\n〔公式对象 F195〕\n则金属框完全穿过磁场区域的过程中流过回路的电荷量为\n〔公式对象 F196〕\n且有\n〔公式对象 F197〕\n联立有\n〔公式对象 F198〕\n（2）设金属框的初速度为v₀，则金属框进入磁场时的末速度为v₁，向右为正方向。由于导轨电阻可忽略，此时金属框上下部分被短路，故电路中的总电\n〔公式对象 F199〕\n再根据动量定理有\n〔公式对象 F200〕\n解得\n〔公式对象 F201〕\n则在此过程中根据能量守恒有\n〔公式对象 F202〕\n解得\n〔公式对象 F203〕\n其中\n〔公式对象 F204〕\n此后线框完全进入磁场中，则线框左右两边均作为电源，且等效电路图如下\n〔图片对象 I205〕\n则此时回路的总电阻\n〔公式对象 F206〕\n设线框刚离开磁场时的速度为v₂，再根据动量定理有\n〔公式对象 F208〕\n解得\nv₂= 0\n则说明线框刚离开磁场时就停止运动了，则再根据能量守恒有\n〔公式对象 F209〕\n其中\n〔公式对象 F210〕\n则在金属框整个运动过程中，电阻R₁产生的热量\n〔公式对象 F211〕",
+    "analysisImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\物理\\images\\q26_答案_解析_formula_192.png",
+        "sourcePage": "22",
+        "description": "Word第22页，第26题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\物理\\images\\q26_答案_解析_formula_193.png",
+        "sourcePage": "22",
+        "description": "Word第22页，第26题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\物理\\images\\q26_答案_解析_formula_194.png",
+        "sourcePage": "22",
+        "description": "Word第22页，第26题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\物理\\images\\q26_答案_解析_formula_195.png",
+        "sourcePage": "22",
+        "description": "Word第22页，第26题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\物理\\images\\q26_答案_解析_formula_196.png",
+        "sourcePage": "22",
+        "description": "Word第22页，第26题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\物理\\images\\q26_答案_解析_formula_197.png",
+        "sourcePage": "22",
+        "description": "Word第22页，第26题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\物理\\images\\q26_答案_解析_formula_198.png",
+        "sourcePage": "22",
+        "description": "Word第22页，第26题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\物理\\images\\q26_答案_解析_formula_199.png",
+        "sourcePage": "23",
+        "description": "Word第23页，第26题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\物理\\images\\q26_答案_解析_formula_200.png",
+        "sourcePage": "23",
+        "description": "Word第23页，第26题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\物理\\images\\q26_答案_解析_formula_201.png",
+        "sourcePage": "23",
+        "description": "Word第23页，第26题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\物理\\images\\q26_答案_解析_formula_202.png",
+        "sourcePage": "23",
+        "description": "Word第23页，第26题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\物理\\images\\q26_答案_解析_formula_203.png",
+        "sourcePage": "23",
+        "description": "Word第23页，第26题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\物理\\images\\q26_答案_解析_formula_204.png",
+        "sourcePage": "23",
+        "description": "Word第23页，第26题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\物理\\images\\q26_答案_解析_image_205.png",
+        "sourcePage": "23",
+        "description": "Word第23页，第26题答案/解析中的图片对象"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\物理\\images\\q26_答案_解析_formula_206.png",
+        "sourcePage": "23",
+        "description": "Word第23页，第26题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\物理\\images\\q26_答案_解析_formula_208.png",
+        "sourcePage": "23",
+        "description": "Word第23页，第26题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\物理\\images\\q26_答案_解析_formula_209.png",
+        "sourcePage": "24",
+        "description": "Word第24页，第26题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\物理\\images\\q26_答案_解析_formula_210.png",
+        "sourcePage": "24",
+        "description": "Word第24页，第26题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\物理\\images\\q26_答案_解析_formula_211.png",
+        "sourcePage": "24",
+        "description": "Word第24页，第26题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      }
+    ],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": null,
+    "difficultyLevel": null,
+    "difficultyReason": null,
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（新课标卷）Word版含解析.doc",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（新课标卷）Word版含解析.doc"
+    },
+    "reviewStatus": "待审核"
+  }
+]

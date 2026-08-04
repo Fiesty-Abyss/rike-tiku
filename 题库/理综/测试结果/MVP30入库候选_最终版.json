@@ -1,0 +1,2196 @@
+[
+  {
+    "subject": "物理",
+    "year": 2023,
+    "region": "全国",
+    "paperName": "2023年高考真题——理综（全国甲卷）",
+    "questionNumber": "14",
+    "questionType": "单选题",
+    "content": "一同学将铅球水平推出，不计空气阻力和转动的影响，铅球在平抛运动过程中（ ）",
+    "options": [
+      {
+        "label": "A",
+        "content": "机械能一直增加"
+      },
+      {
+        "label": "B",
+        "content": "加速度保持不变"
+      },
+      {
+        "label": "C",
+        "content": "速度大小保持不变"
+      },
+      {
+        "label": "D",
+        "content": "被推出后瞬间动能最大"
+      }
+    ],
+    "questionImages": [],
+    "correctAnswer": "B",
+    "standardAnalysis": "【详解】A．铅球做平抛运动，仅受重力，故机械能守恒，A错误；\nB．铅球的加速度恒为重力加速度保持不变，B正确；\nCD．铅球做平抛运动，水平方向速度不变，竖直方向做匀加速直线运动，根据运动的合成可知铅球速度变大，则动能越来越大，CD错误。\n故选B。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "力学>抛体运动>平抛运动"
+    ],
+    "difficultyLevel": "easy",
+    "difficultyReason": "考查平抛运动的直接识记或单步判断，条件明确，运算与推理量较小。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（全国甲卷）Word版含解析.doc",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（全国甲卷）Word版含解析.doc"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2023,
+    "region": "全国",
+    "paperName": "2023年高考真题——理综（新课标卷）",
+    "questionNumber": "14",
+    "questionType": "单选题",
+    "content": "船上的人和水下的潜水员都能听见轮船的鸣笛声。声波在空气中和在水中传播时的（ ）",
+    "options": [
+      {
+        "label": "A",
+        "content": "波速和波长均不同"
+      },
+      {
+        "label": "B",
+        "content": "频率和波速均不同"
+      },
+      {
+        "label": "C",
+        "content": "波长和周期均不同"
+      },
+      {
+        "label": "D",
+        "content": "周期和频率均不同"
+      }
+    ],
+    "questionImages": [],
+    "correctAnswer": "A",
+    "standardAnalysis": "【详解】声波的周期和频率由振源决定，故声波在空气中和在水中传播的周期和频率均相同，但声波在空气和水中传播的波速不同，根据波速与波长关系〔公式对象 F107〕可知，波长也不同。故A正确，BCD错误。\n故选A。",
+    "analysisImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_new_standard\\q14_2023新课标卷_答案解析_formula_107.png",
+        "sourcePage": "11",
+        "description": "Word第11页，第14题2023新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      }
+    ],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "力学>机械振动与机械波>波速、波长与频率"
+    ],
+    "difficultyLevel": "easy",
+    "difficultyReason": "考查波速、波长与频率的直接识记或单步判断，条件明确，运算与推理量较小。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（新课标卷）Word版含解析.doc",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（新课标卷）Word版含解析.doc"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2024,
+    "region": "全国",
+    "paperName": "2024年高考真题——理综（新课标卷）",
+    "questionNumber": "14",
+    "questionType": "单选题",
+    "content": "一质点做直线运动，下列描述其位移x或速度v随时间t变化的图像中，可能正确的是（ ）",
+    "options": [
+      {
+        "label": "A",
+        "content": "〔图片对象 I126〕"
+      },
+      {
+        "label": "B",
+        "content": "〔图片对象 I127〕"
+      },
+      {
+        "label": "C",
+        "content": "〔图片对象 I128〕"
+      },
+      {
+        "label": "D",
+        "content": "〔图片对象 I129〕"
+      }
+    ],
+    "questionImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2024_new_standard\\q14_2024新课标卷_题干_image_126.png",
+        "sourcePage": "11",
+        "description": "Word第11页，第14题2024新课标卷_题干中的图片对象"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2024_new_standard\\q14_2024新课标卷_题干_image_127.png",
+        "sourcePage": "11",
+        "description": "Word第11页，第14题2024新课标卷_题干中的图片对象"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2024_new_standard\\q14_2024新课标卷_题干_image_128.png",
+        "sourcePage": "11",
+        "description": "Word第11页，第14题2024新课标卷_题干中的图片对象"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2024_new_standard\\q14_2024新课标卷_题干_image_129.png",
+        "sourcePage": "11",
+        "description": "Word第11页，第14题2024新课标卷_题干中的图片对象"
+      }
+    ],
+    "correctAnswer": "C",
+    "standardAnalysis": "【详解】AB．物体做直线运动，位移与时间成函数关系，AB选项中一个时间对应2个以上的位移，故不可能，故AB错误；\nCD．同理D选项中一个时间对应2个速度，只有C选项速度与时间是成函数关系，故C正确，D错误。\n故选C。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "力学>运动学>运动图像"
+    ],
+    "difficultyLevel": "medium",
+    "difficultyReason": "需要提取题干或图表信息，并结合运动图像完成两步左右的判断或计算。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\理综\\新增\\2024年高考新课标理综真题（解析版）.docx",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\理综\\新增\\2024年高考新课标理综真题（解析版）.docx"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2023,
+    "region": "全国",
+    "paperName": "2023年高考真题——理综（全国甲卷）",
+    "questionNumber": "15",
+    "questionType": "单选题",
+    "content": "在下列两个核反应方程中〔公式对象 F084〕、〔公式对象 F085〕，X和Y代表两种不同的原子核，以Z和A分别表示X的电荷数和质量数，则（ ）",
+    "options": [
+      {
+        "label": "A",
+        "content": "〔公式对象 F086〕，〔公式对象 F087〕"
+      },
+      {
+        "label": "B",
+        "content": "〔公式对象 F088〕，〔公式对象 F089〕"
+      },
+      {
+        "label": "C",
+        "content": "〔公式对象 F090〕，〔公式对象 F091〕"
+      },
+      {
+        "label": "D",
+        "content": "〔公式对象 F092〕，〔公式对象 F093〕"
+      }
+    ],
+    "questionImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_national_a\\q15_2023全国甲卷_题干_formula_084.png",
+        "sourcePage": "9",
+        "description": "Word第9页，第15题2023全国甲卷_题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_national_a\\q15_2023全国甲卷_题干_formula_085.png",
+        "sourcePage": "9",
+        "description": "Word第9页，第15题2023全国甲卷_题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_national_a\\q15_2023全国甲卷_题干_formula_086.png",
+        "sourcePage": "9",
+        "description": "Word第9页，第15题2023全国甲卷_题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_national_a\\q15_2023全国甲卷_题干_formula_087.png",
+        "sourcePage": "9",
+        "description": "Word第9页，第15题2023全国甲卷_题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_national_a\\q15_2023全国甲卷_题干_formula_088.png",
+        "sourcePage": "9",
+        "description": "Word第9页，第15题2023全国甲卷_题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_national_a\\q15_2023全国甲卷_题干_formula_089.png",
+        "sourcePage": "9",
+        "description": "Word第9页，第15题2023全国甲卷_题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_national_a\\q15_2023全国甲卷_题干_formula_090.png",
+        "sourcePage": "9",
+        "description": "Word第9页，第15题2023全国甲卷_题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_national_a\\q15_2023全国甲卷_题干_formula_091.png",
+        "sourcePage": "9",
+        "description": "Word第9页，第15题2023全国甲卷_题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_national_a\\q15_2023全国甲卷_题干_formula_092.png",
+        "sourcePage": "9",
+        "description": "Word第9页，第15题2023全国甲卷_题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_national_a\\q15_2023全国甲卷_题干_formula_093.png",
+        "sourcePage": "9",
+        "description": "Word第9页，第15题2023全国甲卷_题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      }
+    ],
+    "correctAnswer": "D",
+    "standardAnalysis": "【详解】设Y电荷数和质量数分别为m和n，根据核反应方程质量数和电荷数守恒可知第一个核反应方程的核电荷数和质量数满足\n〔公式对象 F094〕，〔公式对象 F095〕\n第二个核反应方程的核电荷数和质量数满足\n〔公式对象 F096〕，〔公式对象 F097〕\n联立解得\n〔公式对象 F098〕，〔公式对象 F099〕\n故选D。",
+    "analysisImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_national_a\\q15_2023全国甲卷_答案解析_formula_094.png",
+        "sourcePage": "10",
+        "description": "Word第10页，第15题2023全国甲卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_national_a\\q15_2023全国甲卷_答案解析_formula_095.png",
+        "sourcePage": "10",
+        "description": "Word第10页，第15题2023全国甲卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_national_a\\q15_2023全国甲卷_答案解析_formula_096.png",
+        "sourcePage": "10",
+        "description": "Word第10页，第15题2023全国甲卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_national_a\\q15_2023全国甲卷_答案解析_formula_097.png",
+        "sourcePage": "10",
+        "description": "Word第10页，第15题2023全国甲卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_national_a\\q15_2023全国甲卷_答案解析_formula_098.png",
+        "sourcePage": "10",
+        "description": "Word第10页，第15题2023全国甲卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_national_a\\q15_2023全国甲卷_答案解析_formula_099.png",
+        "sourcePage": "10",
+        "description": "Word第10页，第15题2023全国甲卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      }
+    ],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "近代物理>原子核>核反应中的守恒"
+    ],
+    "difficultyLevel": "easy",
+    "difficultyReason": "考查核反应中的守恒的直接识记或单步判断，条件明确，运算与推理量较小。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（全国甲卷）Word版含解析.doc",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（全国甲卷）Word版含解析.doc"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2023,
+    "region": "全国",
+    "paperName": "2023年高考真题——理综（新课标卷）",
+    "questionNumber": "16",
+    "questionType": "单选题",
+    "content": "铯原子基态的两个超精细能级之间跃迁发射的光子具有稳定的频率，铯原子钟利用的两能级的能量差量级为10⁻⁵eV，跃迁发射的光子的频率量级为（普朗克常量〔公式对象 F112〕，元电荷〔公式对象 F113〕）（ ）",
+    "options": [
+      {
+        "label": "A",
+        "content": "10³Hz"
+      },
+      {
+        "label": "B",
+        "content": "10⁶Hz"
+      },
+      {
+        "label": "C",
+        "content": "10⁹Hz"
+      },
+      {
+        "label": "D",
+        "content": "10¹²Hz"
+      }
+    ],
+    "questionImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_new_standard\\q16_2023新课标卷_题干_formula_112.png",
+        "sourcePage": "11",
+        "description": "Word第11页，第16题2023新课标卷_题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_new_standard\\q16_2023新课标卷_题干_formula_113.png",
+        "sourcePage": "11",
+        "description": "Word第11页，第16题2023新课标卷_题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      }
+    ],
+    "correctAnswer": "C",
+    "standardAnalysis": "【详解】铯原子利用的两能极的能量差量级对应的能量为\n〔公式对象 F114〕\n由光子能量的表达式〔公式对象 F115〕可得，跃迁发射的光子的频率量级为\n〔公式对象 F116〕\n跃迁发射的光子的频率量级为10⁹Hz。故选C。",
+    "analysisImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_new_standard\\q16_2023新课标卷_答案解析_formula_114.png",
+        "sourcePage": "12",
+        "description": "Word第12页，第16题2023新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_new_standard\\q16_2023新课标卷_答案解析_formula_115.png",
+        "sourcePage": "12",
+        "description": "Word第12页，第16题2023新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_new_standard\\q16_2023新课标卷_答案解析_formula_116.png",
+        "sourcePage": "12",
+        "description": "Word第12页，第16题2023新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      }
+    ],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "近代物理>光子与原子跃迁>能级差与光子频率"
+    ],
+    "difficultyLevel": "medium",
+    "difficultyReason": "需要提取题干或图表信息，并结合能级差与光子频率完成两步左右的判断或计算。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（新课标卷）Word版含解析.doc",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（新课标卷）Word版含解析.doc"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2023,
+    "region": "全国",
+    "paperName": "2023年高考真题——理综（全国甲卷）",
+    "questionNumber": "18",
+    "questionType": "单选题",
+    "content": "在一些电子显示设备中，让阴极发射的电子束通过适当的非匀强电场，可以使发散的电子束聚集。下列4幅图中带箭头的实线表示电场线，如果用虚线表示电子可能的运动轨迹，其中正确的是（ ）",
+    "options": [
+      {
+        "label": "A",
+        "content": "〔图片对象 I111〕"
+      },
+      {
+        "label": "B",
+        "content": "〔图片对象 I112〕"
+      },
+      {
+        "label": "C",
+        "content": "〔图片对象 I113〕"
+      },
+      {
+        "label": "D",
+        "content": "〔图片对象 I114〕"
+      }
+    ],
+    "questionImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_national_a\\q18_2023全国甲卷_题干_image_111.png",
+        "sourcePage": "11",
+        "description": "Word第11页，第18题2023全国甲卷_题干中的图片对象"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_national_a\\q18_2023全国甲卷_题干_image_112.png",
+        "sourcePage": "11",
+        "description": "Word第11页，第18题2023全国甲卷_题干中的图片对象"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_national_a\\q18_2023全国甲卷_题干_image_113.png",
+        "sourcePage": "11",
+        "description": "Word第11页，第18题2023全国甲卷_题干中的图片对象"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_national_a\\q18_2023全国甲卷_题干_image_114.png",
+        "sourcePage": "11",
+        "description": "Word第11页，第18题2023全国甲卷_题干中的图片对象"
+      }
+    ],
+    "correctAnswer": "A",
+    "standardAnalysis": "【详解】A．电子做曲线运动满足合力指向轨迹凹侧，A正确；\nB．电子做曲线运动满足合力指向轨迹凹侧，对电子受力分析有\n〔图片对象 I115〕\n可见与电场力的受力特点相互矛盾，B错误；\nC．电子做曲线运动满足合力指向轨迹凹侧，对电子受力分析有\n〔图片对象 I116〕\n可见与电场力的受力特点相互矛盾，C错误；\nD．电子做曲线运动满足合力指向轨迹凹侧，对电子受力分析有\n〔图片对象 I117〕\n可见与电场力的受力特点相互矛盾，D错误；\n故选A。",
+    "analysisImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_national_a\\q18_2023全国甲卷_答案解析_image_115.png",
+        "sourcePage": "11",
+        "description": "Word第11页，第18题2023全国甲卷_答案解析中的图片对象"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_national_a\\q18_2023全国甲卷_答案解析_image_116.png",
+        "sourcePage": "11",
+        "description": "Word第11页，第18题2023全国甲卷_答案解析中的图片对象"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_national_a\\q18_2023全国甲卷_答案解析_image_117.png",
+        "sourcePage": "12",
+        "description": "Word第12页，第18题2023全国甲卷_答案解析中的图片对象"
+      }
+    ],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "电磁学>电场>电场线与带电粒子轨迹"
+    ],
+    "difficultyLevel": "medium",
+    "difficultyReason": "需要提取题干或图表信息，并结合电场线与带电粒子轨迹完成两步左右的判断或计算。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（全国甲卷）Word版含解析.doc",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（全国甲卷）Word版含解析.doc"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2024,
+    "region": "全国",
+    "paperName": "2024年高考真题——理综（新课标卷）",
+    "questionNumber": "20",
+    "questionType": "多选题",
+    "content": "电动汽车制动时可利用车轮转动将其动能转换成电能储存起来。车轮转动时带动磁极绕固定的线圈旋转，在线圈中产生电流。磁极匀速转动的某瞬间，磁场方向恰与线圈平面垂直，如图所示。将两磁极间的磁场视为匀强磁场，则磁极再转过90°时，线圈中（ ）\n〔图片对象 I161〕",
+    "options": [
+      {
+        "label": "A",
+        "content": "电流最小"
+      },
+      {
+        "label": "B",
+        "content": "电流最大"
+      },
+      {
+        "label": "C",
+        "content": "电流方向由P指向Q"
+      },
+      {
+        "label": "D",
+        "content": "电流方向由Q指向P"
+      }
+    ],
+    "questionImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2024_new_standard\\q20_2024新课标卷_题干_image_161.png",
+        "sourcePage": "15",
+        "description": "Word第15页，第20题2024新课标卷_题干中的图片对象"
+      }
+    ],
+    "correctAnswer": "BD",
+    "standardAnalysis": "【详解】如图开始线圈处于中性面位置，当磁极再转过90°时，此时穿过线圈的磁通量为0，故可知电流最大；在磁极转动的过程中，穿过线圈的磁通量在减小，根据楞次定律可知，此时感应电流方向由Q指向P。\n故选BD。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "电磁学>电磁感应>交变电流的产生"
+    ],
+    "difficultyLevel": "medium",
+    "difficultyReason": "需要提取题干或图表信息，并结合交变电流的产生完成两步左右的判断或计算。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\理综\\新增\\2024年高考新课标理综真题（解析版）.docx",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\理综\\新增\\2024年高考新课标理综真题（解析版）.docx"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2023,
+    "region": "全国",
+    "paperName": "2023年高考真题——理综（新课标卷）",
+    "questionNumber": "21",
+    "questionType": "多选题",
+    "content": "如图，一封闭着理想气体的绝热汽缸置于水平地面上，用轻弹簧连接的两绝热活塞将汽缸分为f、g、h三部分，活塞与汽缸壁间没有摩擦。初始时弹簧处于原长，三部分中气体的温度、体积、压强均相等。现通过电阻丝对f中的气体缓慢加热，停止加热并达到稳定后（ ）\n〔图片对象 I144〕",
+    "options": [
+      {
+        "label": "A",
+        "content": "h中的气体内能增加"
+      },
+      {
+        "label": "B",
+        "content": "f与g中的气体温度相等"
+      },
+      {
+        "label": "C",
+        "content": "f与h中的气体温度相等"
+      },
+      {
+        "label": "D",
+        "content": "f与h中的气体压强相等"
+      }
+    ],
+    "questionImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_new_standard\\q21_2023新课标卷_题干_image_144.png",
+        "sourcePage": "16",
+        "description": "Word第16页，第21题2023新课标卷_题干中的图片对象"
+      }
+    ],
+    "correctAnswer": "AD",
+    "standardAnalysis": "【详解】A．当电阻丝对f中的气体缓慢加热时，f中的气体内能增大，温度升高，根据理想气体状态方程可知f中的气体压强增大，会缓慢推动左边活塞，可知h的体积也被压缩压强变大，对活塞受力分析，根据平衡条件可知，弹簧弹力变大，则弹簧被压缩。与此同时弹簧对右边活塞有弹力作用，缓慢向右推动左边活塞。故活塞对h中的气体做正功，且是绝热过程，由热力学第一定律可知，h中的气体内能增加，A正确；\nB．未加热前，三部分中气体的温度、体积、压强均相等，当系统稳定时，活塞受力平衡，可知弹簧处于压缩状态，对左边活塞分析\n〔公式对象 F146〕\n则\n〔公式对象 F147〕\n分别对f、g内的气体分析，根据理想气体状态方程有\n〔公式对象 F148〕\n〔公式对象 F149〕\n由题意可知，因弹簧被压缩，则〔公式对象 F150〕，联立可得\n〔公式对象 F151〕\nB错误；\nC．在达到稳定过程中h中的气体体积变小，压强变大，f中的气体体积变大。由于稳定时弹簧保持平衡状态，故稳定时f、h中的气体压强相等，根据理想气体状态方程对h气体分析可知\n〔公式对象 F152〕\n联立可得\n〔公式对象 F153〕\nC错误；\nD．对弹簧、活塞及g中的气体组成的系统分析，根据平衡条件可知，f与h中的气体压强相等，D正确。\n故选AD。",
+    "analysisImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_new_standard\\q21_2023新课标卷_答案解析_formula_146.png",
+        "sourcePage": "16",
+        "description": "Word第16页，第21题2023新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_new_standard\\q21_2023新课标卷_答案解析_formula_147.png",
+        "sourcePage": "16",
+        "description": "Word第16页，第21题2023新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_new_standard\\q21_2023新课标卷_答案解析_formula_148.png",
+        "sourcePage": "16",
+        "description": "Word第16页，第21题2023新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_new_standard\\q21_2023新课标卷_答案解析_formula_149.png",
+        "sourcePage": "16",
+        "description": "Word第16页，第21题2023新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_new_standard\\q21_2023新课标卷_答案解析_formula_150.png",
+        "sourcePage": "16",
+        "description": "Word第16页，第21题2023新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_new_standard\\q21_2023新课标卷_答案解析_formula_151.png",
+        "sourcePage": "17",
+        "description": "Word第17页，第21题2023新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_new_standard\\q21_2023新课标卷_答案解析_formula_152.png",
+        "sourcePage": "17",
+        "description": "Word第17页，第21题2023新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_new_standard\\q21_2023新课标卷_答案解析_formula_153.png",
+        "sourcePage": "17",
+        "description": "Word第17页，第21题2023新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      }
+    ],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "热学>理想气体>热力学第一定律与状态变化"
+    ],
+    "difficultyLevel": "hard",
+    "difficultyReason": "需要综合多个条件，围绕热力学第一定律与状态变化进行多环节推理、定量计算或实验分析。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（新课标卷）Word版含解析.doc",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（新课标卷）Word版含解析.doc"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2024,
+    "region": "全国",
+    "paperName": "2024年高考真题——理综（新课标卷）",
+    "questionNumber": "21",
+    "questionType": "多选题",
+    "content": "如图，一定量理想气体的循环由下面4个过程组成：1→2为绝热过程（过程中气体不与外界交换热量），2→3为等压过程，3→4为绝热过程，4→1为等容过程。上述四个过程是四冲程柴油机工作循环的主要过程。下列说法正确的是（ ）\n〔图片对象 I162〕",
+    "options": [
+      {
+        "label": "A",
+        "content": "1→2过程中，气体内能增加"
+      },
+      {
+        "label": "B",
+        "content": "2→3过程中，气体向外放热"
+      },
+      {
+        "label": "C",
+        "content": "3→4过程中，气体内能不变"
+      },
+      {
+        "label": "D",
+        "content": "4→1过程中，气体向外放热"
+      }
+    ],
+    "questionImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2024_new_standard\\q21_2024新课标卷_题干_image_162.png",
+        "sourcePage": "16",
+        "description": "Word第16页，第21题2024新课标卷_题干中的图片对象"
+      }
+    ],
+    "correctAnswer": "AD",
+    "standardAnalysis": "【详解】A．1→2为绝热过程，根据热力学第一定律〔公式对象 F163〕可知此时气体体积减小，外界对气体做功，故内能增加，故A正确；\nB．2→3为等压过程，根据盖吕萨克定律可知气体体积增大时温度增加，内能增大，此时气体体积增大，气体对外界做功〔公式对象 F164〕，故气体吸收热量，故B错误；\nC．3→4为绝热过程，此时气体体积增大，气体对外界做功〔公式对象 F165〕，根据热力学第一定律可知气体内能减小，故C错误；\nD．4→1为等容过程，根据查理定律可知压强减小时温度减小，故内能减小，由于体积不变〔公式对象 F166〕，故可知气体向外放热，故D正确。\n故选AD。",
+    "analysisImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2024_new_standard\\q21_2024新课标卷_答案解析_formula_163.png",
+        "sourcePage": "16",
+        "description": "Word第16页，第21题2024新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2024_new_standard\\q21_2024新课标卷_答案解析_formula_164.png",
+        "sourcePage": "16",
+        "description": "Word第16页，第21题2024新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2024_new_standard\\q21_2024新课标卷_答案解析_formula_165.png",
+        "sourcePage": "16",
+        "description": "Word第16页，第21题2024新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2024_new_standard\\q21_2024新课标卷_答案解析_formula_166.png",
+        "sourcePage": "16",
+        "description": "Word第16页，第21题2024新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      }
+    ],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "热学>理想气体>循环过程与热力学第一定律"
+    ],
+    "difficultyLevel": "medium",
+    "difficultyReason": "需要提取题干或图表信息，并结合循环过程与热力学第一定律完成两步左右的判断或计算。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\理综\\新增\\2024年高考新课标理综真题（解析版）.docx",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\理综\\新增\\2024年高考新课标理综真题（解析版）.docx"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2023,
+    "region": "全国",
+    "paperName": "2023年高考真题——理综（新课标卷）",
+    "questionNumber": "22",
+    "questionType": "实验填空题",
+    "content": "在“观察电容器的充、放电现象”实验中，所用器材如下：电池、电容器、电阻箱、定值电阻、小灯泡、多用电表、电流表、秒表、单刀双掷开关以及导线若干。\n〔图片对象 I154〕\n（1）用多用电表的电压挡检测电池的电压。检测时，红表笔应该与电池的___________（填“正极”或“负极”）接触。\n（2）某同学设计的实验电路如图（a）所示。先将电阻箱的阻值调为〔公式对象 F155〕，将单刀双掷开关S与“1”端相接，记录电流随时间的变化。电容器充电完成后，开关S再与“2”端相接，相接后小灯泡亮度变化情况可能是___________。（填正确答案标号）\nA．迅速变亮，然后亮度趋于稳定\nB．亮度逐渐增大，然后趋于稳定\nC．迅速变亮，然后亮度逐渐减小至熄灭\n（3）将电阻箱的阻值调为〔公式对象 F156〕，再次将开关S与“1”端相接，再次记录电流随时间的变化情况。两次得到的电流I随时间t变化如图（b）中曲线所示，其中实线是电阻箱阻值为___________（填“R₁”或“R₂”）时的结果，曲线与坐标轴所围面积等于该次充电完成后电容器上的___________（填“电压”或“电荷量”）。",
+    "options": null,
+    "questionImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_new_standard\\q22_2023新课标卷_题干_image_154.png",
+        "sourcePage": "17",
+        "description": "Word第17页，第22题2023新课标卷_题干中的图片对象"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_new_standard\\q22_2023新课标卷_题干_formula_155.png",
+        "sourcePage": "17",
+        "description": "Word第17页，第22题2023新课标卷_题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_new_standard\\q22_2023新课标卷_题干_formula_156.png",
+        "sourcePage": "17",
+        "description": "Word第17页，第22题2023新课标卷_题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      }
+    ],
+    "correctAnswer": "①. 正极 ②. C ③. 〔公式对象 F157〕 ④. 电荷量",
+    "standardAnalysis": "【详解】（1）[1]多用电表红表笔流入电流，黑表笔流出电流，故电流表红表笔应该与电池的正极接触；\n（2）[2]电容器充电完成后，开始时两极板电量较多，电势差较大，当闭合“2”接入小灯泡，回路立即形成电流，灯泡的迅速变亮；随着时间的积累，两极板电量变少，电势差变小，流过灯泡的电流减小，直至两极板电荷量为零不带电，则无电流流过小灯泡即熄灭，故选C。\n（3）[3]开始充电时两极板的不带电，两极板电势差为零，设电源内阻为r，则开始充电时有\n〔公式对象 F159〕\n由图像可知开始充电时实线的电流较小，故电路中的电阻较大，因此电阻箱阻值为〔公式对象 F160〕；\n[4]图像的物理意义为充电过程中电流随时间的变化图线，故曲线与坐标轴所围面积等于该次充电完成后电容器上的电荷量。",
+    "analysisImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_new_standard\\q22_2023新课标卷_答案解析_formula_157.png",
+        "sourcePage": "18",
+        "description": "Word第18页，第22题2023新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_new_standard\\q22_2023新课标卷_答案解析_formula_159.png",
+        "sourcePage": "18",
+        "description": "Word第18页，第22题2023新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_new_standard\\q22_2023新课标卷_答案解析_formula_160.png",
+        "sourcePage": "18",
+        "description": "Word第18页，第22题2023新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      }
+    ],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "实验>电学实验>电容器充放电",
+      "电磁学>电容器>充放电规律"
+    ],
+    "difficultyLevel": "medium",
+    "difficultyReason": "需要提取题干或图表信息，并结合电容器充放电完成两步左右的判断或计算。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（新课标卷）Word版含解析.doc",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（新课标卷）Word版含解析.doc"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "化学",
+    "year": 2023,
+    "region": "全国",
+    "paperName": "2023年高考真题——理综（新课标卷）",
+    "questionNumber": "7",
+    "questionType": "单选题",
+    "content": "化学在文物的研究和修复中有重要作用。下列说法错误的是",
+    "options": [
+      {
+        "label": "A",
+        "content": "竹简的成分之一纤维素属于天然高分子"
+      },
+      {
+        "label": "B",
+        "content": "龟甲的成分之一羟基磷灰石属于无机物"
+      },
+      {
+        "label": "C",
+        "content": "古陶瓷修复所用的熟石膏，其成分为Ca(OH)₂"
+      },
+      {
+        "label": "D",
+        "content": "古壁画颜料中所用的铁红，其成分为Fe₂O₃"
+      }
+    ],
+    "questionImages": [],
+    "correctAnswer": "C",
+    "standardAnalysis": "【详解】A．纤维素是一种天然化合物，其分子式为(C₆H₁₀O₅)n，其相对分子质量较高，是一种天然高分子，A正确；\nB．羟基磷灰石又称羟磷灰石、碱式磷酸钙，其化学式为[Ca₁₀(PO₄)₆(OH)₂]，属于无机物，B正确；\nC．熟石膏是主要成分为2CaSO₄·H₂O，Ca(OH)₂为熟石灰的主要成分，C错误；\nD．Fe₂O₃为红色，常被用于油漆、涂料、油墨和橡胶的红色颜料，俗称铁红，D正确；\n故答案选C。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "化学基本概念>化学与社会>材料和文物保护"
+    ],
+    "difficultyLevel": "easy",
+    "difficultyReason": "考查材料和文物保护的直接识记或单步判断，条件明确，运算与推理量较小。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（新课标卷）Word版含解析.doc",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（新课标卷）Word版含解析.doc"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "化学",
+    "year": 2023,
+    "region": "全国",
+    "paperName": "2023年高考真题——理综（新课标卷）",
+    "questionNumber": "9",
+    "questionType": "单选题",
+    "content": "一种可吸附甲醇的材料，其化学式为〔公式对象 F009〕，部分晶体结构如下图所示，其中〔公式对象 F010〕为平面结构。\n〔图片对象 I011〕\n下列说法正确的是",
+    "options": [
+      {
+        "label": "A",
+        "content": "该晶体中存在N-H…O氢键"
+      },
+      {
+        "label": "B",
+        "content": "基态原子的第一电离能：〔公式对象 F012〕"
+      },
+      {
+        "label": "C",
+        "content": "基态原子未成对电子数：〔公式对象 F013〕"
+      },
+      {
+        "label": "D",
+        "content": "晶体中B、N和O原子轨道的杂化类型相同"
+      }
+    ],
+    "questionImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2023_new_standard\\q09_2023新课标卷_题干_formula_009.png",
+        "sourcePage": "6",
+        "description": "Word第6页，第9题2023新课标卷_题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2023_new_standard\\q09_2023新课标卷_题干_formula_010.png",
+        "sourcePage": "6",
+        "description": "Word第6页，第9题2023新课标卷_题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2023_new_standard\\q09_2023新课标卷_题干_image_011.png",
+        "sourcePage": "6",
+        "description": "Word第6页，第9题2023新课标卷_题干中的图片对象"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2023_new_standard\\q09_2023新课标卷_题干_formula_012.png",
+        "sourcePage": "7",
+        "description": "Word第7页，第9题2023新课标卷_题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2023_new_standard\\q09_2023新课标卷_题干_formula_013.png",
+        "sourcePage": "7",
+        "description": "Word第7页，第9题2023新课标卷_题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      }
+    ],
+    "correctAnswer": "A",
+    "standardAnalysis": "【详解】A．由晶体结构图可知，〔公式对象 F015〕中的〔公式对象 F016〕的〔公式对象 F017〕与〔公式对象 F018〕中的〔公式对象 F019〕形成氢键，因此，该晶体中存在〔公式对象 F020〕氢键，A说法正确；\nB．同一周期元素原子的第一电离能呈递增趋势，但是第ⅡA、ⅤA元素的原子结构比较稳定，其第一电离能高于同周期的相邻元素的原子，因此，基态原子的第一电离能从小到大的顺序为C< O < N，B说法不正确；\nC．B、C、O、N的未成对电子数分别为1、2、2、3，因此，基态原子未成对电子数B<C=O<N，C说法不正确；\nD．〔公式对象 F021〕为平面结构，则其中的C和N原子轨道杂化类型均为〔公式对象 F022〕；〔公式对象 F023〕中B与4个O形成了4个σ键，B没有孤电子对，则B的原子轨道杂化类型为〔公式对象 F024〕；〔公式对象 F025〕中O分别与B和C形成了2个σ键，O原子还有2个孤电子对，则O的原子轨道的杂化类型均为〔公式对象 F026〕；综上所述，晶体中B、О和N原子轨道的杂化类型不相同，D说法不正确；\n综上所述，本题选A。",
+    "analysisImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2023_new_standard\\q09_2023新课标卷_答案解析_formula_015.png",
+        "sourcePage": "7",
+        "description": "Word第7页，第9题2023新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2023_new_standard\\q09_2023新课标卷_答案解析_formula_016.png",
+        "sourcePage": "7",
+        "description": "Word第7页，第9题2023新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2023_new_standard\\q09_2023新课标卷_答案解析_formula_017.png",
+        "sourcePage": "7",
+        "description": "Word第7页，第9题2023新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2023_new_standard\\q09_2023新课标卷_答案解析_formula_018.png",
+        "sourcePage": "7",
+        "description": "Word第7页，第9题2023新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2023_new_standard\\q09_2023新课标卷_答案解析_formula_019.png",
+        "sourcePage": "7",
+        "description": "Word第7页，第9题2023新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2023_new_standard\\q09_2023新课标卷_答案解析_formula_020.png",
+        "sourcePage": "7",
+        "description": "Word第7页，第9题2023新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2023_new_standard\\q09_2023新课标卷_答案解析_formula_021.png",
+        "sourcePage": "7",
+        "description": "Word第7页，第9题2023新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2023_new_standard\\q09_2023新课标卷_答案解析_formula_022.png",
+        "sourcePage": "7",
+        "description": "Word第7页，第9题2023新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2023_new_standard\\q09_2023新课标卷_答案解析_formula_023.png",
+        "sourcePage": "7",
+        "description": "Word第7页，第9题2023新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2023_new_standard\\q09_2023新课标卷_答案解析_formula_024.png",
+        "sourcePage": "7",
+        "description": "Word第7页，第9题2023新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2023_new_standard\\q09_2023新课标卷_答案解析_formula_025.png",
+        "sourcePage": "7",
+        "description": "Word第7页，第9题2023新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2023_new_standard\\q09_2023新课标卷_答案解析_formula_026.png",
+        "sourcePage": "7",
+        "description": "Word第7页，第9题2023新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      }
+    ],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "物质结构>晶体结构>化学键与晶胞"
+    ],
+    "difficultyLevel": "hard",
+    "difficultyReason": "需要综合多个条件，围绕化学键与晶胞进行多环节推理、定量计算或实验分析。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（新课标卷）Word版含解析.doc",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（新课标卷）Word版含解析.doc"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "化学",
+    "year": 2023,
+    "region": "全国",
+    "paperName": "2023年高考真题——理综（新课标卷）",
+    "questionNumber": "10",
+    "questionType": "单选题",
+    "content": "一种以〔公式对象 F027〕和〔公式对象 F028〕为电极、〔公式对象 F029〕水溶液为电解质的电池，其示意图如下所示。放电时，〔公式对象 F030〕可插入〔公式对象 F031〕层间形成〔公式对象 F032〕。下列说法错误的是\n〔图片对象 I033〕",
+    "options": [
+      {
+        "label": "A",
+        "content": "放电时〔公式对象 F034〕为正极"
+      },
+      {
+        "label": "B",
+        "content": "放电时〔公式对象 F035〕由负极向正极迁移"
+      },
+      {
+        "label": "C",
+        "content": "充电总反应：〔公式对象 F036〕"
+      },
+      {
+        "label": "D",
+        "content": "充电阳极反应：〔公式对象 F037〕"
+      }
+    ],
+    "questionImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2023_new_standard\\q10_2023新课标卷_题干_formula_027.png",
+        "sourcePage": "7",
+        "description": "Word第7页，第10题2023新课标卷_题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2023_new_standard\\q10_2023新课标卷_题干_formula_028.png",
+        "sourcePage": "7",
+        "description": "Word第7页，第10题2023新课标卷_题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2023_new_standard\\q10_2023新课标卷_题干_formula_029.png",
+        "sourcePage": "7",
+        "description": "Word第7页，第10题2023新课标卷_题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2023_new_standard\\q10_2023新课标卷_题干_formula_030.png",
+        "sourcePage": "7",
+        "description": "Word第7页，第10题2023新课标卷_题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2023_new_standard\\q10_2023新课标卷_题干_formula_031.png",
+        "sourcePage": "7",
+        "description": "Word第7页，第10题2023新课标卷_题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2023_new_standard\\q10_2023新课标卷_题干_formula_032.png",
+        "sourcePage": "7",
+        "description": "Word第7页，第10题2023新课标卷_题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2023_new_standard\\q10_2023新课标卷_题干_image_033.png",
+        "sourcePage": "7",
+        "description": "Word第7页，第10题2023新课标卷_题干中的图片对象"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2023_new_standard\\q10_2023新课标卷_题干_formula_034.png",
+        "sourcePage": "7",
+        "description": "Word第7页，第10题2023新课标卷_题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2023_new_standard\\q10_2023新课标卷_题干_formula_035.png",
+        "sourcePage": "7",
+        "description": "Word第7页，第10题2023新课标卷_题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2023_new_standard\\q10_2023新课标卷_题干_formula_036.png",
+        "sourcePage": "7",
+        "description": "Word第7页，第10题2023新课标卷_题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2023_new_standard\\q10_2023新课标卷_题干_formula_037.png",
+        "sourcePage": "7",
+        "description": "Word第7页，第10题2023新课标卷_题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      }
+    ],
+    "correctAnswer": "C",
+    "standardAnalysis": "【分析】由题中信息可知，该电池中Zn为负极、〔公式对象 F038〕为正极，电池的总反应为〔公式对象 F039〕。\n【详解】A．由题信息可知，放电时，〔公式对象 F040〕可插入〔公式对象 F041〕层间形成〔公式对象 F042〕，〔公式对象 F043〕发生了还原反应，则放电时〔公式对象 F044〕为正极，A说法正确；\nB．Zn为负极，放电时Zn失去电子变为〔公式对象 F045〕，阳离子向正极迁移，则放电时〔公式对象 F046〕由负极向正极迁移，B说法正确；\nC．电池在放电时的总反应为〔公式对象 F048〕，则其在充电时的总反应为〔公式对象 F049〕，C说法不正确；\nD．充电阳极上〔公式对象 F050〕被氧化为〔公式对象 F051〕，则阳极的电极反应为〔公式对象 F052〕，D说法正确；\n综上所述，本题选C。",
+    "analysisImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2023_new_standard\\q10_2023新课标卷_答案解析_formula_038.png",
+        "sourcePage": "8",
+        "description": "Word第8页，第10题2023新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2023_new_standard\\q10_2023新课标卷_答案解析_formula_039.png",
+        "sourcePage": "8",
+        "description": "Word第8页，第10题2023新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2023_new_standard\\q10_2023新课标卷_答案解析_formula_040.png",
+        "sourcePage": "8",
+        "description": "Word第8页，第10题2023新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2023_new_standard\\q10_2023新课标卷_答案解析_formula_041.png",
+        "sourcePage": "8",
+        "description": "Word第8页，第10题2023新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2023_new_standard\\q10_2023新课标卷_答案解析_formula_042.png",
+        "sourcePage": "8",
+        "description": "Word第8页，第10题2023新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2023_new_standard\\q10_2023新课标卷_答案解析_formula_043.png",
+        "sourcePage": "8",
+        "description": "Word第8页，第10题2023新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2023_new_standard\\q10_2023新课标卷_答案解析_formula_044.png",
+        "sourcePage": "8",
+        "description": "Word第8页，第10题2023新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2023_new_standard\\q10_2023新课标卷_答案解析_formula_045.png",
+        "sourcePage": "8",
+        "description": "Word第8页，第10题2023新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2023_new_standard\\q10_2023新课标卷_答案解析_formula_046.png",
+        "sourcePage": "8",
+        "description": "Word第8页，第10题2023新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2023_new_standard\\q10_2023新课标卷_答案解析_formula_048.png",
+        "sourcePage": "8",
+        "description": "Word第8页，第10题2023新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2023_new_standard\\q10_2023新课标卷_答案解析_formula_049.png",
+        "sourcePage": "8",
+        "description": "Word第8页，第10题2023新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2023_new_standard\\q10_2023新课标卷_答案解析_formula_050.png",
+        "sourcePage": "8",
+        "description": "Word第8页，第10题2023新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2023_new_standard\\q10_2023新课标卷_答案解析_formula_051.png",
+        "sourcePage": "8",
+        "description": "Word第8页，第10题2023新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2023_new_standard\\q10_2023新课标卷_答案解析_formula_052.png",
+        "sourcePage": "8",
+        "description": "Word第8页，第10题2023新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      }
+    ],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "化学反应原理>电化学>原电池"
+    ],
+    "difficultyLevel": "medium",
+    "difficultyReason": "需要提取题干或图表信息，并结合原电池完成两步左右的判断或计算。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（新课标卷）Word版含解析.doc",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（新课标卷）Word版含解析.doc"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "化学",
+    "year": 2023,
+    "region": "全国",
+    "paperName": "2023年高考真题——理综（全国甲卷）",
+    "questionNumber": "8",
+    "questionType": "单选题",
+    "content": "藿香蓟具有清热解毒功效，其有效成分结构如下。下列有关该物质的说法错误的是\n〔图片对象 I009〕",
+    "options": [
+      {
+        "label": "A",
+        "content": "可以发生水解反应"
+      },
+      {
+        "label": "B",
+        "content": "所有碳原子处于同一平面"
+      },
+      {
+        "label": "C",
+        "content": "含有2种含氧官能团"
+      },
+      {
+        "label": "D",
+        "content": "能与溴水发生加成反应"
+      }
+    ],
+    "questionImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2023_national_a\\q08_2023全国甲卷_题干_image_009.png",
+        "sourcePage": "5",
+        "description": "Word第5页，第8题2023全国甲卷_题干中的图片对象"
+      }
+    ],
+    "correctAnswer": "B",
+    "standardAnalysis": "【详解】A．藿香蓟的分子结构中含有酯基，因此其可以发生水解反应，A说法正确；\nB．藿香蓟的分子结构中的右侧有一个饱和碳原子连接着两个甲基，类比甲烷分子的空间构型可知，藿香蓟分子中所有碳原子不可能处于同一平面，B说法错误；\nC．藿香蓟的分子结构中含有酯基和醚键，因此其含有2种含氧官能团，C说法正确；\nD．藿香蓟的分子结构中含有碳碳双键，因此，其能与溴水发生加成反应，D说法正确；\n综上所述，本题选B。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "有机化学>有机物结构与性质>官能团"
+    ],
+    "difficultyLevel": "medium",
+    "difficultyReason": "需要提取题干或图表信息，并结合官能团完成两步左右的判断或计算。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（全国甲卷）Word版含解析.doc",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（全国甲卷）Word版含解析.doc"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "化学",
+    "year": 2023,
+    "region": "全国",
+    "paperName": "2023年高考真题——理综（全国甲卷）",
+    "questionNumber": "9",
+    "questionType": "单选题",
+    "content": "实验室将粗盐提纯并配制〔公式对象 F010〕的〔公式对象 F011〕溶液。下列仪器中，本实验必须用到的有\n①天平 ②温度计 ③坩埚 ④分液漏斗 ⑤容量瓶 ⑥烧杯 ⑦滴定管 ⑧酒精灯",
+    "options": [
+      {
+        "label": "A",
+        "content": "①②④⑥"
+      },
+      {
+        "label": "B",
+        "content": "①④⑤⑥"
+      },
+      {
+        "label": "C",
+        "content": "②③⑦⑧"
+      },
+      {
+        "label": "D",
+        "content": "①⑤⑥⑧"
+      }
+    ],
+    "questionImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2023_national_a\\q09_2023全国甲卷_题干_formula_010.png",
+        "sourcePage": "5",
+        "description": "Word第5页，第9题2023全国甲卷_题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2023_national_a\\q09_2023全国甲卷_题干_formula_011.png",
+        "sourcePage": "5",
+        "description": "Word第5页，第9题2023全国甲卷_题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      }
+    ],
+    "correctAnswer": "D",
+    "standardAnalysis": "【详解】实验室将粗盐提纯时，需要将其溶于一定量的水中，然后将其中的硫酸根离子、钙离子、镁离子依次用稍过量的氯化钡溶液、碳酸钠溶液和氢氧化钠溶液除去，该过程中有过滤操作，需要用到烧杯、漏斗和玻璃棒；将所得滤液加适量盐酸酸化后蒸发结晶得到较纯的食盐，该过程要用到蒸发皿和酒精灯；用提纯后得到的精盐配制溶液的基本步骤有称量、溶解、转移、洗涤、定容、摇匀等操作，需要用到天平、容量瓶、烧杯、玻璃棒、胶头滴管等。综上所述，本实验必须用到的有①天平、⑤容量瓶、⑥烧杯、⑧酒精灯，因此本题选D。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "实验化学>基本操作>粗盐提纯与溶液配制"
+    ],
+    "difficultyLevel": "easy",
+    "difficultyReason": "考查粗盐提纯与溶液配制的直接识记或单步判断，条件明确，运算与推理量较小。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（全国甲卷）Word版含解析.doc",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（全国甲卷）Word版含解析.doc"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "化学",
+    "year": 2023,
+    "region": "全国",
+    "paperName": "2023年高考真题——理综（全国甲卷）",
+    "questionNumber": "11",
+    "questionType": "单选题",
+    "content": "W、X、Y、Z为短周期主族元素，原子序数依次增大，最外层电子数之和为19。Y的最外层电子数与其K层电子数相等，WX₂是形成酸雨的物质之一。下列说法正确的是",
+    "options": [
+      {
+        "label": "A",
+        "content": "原子半径：〔公式对象 F030〕"
+      },
+      {
+        "label": "B",
+        "content": "简单氢化物的沸点：〔公式对象 F031〕"
+      },
+      {
+        "label": "C",
+        "content": "〔公式对象 F032〕与〔公式对象 F033〕可形成离子化合物"
+      },
+      {
+        "label": "D",
+        "content": "〔公式对象 F034〕的最高价含氧酸是弱酸"
+      }
+    ],
+    "questionImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2023_national_a\\q11_2023全国甲卷_题干_formula_030.png",
+        "sourcePage": "7",
+        "description": "Word第7页，第11题2023全国甲卷_题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2023_national_a\\q11_2023全国甲卷_题干_formula_031.png",
+        "sourcePage": "7",
+        "description": "Word第7页，第11题2023全国甲卷_题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2023_national_a\\q11_2023全国甲卷_题干_formula_032.png",
+        "sourcePage": "7",
+        "description": "Word第7页，第11题2023全国甲卷_题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2023_national_a\\q11_2023全国甲卷_题干_formula_033.png",
+        "sourcePage": "7",
+        "description": "Word第7页，第11题2023全国甲卷_题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2023_national_a\\q11_2023全国甲卷_题干_formula_034.png",
+        "sourcePage": "7",
+        "description": "Word第7页，第11题2023全国甲卷_题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      }
+    ],
+    "correctAnswer": "C",
+    "standardAnalysis": "【分析】W、X、Y、Z为短周期主族元素，原子序数依次增大，WX₂是形成酸雨的物质之一，根据原子序数的规律，则W为N，X为O，Y的最外层电子数与其K层电子数相等，又因为Y的原子序数大于氧的，则Y电子层为3层，最外层电子数为2，所以Y为Mg，四种元素最外层电子数之和为19，则Z的最外层电子数为6，Z为S，据此解答。\n【详解】A．X为O，W为N，同周期从左往右，原子半径依次减小，所以半径大小为W＞X，A错误；\nB．X为O，Z为S，X的简单氢化物为H₂O，含有分子间氢键，Z的简单氢化物为H₂S，没有氢键，所以简单氢化物的沸点为X＞Z，B错误；\nC．Y为Mg，X为O，他们可形成MgO，为离子化合物，C正确；\nD．Z为S，硫的最高价含氧酸为硫酸，是强酸，D错误；\n故选C。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "物质结构>元素周期律>短周期元素推断"
+    ],
+    "difficultyLevel": "medium",
+    "difficultyReason": "需要提取题干或图表信息，并结合短周期元素推断完成两步左右的判断或计算。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（全国甲卷）Word版含解析.doc",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（全国甲卷）Word版含解析.doc"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "化学",
+    "year": 2024,
+    "region": "全国",
+    "paperName": "2024年高考真题——理综（新课标卷）",
+    "questionNumber": "8",
+    "questionType": "单选题",
+    "content": "一种点击化学方法合成聚硫酸酯(W)的路线如下所示：\n〔图片对象 I017〕\n下列说法正确的是",
+    "options": [
+      {
+        "label": "A",
+        "content": "双酚A是苯酚的同系物，可与甲醛发生聚合反应"
+      },
+      {
+        "label": "B",
+        "content": "〔图片对象 I018〕催化聚合也可生成W"
+      },
+      {
+        "label": "C",
+        "content": "生成W的反应③为缩聚反应，同时生成〔图片对象 I019〕"
+      },
+      {
+        "label": "D",
+        "content": "在碱性条件下，W比聚苯乙烯更难降解"
+      }
+    ],
+    "questionImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2024_new_standard\\q08_2024新课标卷_题干_image_017.png",
+        "sourcePage": "5",
+        "description": "Word第5页，第8题2024新课标卷_题干中的图片对象"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2024_new_standard\\q08_2024新课标卷_题干_image_018.png",
+        "sourcePage": "5",
+        "description": "Word第5页，第8题2024新课标卷_题干中的图片对象"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2024_new_standard\\q08_2024新课标卷_题干_image_019.png",
+        "sourcePage": "6",
+        "description": "Word第6页，第8题2024新课标卷_题干中的图片对象"
+      }
+    ],
+    "correctAnswer": "B",
+    "standardAnalysis": "【详解】Ａ．同系物之间的官能团的种类与数目均相同，双酚A有2个羟基，故其不是苯酚的同系物，A不正确；\nB．题干中两种有机物之间通过缩聚反应生成W，根据题干中的反应机理可知，〔图片对象 I020〕 也可以通过缩聚反应生成W，B正确；\nC．生成W的反应③为缩聚反应，同时生成〔公式对象 F021〕，C不正确；\nD．W为聚硫酸酯，酯类物质在碱性条件下可以发生水解反应，因此，在碱性条件下，W比聚苯乙烯易降解，D不正确；\n综上所述，本题选B。",
+    "analysisImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2024_new_standard\\q08_2024新课标卷_答案解析_image_020.png",
+        "sourcePage": "6",
+        "description": "Word第6页，第8题2024新课标卷_答案解析中的图片对象"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2024_new_standard\\q08_2024新课标卷_答案解析_formula_021.png",
+        "sourcePage": "6",
+        "description": "Word第6页，第8题2024新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      }
+    ],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "有机化学>高分子化学>缩聚反应与官能团"
+    ],
+    "difficultyLevel": "medium",
+    "difficultyReason": "需要提取题干或图表信息，并结合缩聚反应与官能团完成两步左右的判断或计算。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\理综\\新增\\2024年高考新课标理综真题（解析版）.docx",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\理综\\新增\\2024年高考新课标理综真题（解析版）.docx"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "化学",
+    "year": 2024,
+    "region": "全国",
+    "paperName": "2024年高考真题——理综（新课标卷）",
+    "questionNumber": "9",
+    "questionType": "单选题",
+    "content": "实验室中利用下图装置验证铁与水蒸气反应。下列说法错误的是\n〔图片对象 I022〕",
+    "options": [
+      {
+        "label": "A",
+        "content": "反应为〔公式对象 F023〕"
+      },
+      {
+        "label": "B",
+        "content": "酒精灯移至湿棉花下方实验效果更好"
+      },
+      {
+        "label": "C",
+        "content": "用木柴点燃肥皂泡检验生成的氢气"
+      },
+      {
+        "label": "D",
+        "content": "使用硬质玻璃试管盛装还原铁粉"
+      }
+    ],
+    "questionImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2024_new_standard\\q09_2024新课标卷_题干_image_022.png",
+        "sourcePage": "6",
+        "description": "Word第6页，第9题2024新课标卷_题干中的图片对象"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2024_new_standard\\q09_2024新课标卷_题干_formula_023.png",
+        "sourcePage": "6",
+        "description": "Word第6页，第9题2024新课标卷_题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      }
+    ],
+    "correctAnswer": "B",
+    "standardAnalysis": "【详解】A．铁和水蒸气在高温下发生反应生成〔公式对象 F024〕和〔公式对象 F025〕，该反应的化学方程式为〔公式对象 F026〕，A正确；\nB．酒精灯放在铁粉下方加热可以产生高温，且不影响水的蒸发，若移至湿棉花下方则难以产生高温，则实验效果不好，B错误；\nC．用木柴点燃肥皂泡，若产生尖锐的爆鸣声，则可检验生成的气体为氢气，C正确；\nD．由于该实验中的反应要在高温下发生，因此要使用硬质玻璃试管盛装还原铁粉，D正确；\n故选B。",
+    "analysisImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2024_new_standard\\q09_2024新课标卷_答案解析_formula_024.png",
+        "sourcePage": "6",
+        "description": "Word第6页，第9题2024新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2024_new_standard\\q09_2024新课标卷_答案解析_formula_025.png",
+        "sourcePage": "6",
+        "description": "Word第6页，第9题2024新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2024_new_standard\\q09_2024新课标卷_答案解析_formula_026.png",
+        "sourcePage": "6",
+        "description": "Word第6页，第9题2024新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      }
+    ],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "实验化学>气体制备与性质验证>铁与水蒸气反应"
+    ],
+    "difficultyLevel": "medium",
+    "difficultyReason": "需要提取题干或图表信息，并结合铁与水蒸气反应完成两步左右的判断或计算。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\理综\\新增\\2024年高考新课标理综真题（解析版）.docx",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\理综\\新增\\2024年高考新课标理综真题（解析版）.docx"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "化学",
+    "year": 2024,
+    "region": "全国",
+    "paperName": "2024年高考真题——理综（新课标卷）",
+    "questionNumber": "12",
+    "questionType": "单选题",
+    "content": "一种可植入体内的微型电池工作原理如图所示，通过CuO催化消耗血糖发电，从而控制血糖浓度。当传感器检测到血糖浓度高于标准，电池启动。血糖浓度下降至标准，电池停止工作。(血糖浓度以葡萄糖浓度计)\n〔图片对象 I071〕\n电池工作时，下列叙述错误的是",
+    "options": [
+      {
+        "label": "A",
+        "content": "电池总反应为〔公式对象 F072〕"
+      },
+      {
+        "label": "B",
+        "content": "b电极上CuO通过Cu(Ⅱ)和Cu(Ⅰ)相互转变起催化作用"
+      },
+      {
+        "label": "C",
+        "content": "消耗18mg葡萄糖，理论上a电极有0.4mmol电子流入"
+      },
+      {
+        "label": "D",
+        "content": "两电极间血液中的〔公式对象 F073〕在电场驱动下的迁移方向为b→a"
+      }
+    ],
+    "questionImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2024_new_standard\\q12_2024新课标卷_题干_image_071.png",
+        "sourcePage": "8",
+        "description": "Word第8页，第12题2024新课标卷_题干中的图片对象"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2024_new_standard\\q12_2024新课标卷_题干_formula_072.png",
+        "sourcePage": "9",
+        "description": "Word第9页，第12题2024新课标卷_题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2024_new_standard\\q12_2024新课标卷_题干_formula_073.png",
+        "sourcePage": "9",
+        "description": "Word第9页，第12题2024新课标卷_题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      }
+    ],
+    "correctAnswer": "C",
+    "standardAnalysis": "【分析】由题中信息可知，b电极为负极，发生反应〔公式对象 F074〕，然后再发生〔公式对象 F075〕；a电极为正极，发生反应〔公式对象 F076〕，在这个过程中发生的总反应为〔公式对象 F077〕。\n【详解】A．由题中信息可知，当电池开始工作时，a电极为电池正极，血液中的〔公式对象 F078〕在a电极上得电子生成〔公式对象 F079〕，电极反应式为〔公式对象 F080〕；b电极为电池负极， 〔公式对象 F081〕在b电极上失电子转化成CuO，电极反应式为〔公式对象 F082〕，然后葡萄糖被CuO氧化为葡萄糖酸，CuO被还原为〔公式对象 F083〕，则电池总反应为〔公式对象 F084〕，A正确；\nB．b电极上CuO将葡萄糖被CuO氧化为葡萄糖酸后被还原为〔公式对象 F085〕，〔公式对象 F086〕在b电极上失电子转化成CuO，在这个过程中CuO的质量和化学性质保持不变，因此，CuO通过Cu(Ⅱ)和Cu(Ⅰ)相互转变起催化作用，B正确；\nC．根据反应〔公式对象 F087〕可知，〔公式对象 F088〕参加反应时转移2 mol电子，〔公式对象 F089〕的物质的量为0.1 mmol，则消耗18 mg葡萄糖时，理论上a电极有0.2 mmol电子流入，C错误；\nD．原电池中阳离子从负极移向正极迁移，故〔公式对象 F090〕迁移方向为b→a，D正确。\n综上所述，本题选C。",
+    "analysisImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2024_new_standard\\q12_2024新课标卷_答案解析_formula_074.png",
+        "sourcePage": "9",
+        "description": "Word第9页，第12题2024新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2024_new_standard\\q12_2024新课标卷_答案解析_formula_075.png",
+        "sourcePage": "9",
+        "description": "Word第9页，第12题2024新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2024_new_standard\\q12_2024新课标卷_答案解析_formula_076.png",
+        "sourcePage": "9",
+        "description": "Word第9页，第12题2024新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2024_new_standard\\q12_2024新课标卷_答案解析_formula_077.png",
+        "sourcePage": "9",
+        "description": "Word第9页，第12题2024新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2024_new_standard\\q12_2024新课标卷_答案解析_formula_078.png",
+        "sourcePage": "9",
+        "description": "Word第9页，第12题2024新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2024_new_standard\\q12_2024新课标卷_答案解析_formula_079.png",
+        "sourcePage": "9",
+        "description": "Word第9页，第12题2024新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2024_new_standard\\q12_2024新课标卷_答案解析_formula_080.png",
+        "sourcePage": "9",
+        "description": "Word第9页，第12题2024新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2024_new_standard\\q12_2024新课标卷_答案解析_formula_081.png",
+        "sourcePage": "9",
+        "description": "Word第9页，第12题2024新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2024_new_standard\\q12_2024新课标卷_答案解析_formula_082.png",
+        "sourcePage": "9",
+        "description": "Word第9页，第12题2024新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2024_new_standard\\q12_2024新课标卷_答案解析_formula_083.png",
+        "sourcePage": "9",
+        "description": "Word第9页，第12题2024新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2024_new_standard\\q12_2024新课标卷_答案解析_formula_084.png",
+        "sourcePage": "9",
+        "description": "Word第9页，第12题2024新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2024_new_standard\\q12_2024新课标卷_答案解析_formula_085.png",
+        "sourcePage": "9",
+        "description": "Word第9页，第12题2024新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2024_new_standard\\q12_2024新课标卷_答案解析_formula_086.png",
+        "sourcePage": "9",
+        "description": "Word第9页，第12题2024新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2024_new_standard\\q12_2024新课标卷_答案解析_formula_087.png",
+        "sourcePage": "9",
+        "description": "Word第9页，第12题2024新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2024_new_standard\\q12_2024新课标卷_答案解析_formula_088.png",
+        "sourcePage": "9",
+        "description": "Word第9页，第12题2024新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2024_new_standard\\q12_2024新课标卷_答案解析_formula_089.png",
+        "sourcePage": "9",
+        "description": "Word第9页，第12题2024新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2024_new_standard\\q12_2024新课标卷_答案解析_formula_090.png",
+        "sourcePage": "9",
+        "description": "Word第9页，第12题2024新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      }
+    ],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "化学反应原理>电化学>原电池与催化"
+    ],
+    "difficultyLevel": "medium",
+    "difficultyReason": "需要提取题干或图表信息，并结合原电池与催化完成两步左右的判断或计算。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\理综\\新增\\2024年高考新课标理综真题（解析版）.docx",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\理综\\新增\\2024年高考新课标理综真题（解析版）.docx"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "化学",
+    "year": 2024,
+    "region": "全国",
+    "paperName": "2024年高考真题——理综（新课标卷）",
+    "questionNumber": "13",
+    "questionType": "单选题",
+    "content": "常温下〔公式对象 F091〕和〔公式对象 F092〕的两种溶液中，分布系数δ与pH的变化关系如图所示。[比如：〔公式对象 F093〕]\n〔图片对象 I094〕\n下列叙述正确的是",
+    "options": [
+      {
+        "label": "A",
+        "content": "曲线M表示〔公式对象 F095〕的变化关系"
+      },
+      {
+        "label": "B",
+        "content": "若酸的初始浓度为〔公式对象 F096〕，则a点对应的溶液中有〔公式对象 F097〕"
+      },
+      {
+        "label": "C",
+        "content": "〔公式对象 F098〕的电离常数〔公式对象 F099〕"
+      },
+      {
+        "label": "D",
+        "content": "〔公式对象 F100〕时，〔公式对象 F101〕"
+      }
+    ],
+    "questionImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2024_new_standard\\q13_2024新课标卷_题干_formula_091.png",
+        "sourcePage": "9",
+        "description": "Word第9页，第13题2024新课标卷_题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2024_new_standard\\q13_2024新课标卷_题干_formula_092.png",
+        "sourcePage": "9",
+        "description": "Word第9页，第13题2024新课标卷_题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2024_new_standard\\q13_2024新课标卷_题干_formula_093.png",
+        "sourcePage": "9",
+        "description": "Word第9页，第13题2024新课标卷_题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2024_new_standard\\q13_2024新课标卷_题干_image_094.png",
+        "sourcePage": "10",
+        "description": "Word第10页，第13题2024新课标卷_题干中的图片对象"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2024_new_standard\\q13_2024新课标卷_题干_formula_095.png",
+        "sourcePage": "10",
+        "description": "Word第10页，第13题2024新课标卷_题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2024_new_standard\\q13_2024新课标卷_题干_formula_096.png",
+        "sourcePage": "10",
+        "description": "Word第10页，第13题2024新课标卷_题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2024_new_standard\\q13_2024新课标卷_题干_formula_097.png",
+        "sourcePage": "10",
+        "description": "Word第10页，第13题2024新课标卷_题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2024_new_standard\\q13_2024新课标卷_题干_formula_098.png",
+        "sourcePage": "10",
+        "description": "Word第10页，第13题2024新课标卷_题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2024_new_standard\\q13_2024新课标卷_题干_formula_099.png",
+        "sourcePage": "10",
+        "description": "Word第10页，第13题2024新课标卷_题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2024_new_standard\\q13_2024新课标卷_题干_formula_100.png",
+        "sourcePage": "10",
+        "description": "Word第10页，第13题2024新课标卷_题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2024_new_standard\\q13_2024新课标卷_题干_formula_101.png",
+        "sourcePage": "10",
+        "description": "Word第10页，第13题2024新课标卷_题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      }
+    ],
+    "correctAnswer": "D",
+    "standardAnalysis": "【分析】随着pH的增大，〔公式对象 F102〕、〔公式对象 F103〕浓度减小，〔公式对象 F104〕、〔公式对象 F105〕浓度增大，—Cl为吸电子基团，〔公式对象 F106〕的酸性强于〔公式对象 F107〕，即〔公式对象 F108〕)，δ(酸分子)=δ(酸根离子)=0.5时的pH分别约为1.3、2.8，则两种酸的电离常数分别为〔公式对象 F109〕，〔公式对象 F110〕，由此分析解题。\n【详解】A．根据分析，曲线M表示〔公式对象 F111〕的变化关系，A错误；\nB．根据〔公式对象 F112〕，初始〔公式对象 F113〕，若溶液中溶质只有〔公式对象 F114〕，则〔公式对象 F115〕，但a点对应的〔公式对象 F116〕，说明此时溶液中加入了酸性更强的酸，根据电荷守恒，〔公式对象 F117〕，B错误；\nC．根据分析，CH₂ClCOOH的电离常数Ka=10⁻².⁸，C错误；\nD．电离度〔公式对象 F118〕，〔公式对象 F119〕，则〔公式对象 F120〕=〔公式对象 F121〕，〔公式对象 F122〕，〔公式对象 F123〕时，〔公式对象 F124〕，〔公式对象 F125〕，D正确；\n故答案选D。",
+    "analysisImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2024_new_standard\\q13_2024新课标卷_答案解析_formula_102.png",
+        "sourcePage": "10",
+        "description": "Word第10页，第13题2024新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2024_new_standard\\q13_2024新课标卷_答案解析_formula_103.png",
+        "sourcePage": "10",
+        "description": "Word第10页，第13题2024新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2024_new_standard\\q13_2024新课标卷_答案解析_formula_104.png",
+        "sourcePage": "10",
+        "description": "Word第10页，第13题2024新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2024_new_standard\\q13_2024新课标卷_答案解析_formula_105.png",
+        "sourcePage": "10",
+        "description": "Word第10页，第13题2024新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2024_new_standard\\q13_2024新课标卷_答案解析_formula_106.png",
+        "sourcePage": "10",
+        "description": "Word第10页，第13题2024新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2024_new_standard\\q13_2024新课标卷_答案解析_formula_107.png",
+        "sourcePage": "10",
+        "description": "Word第10页，第13题2024新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2024_new_standard\\q13_2024新课标卷_答案解析_formula_108.png",
+        "sourcePage": "10",
+        "description": "Word第10页，第13题2024新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2024_new_standard\\q13_2024新课标卷_答案解析_formula_109.png",
+        "sourcePage": "10",
+        "description": "Word第10页，第13题2024新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2024_new_standard\\q13_2024新课标卷_答案解析_formula_110.png",
+        "sourcePage": "10",
+        "description": "Word第10页，第13题2024新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2024_new_standard\\q13_2024新课标卷_答案解析_formula_111.png",
+        "sourcePage": "10",
+        "description": "Word第10页，第13题2024新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2024_new_standard\\q13_2024新课标卷_答案解析_formula_112.png",
+        "sourcePage": "10",
+        "description": "Word第10页，第13题2024新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2024_new_standard\\q13_2024新课标卷_答案解析_formula_113.png",
+        "sourcePage": "10",
+        "description": "Word第10页，第13题2024新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2024_new_standard\\q13_2024新课标卷_答案解析_formula_114.png",
+        "sourcePage": "10",
+        "description": "Word第10页，第13题2024新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2024_new_standard\\q13_2024新课标卷_答案解析_formula_115.png",
+        "sourcePage": "10",
+        "description": "Word第10页，第13题2024新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2024_new_standard\\q13_2024新课标卷_答案解析_formula_116.png",
+        "sourcePage": "10",
+        "description": "Word第10页，第13题2024新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2024_new_standard\\q13_2024新课标卷_答案解析_formula_117.png",
+        "sourcePage": "11",
+        "description": "Word第11页，第13题2024新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2024_new_standard\\q13_2024新课标卷_答案解析_formula_118.png",
+        "sourcePage": "11",
+        "description": "Word第11页，第13题2024新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2024_new_standard\\q13_2024新课标卷_答案解析_formula_119.png",
+        "sourcePage": "11",
+        "description": "Word第11页，第13题2024新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2024_new_standard\\q13_2024新课标卷_答案解析_formula_120.png",
+        "sourcePage": "11",
+        "description": "Word第11页，第13题2024新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2024_new_standard\\q13_2024新课标卷_答案解析_formula_121.png",
+        "sourcePage": "11",
+        "description": "Word第11页，第13题2024新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2024_new_standard\\q13_2024新课标卷_答案解析_formula_122.png",
+        "sourcePage": "11",
+        "description": "Word第11页，第13题2024新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2024_new_standard\\q13_2024新课标卷_答案解析_formula_123.png",
+        "sourcePage": "11",
+        "description": "Word第11页，第13题2024新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2024_new_standard\\q13_2024新课标卷_答案解析_formula_124.png",
+        "sourcePage": "11",
+        "description": "Word第11页，第13题2024新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\化学\\母题库\\images\\2024_new_standard\\q13_2024新课标卷_答案解析_formula_125.png",
+        "sourcePage": "11",
+        "description": "Word第11页，第13题2024新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      }
+    ],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "化学反应原理>水溶液中的离子平衡>分布系数与pH"
+    ],
+    "difficultyLevel": "hard",
+    "difficultyReason": "需要综合多个条件，围绕分布系数与pH进行多环节推理、定量计算或实验分析。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\理综\\新增\\2024年高考新课标理综真题（解析版）.docx",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\理综\\新增\\2024年高考新课标理综真题（解析版）.docx"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "生物",
+    "year": 2023,
+    "region": "全国",
+    "paperName": "2023年高考真题——理综（新课标卷）",
+    "questionNumber": "1",
+    "questionType": "单选题",
+    "content": "葡萄糖是人体所需的一种单糖。下列关于人体内葡萄糖的叙述，错误的是（ ）",
+    "options": [
+      {
+        "label": "A",
+        "content": "葡萄糖是人体血浆的重要组成成分，其含量受激素的调节"
+      },
+      {
+        "label": "B",
+        "content": "葡萄糖是机体能量的重要来源，能经自由扩散通过细胞膜"
+      },
+      {
+        "label": "C",
+        "content": "血液中的葡萄糖进入肝细胞可被氧化分解或转化为肝糖原"
+      },
+      {
+        "label": "D",
+        "content": "血液中的葡萄糖进入人体脂肪组织细胞可转变为甘油三酯"
+      }
+    ],
+    "questionImages": [],
+    "correctAnswer": "B",
+    "standardAnalysis": "【分析】葡萄糖是细胞生命活动所需要的主要能源物质，常被形容为“生命的燃料”。\n【详解】A、葡萄糖是人体血浆的重要组成成分，血液中的糖称为血糖，血糖含量受胰岛素、胰高血糖素等激素的调节，A正确；\nB、葡萄糖是细胞生命活动所需要的主要能源物质，是机体能量的重要来源，葡萄糖通过细胞膜进入红细胞是协助扩散，进入小肠上皮细胞为主动运输，进入组织细胞一般通过协助扩散，B错误；\nCD、血糖浓度升高时，在胰岛素作用下，血糖可以进入肝细胞进行氧化分解并合成肝糖原，进入脂肪组织细胞转变为甘油三酯，CD正确。\n故选B。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "分子与细胞>细胞的物质输入和输出>葡萄糖运输"
+    ],
+    "difficultyLevel": "easy",
+    "difficultyReason": "考查葡萄糖运输的直接识记或单步判断，条件明确，运算与推理量较小。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（新课标卷）Word版含解析.doc",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（新课标卷）Word版含解析.doc"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "生物",
+    "year": 2023,
+    "region": "全国",
+    "paperName": "2023年高考真题——理综（新课标卷）",
+    "questionNumber": "3",
+    "questionType": "单选题",
+    "content": "人体内的免疫细胞是体液免疫和细胞免疫过程的重要参与者。下列叙述正确的是（ ）\n①免疫细胞表面的受体可识别细菌、病毒等入侵机体的病原体\n②树突状细胞能够处理和呈递抗原，淋巴细胞不能呈递抗原\n③辅助性T细胞参与体液免疫过程而不参与细胞免疫过程\n④体液免疫可产生记忆B细胞，细胞免疫可产生记忆T细胞\n⑤某些致病细菌感染人体既可引发体液免疫又可引发细胞免疫",
+    "options": [
+      {
+        "label": "A",
+        "content": "①②④"
+      },
+      {
+        "label": "B",
+        "content": "①④⑤"
+      },
+      {
+        "label": "C",
+        "content": "②③⑤"
+      },
+      {
+        "label": "D",
+        "content": "③④⑤"
+      }
+    ],
+    "questionImages": [],
+    "correctAnswer": "B",
+    "standardAnalysis": "【分析】免疫细胞是执行免疫功能的细胞，它们来自骨髓的造血干细胞，包括各种类型的白细胞，如淋巴细胞、树突状细胞和巨噬细胞等。\n【详解】①病原体进入机体后，其表面一些特定的蛋白质等物质，能够与免疫细胞表面的受体结合，从而引发免疫反应，故免疫细胞表面的受体可识别细菌、病毒等入侵机体的病原体，①正确；\n②B细胞、树突状细胞和巨噬细胞都能够处理和呈递抗原，B细胞属于淋巴细胞，②错误；\n③辅助性T细胞在体液免疫过程中，辅助性T细胞表面的特定分子发生变化与B细胞结合作为激活B细胞的第二信号，并且分裂分化，分泌细胞因子促进B细胞的分裂、分化过程；在细胞免疫过程中，辅助性T细胞分泌细胞因子促进细胞毒性T细胞增殖分化。因此辅助性T细胞既参与体液免疫又参与细胞免疫过程，③错误；\n④体液免疫过程中，B细胞活化后开始增殖分化，一小部分分化为记忆B细胞；细胞免疫过程中，细胞毒性T细胞分裂并分化，形成新的细胞毒性T细胞和记忆T细胞，④正确；\n⑤某些致病细菌是寄生在宿主细胞内的，感染人体时既可引发体液免疫又可引发细胞免疫，⑤正确。\n综上所述，①④⑤正确。\n故选B。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "稳态与环境>免疫调节>体液免疫与细胞免疫"
+    ],
+    "difficultyLevel": "medium",
+    "difficultyReason": "需要提取题干或图表信息，并结合体液免疫与细胞免疫完成两步左右的判断或计算。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（新课标卷）Word版含解析.doc",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（新课标卷）Word版含解析.doc"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "生物",
+    "year": 2023,
+    "region": "全国",
+    "paperName": "2023年高考真题——理综（新课标卷）",
+    "questionNumber": "5",
+    "questionType": "单选题",
+    "content": "某研究小组从野生型高秆（显性）玉米中获得了2个矮秆突变体，为了研究这2个突变体的基因型，该小组让这2个矮秆突变体（亲本）杂交得F₁，F₁自交得F₂，发现F₂中表型及其比例是高秆:矮秆:极矮秆=9:6:1。若用A、B表示显性基因，则下列相关推测错误的是（ ）",
+    "options": [
+      {
+        "label": "A",
+        "content": "亲本的基因型为aaBB和AAbb，F₁的基因型为AaBb"
+      },
+      {
+        "label": "B",
+        "content": "F₂矮秆的基因型有aaBB、AAbb、aaBb、Aabb，共4种"
+      },
+      {
+        "label": "C",
+        "content": "基因型是AABB的个体为高秆，基因型是aabb的个体为极矮秆"
+      },
+      {
+        "label": "D",
+        "content": "F₂矮秆中纯合子所占比例为1/2，F₂高秆中纯合子所占比例为1/16"
+      }
+    ],
+    "questionImages": [],
+    "correctAnswer": "D",
+    "standardAnalysis": "【分析】由题干信息可知，2个矮秆突变体（亲本）杂交得F₁，F₁自交得F₂，发现F₂中表型及其比例是高秆:矮秆:极矮秆=9:6:1，符合9:3:3:1的变式，因此控制两个矮秆突变体的基因遵循基因的自由组合定律。\n【详解】A、F₂中表型及其比例是高秆:矮秆:极矮秆=9:6:1，符合9:3:3:1的变式，因此控制两个矮秆突变体的基因遵循基因的自由组合定律，即高秆基因型为A_B_，矮秆基因型为A_bb、aaB_，极矮秆基因型为aabb，因此可推知亲本的基因型为aaBB和AAbb，F₁的基因型为AaBb，A正确；\nB、矮秆基因型为A_bb、aaB_，因此F₂矮秆的基因型有aaBB、AAbb、aaBb、Aabb，共4种，B正确；\nC、由F₂中表型及其比例可知基因型是AABB的个体为高秆，基因型是aabb的个体为极矮秆，C正确；\nD、F₂矮秆基因型为A_bb、aaB_共6份，纯合子基因型为aaBB、AAbb共2份，因此矮秆中纯合子所占比例为1/3，F₂高秆基因型为A_B_共9份，纯合子为AABB共1份，因此高秆中纯合子所占比例为1/9，D错误。\n故选D。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "遗传与进化>遗传规律>基因互作"
+    ],
+    "difficultyLevel": "hard",
+    "difficultyReason": "需要综合多个条件，围绕基因互作进行多环节推理、定量计算或实验分析。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（新课标卷）Word版含解析.doc",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（新课标卷）Word版含解析.doc"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "生物",
+    "year": 2023,
+    "region": "全国",
+    "paperName": "2023年高考真题——理综（全国甲卷）",
+    "questionNumber": "1",
+    "questionType": "单选题",
+    "content": "物质输入和输出细胞都需要经过细胞膜。下列有关人体内物质跨膜运输的叙述，正确的是（ ）",
+    "options": [
+      {
+        "label": "A",
+        "content": "乙醇是有机物，不能通过自由扩散方式跨膜进入细胞"
+      },
+      {
+        "label": "B",
+        "content": "血浆中的K⁺进入红细胞时需要载体蛋白并消耗ATP"
+      },
+      {
+        "label": "C",
+        "content": "抗体在浆细胞内合成时消耗能量，其分泌过程不耗能"
+      },
+      {
+        "label": "D",
+        "content": "葡萄糖可通过主动运输但不能通过协助扩散进入细胞"
+      }
+    ],
+    "questionImages": [],
+    "correctAnswer": "B",
+    "standardAnalysis": "【分析】自由扩散：物质通过简单的扩散进出细胞的方式，如氧气、二氧化碳、脂溶性小分子。\n主动运输：逆浓度梯度的运输。消耗能量，需要有载体蛋白。\n【详解】A、乙醇是有机物，与细胞膜中磷脂相似相溶，可以通过扩散方式进入细胞，A错误；\nB、血浆中K⁺量低，红细胞内K⁺含量高，逆浓度梯度为主动运输，需要消耗ATP并需要载体蛋白，B正确；\nC、抗体为分泌蛋白，分泌过程为胞吐，需要消耗能量，C错误；\nD、葡萄糖进入小肠上皮细胞等为主动运输，进入哺乳动物成熟的红细胞为协助扩散，D错误。\n故选B。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "分子与细胞>细胞的物质输入和输出>跨膜运输"
+    ],
+    "difficultyLevel": "easy",
+    "difficultyReason": "考查跨膜运输的直接识记或单步判断，条件明确，运算与推理量较小。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（全国甲卷）Word版含解析.doc",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（全国甲卷）Word版含解析.doc"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "生物",
+    "year": 2023,
+    "region": "全国",
+    "paperName": "2023年高考真题——理综（全国甲卷）",
+    "questionNumber": "4",
+    "questionType": "单选题",
+    "content": "探究植物细胞的吸水和失水实验是高中学生常做的实验。某同学用紫色洋葱鳞片叶外表皮为材料进行实验，探究蔗糖溶液，清水处理外表皮后，外表皮细胞原生质体和液泡的体积及细胞液浓度的变化。图中所提到的原生质体是指植物细胞不包括细胞壁的部分。下列示意图中能够正确表示实验结果的是（ ）",
+    "options": [
+      {
+        "label": "A",
+        "content": "〔图片对象 I003〕"
+      },
+      {
+        "label": "B",
+        "content": "〔图片对象 I004〕"
+      },
+      {
+        "label": "C",
+        "content": "〔图片对象 I005〕"
+      },
+      {
+        "label": "D",
+        "content": "〔图片对象 I006〕"
+      }
+    ],
+    "questionImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\生物\\母题库\\images\\2023_national_a\\q04_2023全国甲卷_题干_image_003.png",
+        "sourcePage": "3",
+        "description": "Word第3页，第4题2023全国甲卷_题干中的图片对象"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\生物\\母题库\\images\\2023_national_a\\q04_2023全国甲卷_题干_image_004.png",
+        "sourcePage": "3",
+        "description": "Word第3页，第4题2023全国甲卷_题干中的图片对象"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\生物\\母题库\\images\\2023_national_a\\q04_2023全国甲卷_题干_image_005.png",
+        "sourcePage": "3",
+        "description": "Word第3页，第4题2023全国甲卷_题干中的图片对象"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\生物\\母题库\\images\\2023_national_a\\q04_2023全国甲卷_题干_image_006.png",
+        "sourcePage": "3",
+        "description": "Word第3页，第4题2023全国甲卷_题干中的图片对象"
+      }
+    ],
+    "correctAnswer": "C",
+    "standardAnalysis": "【分析】1、质壁分离与复原的原理：成熟的植物细胞构成渗透系统，可发生渗透作用。\n2、质壁分离的原因分析：外因：外界溶液浓度>细胞液浓度；内因：原生质层相当于一层半透膜，细胞壁的伸缩性小于原生质层。\n【详解】AB、用30%蔗糖处理之后，细胞失水，原生质体和细胞液的体积都会减小，细胞液浓度上升；用清水处理之后，细胞吸水，原生质体和细胞液体积会扩大，细胞液浓度下降，AB错误。\nCD、随着所用蔗糖浓度上升，当蔗糖浓度超过细胞液浓度之后，细胞就会开始失水，原生质体和细胞液体积下降，细胞液浓度上升，故C正确，D错误。\n故选C。\n【点睛】外界溶液浓度高，细胞失水，细胞体积减小，细胞液浓度增大。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "实验与探究>细胞实验>植物细胞吸水和失水"
+    ],
+    "difficultyLevel": "medium",
+    "difficultyReason": "需要提取题干或图表信息，并结合植物细胞吸水和失水完成两步左右的判断或计算。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（全国甲卷）Word版含解析.doc",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（全国甲卷）Word版含解析.doc"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "生物",
+    "year": 2023,
+    "region": "全国",
+    "paperName": "2023年高考真题——理综（全国甲卷）",
+    "questionNumber": "5",
+    "questionType": "单选题",
+    "content": "在生态系统中，生产者所固定的能量可以沿着食物链传递，食物链中的每个环节即为一个营养级。下列关于营养级的叙述，错误的是（ ）",
+    "options": [
+      {
+        "label": "A",
+        "content": "同种动物在不同食物链中可能属于不同营养级"
+      },
+      {
+        "label": "B",
+        "content": "作为生产者的绿色植物所固定的能量来源于太阳"
+      },
+      {
+        "label": "C",
+        "content": "作为次级消费者的肉食性动物属于食物链的第二营养级"
+      },
+      {
+        "label": "D",
+        "content": "能量从食物链第一营养级向第二营养级只能单向流动"
+      }
+    ],
+    "questionImages": [],
+    "correctAnswer": "C",
+    "standardAnalysis": "【分析】生态系统的能量流动是单向的、逐级递减的，沿着食物链和食物网流动；生产者为第一营养级，初级消费者为第二营养级，次级消费者为第三营养级。\n【详解】A、杂食动物既会捕食植物，又会捕食动物，如果捕食植物，就是第二营养级，捕食动物，就是第三营养级或更高营养级，所以不同食物链中的动物会处于不同的营养级，A正确；\nB、绿色植物进行的是光合作用，能量来源于太阳，B正确；\nC、次级消费者是第三营养级，初级消费者是第二营养级，第一营养级是生产者，C错误；\nD、因为第一营养级是植物，第二营养级是动物，食物链是单向的，能量流动也就是单向的，D正确。\n故选C。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "稳态与环境>生态系统>营养级与能量流动"
+    ],
+    "difficultyLevel": "easy",
+    "difficultyReason": "考查营养级与能量流动的直接识记或单步判断，条件明确，运算与推理量较小。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（全国甲卷）Word版含解析.doc",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（全国甲卷）Word版含解析.doc"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "生物",
+    "year": 2024,
+    "region": "全国",
+    "paperName": "2024年高考真题——理综（新课标卷）",
+    "questionNumber": "2",
+    "questionType": "单选题",
+    "content": "干旱缺水条件下，植物可通过减小气孔开度减少水分散失。下列叙述错误的是（ ）",
+    "options": [
+      {
+        "label": "A",
+        "content": "叶片萎蔫时叶片中脱落酸的含量会降低"
+      },
+      {
+        "label": "B",
+        "content": "干旱缺水时进入叶肉细胞的〔公式对象 F004〕会减少"
+      },
+      {
+        "label": "C",
+        "content": "植物细胞失水时胞内结合水与自由水比值增大"
+      },
+      {
+        "label": "D",
+        "content": "干旱缺水不利于植物对营养物质的吸收和运输"
+      }
+    ],
+    "questionImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\生物\\母题库\\images\\2024_new_standard\\q02_2024新课标卷_题干_formula_004.png",
+        "sourcePage": "1",
+        "description": "Word第1页，第2题2024新课标卷_题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      }
+    ],
+    "correctAnswer": "A",
+    "standardAnalysis": "【分析】干旱缺水条件下气孔开度减小，植物吸收的二氧化碳会减少，植物的光合速率会降低，同时植物体内水分含量减少，各种需要水分参与的生理反应都会减弱，植物根细胞的吸水能力增强，植物缺水主要是自由水大量失去。\n【详解】A、叶片萎蔫时，叶片中的脱落酸(ABA)含量会增加，达到一定程度叶片可能会脱落，A错误；\nB、干旱缺水时，植物气孔开度减小，吸收的二氧化碳会减少，植物的光合速率会降低，B正确；\nC、植物细胞失水时主要失去自由水，自由水含量下降，结合水与自由水比值会增大，C正确；\nD、缺水会影响植物体内各种需要水分参与的生理反应，植物对营养物质的吸收和运输往往需要水分参与，缺水不利于该过程，D正确。\n故选A。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "稳态与环境>植物生命活动调节>气孔与水分代谢"
+    ],
+    "difficultyLevel": "medium",
+    "difficultyReason": "需要提取题干或图表信息，并结合气孔与水分代谢完成两步左右的判断或计算。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\理综\\新增\\2024年高考新课标理综真题（解析版）.docx",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\理综\\新增\\2024年高考新课标理综真题（解析版）.docx"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "生物",
+    "year": 2024,
+    "region": "全国",
+    "paperName": "2024年高考真题——理综（新课标卷）",
+    "questionNumber": "4",
+    "questionType": "单选题",
+    "content": "采用稻田养蟹的生态农业模式既可提高水稻产量又可收获螃蟹。下列叙述错误的是（ ）",
+    "options": [
+      {
+        "label": "A",
+        "content": "该模式中水稻属于第一营养级"
+      },
+      {
+        "label": "B",
+        "content": "该模式中水稻和螃蟹处于相同生态位"
+      },
+      {
+        "label": "C",
+        "content": "该模式可促进水稻对二氧化碳的吸收"
+      },
+      {
+        "label": "D",
+        "content": "该模式中碳循环在无机环境和生物间进行"
+      }
+    ],
+    "questionImages": [],
+    "correctAnswer": "B",
+    "standardAnalysis": "【分析】稻田养蟹的模式中蟹能清除稻田杂草，吃掉部分害虫，其排泄物还能改善稻田土壤状况，促进水稻生长，提高水稻的品质;水稻则为蟹生长提供了丰富的天然饵料和良好的栖息环境。“稻蟹共生”为充分利用人工新建的农田生态系统。\n【详解】A、在稻田养蟹的生态农业模式中，水稻属于生产者，属于第一营养级，A正确；\nB、这个模式中，水稻和螃蟹处于不同的生态位，因为它们消耗不同的资源。水稻是水生植物，吸收水分和矿物质，而螃蟹是水生动物，以植物残渣和小型水生动物为食，B错误；\nC、这种模式确实可以促进水稻对二氧化碳的吸收，因为螃蟹在稻田中活动可以改善土壤通气状况，有利于水稻根系呼吸作用，进而促进二氧化碳的吸收，C正确；\nD、碳循环在稻田生态系统中包括无机环境和生物两个部分。水稻通过光合作用将无机碳（二氧化碳）转化为有机物，螃蟹则通过呼吸作用将有机物中的碳以二氧化碳的形式释放回大气中，从而完成了碳在生态系统中的循环，D正确。\n故选B。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "稳态与环境>生态系统>生态农业"
+    ],
+    "difficultyLevel": "easy",
+    "difficultyReason": "考查生态农业的直接识记或单步判断，条件明确，运算与推理量较小。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\理综\\新增\\2024年高考新课标理综真题（解析版）.docx",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\理综\\新增\\2024年高考新课标理综真题（解析版）.docx"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "生物",
+    "year": 2024,
+    "region": "全国",
+    "paperName": "2024年高考真题——理综（新课标卷）",
+    "questionNumber": "5",
+    "questionType": "单选题",
+    "content": "某种二倍体植物的P₁和P₂植株杂交得F₁，F₁自交得F₂。对个体的DNA进行PCR检测，产物的电泳结果如图所示，其中①～⑧为部分F₂个体，上部2条带是一对等位基因的扩增产物，下部2条带是另一对等位基因的扩增产物，这2对等位基因位于非同源染色体上。下列叙述错误的是（ ）\n〔图片对象 I006〕",
+    "options": [
+      {
+        "label": "A",
+        "content": "①②个体均为杂合体，F₂中③所占的比例大于⑤"
+      },
+      {
+        "label": "B",
+        "content": "还有一种F₂个体的PCR产物电泳结果有3条带"
+      },
+      {
+        "label": "C",
+        "content": "③和⑦杂交子代的PCR产物电泳结果与②⑧电泳结果相同"
+      },
+      {
+        "label": "D",
+        "content": "①自交子代的PCR产物电泳结果与④电泳结果相同的占〔公式对象 F008〕"
+      }
+    ],
+    "questionImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\生物\\母题库\\images\\2024_new_standard\\q05_2024新课标卷_题干_image_006.png",
+        "sourcePage": "3",
+        "description": "Word第3页，第5题2024新课标卷_题干中的图片对象"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\生物\\母题库\\images\\2024_new_standard\\q05_2024新课标卷_题干_formula_008.png",
+        "sourcePage": "3",
+        "description": "Word第3页，第5题2024新课标卷_题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      }
+    ],
+    "correctAnswer": "D",
+    "standardAnalysis": "【分析】基因自由组合定律的实质是：位于非同源染色体上的非等位基因的分离或自由组合是互不干扰的；在减数分裂过程中，同源染色体上的等位基因彼此分离的同时，非同源染色体上的非等位基因自由组合。\n【详解】A、由题可知，这2对等位基因位于非同源染色体上，假设A/a为上部两条带的等位基因，B/b为下部两条带的等位基因，由电泳图可知P₁为AAbb，P₂为aaBB，F₁为AaBb，F₂中①AaBB②Aabb都为杂合子，③AABb占F₂的比例为〔公式对象 F009〕，⑤AABB占F₂的比例为〔公式对象 F010〕，A正确；\nB、电泳图中的F₂的基因型依次为：AaBB、Aabb、AABb、aaBB、AABB、AAbb、aabb、AaBb，未出现的基因型为aaBb，其个体PCR产物电泳结果有3条带，B正确；\nC、③AABb和⑦aabb杂交后代为Aabb、 AaBb，其PCR产物电泳结果与②⑧电泳结果相同，C正确；\nD、①AaBB自交子代为，AABB（〔公式对象 F011〕）、AaBB（〔公式对象 F012〕）、aaBB（〔公式对象 F013〕），其PCR产物电泳结果与④aaBB电泳结果相同的占〔公式对象 F014〕，D错误。\n故选D。",
+    "analysisImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\生物\\母题库\\images\\2024_new_standard\\q05_2024新课标卷_答案解析_formula_009.png",
+        "sourcePage": "4",
+        "description": "Word第4页，第5题2024新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\生物\\母题库\\images\\2024_new_standard\\q05_2024新课标卷_答案解析_formula_010.png",
+        "sourcePage": "4",
+        "description": "Word第4页，第5题2024新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\生物\\母题库\\images\\2024_new_standard\\q05_2024新课标卷_答案解析_formula_011.png",
+        "sourcePage": "4",
+        "description": "Word第4页，第5题2024新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\生物\\母题库\\images\\2024_new_standard\\q05_2024新课标卷_答案解析_formula_012.png",
+        "sourcePage": "4",
+        "description": "Word第4页，第5题2024新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\生物\\母题库\\images\\2024_new_standard\\q05_2024新课标卷_答案解析_formula_013.png",
+        "sourcePage": "4",
+        "description": "Word第4页，第5题2024新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\生物\\母题库\\images\\2024_new_standard\\q05_2024新课标卷_答案解析_formula_014.png",
+        "sourcePage": "4",
+        "description": "Word第4页，第5题2024新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      }
+    ],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "遗传与进化>遗传规律>PCR电泳与自由组合"
+    ],
+    "difficultyLevel": "hard",
+    "difficultyReason": "需要综合多个条件，围绕PCR电泳与自由组合进行多环节推理、定量计算或实验分析。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\理综\\新增\\2024年高考新课标理综真题（解析版）.docx",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\理综\\新增\\2024年高考新课标理综真题（解析版）.docx"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "生物",
+    "year": 2024,
+    "region": "全国",
+    "paperName": "2024年高考真题——理综（新课标卷）",
+    "questionNumber": "6",
+    "questionType": "单选题",
+    "content": "用一定量的液体培养基培养某种细菌，活细菌数随时间的变化趋势如图所示，其中Ⅰ～Ⅳ表示细菌种群增长的4个时期。下列叙述错误的是（ ）\n〔图片对象 I015〕",
+    "options": [
+      {
+        "label": "A",
+        "content": "培养基中的细菌不能通过有丝分裂进行增殖"
+      },
+      {
+        "label": "B",
+        "content": "Ⅱ期细菌数量增长快，存在“J”形增长阶段"
+      },
+      {
+        "label": "C",
+        "content": "Ⅲ期细菌没有增殖和死亡，总数保持相对稳定"
+      },
+      {
+        "label": "D",
+        "content": "Ⅳ期细菌数量下降的主要原因有营养物质匮乏"
+      }
+    ],
+    "questionImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\生物\\母题库\\images\\2024_new_standard\\q06_2024新课标卷_题干_image_015.png",
+        "sourcePage": "4",
+        "description": "Word第4页，第6题2024新课标卷_题干中的图片对象"
+      }
+    ],
+    "correctAnswer": "C",
+    "standardAnalysis": "【分析】分析题图：细菌种群增长开始时呈现S曲线，达到K值后，由于营养物质消耗、代谢产物积累，种群数量逐渐下降。\n【详解】A、有丝分裂是真核细胞的增殖方式，细菌是原核细胞，进行二分裂，所以培养基中的细菌不能通过有丝分裂进行增殖，A正确；\nB、Ⅱ期由于资源充足，细菌经过一段的调整适应，种群增长可能会短暂出现“J”形的增长，B正确；\nC、Ⅲ期细菌的增殖速率和死亡速率基本相等，总数保持相对稳定，C错误；\nD、Ⅳ期培养基中营养物质含量减少和代谢产物积累，细菌种群数量会下降，D正确。\n故选C。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "生物技术实践>微生物培养>细菌种群增长曲线"
+    ],
+    "difficultyLevel": "medium",
+    "difficultyReason": "需要提取题干或图表信息，并结合细菌种群增长曲线完成两步左右的判断或计算。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\理综\\新增\\2024年高考新课标理综真题（解析版）.docx",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\理综\\新增\\2024年高考新课标理综真题（解析版）.docx"
+    },
+    "reviewStatus": "待审核"
+  }
+]

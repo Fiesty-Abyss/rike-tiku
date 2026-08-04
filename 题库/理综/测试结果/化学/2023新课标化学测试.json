@@ -1,0 +1,969 @@
+[
+  {
+    "subject": "化学",
+    "year": 2023,
+    "region": "全国",
+    "paperName": "2023年高考真题——理综（新课标卷）",
+    "questionNumber": "7",
+    "questionType": "单选题",
+    "content": "化学在文物的研究和修复中有重要作用。下列说法错误的是",
+    "options": [
+      {
+        "label": "A",
+        "content": "竹简的成分之一纤维素属于天然高分子"
+      },
+      {
+        "label": "B",
+        "content": "龟甲的成分之一羟基磷灰石属于无机物"
+      },
+      {
+        "label": "C",
+        "content": "古陶瓷修复所用的熟石膏，其成分为Ca(OH)₂"
+      },
+      {
+        "label": "D",
+        "content": "古壁画颜料中所用的铁红，其成分为Fe₂O₃"
+      }
+    ],
+    "questionImages": [],
+    "correctAnswer": "C",
+    "standardAnalysis": "【详解】A．纤维素是一种天然化合物，其分子式为(C₆H₁₀O₅)n，其相对分子质量较高，是一种天然高分子，A正确；\nB．羟基磷灰石又称又称羟磷灰石、碱式磷酸钙，其化学式为[Ca₁₀(PO₄)₆(OH)₂]，属于无机物，B正确；\nC．熟石膏是主要成分为2CaSO₄·H₂O，Ca(OH)₂为熟石灰的主要成分，C错误；\nD．Fe₂O₃为红色，常被用于油漆、涂料、油墨和橡胶的红色颜料，俗称铁红，D正确；\n故答案选C。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": null,
+    "difficultyLevel": null,
+    "difficultyReason": null,
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（新课标卷）Word版含解析.doc",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（新课标卷）Word版含解析.doc"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "化学",
+    "year": 2023,
+    "region": "全国",
+    "paperName": "2023年高考真题——理综（新课标卷）",
+    "questionNumber": "9",
+    "questionType": "单选题",
+    "content": "一种可吸附甲醇的材料，其化学式为〔公式对象 F009〕，部分晶体结构如下图所示，其中〔公式对象 F010〕为平面结构。\n〔图片对象 I011〕\n下列说法正确的是",
+    "options": [
+      {
+        "label": "A",
+        "content": "该晶体中存在N-H…O氢键"
+      },
+      {
+        "label": "B",
+        "content": "基态原子的第一电离能：〔公式对象 F012〕"
+      },
+      {
+        "label": "C",
+        "content": "基态原子未成对电子数：〔公式对象 F013〕"
+      },
+      {
+        "label": "D",
+        "content": "晶体中B、N和O原子轨道的杂化类型相同"
+      }
+    ],
+    "questionImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q09_题干_formula_009.png",
+        "sourcePage": "6",
+        "description": "Word第6页，第9题题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q09_题干_formula_010.png",
+        "sourcePage": "6",
+        "description": "Word第6页，第9题题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q09_题干_image_011.png",
+        "sourcePage": "6",
+        "description": "Word第6页，第9题题干中的图片对象"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q09_题干_formula_012.png",
+        "sourcePage": "7",
+        "description": "Word第7页，第9题题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q09_题干_formula_013.png",
+        "sourcePage": "7",
+        "description": "Word第7页，第9题题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      }
+    ],
+    "correctAnswer": "A",
+    "standardAnalysis": "【详解】A．由晶体结构图可知，〔公式对象 F015〕中的〔公式对象 F016〕的〔公式对象 F017〕与〔公式对象 F018〕中的〔公式对象 F019〕形成氢键，因此，该晶体中存在〔公式对象 F020〕氢键，A说法正确；\nB．同一周期元素原子的第一电离能呈递增趋势，但是第ⅡA、ⅤA元素的原子结构比较稳定，其第一电离能高于同周期的相邻元素的原子，因此，基态原子的第一电离能从小到大的顺序为C< O < N，B说法不正确；\nC．B、C、O、N的未成对电子数分别为1、2、2、3，因此，基态原子未成对电子数B<C=O<N，C说法不正确；\nD．〔公式对象 F021〕为平面结构，则其中的C和N原子轨道杂化类型均为〔公式对象 F022〕；〔公式对象 F023〕中B与4个O形成了4个σ键，B没有孤电子对，则B的原子轨道杂化类型为〔公式对象 F024〕；〔公式对象 F025〕中O分别与B和C形成了2个σ键，O原子还有2个孤电子对，则O的原子轨道的杂化类型均为〔公式对象 F026〕；综上所述，晶体中B、О和N原子轨道的杂化类型不相同，D说法不正确；\n综上所述，本题选A。",
+    "analysisImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q09_答案_解析_formula_015.png",
+        "sourcePage": "7",
+        "description": "Word第7页，第9题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q09_答案_解析_formula_016.png",
+        "sourcePage": "7",
+        "description": "Word第7页，第9题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q09_答案_解析_formula_017.png",
+        "sourcePage": "7",
+        "description": "Word第7页，第9题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q09_答案_解析_formula_018.png",
+        "sourcePage": "7",
+        "description": "Word第7页，第9题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q09_答案_解析_formula_019.png",
+        "sourcePage": "7",
+        "description": "Word第7页，第9题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q09_答案_解析_formula_020.png",
+        "sourcePage": "7",
+        "description": "Word第7页，第9题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q09_答案_解析_formula_021.png",
+        "sourcePage": "7",
+        "description": "Word第7页，第9题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q09_答案_解析_formula_022.png",
+        "sourcePage": "7",
+        "description": "Word第7页，第9题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q09_答案_解析_formula_023.png",
+        "sourcePage": "7",
+        "description": "Word第7页，第9题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q09_答案_解析_formula_024.png",
+        "sourcePage": "7",
+        "description": "Word第7页，第9题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q09_答案_解析_formula_025.png",
+        "sourcePage": "7",
+        "description": "Word第7页，第9题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q09_答案_解析_formula_026.png",
+        "sourcePage": "7",
+        "description": "Word第7页，第9题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      }
+    ],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": null,
+    "difficultyLevel": null,
+    "difficultyReason": null,
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（新课标卷）Word版含解析.doc",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（新课标卷）Word版含解析.doc"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "化学",
+    "year": 2023,
+    "region": "全国",
+    "paperName": "2023年高考真题——理综（新课标卷）",
+    "questionNumber": "27",
+    "questionType": "解答题",
+    "content": "铬和钒具有广泛用途。铬钒渣中铬和钒以低价态含氧酸盐形式存在，主要杂质为铁、铝、硅、磷等的化合物，从铬钒渣中分离提取铬和钒的一种流程如下图所示：\n〔图片对象 I212〕\n已知：最高价铬酸根在酸性介质中以Cr₂O〔公式对象 F213〕存在，在碱性介质中以CrO〔公式对象 F214〕存在。\n回答下列问题：\n（1）煅烧过程中，钒和铬被氧化为相应的最高价含氧酸盐，其中含铬化合物主要为___________(填化学式)。\n（2）水浸渣中主要有SiO₂和___________。\n（3）“沉淀”步骤调pH到弱碱性，主要除去的杂质是___________。\n（4）“除硅磷”步骤中，使硅、磷分别以MgSiO₃和MgNH₄PO₄的形式沉淀，该步需要控制溶液的pH≈9以达到最好的除杂效果，若pH<9时，会导致___________；pH>9时，会导致___________。\n（5）“分离钒”步骤中，将溶液pH调到1.8左右得到V₂O₅沉淀，V₂O₅在pH<1时，溶解为VO〔公式对象 F215〕或VO³⁺在碱性条件下，溶解为VO〔公式对象 F216〕或VO〔公式对象 F217〕，上述性质说明V₂O₅具有___________(填标号)。\nA．酸性 B．碱性 C．两性\n（6）“还原”步骤中加入焦亚硫酸钠(Na₂S₂O₅)溶液，反应的离子方程式为___________。",
+    "options": null,
+    "questionImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q27_题干_image_212.png",
+        "sourcePage": "24",
+        "description": "Word第24页，第27题题干中的图片对象"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q27_题干_formula_213.png",
+        "sourcePage": "24",
+        "description": "Word第24页，第27题题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q27_题干_formula_214.png",
+        "sourcePage": "24",
+        "description": "Word第24页，第27题题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q27_题干_formula_215.png",
+        "sourcePage": "24",
+        "description": "Word第24页，第27题题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q27_题干_formula_216.png",
+        "sourcePage": "24",
+        "description": "Word第24页，第27题题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q27_题干_formula_217.png",
+        "sourcePage": "24",
+        "description": "Word第24页，第27题题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      }
+    ],
+    "correctAnswer": "（1）Na₂CrO₄\n（2）Fe₂O₃ （3）Al(OH)₃\n（4） ①. 磷酸根会与H⁺反应使其浓度降低导致MgNH₄PO₄无法完全沉淀，同时可能产生硅酸胶状沉淀不宜处理 ②. 会导镁离子生成氢氧化镁沉淀，不能形成MgSiO₃沉淀，导致产品中混有杂质，同时溶液中铵根离子浓度降低导致MgNH₄PO₄无法完全沉淀\n（5）C （6）2Cr₂O〔公式对象 F218〕+3S₂O〔公式对象 F219〕+10H⁺=4Cr³⁺+6SO〔公式对象 F220〕+5H₂O",
+    "standardAnalysis": "【分析】由题给流程可知，铬钒渣在氢氧化钠和空气中煅烧，将钒、铬、铝、硅、磷等元素转化为相应的最高价含氧酸盐，煅烧渣加入水浸取、过滤得到含有二氧化硅、氧化铁的滤渣和滤液；向滤液中加入稀硫酸调节溶液pH将Al元素转化为氢氧化铝沉淀，过滤得到强氧化铝滤渣和滤液；向滤液中加入硫酸镁溶液、硫酸铵溶液将硅元素、磷元素转化为MgSiO₃和MgNH₄PO₄沉淀，过滤得到含有MgSiO₃、MgNH₄PO₄的滤渣和滤液；向滤液中加入稀硫酸调节溶液pH将钒元素转化为五氧化二钒，过滤得到五氧化二钒和滤液；向滤液中焦亚硫酸钠溶液将铬元素转化为三价铬离子，调节溶液pH将铬元素转化为氢氧化铬沉淀，过滤得到氢氧化铬。\n【小问1详解】\n由分析可知，煅烧过程中，铬元素转化为铬酸钠，故答案为：Na₂CrO₄；\n【小问2详解】\n由分析可知，水浸渣中主要有二氧化硅、氧化铁，故答案为：Fe₂O₃；\n【小问3详解】\n由分析可知，沉淀步骤调pH到弱碱性的目的是将Al元素转化为氢氧化铝沉淀，故答案为：Al(OH)₃；\n【小问4详解】\n由分析可知，加入硫酸镁溶液、硫酸铵溶液的目的是将硅元素、磷元素转化为MgSiO₃和MgNH₄PO₄沉淀，若溶液pH<9时，磷酸根会与H⁺反应使其浓度降低导致MgNH₄PO₄无法完全沉淀，同时可能产生硅酸胶状沉淀不宜处理；若溶液pH>9时，会导镁离子生成氢氧化镁沉淀，不能形成MgSiO₃沉淀，导致产品中混有杂质，同时溶液中铵根离子浓度降低导致MgNH₄PO₄无法完全沉淀，故答案为：磷酸根会与H⁺反应使其浓度降低导致MgNH₄PO₄，同时可能产生硅酸胶状沉淀不宜处理；会导镁离子生成氢氧化镁沉淀，不能形成MgSiO₃沉淀，导致产品中混有杂质，同时溶液中铵根离子浓度降低导致MgNH₄PO₄无法完全沉淀；\n【小问5详解】\n由题给信息可知，五氧化二钒水能与酸溶液反应生成盐和水，也能与碱溶液发生生成盐和水的两性氧化物，故选C；\n【小问6详解】\n由题意可知，还原步骤中加入焦亚硫酸钠溶液的目的是将铬元素转化为铬离子，反应的离子方程式为2Cr₂O〔公式对象 F221〕+3S₂O〔公式对象 F222〕+10H⁺=4Cr³⁺+6SO〔公式对象 F223〕+5H₂O，故答案为：2Cr₂O〔公式对象 F224〕+3S₂O〔公式对象 F225〕+10H⁺=4Cr³⁺+6SO〔公式对象 F226〕+5H₂O。",
+    "analysisImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q27_答案_解析_formula_218.png",
+        "sourcePage": "25",
+        "description": "Word第25页，第27题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q27_答案_解析_formula_219.png",
+        "sourcePage": "25",
+        "description": "Word第25页，第27题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q27_答案_解析_formula_220.png",
+        "sourcePage": "25",
+        "description": "Word第25页，第27题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q27_答案_解析_formula_221.png",
+        "sourcePage": "25",
+        "description": "Word第25页，第27题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q27_答案_解析_formula_222.png",
+        "sourcePage": "25",
+        "description": "Word第25页，第27题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q27_答案_解析_formula_223.png",
+        "sourcePage": "25",
+        "description": "Word第25页，第27题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q27_答案_解析_formula_224.png",
+        "sourcePage": "25",
+        "description": "Word第25页，第27题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q27_答案_解析_formula_225.png",
+        "sourcePage": "25",
+        "description": "Word第25页，第27题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q27_答案_解析_formula_226.png",
+        "sourcePage": "25",
+        "description": "Word第25页，第27题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      }
+    ],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": null,
+    "difficultyLevel": null,
+    "difficultyReason": null,
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（新课标卷）Word版含解析.doc",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（新课标卷）Word版含解析.doc"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "化学",
+    "year": 2023,
+    "region": "全国",
+    "paperName": "2023年高考真题——理综（新课标卷）",
+    "questionNumber": "28",
+    "questionType": "解答题",
+    "content": "实验室由安息香制备二苯乙二酮的反应式如下：\n〔图片对象 I227〕\n相关信息列表如下：\n〔表格开始〕\n| 物质 | 性状 | 熔点/℃ | 沸点/℃ | 溶解性 |\n| 安息香 | 白色固体 | 133 | 344 | 难溶于冷水 / 溶于热水、乙醇、乙酸 |\n| 二苯乙二酮 | 淡黄色固体 | 95 | 347 | 不溶于水 / 溶于乙醇、苯、乙酸 |\n| 冰乙酸 | 无色液体 | 17 | 118 | 与水、乙醇互溶 |\n〔表格结束〕\n装置示意图如下图所示，实验步骤为：\n①在圆底烧瓶中加入〔公式对象 F228〕冰乙酸、〔公式对象 F229〕水及〔公式对象 F230〕 〔公式对象 F231〕，边搅拌边加热，至固体全部溶解。\n②停止加热，待沸腾平息后加入〔公式对象 F232〕安息香，加热回流〔公式对象 F233〕。\n③加入〔公式对象 F234〕水，煮沸后冷却，有黄色固体析出。\n④过滤，并用冷水洗涤固体3次，得到粗品。\n⑤粗品用〔公式对象 F235〕的乙醇重结晶，干燥后得淡黄色结晶〔公式对象 F236〕。\n〔图片对象 I237〕\n回答下列问题：\n（1）仪器A中应加入_______(填“水”或“油”)作为热传导介质。\n（2）仪器B的名称是_______；冷却水应从_______(填“a”或“b”)口通入。\n（3）实验步骤②中，安息香必须待沸腾平息后方可加入，其主要目的是_______。\n（4）在本实验中，〔公式对象 F238〕为氧化剂且过量，其还原产物为_______；某同学尝试改进本实验：采用催化量的〔公式对象 F239〕并通入空气制备二苯乙二酮。该方案是否可行_______？简述判断理由_______。\n（5）本实验步骤①~③在乙酸体系中进行，乙酸除作溶剂外，另一主要作用是防止_______。\n（6）若粗品中混有少量未氧化的安息香，可用少量_______洗涤的方法除去(填标号)。若要得到更高纯度的产品，可用重结晶的方法进一步提纯。\na．热水 b．乙酸 c．冷水 d．乙醇\n（7）本实验的产率最接近于_______(填标号)。\na．〔公式对象 F240〕 b．〔公式对象 F241〕 c．〔公式对象 F242〕 d．〔公式对象 F243〕",
+    "options": null,
+    "questionImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q28_题干_image_227.png",
+        "sourcePage": "26",
+        "description": "Word第26页，第28题题干中的图片对象"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q28_题干_formula_228.png",
+        "sourcePage": "26",
+        "description": "Word第26页，第28题题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q28_题干_formula_229.png",
+        "sourcePage": "26",
+        "description": "Word第26页，第28题题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q28_题干_formula_230.png",
+        "sourcePage": "26",
+        "description": "Word第26页，第28题题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q28_题干_formula_231.png",
+        "sourcePage": "26",
+        "description": "Word第26页，第28题题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q28_题干_formula_232.png",
+        "sourcePage": "26",
+        "description": "Word第26页，第28题题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q28_题干_formula_233.png",
+        "sourcePage": "26",
+        "description": "Word第26页，第28题题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q28_题干_formula_234.png",
+        "sourcePage": "26",
+        "description": "Word第26页，第28题题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q28_题干_formula_235.png",
+        "sourcePage": "26",
+        "description": "Word第26页，第28题题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q28_题干_formula_236.png",
+        "sourcePage": "26",
+        "description": "Word第26页，第28题题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q28_题干_image_237.png",
+        "sourcePage": "26",
+        "description": "Word第26页，第28题题干中的图片对象"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q28_题干_formula_238.png",
+        "sourcePage": "27",
+        "description": "Word第27页，第28题题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q28_题干_formula_239.png",
+        "sourcePage": "27",
+        "description": "Word第27页，第28题题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q28_题干_formula_240.png",
+        "sourcePage": "27",
+        "description": "Word第27页，第28题题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q28_题干_formula_241.png",
+        "sourcePage": "27",
+        "description": "Word第27页，第28题题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q28_题干_formula_242.png",
+        "sourcePage": "27",
+        "description": "Word第27页，第28题题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q28_题干_formula_243.png",
+        "sourcePage": "27",
+        "description": "Word第27页，第28题题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      }
+    ],
+    "correctAnswer": "（1）油 （2） ①. 球形冷凝管 ②. a\n（3）防暴沸 （4） ①. FeCl₂ ②. 可行 ③. 空气可以将还原产物FeCl₂又氧化为FeCl₃，FeCl₃可循环参与反应\n（5）抑制氯化铁水解\n（6）a\n（7）b",
+    "standardAnalysis": "【分析】在圆底烧瓶中加入10 mL冰乙酸，5mL水，及9.0gFeCl₃· 6H₂O，加热至固体全部溶解，停止加热，待沸腾平息后加入2.0g安息香，加热回流45-60min，反应结束后加入50mL水，煮沸后冷却，析出黄色固体，即为二苯乙二酮，过滤，用冷水洗涤固体三次，得到粗品，再用75%乙醇重结晶，干燥后得到产品1.6g，据此解答。\n【小问1详解】\n该实验需要加热使冰乙酸沸腾，冰乙酸的沸点超过了100℃，应选择油浴加热，所以仪器A中应加入油作为热传导介质，故答案为：油；\n【小问2详解】\n根据仪器的结构特征可知，B为球形冷凝管，为了充分冷却，冷却水应从a口进，b口出，故答案为：球形冷凝管；a；\n【小问3详解】\n步骤②中，若沸腾时加入安息香，会暴沸，所以需要沸腾平息后加入，故答案为：防暴沸；\n【小问4详解】\nFeCl₃为氧化剂，则铁的化合价降低，还原产物为FeCl₂，若采用催化量的FeCl₃并通入空气制备二苯乙二酮，空气可以将还原产物FeCl₂又氧化为FeCl₃，FeCl₃可循环参与反应，故答案为：FeCl₂；可行；空气可以将还原产物FeCl₂又氧化为FeCl₃，FeCl₃可循环参与反应；\n【小问5详解】\n氯化铁易水解，所以步骤①～③中，乙酸除做溶剂外，另一主要作用是抑制氯化铁水解；\n【小问6详解】\n根据安息香和二苯乙二酮的溶解特征，安息香溶于热水，二苯乙二酮不溶于水，所以可以采用热水洗涤粗品除去安息香，故答案为：a；\n【小问7详解】\n2.0g安息香（C₁₄H₁₂O₂）的物质的量约为0.0094mol，理论上可产生二苯乙二酮（C₁₄H₁₀O₂）的物质的量约为0.0094mol，质量约为1.98g，产率为〔公式对象 F244〕=80.8%，最接近80%，故答案为：b。",
+    "analysisImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q28_答案_解析_formula_244.png",
+        "sourcePage": "28",
+        "description": "Word第28页，第28题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      }
+    ],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": null,
+    "difficultyLevel": null,
+    "difficultyReason": null,
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（新课标卷）Word版含解析.doc",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（新课标卷）Word版含解析.doc"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "化学",
+    "year": 2023,
+    "region": "全国",
+    "paperName": "2023年高考真题——理综（新课标卷）",
+    "questionNumber": "29",
+    "questionType": "解答题",
+    "content": "氨是最重要的化学品之一，我国目前氨的生产能力位居世界首位。回答下列问题：\n（1）根据图1数据计算反应〔公式对象 F245〕的〔公式对象 F247〕_______〔公式对象 F248〕。\n〔图片对象 I249〕\n（2）研究表明，合成氨反应在〔公式对象 F250〕催化剂上可能通过图2机理进行(*表示催化剂表面吸附位，〔公式对象 F251〕表示被吸附于催化剂表面的〔公式对象 F252〕)。判断上述反应机理中，速率控制步骤(即速率最慢步骤)为_______(填步骤前的标号)，理由是_______。\n（3）合成氨催化剂前驱体(主要成分为〔公式对象 F253〕)使用前经〔公式对象 F254〕还原，生成〔公式对象 F255〕包裹的〔公式对象 F256〕。已知〔公式对象 F257〕属于立方晶系，晶胞参数〔公式对象 F258〕，密度为〔公式对象 F259〕，则〔公式对象 F260〕晶胞中含有〔公式对象 F261〕的原子数为_______(列出计算式，阿伏加德罗常数的值为〔公式对象 F262〕)。\n（4）在不同压强下，以两种不同组成进料，反应达平衡时氨的摩尔分数与温度的计算结果如下图所示。其中一种进料组成为〔公式对象 F263〕，另一种为〔公式对象 F264〕。(物质i的摩尔分数：〔公式对象 F265〕)\n〔图片对象 I266〕\n①图中压强由小到大的顺序为_______，判断的依据是_______。\n②进料组成中含有情性气体〔公式对象 F267〕的图是_______。\n③图3中，当〔公式对象 F268〕、〔公式对象 F269〕时，氮气的转化率〔公式对象 F270〕_______。该温度时，反应〔公式对象 F271〕的平衡常数〔公式对象 F272〕_______〔公式对象 F273〕(化为最简式)。",
+    "options": null,
+    "questionImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q29_题干_formula_245.png",
+        "sourcePage": "28",
+        "description": "Word第28页，第29题题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q29_题干_formula_247.png",
+        "sourcePage": "28",
+        "description": "Word第28页，第29题题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q29_题干_formula_248.png",
+        "sourcePage": "28",
+        "description": "Word第28页，第29题题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q29_题干_image_249.png",
+        "sourcePage": "28",
+        "description": "Word第28页，第29题题干中的图片对象"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q29_题干_formula_250.png",
+        "sourcePage": "28",
+        "description": "Word第28页，第29题题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q29_题干_formula_251.png",
+        "sourcePage": "28",
+        "description": "Word第28页，第29题题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q29_题干_formula_252.png",
+        "sourcePage": "28",
+        "description": "Word第28页，第29题题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q29_题干_formula_253.png",
+        "sourcePage": "28",
+        "description": "Word第28页，第29题题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q29_题干_formula_254.png",
+        "sourcePage": "28",
+        "description": "Word第28页，第29题题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q29_题干_formula_255.png",
+        "sourcePage": "28",
+        "description": "Word第28页，第29题题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q29_题干_formula_256.png",
+        "sourcePage": "28",
+        "description": "Word第28页，第29题题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q29_题干_formula_257.png",
+        "sourcePage": "28",
+        "description": "Word第28页，第29题题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q29_题干_formula_258.png",
+        "sourcePage": "28",
+        "description": "Word第28页，第29题题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q29_题干_formula_259.png",
+        "sourcePage": "28",
+        "description": "Word第28页，第29题题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q29_题干_formula_260.png",
+        "sourcePage": "28",
+        "description": "Word第28页，第29题题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q29_题干_formula_261.png",
+        "sourcePage": "28",
+        "description": "Word第28页，第29题题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q29_题干_formula_262.png",
+        "sourcePage": "28",
+        "description": "Word第28页，第29题题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q29_题干_formula_263.png",
+        "sourcePage": "28",
+        "description": "Word第28页，第29题题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q29_题干_formula_264.png",
+        "sourcePage": "28",
+        "description": "Word第28页，第29题题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q29_题干_formula_265.png",
+        "sourcePage": "28",
+        "description": "Word第28页，第29题题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q29_题干_image_266.png",
+        "sourcePage": "29",
+        "description": "Word第29页，第29题题干中的图片对象"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q29_题干_formula_267.png",
+        "sourcePage": "29",
+        "description": "Word第29页，第29题题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q29_题干_formula_268.png",
+        "sourcePage": "29",
+        "description": "Word第29页，第29题题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q29_题干_formula_269.png",
+        "sourcePage": "29",
+        "description": "Word第29页，第29题题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q29_题干_formula_270.png",
+        "sourcePage": "29",
+        "description": "Word第29页，第29题题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q29_题干_formula_271.png",
+        "sourcePage": "29",
+        "description": "Word第29页，第29题题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q29_题干_formula_272.png",
+        "sourcePage": "29",
+        "description": "Word第29页，第29题题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q29_题干_formula_273.png",
+        "sourcePage": "29",
+        "description": "Word第29页，第29题题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      }
+    ],
+    "correctAnswer": "（1）〔公式对象 F274〕\n（2） ①. (ⅱ) ②. 在化学反应中，最大的能垒为速率控制步骤，而断开化学键的步骤都属于能垒，由于〔公式对象 F275〕的键能比H-H键的大很多，因此，在上述反应机理中，速率控制步骤为(ⅱ)\n（3）〔公式对象 F276〕\n（4） ①. 〔公式对象 F277〕 ②. 合成氨的反应为气体分子数减少的反应，压强越大平衡时氨的摩尔分数越大 ③. 图4 ④. 〔公式对象 F278〕 ⑤. 〔公式对象 F279〕",
+    "standardAnalysis": "【小问1详解】\n在化学反应中，断开化学键要消耗能量，形成化学键要释放能量，反应的焓变等于反应物的键能总和与生成物的键能总和的差，因此，由图1数据可知，反应〔公式对象 F280〕的〔公式对象 F281〕〔公式对象 F282〕。\n【小问2详解】\n由图1中信息可知，〔公式对象 F283〕的〔公式对象 F284〕，则〔公式对象 F285〕的键能为〔公式对象 F286〕；〔公式对象 F287〕的〔公式对象 F288〕，则H-H键的键能为〔公式对象 F289〕。在化学反应中，最大的能垒为速率控制步骤，而断开化学键的步骤都属于能垒，由于〔公式对象 F290〕的键能比H-H键的大很多，因此，在上述反应机理中，速率控制步骤为(ⅱ)。\n【小问3详解】\n已知〔公式对象 F291〕属于立方晶系，晶胞参数〔公式对象 F292〕，密度为〔公式对象 F293〕，设其晶胞中含有〔公式对象 F294〕的原子数为〔公式对象 F295〕，则〔公式对象 F296〕晶体密度〔公式对象 F297〕，解之得〔公式对象 F298〕，即〔公式对象 F299〕晶胞中含有〔公式对象 F300〕的原子数为〔公式对象 F301〕。\n【小问4详解】\n①合成氨的反应中，压强越大越有利于氨的合成，因此，压强越大平衡时氨的摩尔分数越大。由图中信息可知，在相同温度下，反应达平衡时氨的摩尔分数〔公式对象 F302〕，因此，图中压强由小到大的顺序为〔公式对象 F303〕，判断的依据是：合成氨的反应为气体分子数减少的反应，压强越大平衡时氨的摩尔分数越大。\n\n②对比图3和图4中的信息可知，在相同温度和相同压强下，图4中平衡时氨的摩尔分数较小。在恒压下充入情性气体〔公式对象 F304〕，反应混合物中各组分的浓度减小，各组分的分压也减小，化学平衡要朝气体分子数增大的方向移动，因此，充入情性气体〔公式对象 F305〕不利于合成氨，进料组成中含有情性气体〔公式对象 F306〕的图是图4。\n③图3中，进料组成为〔公式对象 F307〕两者物质的量之比为3:1。假设进料中氢气和氮气的物质的量分别为3mol和1mol，达到平衡时氮气的变化量为x mol，则有：\n〔公式对象 F308〕\n当〔公式对象 F309〕、〔公式对象 F310〕时，〔公式对象 F311〕，解之得〔公式对象 F312〕，则氮气的转化率〔公式对象 F313〕，平衡时〔公式对象 F314〕、〔公式对象 F315〕、〔公式对象 F316〕的物质的量分别为〔公式对象 F317〕、2〔公式对象 F318〕、〔公式对象 F319〕，其物质的量分数分别为〔公式对象 F320〕、〔公式对象 F321〕、〔公式对象 F322〕，则该温度下〔公式对象 F323〕因此，该温度时，反应〔公式对象 F324〕的平衡常数〔公式对象 F325〕〔公式对象 F326〕。",
+    "analysisImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q29_答案_解析_formula_274.png",
+        "sourcePage": "29",
+        "description": "Word第29页，第29题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q29_答案_解析_formula_275.png",
+        "sourcePage": "29",
+        "description": "Word第29页，第29题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q29_答案_解析_formula_276.png",
+        "sourcePage": "29",
+        "description": "Word第29页，第29题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q29_答案_解析_formula_277.png",
+        "sourcePage": "29",
+        "description": "Word第29页，第29题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q29_答案_解析_formula_278.png",
+        "sourcePage": "29",
+        "description": "Word第29页，第29题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q29_答案_解析_formula_279.png",
+        "sourcePage": "29",
+        "description": "Word第29页，第29题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q29_答案_解析_formula_280.png",
+        "sourcePage": "29",
+        "description": "Word第29页，第29题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q29_答案_解析_formula_281.png",
+        "sourcePage": "29",
+        "description": "Word第29页，第29题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q29_答案_解析_formula_282.png",
+        "sourcePage": "29",
+        "description": "Word第29页，第29题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q29_答案_解析_formula_283.png",
+        "sourcePage": "29",
+        "description": "Word第29页，第29题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q29_答案_解析_formula_284.png",
+        "sourcePage": "29",
+        "description": "Word第29页，第29题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q29_答案_解析_formula_285.png",
+        "sourcePage": "29",
+        "description": "Word第29页，第29题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q29_答案_解析_formula_286.png",
+        "sourcePage": "29",
+        "description": "Word第29页，第29题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q29_答案_解析_formula_287.png",
+        "sourcePage": "29",
+        "description": "Word第29页，第29题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q29_答案_解析_formula_288.png",
+        "sourcePage": "29",
+        "description": "Word第29页，第29题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q29_答案_解析_formula_289.png",
+        "sourcePage": "29",
+        "description": "Word第29页，第29题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q29_答案_解析_formula_290.png",
+        "sourcePage": "30",
+        "description": "Word第30页，第29题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q29_答案_解析_formula_291.png",
+        "sourcePage": "30",
+        "description": "Word第30页，第29题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q29_答案_解析_formula_292.png",
+        "sourcePage": "30",
+        "description": "Word第30页，第29题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q29_答案_解析_formula_293.png",
+        "sourcePage": "30",
+        "description": "Word第30页，第29题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q29_答案_解析_formula_294.png",
+        "sourcePage": "30",
+        "description": "Word第30页，第29题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q29_答案_解析_formula_295.png",
+        "sourcePage": "30",
+        "description": "Word第30页，第29题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q29_答案_解析_formula_296.png",
+        "sourcePage": "30",
+        "description": "Word第30页，第29题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q29_答案_解析_formula_297.png",
+        "sourcePage": "30",
+        "description": "Word第30页，第29题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q29_答案_解析_formula_298.png",
+        "sourcePage": "30",
+        "description": "Word第30页，第29题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q29_答案_解析_formula_299.png",
+        "sourcePage": "30",
+        "description": "Word第30页，第29题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q29_答案_解析_formula_300.png",
+        "sourcePage": "30",
+        "description": "Word第30页，第29题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q29_答案_解析_formula_301.png",
+        "sourcePage": "30",
+        "description": "Word第30页，第29题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q29_答案_解析_formula_302.png",
+        "sourcePage": "30",
+        "description": "Word第30页，第29题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q29_答案_解析_formula_303.png",
+        "sourcePage": "30",
+        "description": "Word第30页，第29题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q29_答案_解析_formula_304.png",
+        "sourcePage": "30",
+        "description": "Word第30页，第29题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q29_答案_解析_formula_305.png",
+        "sourcePage": "30",
+        "description": "Word第30页，第29题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q29_答案_解析_formula_306.png",
+        "sourcePage": "30",
+        "description": "Word第30页，第29题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q29_答案_解析_formula_307.png",
+        "sourcePage": "30",
+        "description": "Word第30页，第29题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q29_答案_解析_formula_308.png",
+        "sourcePage": "30",
+        "description": "Word第30页，第29题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q29_答案_解析_formula_309.png",
+        "sourcePage": "30",
+        "description": "Word第30页，第29题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q29_答案_解析_formula_310.png",
+        "sourcePage": "30",
+        "description": "Word第30页，第29题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q29_答案_解析_formula_311.png",
+        "sourcePage": "30",
+        "description": "Word第30页，第29题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q29_答案_解析_formula_312.png",
+        "sourcePage": "30",
+        "description": "Word第30页，第29题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q29_答案_解析_formula_313.png",
+        "sourcePage": "30",
+        "description": "Word第30页，第29题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q29_答案_解析_formula_314.png",
+        "sourcePage": "30",
+        "description": "Word第30页，第29题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q29_答案_解析_formula_315.png",
+        "sourcePage": "30",
+        "description": "Word第30页，第29题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q29_答案_解析_formula_316.png",
+        "sourcePage": "30",
+        "description": "Word第30页，第29题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q29_答案_解析_formula_317.png",
+        "sourcePage": "30",
+        "description": "Word第30页，第29题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q29_答案_解析_formula_318.png",
+        "sourcePage": "30",
+        "description": "Word第30页，第29题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q29_答案_解析_formula_319.png",
+        "sourcePage": "30",
+        "description": "Word第30页，第29题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q29_答案_解析_formula_320.png",
+        "sourcePage": "30",
+        "description": "Word第30页，第29题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q29_答案_解析_formula_321.png",
+        "sourcePage": "30",
+        "description": "Word第30页，第29题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q29_答案_解析_formula_322.png",
+        "sourcePage": "30",
+        "description": "Word第30页，第29题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q29_答案_解析_formula_323.png",
+        "sourcePage": "30",
+        "description": "Word第30页，第29题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q29_答案_解析_formula_324.png",
+        "sourcePage": "30",
+        "description": "Word第30页，第29题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q29_答案_解析_formula_325.png",
+        "sourcePage": "30",
+        "description": "Word第30页，第29题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q29_答案_解析_formula_326.png",
+        "sourcePage": "30",
+        "description": "Word第30页，第29题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      }
+    ],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": null,
+    "difficultyLevel": null,
+    "difficultyReason": null,
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（新课标卷）Word版含解析.doc",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（新课标卷）Word版含解析.doc"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "化学",
+    "year": 2023,
+    "region": "全国",
+    "paperName": "2023年高考真题——理综（新课标卷）",
+    "questionNumber": "30",
+    "questionType": "解答题",
+    "content": "莫西赛利(化合物K)是一种治疗脑血管疾病的药物，可改善脑梗塞或脑出血后遗症等症状。以下为其合成路线之一。\n〔图片对象 I327〕\n回答下列问题：\n（1）A的化学名称是_______。\n（2）C中碳原子的轨道杂化类型有_______种。\n（3）D中官能团的名称为_______、_______。\n（4）E与F反应生成G的反应类型为_______。\n（5）F的结构简式为_______。\n（6）I转变为J的化学方程式为_______。\n（7）在B的同分异构体中，同时满足下列条件的共有_______种(不考虑立体异构)；\n①含有手性碳；②含有三个甲基；③含有苯环。\n其中，核磁共振氢谱显示为6组峰，且峰面积比为〔公式对象 F329〕的同分异构体的结构简式为_______。",
+    "options": null,
+    "questionImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q30_题干_image_327.png",
+        "sourcePage": "31",
+        "description": "Word第31页，第30题题干中的图片对象"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q30_题干_formula_329.png",
+        "sourcePage": "31",
+        "description": "Word第31页，第30题题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      }
+    ],
+    "correctAnswer": "（1）3-甲基苯酚(间甲基苯酚)\n（2）2 （3） ①. 氨基 ②. 羟基\n（4）取代反应 （5）〔图片对象 I330〕\n（6）〔图片对象 I331〕+H₂O〔公式对象 F332〕〔图片对象 I333〕+HCl+N₂↑\n（7） ①. 9 ②. 〔图片对象 I334〕",
+    "standardAnalysis": "【分析】根据流程，A与2-溴丙烷发生取代反应生成B，B与NaNO₂发生反应生成C，C与NH₄HS反应生成D，D与乙酸酐[(CH₃CO)₂O]反应生成E，结合E的结构简式和D的分子式可知，D为〔图片对象 I335〕；E与F反应生成G，结合E和G的结构简式和F的分子式可知，F为〔图片对象 I336〕；G发生两步反应生成H，H再与NaNO₂/HCl反应生成I，结合I的结构和H的分子式可知，H为〔图片对象 I337〕；I与水反应生成J，J与乙酸酐[(CH₃CO)₂O]反应生成K，结合K的结构简式和J的分子式可知，J为〔图片对象 I338〕；据此分析解题。\n【小问1详解】\n根据有机物A的结构，有机物A的化学名称为3-甲基苯酚(间甲基苯酚)。\n【小问2详解】\n有机物C中含有苯环，苯环上的C原子的杂化类型为sp²杂化，还含有甲基和异丙基，甲基和异丙基上的C原子的杂化类型为sp³杂化，故答案为2种。\n【小问3详解】\n根据分析，有机物D的结构为〔图片对象 I339〕，其官能团为氨基和羟基。\n【小问4详解】\n有机物E与有机物F发生反应生成有机物G，有机物中的羟基与有机物F中的Cl发生取代反应生成有机物G，故反应类型为取代反应。\n【小问5详解】\n根据分析，有机物F的结构简式为〔图片对象 I340〕。\n【小问6详解】\n有机物I与水反应生成有机物J，该反应的方程式为〔图片对象 I341〕+H₂O〔公式对象 F342〕〔图片对象 I343〕+HCl+N₂↑。\n【小问7详解】\n连有4个不同原子或原子团的碳原子称为手性碳原子。在B的同分异构体中，含有手性碳、含有3个甲基、含有苯环的同分异构体有9种，分别为：〔图片对象 I344〕、 〔图片对象 I345〕 、〔图片对象 I346〕、〔图片对象 I347〕、〔图片对象 I348〕、〔图片对象 I349〕 、〔图片对象 I350〕、〔图片对象 I351〕、〔图片对象 I352〕；其中，核磁共振氢谱显示为6组峰，且峰面积比为3:3:3:2:2:1的同分异构体的结构简式为〔图片对象 I353〕。",
+    "analysisImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q30_答案_解析_image_330.png",
+        "sourcePage": "31",
+        "description": "Word第31页，第30题答案/解析中的图片对象"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q30_答案_解析_image_331.png",
+        "sourcePage": "31",
+        "description": "Word第31页，第30题答案/解析中的图片对象"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q30_答案_解析_formula_332.png",
+        "sourcePage": "31",
+        "description": "Word第31页，第30题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q30_答案_解析_image_333.png",
+        "sourcePage": "31",
+        "description": "Word第31页，第30题答案/解析中的图片对象"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q30_答案_解析_image_334.png",
+        "sourcePage": "32",
+        "description": "Word第32页，第30题答案/解析中的图片对象"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q30_答案_解析_image_335.png",
+        "sourcePage": "32",
+        "description": "Word第32页，第30题答案/解析中的图片对象"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q30_答案_解析_image_336.png",
+        "sourcePage": "32",
+        "description": "Word第32页，第30题答案/解析中的图片对象"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q30_答案_解析_image_337.png",
+        "sourcePage": "32",
+        "description": "Word第32页，第30题答案/解析中的图片对象"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q30_答案_解析_image_338.png",
+        "sourcePage": "32",
+        "description": "Word第32页，第30题答案/解析中的图片对象"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q30_答案_解析_image_339.png",
+        "sourcePage": "33",
+        "description": "Word第33页，第30题答案/解析中的图片对象"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q30_答案_解析_image_340.png",
+        "sourcePage": "33",
+        "description": "Word第33页，第30题答案/解析中的图片对象"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q30_答案_解析_image_341.png",
+        "sourcePage": "33",
+        "description": "Word第33页，第30题答案/解析中的图片对象"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q30_答案_解析_formula_342.png",
+        "sourcePage": "33",
+        "description": "Word第33页，第30题答案/解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q30_答案_解析_image_343.png",
+        "sourcePage": "33",
+        "description": "Word第33页，第30题答案/解析中的图片对象"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q30_答案_解析_image_344.png",
+        "sourcePage": "33",
+        "description": "Word第33页，第30题答案/解析中的图片对象"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q30_答案_解析_image_345.png",
+        "sourcePage": "33",
+        "description": "Word第33页，第30题答案/解析中的图片对象"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q30_答案_解析_image_346.png",
+        "sourcePage": "33",
+        "description": "Word第33页，第30题答案/解析中的图片对象"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q30_答案_解析_image_347.png",
+        "sourcePage": "33",
+        "description": "Word第33页，第30题答案/解析中的图片对象"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q30_答案_解析_image_348.png",
+        "sourcePage": "33",
+        "description": "Word第33页，第30题答案/解析中的图片对象"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q30_答案_解析_image_349.png",
+        "sourcePage": "33",
+        "description": "Word第33页，第30题答案/解析中的图片对象"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q30_答案_解析_image_350.png",
+        "sourcePage": "33",
+        "description": "Word第33页，第30题答案/解析中的图片对象"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q30_答案_解析_image_351.png",
+        "sourcePage": "33",
+        "description": "Word第33页，第30题答案/解析中的图片对象"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q30_答案_解析_image_352.png",
+        "sourcePage": "33",
+        "description": "Word第33页，第30题答案/解析中的图片对象"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\理综\\测试结果\\化学\\images\\q30_答案_解析_image_353.png",
+        "sourcePage": "34",
+        "description": "Word第34页，第30题答案/解析中的图片对象"
+      }
+    ],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": null,
+    "difficultyLevel": null,
+    "difficultyReason": null,
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（新课标卷）Word版含解析.doc",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（新课标卷）Word版含解析.doc"
+    },
+    "reviewStatus": "待审核"
+  }
+]

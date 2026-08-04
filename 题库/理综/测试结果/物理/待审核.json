@@ -1,0 +1,739 @@
+[
+  {
+    "subject": "物理",
+    "year": 2023,
+    "region": "全国",
+    "paperName": "2023年高考真题——理综（新课标卷）",
+    "questionNumber": "14",
+    "questionType": "单选题",
+    "content": "船上的人和水下的潜水员都能听见轮船的鸣笛声。声波在空气中和在水中传播时的（ ）",
+    "options": [
+      {
+        "label": "A",
+        "content": "波速和波长均不同"
+      },
+      {
+        "label": "B",
+        "content": "频率和波速均不同"
+      },
+      {
+        "label": "C",
+        "content": "波长和周期均不同"
+      },
+      {
+        "label": "D",
+        "content": "周期和频率均不同"
+      }
+    ],
+    "questionImages": [],
+    "correctAnswer": "A",
+    "standardAnalysis": "【详解】声波的周期和频率由振源决定，故声波在空气中和在水中传播的周期和频率均相同，但声波在空气和水中传播的波速不同，根据波速与波长关系〔公式对象 F107〕可知，波长也不同。故A正确，BCD错误。\n故选A。",
+    "analysisImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_new_standard\\q14_2023新课标卷_答案解析_formula_107.png",
+        "sourcePage": "11",
+        "description": "Word第11页，第14题2023新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      }
+    ],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "力学>机械振动与机械波>波速、波长与频率"
+    ],
+    "difficultyLevel": "easy",
+    "difficultyReason": "考查波速、波长与频率的直接识记或单步判断，条件明确，运算与推理量较小。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（新课标卷）Word版含解析.doc",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（新课标卷）Word版含解析.doc"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2023,
+    "region": "全国",
+    "paperName": "2023年高考真题——理综（新课标卷）",
+    "questionNumber": "16",
+    "questionType": "单选题",
+    "content": "铯原子基态的两个超精细能级之间跃迁发射的光子具有稳定的频率，铯原子钟利用的两能级的能量差量级为10⁻⁵eV，跃迁发射的光子的频率量级为（普朗克常量〔公式对象 F112〕，元电荷〔公式对象 F113〕）（ ）",
+    "options": [
+      {
+        "label": "A",
+        "content": "10³Hz"
+      },
+      {
+        "label": "B",
+        "content": "10⁶Hz"
+      },
+      {
+        "label": "C",
+        "content": "10⁹Hz"
+      },
+      {
+        "label": "D",
+        "content": "10¹²Hz"
+      }
+    ],
+    "questionImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_new_standard\\q16_2023新课标卷_题干_formula_112.png",
+        "sourcePage": "11",
+        "description": "Word第11页，第16题2023新课标卷_题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_new_standard\\q16_2023新课标卷_题干_formula_113.png",
+        "sourcePage": "11",
+        "description": "Word第11页，第16题2023新课标卷_题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      }
+    ],
+    "correctAnswer": "C",
+    "standardAnalysis": "【详解】铯原子利用的两能极的能量差量级对应的能量为\n〔公式对象 F114〕\n由光子能量的表达式〔公式对象 F115〕可得，跃迁发射的光子的频率量级为\n〔公式对象 F116〕\n跃迁发射的光子的频率量级为10⁹Hz。故选C。",
+    "analysisImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_new_standard\\q16_2023新课标卷_答案解析_formula_114.png",
+        "sourcePage": "12",
+        "description": "Word第12页，第16题2023新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_new_standard\\q16_2023新课标卷_答案解析_formula_115.png",
+        "sourcePage": "12",
+        "description": "Word第12页，第16题2023新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_new_standard\\q16_2023新课标卷_答案解析_formula_116.png",
+        "sourcePage": "12",
+        "description": "Word第12页，第16题2023新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      }
+    ],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "近代物理>光子与原子跃迁>能级差与光子频率"
+    ],
+    "difficultyLevel": "medium",
+    "difficultyReason": "需要提取题干或图表信息，并结合能级差与光子频率完成两步左右的判断或计算。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（新课标卷）Word版含解析.doc",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（新课标卷）Word版含解析.doc"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2023,
+    "region": "全国",
+    "paperName": "2023年高考真题——理综（新课标卷）",
+    "questionNumber": "22",
+    "questionType": "实验填空题",
+    "content": "在“观察电容器的充、放电现象”实验中，所用器材如下：电池、电容器、电阻箱、定值电阻、小灯泡、多用电表、电流表、秒表、单刀双掷开关以及导线若干。\n〔图片对象 I154〕\n（1）用多用电表的电压挡检测电池的电压。检测时，红表笔应该与电池的___________（填“正极”或“负极”）接触。\n（2）某同学设计的实验电路如图（a）所示。先将电阻箱的阻值调为〔公式对象 F155〕，将单刀双掷开关S与“1”端相接，记录电流随时间的变化。电容器充电完成后，开关S再与“2”端相接，相接后小灯泡亮度变化情况可能是___________。（填正确答案标号）\nA．迅速变亮，然后亮度趋于稳定\nB．亮度逐渐增大，然后趋于稳定\nC．迅速变亮，然后亮度逐渐减小至熄灭\n（3）将电阻箱的阻值调为〔公式对象 F156〕，再次将开关S与“1”端相接，再次记录电流随时间的变化情况。两次得到的电流I随时间t变化如图（b）中曲线所示，其中实线是电阻箱阻值为___________（填“R₁”或“R₂”）时的结果，曲线与坐标轴所围面积等于该次充电完成后电容器上的___________（填“电压”或“电荷量”）。",
+    "options": null,
+    "questionImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_new_standard\\q22_2023新课标卷_题干_image_154.png",
+        "sourcePage": "17",
+        "description": "Word第17页，第22题2023新课标卷_题干中的图片对象"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_new_standard\\q22_2023新课标卷_题干_formula_155.png",
+        "sourcePage": "17",
+        "description": "Word第17页，第22题2023新课标卷_题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_new_standard\\q22_2023新课标卷_题干_formula_156.png",
+        "sourcePage": "17",
+        "description": "Word第17页，第22题2023新课标卷_题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      }
+    ],
+    "correctAnswer": "①. 正极 ②. C ③. 〔公式对象 F157〕 ④. 电荷量",
+    "standardAnalysis": "【详解】（1）[1]多用电表红表笔流入电流，黑表笔流出电流，故电流表红表笔应该与电池的正极接触；\n（2）[2]电容器充电完成后，开始时两极板电量较多，电势差较大，当闭合“2”接入小灯泡，回路立即形成电流，灯泡的迅速变亮；随着时间的积累，两极板电量变少，电势差变小，流过灯泡的电流减小，直至两极板电荷量为零不带电，则无电流流过小灯泡即熄灭，故选C。\n（3）[3]开始充电时两极板的不带电，两极板电势差为零，设电源内阻为r，则开始充电时有\n〔公式对象 F159〕\n由图像可知开始充电时实线的电流较小，故电路中的电阻较大，因此电阻箱阻值为〔公式对象 F160〕；\n[4]图像的物理意义为充电过程中电流随时间的变化图线，故曲线与坐标轴所围面积等于该次充电完成后电容器上的电荷量。",
+    "analysisImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_new_standard\\q22_2023新课标卷_答案解析_formula_157.png",
+        "sourcePage": "18",
+        "description": "Word第18页，第22题2023新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_new_standard\\q22_2023新课标卷_答案解析_formula_159.png",
+        "sourcePage": "18",
+        "description": "Word第18页，第22题2023新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_new_standard\\q22_2023新课标卷_答案解析_formula_160.png",
+        "sourcePage": "18",
+        "description": "Word第18页，第22题2023新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      }
+    ],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "实验>电学实验>电容器充放电",
+      "电磁学>电容器>充放电规律"
+    ],
+    "difficultyLevel": "medium",
+    "difficultyReason": "需要提取题干或图表信息，并结合电容器充放电完成两步左右的判断或计算。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（新课标卷）Word版含解析.doc",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（新课标卷）Word版含解析.doc"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2023,
+    "region": "全国",
+    "paperName": "2023年高考真题——理综（全国甲卷）",
+    "questionNumber": "14",
+    "questionType": "单选题",
+    "content": "一同学将铅球水平推出，不计空气阻力和转动的影响，铅球在平抛运动过程中（ ）",
+    "options": [
+      {
+        "label": "A",
+        "content": "机械能一直增加"
+      },
+      {
+        "label": "B",
+        "content": "加速度保持不变"
+      },
+      {
+        "label": "C",
+        "content": "速度大小保持不变"
+      },
+      {
+        "label": "D",
+        "content": "被推出后瞬间动能最大"
+      }
+    ],
+    "questionImages": [],
+    "correctAnswer": "B",
+    "standardAnalysis": "【详解】A．铅球做平抛运动，仅受重力，故机械能守恒，A错误；\nB．铅球的加速度恒为重力加速度保持不变，B正确；\nCD．铅球做平抛运动，水平方向速度不变，竖直方向做匀加速直线运动，根据运动的合成可知铅球速度变大，则动能越来越大，CD错误。\n故选B。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "力学>抛体运动>平抛运动"
+    ],
+    "difficultyLevel": "easy",
+    "difficultyReason": "考查平抛运动的直接识记或单步判断，条件明确，运算与推理量较小。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（全国甲卷）Word版含解析.doc",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（全国甲卷）Word版含解析.doc"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2023,
+    "region": "全国",
+    "paperName": "2023年高考真题——理综（全国甲卷）",
+    "questionNumber": "15",
+    "questionType": "单选题",
+    "content": "在下列两个核反应方程中〔公式对象 F084〕、〔公式对象 F085〕，X和Y代表两种不同的原子核，以Z和A分别表示X的电荷数和质量数，则（ ）",
+    "options": [
+      {
+        "label": "A",
+        "content": "〔公式对象 F086〕，〔公式对象 F087〕"
+      },
+      {
+        "label": "B",
+        "content": "〔公式对象 F088〕，〔公式对象 F089〕"
+      },
+      {
+        "label": "C",
+        "content": "〔公式对象 F090〕，〔公式对象 F091〕"
+      },
+      {
+        "label": "D",
+        "content": "〔公式对象 F092〕，〔公式对象 F093〕"
+      }
+    ],
+    "questionImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_national_a\\q15_2023全国甲卷_题干_formula_084.png",
+        "sourcePage": "9",
+        "description": "Word第9页，第15题2023全国甲卷_题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_national_a\\q15_2023全国甲卷_题干_formula_085.png",
+        "sourcePage": "9",
+        "description": "Word第9页，第15题2023全国甲卷_题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_national_a\\q15_2023全国甲卷_题干_formula_086.png",
+        "sourcePage": "9",
+        "description": "Word第9页，第15题2023全国甲卷_题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_national_a\\q15_2023全国甲卷_题干_formula_087.png",
+        "sourcePage": "9",
+        "description": "Word第9页，第15题2023全国甲卷_题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_national_a\\q15_2023全国甲卷_题干_formula_088.png",
+        "sourcePage": "9",
+        "description": "Word第9页，第15题2023全国甲卷_题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_national_a\\q15_2023全国甲卷_题干_formula_089.png",
+        "sourcePage": "9",
+        "description": "Word第9页，第15题2023全国甲卷_题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_national_a\\q15_2023全国甲卷_题干_formula_090.png",
+        "sourcePage": "9",
+        "description": "Word第9页，第15题2023全国甲卷_题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_national_a\\q15_2023全国甲卷_题干_formula_091.png",
+        "sourcePage": "9",
+        "description": "Word第9页，第15题2023全国甲卷_题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_national_a\\q15_2023全国甲卷_题干_formula_092.png",
+        "sourcePage": "9",
+        "description": "Word第9页，第15题2023全国甲卷_题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_national_a\\q15_2023全国甲卷_题干_formula_093.png",
+        "sourcePage": "9",
+        "description": "Word第9页，第15题2023全国甲卷_题干中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      }
+    ],
+    "correctAnswer": "D",
+    "standardAnalysis": "【详解】设Y电荷数和质量数分别为m和n，根据核反应方程质量数和电荷数守恒可知第一个核反应方程的核电荷数和质量数满足\n〔公式对象 F094〕，〔公式对象 F095〕\n第二个核反应方程的核电荷数和质量数满足\n〔公式对象 F096〕，〔公式对象 F097〕\n联立解得\n〔公式对象 F098〕，〔公式对象 F099〕\n故选D。",
+    "analysisImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_national_a\\q15_2023全国甲卷_答案解析_formula_094.png",
+        "sourcePage": "10",
+        "description": "Word第10页，第15题2023全国甲卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_national_a\\q15_2023全国甲卷_答案解析_formula_095.png",
+        "sourcePage": "10",
+        "description": "Word第10页，第15题2023全国甲卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_national_a\\q15_2023全国甲卷_答案解析_formula_096.png",
+        "sourcePage": "10",
+        "description": "Word第10页，第15题2023全国甲卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_national_a\\q15_2023全国甲卷_答案解析_formula_097.png",
+        "sourcePage": "10",
+        "description": "Word第10页，第15题2023全国甲卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_national_a\\q15_2023全国甲卷_答案解析_formula_098.png",
+        "sourcePage": "10",
+        "description": "Word第10页，第15题2023全国甲卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_national_a\\q15_2023全国甲卷_答案解析_formula_099.png",
+        "sourcePage": "10",
+        "description": "Word第10页，第15题2023全国甲卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      }
+    ],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "近代物理>原子核>核反应中的守恒"
+    ],
+    "difficultyLevel": "easy",
+    "difficultyReason": "考查核反应中的守恒的直接识记或单步判断，条件明确，运算与推理量较小。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（全国甲卷）Word版含解析.doc",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（全国甲卷）Word版含解析.doc"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2023,
+    "region": "全国",
+    "paperName": "2023年高考真题——理综（全国甲卷）",
+    "questionNumber": "18",
+    "questionType": "单选题",
+    "content": "在一些电子显示设备中，让阴极发射的电子束通过适当的非匀强电场，可以使发散的电子束聚集。下列4幅图中带箭头的实线表示电场线，如果用虚线表示电子可能的运动轨迹，其中正确的是（ ）",
+    "options": [
+      {
+        "label": "A",
+        "content": "〔图片对象 I111〕"
+      },
+      {
+        "label": "B",
+        "content": "〔图片对象 I112〕"
+      },
+      {
+        "label": "C",
+        "content": "〔图片对象 I113〕"
+      },
+      {
+        "label": "D",
+        "content": "〔图片对象 I114〕"
+      }
+    ],
+    "questionImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_national_a\\q18_2023全国甲卷_题干_image_111.png",
+        "sourcePage": "11",
+        "description": "Word第11页，第18题2023全国甲卷_题干中的图片对象"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_national_a\\q18_2023全国甲卷_题干_image_112.png",
+        "sourcePage": "11",
+        "description": "Word第11页，第18题2023全国甲卷_题干中的图片对象"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_national_a\\q18_2023全国甲卷_题干_image_113.png",
+        "sourcePage": "11",
+        "description": "Word第11页，第18题2023全国甲卷_题干中的图片对象"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_national_a\\q18_2023全国甲卷_题干_image_114.png",
+        "sourcePage": "11",
+        "description": "Word第11页，第18题2023全国甲卷_题干中的图片对象"
+      }
+    ],
+    "correctAnswer": "A",
+    "standardAnalysis": "【详解】A．电子做曲线运动满足合力指向轨迹凹侧，A正确；\nB．电子做曲线运动满足合力指向轨迹凹侧，对电子受力分析有\n〔图片对象 I115〕\n可见与电场力的受力特点相互矛盾，B错误；\nC．电子做曲线运动满足合力指向轨迹凹侧，对电子受力分析有\n〔图片对象 I116〕\n可见与电场力的受力特点相互矛盾，C错误；\nD．电子做曲线运动满足合力指向轨迹凹侧，对电子受力分析有\n〔图片对象 I117〕\n可见与电场力的受力特点相互矛盾，D错误；\n故选A。",
+    "analysisImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_national_a\\q18_2023全国甲卷_答案解析_image_115.png",
+        "sourcePage": "11",
+        "description": "Word第11页，第18题2023全国甲卷_答案解析中的图片对象"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_national_a\\q18_2023全国甲卷_答案解析_image_116.png",
+        "sourcePage": "11",
+        "description": "Word第11页，第18题2023全国甲卷_答案解析中的图片对象"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_national_a\\q18_2023全国甲卷_答案解析_image_117.png",
+        "sourcePage": "12",
+        "description": "Word第12页，第18题2023全国甲卷_答案解析中的图片对象"
+      }
+    ],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "电磁学>电场>电场线与带电粒子轨迹"
+    ],
+    "difficultyLevel": "medium",
+    "difficultyReason": "需要提取题干或图表信息，并结合电场线与带电粒子轨迹完成两步左右的判断或计算。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（全国甲卷）Word版含解析.doc",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（全国甲卷）Word版含解析.doc"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2023,
+    "region": "全国",
+    "paperName": "2023年高考真题——理综（全国甲卷）",
+    "questionNumber": "34",
+    "questionType": "解答题",
+    "content": "[物理——选修3–4]（15分）\n（1） 等腰三角形△abc为一棱镜的横截面，ab = ac；一平行于bc边的细光束从ab边射入棱镜，在bc边反射后从ac边射出，出射光分成了不同颜色的两束，甲光的出射点在乙光的下方，如图所示。不考虑多次反射。下列说法正确的是（ ）\n〔图片对象 I380〕\nA. 甲光的波长比乙光的长\nB. 甲光的频率比乙光的高\nC. 在棱镜中的传播速度，甲光比乙光的大\nD. 该棱镜对甲光的折射率大于对乙光的折射率\nE. 在棱镜内bc边反射时的入射角，甲光比乙光的大",
+    "options": null,
+    "questionImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_national_a\\q34_2023全国甲卷_题干_image_380.png",
+        "sourcePage": "32",
+        "description": "Word第32页，第34题2023全国甲卷_题干中的图片对象"
+      }
+    ],
+    "correctAnswer": "ACE",
+    "standardAnalysis": "【详解】ABD．根据折射定律和反射定律作出光路图如图所示\n〔图片对象 I381〕\n由图可知，乙光的折射角较小，根据折射定律可知乙光的折射率大，则乙光的频率大，根据c = fλ可知，乙光的波长短，A正确、BD错误；\nC．根据〔公式对象 F382〕可知在棱镜中的传播速度，甲光比乙光的大，C正确；\nE．根据几何关系可知光在棱镜内bc边反射时的入射角，甲光比乙光的大，E正确。\n故选ACE。\n（2）分别沿x轴正向和负向传播的两列简谐横波P、Q的振动方向相同,振幅均为5cm，波长均为8m，波速均为4m/s。〔公式对象 F383〕时刻，P波刚好传播到坐标原点,该处的质点将自平衡位置向下振动；Q波刚好传到〔公式对象 F384〕处，该处的质点将自平衡位置向上振动。经过一段时间后，两列波相遇。\n（1）在答题卡给出的坐标图上分别画出P、Q两列波在〔公式对象 F385〕时刻的波形图（P波用虚线，Q波用实线）；\n（2）求出图示范围内的介质中，因两列波干涉而振动振幅最大和振幅最小的平衡位置。\n〔图片对象 I386〕\n【答案】（1）〔图片对象 I387〕 ；（2）见解析\n【解析】\n【详解】（1）根据〔公式对象 F388〕得\n〔公式对象 F389〕\n可知〔公式对象 F390〕时P波刚好传播到〔公式对象 F391〕处，Q波刚好传播到〔公式对象 F392〕处，根据上坡下坡法可得波形图如图所示\n〔图片对象 I393〕\n（2）两列波在图示范围内任一位置的波程差为\n〔公式对象 F394〕\n根据题意可知，P、Q两波振动频率相同，振动方向相反，两波叠加时，振动加强点的条件为到两波源的距离差\n〔公式对象 F395〕\n解得振幅最大的平衡位置有\n〔公式对象 F396〕、〔公式对象 F397〕\n振动减弱的条件为\n〔公式对象 F398〕\n解得振幅最小的平衡位置有\n〔公式对象 F399〕、〔公式对象 F400〕、〔公式对象 F401〕",
+    "analysisImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_national_a\\q34_2023全国甲卷_答案解析_image_381.png",
+        "sourcePage": "32",
+        "description": "Word第32页，第34题2023全国甲卷_答案解析中的图片对象"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_national_a\\q34_2023全国甲卷_答案解析_formula_382.png",
+        "sourcePage": "32",
+        "description": "Word第32页，第34题2023全国甲卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_national_a\\q34_2023全国甲卷_答案解析_formula_383.png",
+        "sourcePage": "33",
+        "description": "Word第33页，第34题2023全国甲卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_national_a\\q34_2023全国甲卷_答案解析_formula_384.png",
+        "sourcePage": "33",
+        "description": "Word第33页，第34题2023全国甲卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_national_a\\q34_2023全国甲卷_答案解析_formula_385.png",
+        "sourcePage": "33",
+        "description": "Word第33页，第34题2023全国甲卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_national_a\\q34_2023全国甲卷_答案解析_image_386.png",
+        "sourcePage": "33",
+        "description": "Word第33页，第34题2023全国甲卷_答案解析中的图片对象"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_national_a\\q34_2023全国甲卷_答案解析_image_387.png",
+        "sourcePage": "33",
+        "description": "Word第33页，第34题2023全国甲卷_答案解析中的图片对象"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_national_a\\q34_2023全国甲卷_答案解析_formula_388.png",
+        "sourcePage": "33",
+        "description": "Word第33页，第34题2023全国甲卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_national_a\\q34_2023全国甲卷_答案解析_formula_389.png",
+        "sourcePage": "33",
+        "description": "Word第33页，第34题2023全国甲卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_national_a\\q34_2023全国甲卷_答案解析_formula_390.png",
+        "sourcePage": "33",
+        "description": "Word第33页，第34题2023全国甲卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_national_a\\q34_2023全国甲卷_答案解析_formula_391.png",
+        "sourcePage": "33",
+        "description": "Word第33页，第34题2023全国甲卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_national_a\\q34_2023全国甲卷_答案解析_formula_392.png",
+        "sourcePage": "33",
+        "description": "Word第33页，第34题2023全国甲卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_national_a\\q34_2023全国甲卷_答案解析_image_393.png",
+        "sourcePage": "33",
+        "description": "Word第33页，第34题2023全国甲卷_答案解析中的图片对象"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_national_a\\q34_2023全国甲卷_答案解析_formula_394.png",
+        "sourcePage": "33",
+        "description": "Word第33页，第34题2023全国甲卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_national_a\\q34_2023全国甲卷_答案解析_formula_395.png",
+        "sourcePage": "33",
+        "description": "Word第33页，第34题2023全国甲卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_national_a\\q34_2023全国甲卷_答案解析_formula_396.png",
+        "sourcePage": "33",
+        "description": "Word第33页，第34题2023全国甲卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_national_a\\q34_2023全国甲卷_答案解析_formula_397.png",
+        "sourcePage": "33",
+        "description": "Word第33页，第34题2023全国甲卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_national_a\\q34_2023全国甲卷_答案解析_formula_398.png",
+        "sourcePage": "34",
+        "description": "Word第34页，第34题2023全国甲卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_national_a\\q34_2023全国甲卷_答案解析_formula_399.png",
+        "sourcePage": "34",
+        "description": "Word第34页，第34题2023全国甲卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_national_a\\q34_2023全国甲卷_答案解析_formula_400.png",
+        "sourcePage": "34",
+        "description": "Word第34页，第34题2023全国甲卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2023_national_a\\q34_2023全国甲卷_答案解析_formula_401.png",
+        "sourcePage": "34",
+        "description": "Word第34页，第34题2023全国甲卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      }
+    ],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "光学>几何光学>折射、全反射与色散"
+    ],
+    "difficultyLevel": "hard",
+    "difficultyReason": "需要综合多个条件，围绕折射、全反射与色散进行多环节推理、定量计算或实验分析。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（全国甲卷）Word版含解析.doc",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\理综\\2023年高考真题——理综（全国甲卷）Word版含解析.doc"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2024,
+    "region": "全国",
+    "paperName": "2024年高考真题——理综（新课标卷）",
+    "questionNumber": "14",
+    "questionType": "单选题",
+    "content": "一质点做直线运动，下列描述其位移x或速度v随时间t变化的图像中，可能正确的是（ ）",
+    "options": [
+      {
+        "label": "A",
+        "content": "〔图片对象 I126〕"
+      },
+      {
+        "label": "B",
+        "content": "〔图片对象 I127〕"
+      },
+      {
+        "label": "C",
+        "content": "〔图片对象 I128〕"
+      },
+      {
+        "label": "D",
+        "content": "〔图片对象 I129〕"
+      }
+    ],
+    "questionImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2024_new_standard\\q14_2024新课标卷_题干_image_126.png",
+        "sourcePage": "11",
+        "description": "Word第11页，第14题2024新课标卷_题干中的图片对象"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2024_new_standard\\q14_2024新课标卷_题干_image_127.png",
+        "sourcePage": "11",
+        "description": "Word第11页，第14题2024新课标卷_题干中的图片对象"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2024_new_standard\\q14_2024新课标卷_题干_image_128.png",
+        "sourcePage": "11",
+        "description": "Word第11页，第14题2024新课标卷_题干中的图片对象"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2024_new_standard\\q14_2024新课标卷_题干_image_129.png",
+        "sourcePage": "11",
+        "description": "Word第11页，第14题2024新课标卷_题干中的图片对象"
+      }
+    ],
+    "correctAnswer": "C",
+    "standardAnalysis": "【详解】AB．物体做直线运动，位移与时间成函数关系，AB选项中一个时间对应2个以上的位移，故不可能，故AB错误；\nCD．同理D选项中一个时间对应2个速度，只有C选项速度与时间是成函数关系，故C正确，D错误。\n故选C。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "力学>运动学>运动图像"
+    ],
+    "difficultyLevel": "medium",
+    "difficultyReason": "需要提取题干或图表信息，并结合运动图像完成两步左右的判断或计算。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\理综\\新增\\2024年高考新课标理综真题（解析版）.docx",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\理综\\新增\\2024年高考新课标理综真题（解析版）.docx"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2024,
+    "region": "全国",
+    "paperName": "2024年高考真题——理综（新课标卷）",
+    "questionNumber": "20",
+    "questionType": "多选题",
+    "content": "电动汽车制动时可利用车轮转动将其动能转换成电能储存起来。车轮转动时带动磁极绕固定的线圈旋转，在线圈中产生电流。磁极匀速转动的某瞬间，磁场方向恰与线圈平面垂直，如图所示。将两磁极间的磁场视为匀强磁场，则磁极再转过90°时，线圈中（ ）\n〔图片对象 I161〕",
+    "options": [
+      {
+        "label": "A",
+        "content": "电流最小"
+      },
+      {
+        "label": "B",
+        "content": "电流最大"
+      },
+      {
+        "label": "C",
+        "content": "电流方向由P指向Q"
+      },
+      {
+        "label": "D",
+        "content": "电流方向由Q指向P"
+      }
+    ],
+    "questionImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2024_new_standard\\q20_2024新课标卷_题干_image_161.png",
+        "sourcePage": "15",
+        "description": "Word第15页，第20题2024新课标卷_题干中的图片对象"
+      }
+    ],
+    "correctAnswer": "BD",
+    "standardAnalysis": "【详解】如图开始线圈处于中性面位置，当磁极再转过90°时，此时穿过线圈的磁通量为0，故可知电流最大；在磁极转动的过程中，穿过线圈的磁通量在减小，根据楞次定律可知，此时感应电流方向由Q指向P。\n故选BD。",
+    "analysisImages": [],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "电磁学>电磁感应>交变电流的产生"
+    ],
+    "difficultyLevel": "medium",
+    "difficultyReason": "需要提取题干或图表信息，并结合交变电流的产生完成两步左右的判断或计算。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\理综\\新增\\2024年高考新课标理综真题（解析版）.docx",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\理综\\新增\\2024年高考新课标理综真题（解析版）.docx"
+    },
+    "reviewStatus": "待审核"
+  },
+  {
+    "subject": "物理",
+    "year": 2024,
+    "region": "全国",
+    "paperName": "2024年高考真题——理综（新课标卷）",
+    "questionNumber": "21",
+    "questionType": "多选题",
+    "content": "如图，一定量理想气体的循环由下面4个过程组成：1→2为绝热过程（过程中气体不与外界交换热量），2→3为等压过程，3→4为绝热过程，4→1为等容过程。上述四个过程是四冲程柴油机工作循环的主要过程。下列说法正确的是（ ）\n〔图片对象 I162〕",
+    "options": [
+      {
+        "label": "A",
+        "content": "1→2过程中，气体内能增加"
+      },
+      {
+        "label": "B",
+        "content": "2→3过程中，气体向外放热"
+      },
+      {
+        "label": "C",
+        "content": "3→4过程中，气体内能不变"
+      },
+      {
+        "label": "D",
+        "content": "4→1过程中，气体向外放热"
+      }
+    ],
+    "questionImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2024_new_standard\\q21_2024新课标卷_题干_image_162.png",
+        "sourcePage": "16",
+        "description": "Word第16页，第21题2024新课标卷_题干中的图片对象"
+      }
+    ],
+    "correctAnswer": "AD",
+    "standardAnalysis": "【详解】A．1→2为绝热过程，根据热力学第一定律〔公式对象 F163〕可知此时气体体积减小，外界对气体做功，故内能增加，故A正确；\nB．2→3为等压过程，根据盖吕萨克定律可知气体体积增大时温度增加，内能增大，此时气体体积增大，气体对外界做功〔公式对象 F164〕，故气体吸收热量，故B错误；\nC．3→4为绝热过程，此时气体体积增大，气体对外界做功〔公式对象 F165〕，根据热力学第一定律可知气体内能减小，故C错误；\nD．4→1为等容过程，根据查理定律可知压强减小时温度减小，故内能减小，由于体积不变〔公式对象 F166〕，故可知气体向外放热，故D正确。\n故选AD。\n\n三、非选择题：共174分。",
+    "analysisImages": [
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2024_new_standard\\q21_2024新课标卷_答案解析_formula_163.png",
+        "sourcePage": "16",
+        "description": "Word第16页，第21题2024新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2024_new_standard\\q21_2024新课标卷_答案解析_formula_164.png",
+        "sourcePage": "16",
+        "description": "Word第16页，第21题2024新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2024_new_standard\\q21_2024新课标卷_答案解析_formula_165.png",
+        "sourcePage": "16",
+        "description": "Word第16页，第21题2024新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      },
+      {
+        "imagePath": "E:\\BISHE2026\\题库\\物理\\母题库\\images\\2024_new_standard\\q21_2024新课标卷_答案解析_formula_166.png",
+        "sourcePage": "16",
+        "description": "Word第16页，第21题2024新课标卷_答案解析中的旧式 Equation.DSMT4 公式对象预览；需人工核对文本化"
+      }
+    ],
+    "analysisReviewStatus": "待审核",
+    "knowledgePoints": [
+      "热学>理想气体>循环过程与热力学第一定律"
+    ],
+    "difficultyLevel": "medium",
+    "difficultyReason": "需要提取题干或图表信息，并结合循环过程与热力学第一定律完成两步左右的判断或计算。",
+    "sourceFile": {
+      "paper": "E:\\BISHE2026\\题库\\理综\\新增\\2024年高考新课标理综真题（解析版）.docx",
+      "answerAnalysis": "E:\\BISHE2026\\题库\\理综\\新增\\2024年高考新课标理综真题（解析版）.docx"
+    },
+    "reviewStatus": "待审核"
+  }
+]

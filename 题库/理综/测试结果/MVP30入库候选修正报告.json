@@ -1,0 +1,121 @@
+{
+  "title": "第十一阶段：MVP30入库候选修正报告",
+  "scope": "仅修正MVP30候选中的物理结构性问题；未清洗全部母题库；未连接数据库。",
+  "removedFromPhysicsMvp": {
+    "subject": "物理",
+    "year": 2023,
+    "paperName": "2023年高考真题——理综（全国甲卷）",
+    "questionNumber": "34",
+    "reason": "一条记录同时包含第（1）问光学多选题和第（2）问机械波计算题，答案与知识点仅覆盖第（1）问。",
+    "removedFromMaster": false,
+    "masterMark": "待人工拆分",
+    "markFile": "E:\\BISHE2026\\题库\\物理\\母题库\\待人工拆分.json",
+    "automaticSplit": false
+  },
+  "replacement": {
+    "subject": "物理",
+    "year": 2023,
+    "paperName": "2023年高考真题——理综（新课标卷）",
+    "questionNumber": "21",
+    "questionType": "多选题",
+    "correctAnswer": "AD",
+    "knowledgePoints": [
+      "热学>理想气体>热力学第一定律与状态变化"
+    ],
+    "difficultyLevel": "hard",
+    "reason": "题干、答案和解析完整，无多个独立子题；对象标记顺序与附件一致且路径有效；为热学多选题，可补充分散现有知识点并保持来源分布均衡。",
+    "objectAudit": {
+      "questionObjectCount": 1,
+      "analysisObjectCount": 8,
+      "totalObjectCount": 9,
+      "formulaObjectCount": 8,
+      "imageObjectCount": 1,
+      "valid": true,
+      "issues": []
+    }
+  },
+  "q22Handling": {
+    "subject": "物理",
+    "year": 2023,
+    "paperName": "2023年高考真题——理综（新课标卷）",
+    "questionNumber": "22",
+    "autoGradable": false,
+    "autoGradeReason": "包含公式对象答案，需人工审核或答案标准化后启用",
+    "reviewStatus": "待审核",
+    "analysisReviewStatus": "待审核"
+  },
+  "finalCounts": {
+    "物理": 10,
+    "化学": 10,
+    "生物": 10,
+    "合计": 30
+  },
+  "physicsDistribution": {
+    "source": {
+      "2023年高考真题——理综（全国甲卷）": 3,
+      "2023年高考真题——理综（新课标卷）": 4,
+      "2024年高考真题——理综（新课标卷）": 3
+    },
+    "questionType": {
+      "单选题": 6,
+      "多选题": 3,
+      "实验填空题": 1
+    },
+    "primaryKnowledgePoint": {
+      "力学": 3,
+      "实验": 1,
+      "热学": 2,
+      "电磁学": 2,
+      "近代物理": 2
+    },
+    "difficultyLevel": {
+      "easy": 3,
+      "hard": 1,
+      "medium": 6
+    }
+  },
+  "objectAudit": {
+    "物理": {
+      "questionCount": 10,
+      "questionObjectCount": 26,
+      "analysisObjectCount": 28,
+      "totalObjectCount": 54,
+      "formulaObjectCount": 39,
+      "imageObjectCount": 15,
+      "invalidQuestionCount": 0,
+      "allPathsValid": true
+    },
+    "化学": {
+      "questionCount": 10,
+      "questionObjectCount": 43,
+      "analysisObjectCount": 72,
+      "totalObjectCount": 115,
+      "formulaObjectCount": 105,
+      "imageObjectCount": 10,
+      "invalidQuestionCount": 0,
+      "allPathsValid": true
+    },
+    "生物": {
+      "questionCount": 10,
+      "questionObjectCount": 8,
+      "analysisObjectCount": 6,
+      "totalObjectCount": 14,
+      "formulaObjectCount": 8,
+      "imageObjectCount": 6,
+      "invalidQuestionCount": 0,
+      "allPathsValid": true
+    }
+  },
+  "formalSchemaChanged": false,
+  "allReviewStatusesPending": true,
+  "databaseConnected": false,
+  "cleanedFilesOverwritten": false,
+  "motherQuestionRecordModified": false,
+  "outputs": [
+    "E:\\BISHE2026\\题库\\理综\\测试结果\\MVP30入库候选_最终版.json",
+    "E:\\BISHE2026\\题库\\理综\\测试结果\\MVP30入库候选_最终版.xlsx",
+    "E:\\BISHE2026\\题库\\理综\\测试结果\\MVP入库说明.json",
+    "E:\\BISHE2026\\题库\\理综\\测试结果\\MVP30入库候选修正报告.json",
+    "E:\\BISHE2026\\题库\\物理\\母题库\\待人工拆分.json"
+  ]
+}

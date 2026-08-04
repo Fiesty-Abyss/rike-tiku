@@ -1,0 +1,137 @@
+{
+  "stage": "第十阶段：MVP30题入库前轻量清洗",
+  "outputNaming": "原文件保留；清洗结果使用待审核_清洗版.json/xlsx。",
+  "databaseConnected": false,
+  "subjects": {
+    "物理": {
+      "questions": 10,
+      "removedCrossQuestionTails": [
+        {
+          "year": 2024,
+          "paperName": "2024年高考真题——理综（新课标卷）",
+          "questionNumber": "21",
+          "removedText": "三、非选择题：共174分。"
+        }
+      ],
+      "knowledgePointFixes": [],
+      "duplicateTextFixes": [],
+      "unresolvedForManualReview": [
+        {
+          "year": 2023,
+          "paperName": "2023年高考真题——理综（全国甲卷）",
+          "questionNumber": "34",
+          "issue": "standardAnalysis内嵌同一题第（2）问题干、答案和解析。该内容仍属于Q34，无法按无关尾段安全删除；保留原值并待人工决定是否重组题目结构。"
+        }
+      ],
+      "objectAttachmentAudit": {
+        "questionMarkers": 26,
+        "analysisMarkers": 41,
+        "totalMarkers": 67,
+        "questionAttachmentRecords": 26,
+        "analysisAttachmentRecords": 41,
+        "totalAttachmentRecords": 67,
+        "invalidPathCount": 0,
+        "invalidPaths": [],
+        "orderMismatchCount": 0,
+        "orderMismatches": [],
+        "passed": true
+      }
+    },
+    "化学": {
+      "questions": 10,
+      "removedCrossQuestionTails": [
+        {
+          "year": 2024,
+          "paperName": "2024年高考真题——理综（新课标卷）",
+          "questionNumber": "13",
+          "removedText": "二、选择题：本题共8小题，每小题6分，共48分。在每小题给出的四个选项中，第14~18题只有一项符合题目要求，第19~21题有多项符合题目要求。全部选对的得6分，选对但不全的得3分，有选错的得0分。"
+        }
+      ],
+      "knowledgePointFixes": [
+        {
+          "year": 2024,
+          "paperName": "2024年高考真题——理综（新课标卷）",
+          "questionNumber": "8",
+          "before": "有机化学>高分子化学>加聚反应与官能团",
+          "after": "有机化学>高分子化学>缩聚反应与官能团",
+          "evidence": "standardAnalysis明确写明两种有机物通过缩聚反应生成W，且反应③为缩聚反应。"
+        }
+      ],
+      "duplicateTextFixes": [
+        {
+          "year": 2023,
+          "paperName": "2023年高考真题——理综（新课标卷）",
+          "questionNumber": "7",
+          "before": "又称又称",
+          "after": "又称"
+        }
+      ],
+      "unresolvedForManualReview": [],
+      "objectAttachmentAudit": {
+        "questionMarkers": 43,
+        "analysisMarkers": 72,
+        "totalMarkers": 115,
+        "questionAttachmentRecords": 43,
+        "analysisAttachmentRecords": 72,
+        "totalAttachmentRecords": 115,
+        "invalidPathCount": 0,
+        "invalidPaths": [],
+        "orderMismatchCount": 0,
+        "orderMismatches": [],
+        "passed": true
+      }
+    },
+    "生物": {
+      "questions": 10,
+      "removedCrossQuestionTails": [],
+      "knowledgePointFixes": [],
+      "duplicateTextFixes": [
+        {
+          "year": 2023,
+          "paperName": "2023年高考真题——理综（新课标卷）",
+          "questionNumber": "5",
+          "before": "因此因此",
+          "after": "因此"
+        },
+        {
+          "year": 2023,
+          "paperName": "2023年高考真题——理综（新课标卷）",
+          "questionNumber": "5",
+          "before": "符合:9:3:3:1",
+          "after": "符合9:3:3:1"
+        }
+      ],
+      "unresolvedForManualReview": [],
+      "objectAttachmentAudit": {
+        "questionMarkers": 8,
+        "analysisMarkers": 6,
+        "totalMarkers": 14,
+        "questionAttachmentRecords": 8,
+        "analysisAttachmentRecords": 6,
+        "totalAttachmentRecords": 14,
+        "invalidPathCount": 0,
+        "invalidPaths": [],
+        "orderMismatchCount": 0,
+        "orderMismatches": [],
+        "passed": true
+      }
+    }
+  },
+  "summary": {
+    "questionsChecked": 30,
+    "questionsWithChanges": 5,
+    "crossQuestionTailRemovals": 2,
+    "knowledgePointFixes": 1,
+    "duplicateTextFixes": 3,
+    "unresolvedForManualReview": 1,
+    "totalObjectMarkers": 196,
+    "totalAttachmentRecords": 196,
+    "invalidAttachmentPaths": 0,
+    "objectOrderMismatches": 0,
+    "originalFilesUnchanged": true,
+    "answersUnchanged": true,
+    "imagesUnchanged": true,
+    "identityFieldsUnchanged": true,
+    "reviewStatusesPending": true
+  }
+}
