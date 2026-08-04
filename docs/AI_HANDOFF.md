@@ -4,7 +4,7 @@
 
 ## 0. 最新轮次：后端统一认证与JWT
 
-当前分支为`feat/backend-auth-jwt`，基线HEAD为`74af93327f8fd41a15401cab3fa87475a4bd1f0a`。本轮实现已经通过测试和JAR验证；Pull Request [#4](https://github.com/Fiesty-Abyss/rike-tiku/pull/4)为草稿且尚未合并。在PR合并前，`main`仍不包含本轮代码。
+后端认证轮已完成并合入`main`。Pull Request [#4](https://github.com/Fiesty-Abyss/rike-tiku/pull/4)从Draft转为Ready后以普通merge合并；PR最终HEAD为`caf1b5369128e0928bf3f2f3f2a2a31390d4fbb5`，merge提交为`9783435b6bd61166145aa1c734c5e610bd129943`，远程功能分支已删除。合并后在`main`重新执行`mvn clean test`：PASS，23/23，0 failures，0 errors，0 skipped。
 
 已实现：
 
