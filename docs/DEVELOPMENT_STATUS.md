@@ -5,10 +5,10 @@
 ## 当前基线
 
 - 设计基线：V3.0
-- 当前轮次：IDEA本地启动配置说明修复与验证
-- 当前状态：DONE_VERIFIED（命令行与JAR）；IDEA人工启动为AWAITING_USER_VERIFICATION
+- 当前轮次：修复IDEA图形界面启动时数据库密码环境变量未生效
+- 当前状态：DONE_VERIFIED（启动链路与自动验证）；IDEA重启后点击Run为AWAITING_USER_VERIFICATION
 - 当前集成分支：`main`
-- 本轮实现分支：`fix/local-development-startup`
+- 本轮实现分支：`fix/idea-local-run`
 - 远程仓库：`https://github.com/Fiesty-Abyss/rike-tiku`
 - 仓库可见性：PUBLIC
 - 实现提交：`56cb779`（`feat(database): add user and teaching organization model`）
@@ -41,9 +41,11 @@
 
 ## 本轮测试结论
 
+- Windows用户环境变量实际设置：PASS（只验证存在性，不回显密码）。
+- 本地环境初始化脚本语法：PASS，PowerShell解析错误0。
 - IDEA启动说明与实际 `application.yml` 变量名核对：PASS。
 - 缺失密码启动：PASS（应用退出码1，明确显示 `using password: NO`，未错误启动）。
-- IDEA图形界面人工启动：AWAITING_USER_VERIFICATION（需用户按README在本机运行配置中填写密码）。
+- IDEA图形界面人工启动：AWAITING_USER_VERIFICATION（当前IDEA进程启动早于变量创建，需完全重启后点击Run）。
 - `mvn clean test`：PASS，16/16。
 - `mvn clean package`：PASS，16/16并生成可执行JAR。
 - V5、V6迁移：PASS。
@@ -55,7 +57,7 @@
 - 重复有效班级学生关系拒绝、一个有效主班级、退出历史保留：PASS。
 - 任课三元关系唯一、跨班同科、同班不同科、无关系不授权：PASS。
 - 审核人外键、自动填充、逻辑删除、事务回滚：PASS。
-- JAR启动和健康接口：PASS，临时端口18085返回 `status=UP`、`database=UP`，验证后进程已停止。
+- JAR启动和健康接口：PASS，使用Windows用户变量在临时端口18087返回 `status=UP`、`database=UP`，验证后进程已停止。
 
 ## 明确未实施
 
@@ -68,7 +70,7 @@
 
 ## 已知事项
 
-- IDEA 直接启动时必须在 Run Configuration 中提供 `RIKE_TIKU_DB_PASSWORD`；`.env.example` 不会被 Spring Boot 或 IDEA 自动加载。命令行、JAR 和健康检查已重新验证，IDEA 图形界面操作仍需用户按文档人工复核。
+- 上轮文档修复后，用户再次从IDEA启动仍显示 `using password: NO`。本机检查确认 `.idea/workspace.xml` 中的实际运行配置没有环境变量，Windows用户、系统和IDEA父进程环境中也没有 `RIKE_TIKU_DB_PASSWORD`。本轮已实际设置Windows用户环境变量，用户需要完全重启IDEA后验证。
 - V1/V2旧迁移仍会产生MySQL整数显示宽度弃用警告；已执行迁移没有改写，V5/V6使用无显示宽度的 `TINYINT`。
 - JDK 25下Mockito/Byte Buddy仍输出动态Agent兼容性警告，测试实际通过。
 - 题库资料权利状态为 `COPYRIGHT_UNKNOWN`，只作学习、开发和人工审核候选；仓库不声明已获公开传播授权。
@@ -76,8 +78,8 @@
 
 ## 本轮边界
 
-只补充安全的本地启动说明并验证现有后端，不修改数据库、Flyway、业务模型或运行时配置行为，不开发登录和JWT。
+只修复本机IDEA启动链路并提供可重复的安全初始化脚本，不修改数据库、Flyway、业务模型或运行时配置行为，不开发登录和JWT。
 
 ## 下一步唯一任务
 
-用户先按后端README完成一次IDEA人工启动并确认健康接口 `UP/UP`；确认后，下一开发轮只实现后端统一认证与JWT登录基础。
+用户完全退出并重新打开IDEA，选择已有 `RikeTikuBackendApplication` 点击Run，确认健康接口 `UP/UP`。确认后本轮结束，不继续开发JWT。

@@ -22,22 +22,43 @@
 
 ## 在 IDEA 中启动
 
-1. 使用 Java 25 导入 Maven 工程。
-2. 打开 `Run` → `Edit Configurations`。
-3. 新建或选择运行配置 `RikeTikuBackendApplication`。
-4. 确认 Main class 为：
+### 推荐：一次性设置Windows用户环境变量
+
+在后端目录打开PowerShell，执行：
+
+```powershell
+.\scripts\setup-idea-local-env.ps1
+```
+
+脚本会隐藏密码输入，将 `RIKE_TIKU_DB_PASSWORD` 设置为当前Windows用户的环境变量，不会把密码写入项目文件或Git。设置完成后必须完全退出并重新打开IDEA，因为已经运行的IDEA进程不会自动获得后来新增的用户环境变量。
+
+重新打开IDEA后：
+
+1. 使用Java 25导入Maven工程。
+2. 选择已有运行配置 `RikeTikuBackendApplication`。
+3. 确认 Main class 为：
 
    ```text
    com.neu.riketiku.RikeTikuBackendApplication
    ```
 
-5. 在 `Environment variables` 中至少添加：
+4. 点击Run。该配置默认继承IDEA进程的父环境变量，无须将密码保存到项目运行配置。
+
+可以用以下PowerShell命令确认用户变量是否存在；命令只返回 `True` 或 `False`，不会显示密码：
+
+```powershell
+[bool][Environment]::GetEnvironmentVariable("RIKE_TIKU_DB_PASSWORD", "User")
+```
+
+### 备选：只保存到IDEA私有运行配置
+
+如果不希望设置Windows用户环境变量，可以打开 `Run` → `Edit Configurations` → `RikeTikuBackendApplication`，在 `Environment variables` 中至少添加：
 
    ```text
    RIKE_TIKU_DB_PASSWORD=你的本机MySQL密码
    ```
 
-6. 如果本机数据库不是默认地址，再按实际情况添加 host、port、name 和 username。完整示例为：
+如果本机数据库不是默认地址，再按实际情况添加 host、port、name 和 username。完整示例为：
 
    ```text
    RIKE_TIKU_DB_HOST=localhost
@@ -47,7 +68,9 @@
    RIKE_TIKU_DB_PASSWORD=你的本机MySQL密码
    ```
 
-7. 保存运行配置并启动。IDEA 的环境变量编辑器可以逐项填写；不要把真实密码保存到仓库文件或共享的运行配置中。
+保存运行配置并启动。IDEA的环境变量编辑器可以逐项填写；不要勾选 `Store as project file`，也不要把含真实密码的配置提交或共享。
+
+项目没有提交共享 `.run` 密码配置，因为共享配置无法安全提供每台机器不同的真实密码。默认私有配置位于 `.idea/workspace.xml`，该目录已被Git忽略。
 
 启动成功后访问：
 
@@ -84,5 +107,7 @@ Access denied for user 'root'@'localhost' (using password: NO)
 ```
 
 其中 `using password: NO` 表示后端进程没有获得密码，并不表示数据库模型或 Flyway 迁移损坏。请检查当前 IDEA Run Configuration 是否设置了 `RIKE_TIKU_DB_PASSWORD`，修改后重新启动。
+
+如果已经设置Windows用户环境变量，但仍显示 `using password: NO`，请确认IDEA是在设置变量之后完全重启的。仅关闭项目或重新点击Run不足以刷新IDEA进程继承的环境。
 
 如果显示 `using password: YES` 但仍被拒绝，则说明进程拿到了密码，但用户名、密码或 MySQL 账号权限不正确，应核对本机数据库配置。
