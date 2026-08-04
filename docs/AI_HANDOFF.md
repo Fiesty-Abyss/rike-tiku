@@ -2,6 +2,38 @@
 
 更新时间：2026-08-04
 
+## 0. 最新轮次：后端统一认证与JWT
+
+当前分支为`feat/backend-auth-jwt`，基线HEAD为`74af93327f8fd41a15401cab3fa87475a4bd1f0a`。本轮实现已经通过测试和JAR验证，PR待创建且尚未合并；在PR合并前，`main`仍不包含本轮代码。
+
+已实现：
+
+- `POST /api/v1/auth/login`：从数据库读取有效账号和全部真实角色，`expectedRole`只做入口校验。
+- `GET /api/v1/auth/me`：返回当前用户、真实角色、首次改密状态和可用档案显示信息。
+- `POST /api/v1/auth/change-initial-password`：校验旧密码和新密码规则，事务更新BCrypt摘要、修改时间和首次登录标志，并返回新Token。
+- JJWT 0.13.0 + HS256；密钥来自`RIKE_TIKU_JWT_SECRET`，有效期来自`RIKE_TIKU_JWT_EXPIRATION_SECONDS`，默认7200秒。
+- Bearer Token过滤、SecurityContext、认证失败、Token无效/过期、权限不足和首次改密门禁。
+- `/api/v1/test/student`、`teacher`、`admin`仅作为三角色技术验证接口。
+- 健康检查、登录和SpringDoc开发接口匿名可访问，其余接口默认认证。
+
+数据库与测试：
+
+- 没有新增迁移，没有修改V1-V6，仍为18张业务表。
+- 自动化认证测试使用随机临时MySQL数据库，从V1迁移到V6，结束后自动删除。
+- 正式库`yong_hu`保持0行，没有生产测试账号污染。
+- `mvn clean test`：PASS，23/23；原16项数据库测试全部回归通过。
+- `mvn clean package`：PASS，23/23并生成可执行JAR。
+- JAR在18088端口启动：健康接口`UP/UP`；无Token访问`/auth/me`返回401；匿名错误登录返回统一401；验证后进程已停止。
+
+安全边界：
+
+- 不提交JWT真实密钥或数据库密码；`.env.example`只有变量名和占位说明。
+- 不实现Refresh Token或Token表。
+- 访问Token无状态且默认两小时。数据库中的账号/角色变化不会立即撤销已签发Token；这是当前MVP明确边界。
+- 本机初始化脚本会通过安全提示读取数据库密码，并在缺少JWT密钥时生成随机密钥写入Windows用户环境；已打开的IDEA需重启才能继承。
+
+下一轮唯一任务为前端登录与认证状态基础：三角色入口、Pinia、Axios Token、首次改密和路由守卫。不同时开发导入、题库、练习或AI。
+
 ## 1. 当前修复轮唯一目标
 
 修复IDEA图形界面启动时数据库密码环境变量未生效。上轮只补充了说明，用户人工重试仍出现 `using password: NO`；本轮必须实际修复启动链路，不再把文档修改等同于IDEA验证完成。
