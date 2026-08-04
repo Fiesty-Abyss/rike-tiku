@@ -41,8 +41,9 @@ Flyway 是数据库结构的唯一建表和升级入口。已经执行的迁移�
 - 账号、角色、学生/教师档案、班级、班级学生历史和三元任课关系数据库模型；
 - Flyway V1–V6，共18张业务表；
 - 最小MyBatis-Plus映射、数据库约束测试和空库全迁移测试。
+- 后端统一登录、BCrypt密码校验、JWT访问Token、当前用户、首次改密门禁和三角色鉴权。
 
-尚未完成：登录/JWT、学生导入、题库正式业务API、练习判分、错题、AI Provider和正式角色工作台。题库30题候选数据尚未正式发布。
+尚未完成：前端登录页、学生导入、用户管理、题库正式业务API、练习判分、错题、AI Provider和正式角色工作台。题库30题候选数据尚未正式发布。
 
 准确状态请以 [开发状态](docs/DEVELOPMENT_STATUS.md) 和 [AI交接](docs/AI_HANDOFF.md) 为准。
 
@@ -58,6 +59,8 @@ cd rike-tiku-backend
 ```
 
 脚本隐藏密码输入，只设置当前Windows用户环境变量，不向Git文件写入密码。执行后必须完全退出并重新打开IDEA，再运行 `RikeTikuBackendApplication`。
+
+脚本还会在本机缺少JWT密钥时生成随机 `RIKE_TIKU_JWT_SECRET`。JWT默认有效期为7200秒，可通过 `RIKE_TIKU_JWT_EXPIRATION_SECONDS` 覆盖。
 
 从终端临时启动时也可以只为当前PowerShell设置密码：
 
@@ -102,6 +105,7 @@ npm run build
 - [开发状态](docs/DEVELOPMENT_STATUS.md)
 - [AI交接](docs/AI_HANDOFF.md)
 - [题库核心数据库模型V1](docs/QUESTION_DATABASE_MODEL_V1.md)
+- [后端认证接口](docs/AUTHENTICATION_API.md)
 - V3.0总体设计公开脱敏版（位于 `docs/`）
 
 ## 题库资料和权利说明
@@ -112,4 +116,4 @@ npm run build
 
 ## 下一阶段
 
-下一阶段建议只实现后端统一认证与JWT登录基础，包括账号状态、首次登录改密门禁和三角色鉴权测试；不同时开发学生导入、练习、前端工作台或AI接口。
+下一阶段只实现前端登录页面、Pinia认证状态、Axios Token注入和路由守卫；不同时开发学生导入、题库、练习或AI。

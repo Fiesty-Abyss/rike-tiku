@@ -21,3 +21,6 @@ server:
 app:
   cors:
     allowed-origins: ${RIKE_TIKU_CORS_ALLOWED_ORIGINS:http://localhost:8080}
+  jwt:
+    secret: ${RIKE_TIKU_JWT_SECRET:}
+    expiration-seconds: ${RIKE_TIKU_JWT_EXPIRATION_SECONDS:7200}
