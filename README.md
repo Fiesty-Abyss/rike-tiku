@@ -50,19 +50,17 @@ Flyway 是数据库结构的唯一建表和升级入口。已经执行的迁移�
 
 ### 后端
 
-复制环境变量示例并通过终端或IDEA Run Configuration设置真实本机值，不要提交本地配置：
+后端的 `.env.example` 仅用于说明配置项。当前 Spring Boot 工程和 IDEA 不会自动加载 `.env` 或 `.env.example`，必须通过终端环境变量或 IDEA Run Configuration 注入真实本机值。默认 host、port、数据库名和用户名已经配置，本地通常只需设置密码：
 
 ```powershell
-$env:RIKE_TIKU_DB_HOST="localhost"
-$env:RIKE_TIKU_DB_PORT="3306"
-$env:RIKE_TIKU_DB_NAME="rike_tiku"
-$env:RIKE_TIKU_DB_USERNAME="root"
 $env:RIKE_TIKU_DB_PASSWORD="your-local-password"
 cd rike-tiku-backend
 mvn spring-boot:run
 ```
 
-默认后端地址为 `http://localhost:8081`，健康接口为 `http://localhost:8081/api/v1/health`。
+在 IDEA 中打开 `Run` → `Edit Configurations` → `RikeTikuBackendApplication`，在 `Environment variables` 中添加同名变量。数据库地址或账号不是默认值时，再配置 `RIKE_TIKU_DB_HOST`、`RIKE_TIKU_DB_PORT`、`RIKE_TIKU_DB_NAME` 和 `RIKE_TIKU_DB_USERNAME`。项目不读取 `RIKE_TIKU_DB_URL`。
+
+详细步骤和故障排查见 [后端本地启动说明](rike-tiku-backend/README.md)。默认后端地址为 `http://localhost:8081`，健康接口为 `http://localhost:8081/api/v1/health`。
 
 ### 前端
 
@@ -74,6 +72,8 @@ npm run dev
 ```
 
 默认前端地址为 `http://localhost:8080`。前端API地址通过 `VITE_API_BASE_URL` 配置。
+
+前端 Vite 会按其规则加载 `.env.local`；这与后端 Spring Boot 的环境变量加载方式不同，请勿混淆。
 
 ## 验证命令
 
