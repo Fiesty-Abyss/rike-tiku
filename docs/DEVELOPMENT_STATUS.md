@@ -6,12 +6,14 @@
 
 - 设计基线：V3.0
 - 当前轮次：后端统一认证与JWT登录基础
-- 当前状态：DONE_VERIFIED（代码、数据库集成测试、打包和JAR运行）；PR #4为草稿，未合并
-- 基线分支：`main`
-- 本轮实现分支：`feat/backend-auth-jwt`
+- 当前状态：DONE_VERIFIED；PR #4已普通merge，main回归测试通过
+- 当前分支：`main`
+- 本轮实现分支：`feat/backend-auth-jwt`（远程分支已删除）
 - 开始时HEAD：`74af93327f8fd41a15401cab3fa87475a4bd1f0a`
 - 远程仓库：`https://github.com/Fiesty-Abyss/rike-tiku`
-- Pull Request：[#4](https://github.com/Fiesty-Abyss/rike-tiku/pull/4)，DRAFT，未合并
+- Pull Request：[#4](https://github.com/Fiesty-Abyss/rike-tiku/pull/4)，MERGED
+- PR最终HEAD：`caf1b5369128e0928bf3f2f3f2a2a31390d4fbb5`
+- 普通merge提交：`9783435b6bd61166145aa1c734c5e610bd129943`
 - 当前Flyway：V6；本轮没有新增或修改迁移
 
 ## 本轮已完成
@@ -62,6 +64,7 @@
 - `mvn clean test`：PASS，23/23。
 - `mvn clean package`：PASS，23/23。
 - JAR启动、健康接口、匿名认证错误：PASS。
+- PR合并后在`main@9783435`重新执行`mvn clean test`：PASS，23/23，0 failures，0 errors，0 skipped。
 - 首次全量测试曾因测试断言的Java泛型编译错误失败；已修复断言并重新完整执行通过，没有将失败轮次记作PASS。
 
 ## 明确未实施
