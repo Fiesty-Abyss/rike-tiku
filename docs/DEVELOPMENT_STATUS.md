@@ -7,10 +7,11 @@
 - 设计基线：V3.0
 - 当前轮次：GitHub公开仓库与账号、教学组织数据库模型
 - 当前状态：DONE_VERIFIED
-- 功能分支：`feat/database-user-teaching`
+- 当前分支：`main`
 - 远程仓库：`https://github.com/Fiesty-Abyss/rike-tiku`
 - 仓库可见性：PUBLIC
 - 实现提交：`56cb779`（`feat(database): add user and teaching organization model`）
+- Pull Request：[#1](https://github.com/Fiesty-Abyss/rike-tiku/pull/1)，已合并；远程功能分支已删除
 
 ## 本轮已完成
 
