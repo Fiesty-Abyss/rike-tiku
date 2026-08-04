@@ -48,15 +48,15 @@
 
 ## 5. 当前实现状态
 
-- 状态：题库核心数据库模型为 `DONE_VERIFIED`；账号与教学组织模型尚未开始。
-- 当前Git基线：`main`，HEAD `398b651`。
-- 当前Flyway：V1–V4。
-- 当前业务表：`ke_mu`、`zhi_shi_dian`、`dao_ru_pi_ci`、`ti_mu`、`ti_mu_xuan_xiang`、`ti_mu_jie_xi`、`ti_mu_zhi_shi_dian`、`ti_mu_fu_jian`、`ti_mu_lai_yuan`、`ti_mu_shen_he_ji_lu`。
+- 状态：题库核心数据库与账号/教学组织数据库模型均为 `DONE_VERIFIED`。
+- 当前Git实现提交：`56cb779`；最终分支和HEAD以 `git status`、`git log -1` 为准。
+- 当前Flyway：V1–V6。
+- 当前业务表：题库核心10表，加 `yong_hu`、`jiao_se`、`yong_hu_jiao_se`、`xue_sheng_dang_an`、`jiao_shi_dang_an`、`ban_ji`、`ban_ji_xue_sheng`、`ren_ke_guan_xi`，共18表。
 - 当前样本：物理、化学、生物各1题，共3题，均为 `PENDING`；权利状态为 `COPYRIGHT_UNKNOWN`。
-- 最近验证：后端8项测试、Maven测试与打包、JAR健康检查、MySQL连接均通过；前端基础工程的启动、类型检查、构建和浏览器联调在基础轮通过。
-- 远程仓库目标：`https://github.com/Fiesty-Abyss/rike-tiku`。
+- 最近验证：后端16项测试、空库V1–V6迁移、Maven测试与打包、JAR健康检查、MySQL连接均通过；前端基础工程的启动、类型检查、构建和浏览器联调在基础轮通过。
+- 远程仓库：`https://github.com/Fiesty-Abyss/rike-tiku`，公开仓库，默认分支 `main`。
 
-未完成的核心模块包括账号与教学组织、认证授权、学生导入、题库业务API、练习判分、错题、AI Provider和正式角色工作台。
+未完成的核心模块包括认证授权、学生导入、题库业务API、练习判分、错题、AI Provider和正式角色工作台。
 
 ## 6. AI接管规则
 
