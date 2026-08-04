@@ -4,7 +4,7 @@
 
 ## 1. 当前修复轮唯一目标
 
-修复IDEA本地启动说明缺口。用户从IDEA直接运行后端时出现 `using password: NO`，原因是IDEA进程未获得数据库密码环境变量。本轮只补文档和安全示例并重新验证现有后端，不修改数据库、Flyway、业务模型或运行时配置行为。
+修复IDEA图形界面启动时数据库密码环境变量未生效。上轮只补充了说明，用户人工重试仍出现 `using password: NO`；本轮必须实际修复启动链路，不再把文档修改等同于IDEA验证完成。
 
 实际配置以 `application.yml` 为准：数据库使用 `RIKE_TIKU_DB_HOST`、`RIKE_TIKU_DB_PORT`、`RIKE_TIKU_DB_NAME`、`RIKE_TIKU_DB_USERNAME` 和 `RIKE_TIKU_DB_PASSWORD`；项目不读取 `RIKE_TIKU_DB_URL`。本地默认条件下只需提供密码变量。
 
@@ -17,6 +17,19 @@
 - 空密码JAR启动：按预期失败，退出码1并显示 `using password: NO`。
 - 注入密码的JAR启动：PASS；临时端口18085健康接口返回 `UP/UP`，随后已停止进程。
 - IDEA图形界面人工启动：`AWAITING_USER_VERIFICATION`，不得写成PASS。
+
+后续定位出的直接证据：
+
+- 本机 `.idea/workspace.xml` 中确实存在 `RikeTikuBackendApplication`，但其环境变量列表为空。
+- Windows用户环境、系统环境和当前IDEA父进程中均不存在 `RIKE_TIKU_DB_PASSWORD`。
+- 因此Spring Boot收到空密码，与日志 `using password: NO` 完全一致。
+- 本轮采用Windows用户环境变量方案：真实密码只保存在本机用户环境，不进入Git；增加安全提示输入脚本 `rike-tiku-backend/scripts/setup-idea-local-env.ps1`。
+- 已实际为当前Windows用户设置该变量；由于IDEA在设置前已经启动，必须完全重启IDEA才能继承。
+- 新脚本通过PowerShell语法解析，0个错误；真实密码未写入脚本、README或Git文件。
+- `mvn clean test`：PASS，16/16；`mvn clean package`：PASS，16/16。
+- 空密码JAR启动：PASS（按预期失败，退出码1，`using password: NO`）。
+- 使用Windows用户变量启动JAR：PASS；临时端口18087健康接口返回 `UP/UP`，随后已停止进程。
+- IDEA重启后点击Run：`AWAITING_USER_VERIFICATION`。当前IDEA在变量设置前已启动，不能将未执行的图形界面复核写成PASS。
 
 ## 2. 实际完成
 

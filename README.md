@@ -50,7 +50,16 @@ Flyway 是数据库结构的唯一建表和升级入口。已经执行的迁移�
 
 ### 后端
 
-后端的 `.env.example` 仅用于说明配置项。当前 Spring Boot 工程和 IDEA 不会自动加载 `.env` 或 `.env.example`，必须通过终端环境变量或 IDEA Run Configuration 注入真实本机值。默认 host、port、数据库名和用户名已经配置，本地通常只需设置密码：
+后端的 `.env.example` 仅用于说明配置项。当前 Spring Boot 工程和 IDEA 不会自动加载 `.env` 或 `.env.example`。首次使用IDEA时，推荐在后端目录执行一次安全初始化脚本：
+
+```powershell
+cd rike-tiku-backend
+.\scripts\setup-idea-local-env.ps1
+```
+
+脚本隐藏密码输入，只设置当前Windows用户环境变量，不向Git文件写入密码。执行后必须完全退出并重新打开IDEA，再运行 `RikeTikuBackendApplication`。
+
+从终端临时启动时也可以只为当前PowerShell设置密码：
 
 ```powershell
 $env:RIKE_TIKU_DB_PASSWORD="your-local-password"
@@ -58,7 +67,7 @@ cd rike-tiku-backend
 mvn spring-boot:run
 ```
 
-在 IDEA 中打开 `Run` → `Edit Configurations` → `RikeTikuBackendApplication`，在 `Environment variables` 中添加同名变量。数据库地址或账号不是默认值时，再配置 `RIKE_TIKU_DB_HOST`、`RIKE_TIKU_DB_PORT`、`RIKE_TIKU_DB_NAME` 和 `RIKE_TIKU_DB_USERNAME`。项目不读取 `RIKE_TIKU_DB_URL`。
+如果不希望设置Windows用户环境变量，也可在IDEA私有 Run Configuration中添加同名变量。数据库地址或账号不是默认值时，再配置 `RIKE_TIKU_DB_HOST`、`RIKE_TIKU_DB_PORT`、`RIKE_TIKU_DB_NAME` 和 `RIKE_TIKU_DB_USERNAME`。项目不读取 `RIKE_TIKU_DB_URL`。
 
 详细步骤和故障排查见 [后端本地启动说明](rike-tiku-backend/README.md)。默认后端地址为 `http://localhost:8081`，健康接口为 `http://localhost:8081/api/v1/health`。
 
