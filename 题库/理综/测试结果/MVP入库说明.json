@@ -1,0 +1,17 @@
+{
+  "title": "MVP30入库候选说明",
+  "formalQuestionFieldsModified": false,
+  "defaultAutoGradable": true,
+  "candidateStageNotes": [
+    {
+      "subject": "物理",
+      "year": 2023,
+      "paperName": "2023年高考真题——理综（新课标卷）",
+      "questionNumber": "22",
+      "autoGradable": false,
+      "autoGradeReason": "包含公式对象答案，需人工审核或答案标准化后启用",
+      "reviewStatus": "待审核",
+      "analysisReviewStatus": "待审核"
+    }
+  ]
+}

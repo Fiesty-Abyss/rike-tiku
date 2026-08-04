@@ -1,0 +1,104 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "精选种子题库单题模型",
+  "type": "object",
+  "required": [
+    "subject",
+    "year",
+    "region",
+    "paperName",
+    "questionNumber",
+    "questionType",
+    "content",
+    "options",
+    "questionImages",
+    "correctAnswer",
+    "standardAnalysis",
+    "analysisImages",
+    "analysisReviewStatus",
+    "knowledgePoints",
+    "difficultyLevel",
+    "difficultyReason",
+    "sourceFile",
+    "reviewStatus"
+  ],
+  "properties": {
+    "subject": {"type": "string", "enum": ["物理", "化学", "生物"]},
+    "year": {"type": ["integer", "null"]},
+    "region": {"type": ["string", "null"]},
+    "paperName": {"type": "string"},
+    "questionNumber": {"type": "string"},
+    "questionType": {
+      "type": ["string", "null"],
+      "enum": ["单选题", "多选题", "填空题", "实验填空题", "解答题", null]
+    },
+    "content": {"type": "string"},
+    "options": {
+      "type": ["array", "null"],
+      "items": {
+        "type": "object",
+        "required": ["label", "content"],
+        "properties": {
+          "label": {"type": "string"},
+          "content": {"type": "string"}
+        },
+        "additionalProperties": false
+      }
+    },
+    "questionImages": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["imagePath", "sourcePage", "description"],
+        "properties": {
+          "imagePath": {"type": "string"},
+          "sourcePage": {"type": "string"},
+          "description": {"type": "string"}
+        },
+        "additionalProperties": false
+      }
+    },
+    "correctAnswer": {"type": ["string", "null"]},
+    "standardAnalysis": {"type": ["string", "null"]},
+    "analysisImages": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["imagePath", "sourcePage", "description"],
+        "properties": {
+          "imagePath": {"type": "string"},
+          "sourcePage": {"type": "string"},
+          "description": {"type": "string"}
+        },
+        "additionalProperties": false
+      }
+    },
+    "analysisReviewStatus": {
+      "type": "string",
+      "enum": ["待审核", "审核通过", "退回修改"]
+    },
+    "knowledgePoints": {
+      "type": ["array", "null"],
+      "items": {"type": "string"}
+    },
+    "difficultyLevel": {
+      "type": ["string", "null"],
+      "enum": ["easy", "medium", "hard", null]
+    },
+    "difficultyReason": {"type": ["string", "null"]},
+    "sourceFile": {
+      "type": "object",
+      "required": ["paper", "answerAnalysis"],
+      "properties": {
+        "paper": {"type": "string"},
+        "answerAnalysis": {"type": "string"}
+      },
+      "additionalProperties": false
+    },
+    "reviewStatus": {
+      "type": "string",
+      "enum": ["待审核", "图片缺失", "审核通过", "退回修改"]
+    }
+  },
+  "additionalProperties": false
+}

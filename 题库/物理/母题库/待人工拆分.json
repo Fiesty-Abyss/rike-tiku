@@ -1,0 +1,14 @@
+[
+  {
+    "subject": "物理",
+    "year": 2023,
+    "paperName": "2023年高考真题——理综（全国甲卷）",
+    "questionNumber": "34",
+    "structuralReviewStatus": "待人工拆分",
+    "reason": "一条记录同时包含第（1）问光学多选题和第（2）问机械波计算题，答案与知识点仅覆盖第（1）问。",
+    "autoSplitPerformed": false,
+    "masterRecordDeleted": false,
+    "reviewStatus": "待审核",
+    "analysisReviewStatus": "待审核"
+  }
+]

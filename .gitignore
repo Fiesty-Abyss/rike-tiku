@@ -15,6 +15,10 @@ application-local.properties
 **/target/
 *.log
 
+# Python generated caches
+**/__pycache__/
+*.py[cod]
+
 # Node.js build output
 **/node_modules/
 **/dist/
@@ -26,3 +30,6 @@ Thumbs.db
 
 # Codex task-local inspection files
 .codex_work/
+
+# Local original contains a real development-password literal; publish only the sanitized copy.
+docs/集成大模型智能答疑的在线题库实训管理系统_项目总体设计与数据字典及任务交接说明_V3.0.docx
