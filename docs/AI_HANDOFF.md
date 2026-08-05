@@ -1,14 +1,37 @@
 # AI开发交接
 
-更新时间：2026-08-04
+更新时间：2026-08-05
 
-## 0. 最新轮次：后端统一认证与JWT
+## 0. 最新轮次：管理员班级基础管理后端
+
+当前分支：`feat/admin-class-management`。本轮只实现后端班级基础管理，已完成自动化和JAR实测，当前PR尚未创建/合并。
+
+已实现：
+
+- `GET /api/v1/admin/classes`：分页查询，支持`page`、`size`、`code`、`name`、`grade`、`status`。
+- `GET /api/v1/admin/classes/{id}`、`POST /api/v1/admin/classes`、`PUT /api/v1/admin/classes/{id}`、`PATCH /api/v1/admin/classes/{id}/status`。
+- 创建默认`ACTIVE`；班级编码全局唯一且首版不可修改；状态只允许`ACTIVE`、`GRADUATED`、`DISABLED`。
+- 全部接口由Spring Security限制为`ROLE_ADMIN`；认证服务端首次改密门禁继续生效。
+- 不提供删除接口，未新增迁移或新表，未改变V1-V6。
+
+验证：
+
+- `mvn clean test`与`mvn clean package`：PASS，24/24；认证和数据库原有23项回归继续通过。
+- 随机临时库迁移V1-V6后启动JAR：健康接口`UP/UP`，未登录班级接口401，ADMIN Token班级接口200。
+- 临时库`rike_tiku_jar_verify_f62284422a6444b38fbfed4dd5bf65d4`已删除；正式库`rike_tiku.yong_hu`复查为0行。
+- 接口细节见`docs/ADMIN_CLASS_MANAGEMENT_API.md`。
+
+尚未实现：班级前端、学生Excel导入、学生/教师CRUD、任课关系、题库、练习、错题和AI。
+
+下一轮唯一建议：在本PR合并后单独实现管理员端学生Excel批量导入后端接口，复用现有`ban_ji`并只接受ACTIVE班级。
+
+## 0.1 已合并轮次：前端登录与认证状态基础
 
 ## 0.1 进行中：前端登录与认证状态基础
 
 前端认证轮已合入`main`。PR [#5](https://github.com/Fiesty-Abyss/rike-tiku/pull/5)以普通merge合并，提交`b519134`；远程功能分支已删除。合并后前端26项测试、类型检查、构建与后端23项回归均通过。未新增迁移、未修改后端接口，未开发导入、题库、练习、错题或AI。
 
-当前验证：前端26项Vitest测试、类型检查、生产构建均通过；后端`mvn clean test`23/23通过。用户已在临时库完成真实浏览器认证联调，全部通过；临时库与进程已清理，正式库未污染。PR #5已Ready for review，等待用户确认合并。详见`docs/FRONTEND_AUTHENTICATION.md`。
+当前验证：前端26项Vitest测试、类型检查、生产构建均通过；后端`mvn clean test`23/23通过。用户已在临时库完成真实浏览器认证联调，全部通过；临时库与进程已清理，正式库未污染。PR #5已普通merge。详见`docs/FRONTEND_AUTHENTICATION.md`。
 
 后端认证轮已完成并合入`main`。Pull Request [#4](https://github.com/Fiesty-Abyss/rike-tiku/pull/4)从Draft转为Ready后以普通merge合并；PR最终HEAD为`caf1b5369128e0928bf3f2f3f2a2a31390d4fbb5`，merge提交为`9783435b6bd61166145aa1c734c5e610bd129943`，远程功能分支已删除。合并后在`main`重新执行`mvn clean test`：PASS，23/23，0 failures，0 errors，0 skipped。
 

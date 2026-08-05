@@ -1,13 +1,13 @@
 # 开发状态
 
-更新时间：2026-08-04
+更新时间：2026-08-05
 
 ## 当前基线
 
 - 设计基线：V3.0
-- 当前轮次：前端登录与认证状态基础
-- 当前状态：DONE_VERIFIED；PR #5已普通merge并完成main回归
-- 当前分支：`main`
+- 当前轮次：管理员班级基础管理后端
+- 当前状态：DONE_VERIFIED；当前PR尚未合并
+- 当前分支：`feat/admin-class-management`
 - Pull Request：[#5](https://github.com/Fiesty-Abyss/rike-tiku/pull/5)，MERGED
 - 合并提交：`b519134`
 - 本轮实现分支：`feat/backend-auth-jwt`（远程分支已删除）
@@ -17,6 +17,22 @@
 - PR最终HEAD：`caf1b5369128e0928bf3f2f3f2a2a31390d4fbb5`
 - 普通merge提交：`9783435b6bd61166145aa1c734c5e610bd129943`
 - 当前Flyway：V6；本轮没有新增或修改迁移
+
+## 本轮管理员班级管理后端
+
+| 内容 | 状态 | 证据 |
+|---|---|---|
+| 管理员班级接口 | DONE_VERIFIED | `GET/POST/PUT/PATCH /api/v1/admin/classes` |
+| 分页与筛选 | DONE_VERIFIED | 编码、名称、年级、状态集成测试；MyBatis-Plus分页拦截器 |
+| 规则校验 | DONE_VERIFIED | 空值、年份、重复编码、非法状态和不存在班级测试 |
+| ADMIN鉴权和首次改密门禁 | DONE_VERIFIED | 未登录401、学生/教师403、首次登录ADMIN门禁测试 |
+| 自动化回归 | DONE_VERIFIED | `mvn clean test`：24/24 PASS |
+| JAR运行验证 | DONE_VERIFIED | 随机临时库V1-V6；健康`UP/UP`、未登录401、ADMIN 200 |
+
+- 不新增Flyway迁移，不修改V1-V6，不新增数据库表；现有`ban_ji`表和逻辑删除继续使用。
+- 不提供删除接口；不实现班级前端、学生导入、教师管理、任课关系、题库或AI。
+- 实测临时库为`rike_tiku_jar_verify_f62284422a6444b38fbfed4dd5bf65d4`，验证结束后已删除；正式库`rike_tiku.yong_hu`实测仍为0行。
+- 当前功能分支和后续草稿PR尚未合并；详细接口见`docs/ADMIN_CLASS_MANAGEMENT_API.md`。
 
 ## 本轮已完成
 
