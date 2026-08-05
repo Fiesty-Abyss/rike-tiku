@@ -46,6 +46,7 @@ Flyway 是数据库结构的唯一建表和升级入口。已经执行的迁移�
 - 管理员学生Excel导入模板与预检查后端：仅生成模板和逐行预览，不创建账号、学生档案或班级学生关系（PR #7已普通merge）。
 - 管理员学生Excel导入后端：模板、预检查与确认入库；确认时在一个事务中创建账号、STUDENT角色、学生档案和主班级关系。
 - 管理员班级管理与学生Excel导入前端：管理员布局、班级分页筛选/创建/编辑/状态切换，以及模板下载、预检查、确认入库、账号发放结果与Excel下载。
+- 管理员教师账号与档案、教师—班级—科目三元任课关系：管理员分页筛选、创建、修改、一次性初始密码、任课关系创建与状态结束/停用。
 
 已完成前端认证基础：三角色登录入口、Pinia认证状态、Bearer Token注入、会话恢复、首次改密、路由守卫和管理员业务页。尚未完成：学生普通管理、教师管理、任课关系管理、题库正式业务API、练习判分、错题、AI Provider和学生/教师正式工作台。题库30题候选数据尚未正式发布。
 
@@ -113,6 +114,8 @@ npm run build
 - [管理员班级管理接口](docs/ADMIN_CLASS_MANAGEMENT_API.md)
 - [学生Excel导入预检查接口](docs/STUDENT_IMPORT_PREVIEW_API.md)
 - [管理员班级与学生导入前端](docs/ADMIN_STUDENT_IMPORT_FRONTEND.md)
+- [管理员教师与任课关系接口](docs/ADMIN_TEACHER_ASSIGNMENT_API.md)
+- [管理员教师与任课关系前端](docs/ADMIN_TEACHER_ASSIGNMENT_FRONTEND.md)
 - V3.0总体设计公开脱敏版（位于 `docs/`）
 
 ## 题库资料和权利说明
