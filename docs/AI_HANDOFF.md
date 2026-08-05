@@ -2,9 +2,9 @@
 
 更新时间：2026-08-05
 
-## 当前轮次：管理员班级基础管理后端
+## 当前轮次：PR #6合并收尾
 
-当前分支为`feat/admin-class-management`。实现提交基线为`b3115a8`，后续仅包含本轮文档一致性修复。草稿PR为[#6](https://github.com/Fiesty-Abyss/rike-tiku/pull/6)，尚未合并；应以PR页面的最新提交为准。
+当前分支为`main`。PR [#6](https://github.com/Fiesty-Abyss/rike-tiku/pull/6) 已以普通merge合并，合并提交为`02646fa`；远程`feat/admin-class-management`已删除。合并后`main@02646fa`重新执行`mvn clean test`，24/24 PASS。
 
 已实现：
 
