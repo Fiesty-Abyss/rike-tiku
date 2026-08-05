@@ -1,7 +1,7 @@
 :root {
-  font-family: Inter, "Microsoft YaHei", sans-serif;
-  color: #1f2937;
-  background: #f5f7fa;
+  font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+  color: #20314a;
+  background: #f3f7fb;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
 }
@@ -46,3 +46,82 @@ h1 {
   color: #c45656;
 }
 
+.auth-page {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(390px, 0.9fr);
+  background: #f8fbff;
+}
+
+.auth-introduction {
+  padding: clamp(48px, 9vw, 140px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: #eef5ff;
+  background: #214b80;
+}
+
+.school-mark, .role-label {
+  margin: 0 0 14px;
+  color: #3e78bc;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.11em;
+}
+
+.auth-introduction .school-mark { color: #b6d4f3; }
+
+.auth-introduction h1 {
+  max-width: 10em;
+  font-size: clamp(32px, 4vw, 56px);
+  line-height: 1.24;
+  letter-spacing: -0.03em;
+}
+
+.auth-introduction > p:not(.school-mark) {
+  max-width: 34em;
+  margin: 24px 0 0;
+  color: #c9dcf1;
+  font-size: 17px;
+  line-height: 1.8;
+}
+
+.subject-line { display: flex; gap: 24px; margin-top: 48px; color: #e4f0fb; font-weight: 700; }
+.subject-line span { padding-bottom: 8px; border-bottom: 1px solid #7ca9d3; }
+
+.auth-panel {
+  width: min(440px, calc(100% - 48px));
+  align-self: center;
+  justify-self: center;
+  padding: 28px 0;
+}
+
+.auth-panel h2, .password-card h1, .workspace-header h1 { margin: 0; color: #20314a; font-size: 32px; letter-spacing: -0.03em; }
+.auth-description { margin: 12px 0 32px; color: #64748b; line-height: 1.7; }
+.form-error { margin-bottom: 18px; }
+.submit-button { width: 100%; margin-top: 8px; }
+.login-switch { display: flex; justify-content: center; gap: 18px; margin-top: 28px; font-size: 14px; }
+.login-switch a { color: #8291a6; text-decoration: none; }
+.login-switch a.active { color: #2667a8; font-weight: 700; }
+
+.single-panel-page { min-height: 100vh; display: grid; place-items: center; padding: 24px; background: #edf4fb; }
+.password-card { width: min(460px, 100%); padding: 16px; }
+.logout-link { display: block; margin: 20px auto 0; }
+
+.workspace-page { min-height: 100vh; background: #f3f7fb; }
+.workspace-header { display: flex; align-items: center; justify-content: space-between; padding: 28px clamp(24px, 7vw, 104px); background: #fff; border-bottom: 1px solid #dce7f2; }
+.workspace-header .school-mark { margin-bottom: 6px; }
+.workspace-header h1 { font-size: 26px; }
+.workspace-content { width: min(900px, calc(100% - 48px)); margin: 56px auto; }
+.workspace-content .el-card { padding: 16px; }
+.workspace-content h2 { margin: 0; }
+
+@media (max-width: 760px) {
+  .auth-page { grid-template-columns: 1fr; }
+  .auth-introduction { min-height: 280px; padding: 44px 28px; }
+  .auth-introduction h1 { font-size: 31px; }
+  .auth-introduction > p:not(.school-mark), .subject-line { margin-top: 18px; }
+  .subject-line { gap: 16px; }
+  .auth-panel { width: min(440px, calc(100% - 40px)); padding: 44px 0; }
+}
