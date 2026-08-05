@@ -29,6 +29,7 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
@@ -53,18 +54,24 @@ public class StudentImportService {
     }
 
     public StudentImportPreviewResponse preview(MultipartFile file) {
+        List<ValidatedRow> validatedRows = validateRows(file);
+        List<StudentImportRowResponse> rows = validatedRows.stream().map(ValidatedRow::response).toList();
+        int validCount = (int) rows.stream().filter(row -> "VALID".equals(row.status())).count();
+        return new StudentImportPreviewResponse(file.getOriginalFilename(), rows.size(), validCount,
+                rows.size() - validCount, rows);
+    }
+
+    List<ValidatedRow> validateRows(MultipartFile file) {
         validateFile(file);
         List<ParsedRow> parsedRows = readRows(file);
         Map<String, Integer> studentNumbers = new HashMap<>();
         Map<String, Integer> usernames = new HashMap<>();
-        List<StudentImportRowResponse> rows = new ArrayList<>();
+        List<ValidatedRow> rows = new ArrayList<>();
         for (ParsedRow row : parsedRows) {
             List<StudentImportError> errors = validateRow(row, studentNumbers, usernames);
-            rows.add(toResponse(row, errors));
+            rows.add(new ValidatedRow(row, toResponse(row, errors)));
         }
-        int validCount = (int) rows.stream().filter(row -> "VALID".equals(row.status())).count();
-        return new StudentImportPreviewResponse(file.getOriginalFilename(), rows.size(), validCount,
-                rows.size() - validCount, List.copyOf(rows));
+        return List.copyOf(rows);
     }
 
     private void validateFile(MultipartFile file) {
@@ -234,7 +241,7 @@ public class StudentImportService {
         throw new RenZhengYeWuYiChang(code, message, status);
     }
 
-    private static final class ParsedRow {
+    static final class ParsedRow {
         private final int rowNumber;
         private final String studentNumber;
         private final String name;
@@ -265,5 +272,8 @@ public class StudentImportService {
         String password() { return password; }
         String accountStatus() { return accountStatus; }
         void accountStatus(String value) { accountStatus = value; }
+    }
+
+    record ValidatedRow(ParsedRow row, StudentImportRowResponse response) {
     }
 }
