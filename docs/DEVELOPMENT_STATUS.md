@@ -5,21 +5,22 @@
 ## 当前基线
 
 - 设计基线：V3.0。
-- 当前轮次：管理员学生Excel导入模板与预检查后端。
-- 当前分支：`feat/student-import-preview`。
+- 当前轮次：PR #7合并收尾。
+- 当前分支：`main`。
 - 班级管理普通merge提交：`02646fa`。
 - 合并后回归基线：`main@02646fa`；本文件的后续文档提交将继续位于`main`。
 - Pull Request：[#6](https://github.com/Fiesty-Abyss/rike-tiku/pull/6)，MERGED；远程功能分支已删除。
 - 当前Flyway：V6；18张业务表。本轮没有新增或修改迁移。
+- PR #7普通merge提交：`68cbb17`；远程`feat/student-import-preview`已删除。
 - 当前Flyway：V6；本轮不新增或修改迁移，也不使用`dao_ru_pi_ci`。
-- 本轮验证：`mvn clean test`与`mvn clean package`均为25/25 PASS；临时库JAR健康接口`UP/UP`后已清理。
+- 合并后验证：`main@68cbb17`执行`mvn clean test`与`mvn clean package`均为25/25 PASS。
 
 ## 当前轮次：学生Excel模板与预检查
 
 - 仅管理员可下载后端Apache POI生成的`.xlsx`模板，模板包含“学生导入”和“填写说明”两个Sheet、匿名示例和状态下拉。
 - `POST /api/v1/admin/student-import/preview`在内存中解析固定Sheet，限制5MB和500行，逐行返回错误与预览字段；不回显初始密码。
 - 预检查只读`ban_ji`、`yong_hu`与`xue_sheng_dang_an`，不写`yong_hu`、`yong_hu_jiao_se`、`xue_sheng_dang_an`、`ban_ji_xue_sheng`或`dao_ru_pi_ci`。
-- 当前PR未合并；确认入库留给下一独立轮次。详见`docs/STUDENT_IMPORT_PREVIEW_API.md`。
+- PR #7已合并；确认入库留给下一独立轮次。详见`docs/STUDENT_IMPORT_PREVIEW_API.md`。
 
 ## 当前轮次：管理员班级基础管理后端
 
