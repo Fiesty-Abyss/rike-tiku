@@ -6,7 +6,7 @@
 
 - 设计基线：V3.0
 - 当前轮次：前端登录与认证状态基础
-- 当前状态：DONE_VERIFIED；PR #5草稿待用户审查
+- 当前状态：DONE_VERIFIED；PR #5已完成真实人工联调，Ready for review
 - 当前分支：`feat/frontend-auth`
 - Pull Request：[#5](https://github.com/Fiesty-Abyss/rike-tiku/pull/5)，DRAFT，未合并
 - 本轮实现分支：`feat/backend-auth-jwt`（远程分支已删除）
@@ -87,7 +87,7 @@
 - 已实现三角色登录入口、共用登录表单、Pinia认证状态、Axios Bearer Token注入、会话恢复、首次改密页、角色路由守卫、最小工作台和退出登录。
 - 未修改后端接口、Flyway或数据库；未实现任何学生导入、题库、练习、错题、AI或正式工作台业务。
 - 前端`npm test`：26/26 PASS（新增Axios拦截器10项）；`npm run type-check`与`npm run build`：PASS；后端`mvn clean test`：23/23 PASS。
-- 浏览器验证了入口、表单和入口切换；真实账号登录、首次改密、刷新和退出的浏览器联调为NOT_RUN，因为本轮未启动带匿名临时账号的后端实例，正式库未被污染。
+- 真实人工浏览器联调：DONE_VERIFIED。学生/教师/管理员登录、首次改密、刷新恢复、角色越权拦截、多角色、退出、CORS和控制台均通过；临时库已删除，正式库用户数仍为0。
 
 ## 下一步唯一任务
 
