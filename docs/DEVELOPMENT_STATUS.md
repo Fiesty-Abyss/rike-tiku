@@ -15,6 +15,12 @@
 - 当前Flyway：V6；本轮不新增或修改迁移，也不使用`dao_ru_pi_ci`。
 - 合并后验证：`main@68cbb17`执行`mvn clean test`与`mvn clean package`均为25/25 PASS。
 
+## 当前开发轮：学生Excel确认入库
+
+- 当前分支：`feat/student-import-confirm`；当前PR尚未合并。
+- 不新增V7，不使用`dao_ru_pi_ci`或批次表；确认接口使用单一事务写入账号、角色关系、学生档案和主班级关系。
+- 成功响应只一次返回初始密码，数据库只保存BCrypt摘要；确认入库前重新执行预检查。
+
 ## 当前轮次：学生Excel模板与预检查
 
 - 仅管理员可下载后端Apache POI生成的`.xlsx`模板，模板包含“学生导入”和“填写说明”两个Sheet、匿名示例和状态下拉。
