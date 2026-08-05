@@ -75,6 +75,10 @@ async function confirmImport() {
 }
 
 function clearSensitiveResult() { result.value = null; ElMessage.success('账号发放结果已从当前页面清除。') }
+async function downloadAccounts() {
+  if (!result.value) return
+  try { await downloadAccountWorkbook(result.value.accounts); ElMessage.success('账号发放 Excel 已开始下载。') } catch { ElMessage.error('账号发放 Excel 生成失败，请稍后重试。') }
+}
 </script>
 
 <template>
@@ -96,7 +100,7 @@ function clearSensitiveResult() { result.value = null; ElMessage.success('账号
       <el-table :data="preview.rows" class="data-table import-table" max-height="460" empty-text="Excel 未包含可检查的数据行。"><el-table-column prop="rowNumber" label="Excel行" width="84" /><el-table-column prop="studentNumber" label="学号" min-width="120" /><el-table-column prop="name" label="姓名" min-width="100" /><el-table-column prop="classCode" label="班级" min-width="120" /><el-table-column prop="grade" label="年级" min-width="90" /><el-table-column prop="username" label="用户名" min-width="120" /><el-table-column prop="accountStatus" label="账号状态" min-width="100" /><el-table-column label="提供密码" min-width="100"><template #default="{ row }">{{ row.passwordProvided ? '是' : row.passwordWillGenerate ? '否，将生成' : '否' }}</template></el-table-column><el-table-column label="行状态" min-width="100"><template #default="{ row }"><el-tag :type="row.status === 'VALID' ? 'success' : 'danger'">{{ row.status === 'VALID' ? '有效' : '无效' }}</el-tag></template></el-table-column><el-table-column label="字段错误" min-width="260"><template #default="{ row }"><span v-if="!row.errors?.length">—</span><ul v-else class="error-list"><li v-for="error in row.errors" :key="`${error.field}-${error.code}`"><strong>{{ error.code }}</strong>：{{ error.message }}</li></ul></template></el-table-column></el-table>
       <div class="stage-actions confirm-area"><el-button type="primary" :disabled="!canConfirm" :loading="confirming" @click="confirmImport">确认入库</el-button><span>确认时会重新上传当前原始 Excel，不会提交预览 JSON。</span></div>
     </section>
-    <section v-if="result" class="import-stage sensitive-result"><div class="section-title-row"><div><h2>3. 账号发放结果</h2><p>请立即安全发放初始密码；刷新页面或点击清空后不能恢复。</p></div><div><el-button @click="downloadAccountWorkbook(result.accounts)">下载账号发放 Excel</el-button><el-button type="danger" plain @click="clearSensitiveResult">清空敏感结果</el-button></div></div>
+    <section v-if="result" class="import-stage sensitive-result"><div class="section-title-row"><div><h2>3. 账号发放结果</h2><p>请立即安全发放初始密码；刷新页面或点击清空后不能恢复。</p></div><div><el-button @click="downloadAccounts">下载账号发放 Excel</el-button><el-button type="danger" plain @click="clearSensitiveResult">清空敏感结果</el-button></div></div>
       <el-alert :title="`本次已导入 ${result.importedCount}/${result.totalCount} 名学生。所有账号首次登录后必须修改初始密码。`" type="success" :closable="false" show-icon />
       <el-table :data="result.accounts" class="data-table" max-height="420"><el-table-column prop="studentNumber" label="学号" min-width="120" /><el-table-column prop="name" label="姓名" min-width="100" /><el-table-column prop="classCode" label="班级" min-width="120" /><el-table-column prop="username" label="用户名" min-width="120" /><el-table-column prop="initialPassword" label="初始密码" min-width="150" /><el-table-column prop="accountStatus" label="账号状态" min-width="105" /><el-table-column label="首次登录" min-width="170"><template #default="{ row }">{{ row.mustChangePassword ? '必须修改初始密码' : '无需修改' }}</template></el-table-column></el-table>
     </section>
