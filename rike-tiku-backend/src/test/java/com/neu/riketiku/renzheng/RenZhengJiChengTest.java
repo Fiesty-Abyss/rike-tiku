@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.jayway.jsonpath.JsonPath;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import java.io.ByteArrayOutputStream;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -18,6 +19,8 @@ import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -284,7 +287,7 @@ class RenZhengJiChengTest {
                 {"classCode":"G2-B","className":"二班","grade":"高二","enrollmentYear":2024}
                 """, adminToken).status()).isEqualTo(200);
 
-        assertThat(get("/api/v1/admin/classes?page=1&size=1", adminToken).body()).contains("\"total\":2");
+        assertThat(get("/api/v1/admin/classes?page=1&size=1&code=G1-A", adminToken).body()).contains("\"total\":1");
         assertThat(get("/api/v1/admin/classes?code=G1-A", adminToken).body()).contains("G1-A");
         assertThat(get("/api/v1/admin/classes?name=二班", adminToken).body()).contains("G2-B");
         assertThat(get("/api/v1/admin/classes?grade=高二", adminToken).body()).contains("G2-B");
@@ -299,6 +302,114 @@ class RenZhengJiChengTest {
         assertThat(json("PATCH", "/api/v1/admin/classes/" + id + "/status", "{\"status\":\"DISABLED\"}", adminToken).body()).contains("DISABLED");
         assertThat(json("PATCH", "/api/v1/admin/classes/" + id + "/status", "{\"status\":\"GRADUATED\"}", adminToken).body()).contains("GRADUATED");
         assertError(json("PATCH", "/api/v1/admin/classes/" + id + "/status", "{\"status\":\"UNKNOWN\"}", adminToken), 400, "INVALID_CLASS_STATUS");
+    }
+
+    @Test
+    void studentImportTemplateAndPreviewShouldValidateWithoutWritingStudents() throws Exception {
+        String adminToken = token(login("import_admin", "AdminPass1", "ADMIN", false));
+        String studentToken = token(login("import_student", "StudentPass1", "STUDENT", false));
+        String teacherToken = token(login("import_teacher", "TeacherPass1", "TEACHER", false));
+        String firstAdminToken = token(login("import_first_admin", "AdminPass1", "ADMIN", true));
+        long activeClass = createClass("199", "高三一班", "高三", "ACTIVE");
+        createClass("DISABLED-CLASS", "停用班", "高三", "DISABLED");
+        createClass("GRADUATED-CLASS", "毕业班", "高三", "GRADUATED");
+        long existingUser = insertUser("existing_username", "StudentPass1", false, "ENABLED", "STUDENT");
+        jdbcTemplate.update("INSERT INTO xue_sheng_dang_an(yong_hu_id,xue_hao,xing_ming,nian_ji) VALUES (?,?,?,?)",
+                existingUser, "existing_student", "已有学生", "高三");
+        int userCount = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM yong_hu", Integer.class);
+        int studentCount = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM xue_sheng_dang_an", Integer.class);
+        int relationCount = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM ban_ji_xue_sheng", Integer.class);
+
+        assertThat(get("/api/v1/admin/student-import/template", null).status()).isEqualTo(401);
+        assertThat(get("/api/v1/admin/student-import/template", studentToken).status()).isEqualTo(403);
+        assertThat(get("/api/v1/admin/student-import/template", teacherToken).status()).isEqualTo(403);
+        assertThat(get("/api/v1/admin/student-import/template", firstAdminToken).status()).isEqualTo(403);
+        byte[] template = getBytes("/api/v1/admin/student-import/template", adminToken).body();
+        try (XSSFWorkbook workbook = new XSSFWorkbook(new java.io.ByteArrayInputStream(template))) {
+            assertThat(workbook.getSheet("学生导入")).isNotNull();
+            assertThat(workbook.getSheet("填写说明")).isNotNull();
+            assertThat(workbook.getSheet("学生导入").getRow(0).getCell(0).getStringCellValue()).isEqualTo("xue_hao");
+            assertThat(workbook.getSheet("学生导入").getDataValidations()).isNotEmpty();
+        }
+
+        byte[] valid = workbookBytes(List.of(
+                new String[] {"20260001", "学生甲", "199", "高三", "explicit_user", "", "ENABLED"},
+                new String[] {"20260002", "学生乙", "199", "高三", "", "", ""}), false);
+        assertError(upload(valid, "student-import-valid.xlsx", null), 401, "UNAUTHENTICATED");
+        assertThat(upload(valid, "student-import-valid.xlsx", studentToken).status()).isEqualTo(403);
+        assertThat(upload(valid, "student-import-valid.xlsx", teacherToken).status()).isEqualTo(403);
+        assertThat(upload(valid, "student-import-valid.xlsx", firstAdminToken).status()).isEqualTo(403);
+        TestResponse validPreview = upload(valid, "student-import-valid.xlsx", adminToken);
+        assertThat(validPreview.status()).isEqualTo(200);
+        assertThat(validPreview.body()).contains("\"validCount\":2", "explicit_user", "\"passwordWillGenerate\":true", "\"accountStatus\":\"ENABLED\"");
+
+        byte[] invalid = workbookBytes(List.of(
+                new String[] {"", "学生甲", "199", "高三", "", "", ""},
+                new String[] {"20260003", "", "199", "高三", "", "", ""},
+                new String[] {"20260004", "学生丁", "", "高三", "", "", ""},
+                new String[] {"20260005", "学生戊", "NO-CLASS", "高三", "", "", ""},
+                new String[] {"20260006", "学生己", "DISABLED-CLASS", "高三", "", "", ""},
+                new String[] {"20260007", "学生庚", "GRADUATED-CLASS", "高三", "", "", ""},
+                new String[] {"20260008", "学生辛", "199", "高二", "", "", "LOCKED"},
+                new String[] {"existing_student", "学生壬", "199", "高三", "existing_username", "onlyletters", ""},
+                new String[] {"20260008", "学生癸", "199", "高三", "existing_username", "", ""}), false);
+        TestResponse invalidPreview = upload(invalid, "student-import-invalid.xlsx", adminToken);
+        assertThat(invalidPreview.status()).isEqualTo(200);
+        assertThat(invalidPreview.body()).contains("STUDENT_NUMBER_REQUIRED", "NAME_REQUIRED", "CLASS_CODE_REQUIRED",
+                "CLASS_NOT_FOUND", "CLASS_NOT_ACTIVE", "GRADE_CLASS_MISMATCH", "INVALID_ACCOUNT_STATUS",
+                "STUDENT_NUMBER_ALREADY_EXISTS", "USERNAME_ALREADY_EXISTS", "PASSWORD_POLICY_VIOLATION",
+                "STUDENT_NUMBER_DUPLICATE_IN_FILE", "USERNAME_DUPLICATE_IN_FILE");
+        assertError(upload(new byte[0], "empty.xlsx", adminToken), 400, "FILE_EMPTY");
+        assertError(upload("not-xlsx".getBytes(), "fake.txt", adminToken), 400, "FILE_TYPE_INVALID");
+        assertError(upload("not-xlsx".getBytes(), "broken.xlsx", adminToken), 400, "WORKBOOK_INVALID");
+        assertError(upload(workbookBytes(List.<String[]>of(new String[] {"20260009", "学生甲", "199", "高三", "", "", ""}), true),
+                "formula.xlsx", adminToken), 400, "FORMULA_CELL_NOT_ALLOWED");
+        assertThat(jdbcTemplate.queryForObject("SELECT COUNT(*) FROM yong_hu", Integer.class)).isEqualTo(userCount);
+        assertThat(jdbcTemplate.queryForObject("SELECT COUNT(*) FROM xue_sheng_dang_an", Integer.class)).isEqualTo(studentCount);
+        assertThat(jdbcTemplate.queryForObject("SELECT COUNT(*) FROM ban_ji_xue_sheng", Integer.class)).isEqualTo(relationCount);
+    }
+
+    private long createClass(String code, String name, String grade, String status) {
+        jdbcTemplate.update("INSERT INTO ban_ji(ban_ji_bian_ma,ban_ji_ming_cheng,nian_ji,ru_xue_nian_fen,zhuang_tai) VALUES (?,?,?,?,?)",
+                code, name, grade, 2025, status);
+        return jdbcTemplate.queryForObject("SELECT LAST_INSERT_ID()", Long.class);
+    }
+
+    private byte[] workbookBytes(List<String[]> rows, boolean formula) throws Exception {
+        try (XSSFWorkbook workbook = new XSSFWorkbook(); ByteArrayOutputStream output = new ByteArrayOutputStream()) {
+            var sheet = workbook.createSheet("学生导入");
+            String[] headers = {"xue_hao", "xing_ming", "ban_ji_bian_ma", "nian_ji", "yong_hu_ming", "chu_shi_mi_ma", "zhang_hao_zhuang_tai"};
+            var header = sheet.createRow(0);
+            for (int i = 0; i < headers.length; i++) header.createCell(i).setCellValue(headers[i]);
+            for (int rowIndex = 0; rowIndex < rows.size(); rowIndex++) {
+                var row = sheet.createRow(rowIndex + 1);
+                for (int column = 0; column < rows.get(rowIndex).length; column++) row.createCell(column).setCellValue(rows.get(rowIndex)[column]);
+            }
+            if (formula) sheet.getRow(1).getCell(0).setCellFormula("1+1");
+            workbook.write(output);
+            return output.toByteArray();
+        }
+    }
+
+    private TestResponse upload(byte[] bytes, String filename, String accessToken) throws Exception {
+        String boundary = "----test" + UUID.randomUUID().toString().replace("-", "");
+        ByteArrayOutputStream body = new ByteArrayOutputStream();
+        body.write(("--" + boundary + "\r\nContent-Disposition: form-data; name=\"file\"; filename=\"" + filename
+                + "\"\r\nContent-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet\r\n\r\n").getBytes());
+        body.write(bytes);
+        body.write(("\r\n--" + boundary + "--\r\n").getBytes());
+        HttpRequest.Builder builder = HttpRequest.newBuilder().uri(URI.create(baseUrl() + "/api/v1/admin/student-import/preview"))
+                .header("Content-Type", "multipart/form-data; boundary=" + boundary)
+                .POST(HttpRequest.BodyPublishers.ofByteArray(body.toByteArray()));
+        addAuthorization(builder, accessToken);
+        return send(builder.build());
+    }
+
+    private ByteResponse getBytes(String path, String accessToken) throws Exception {
+        HttpRequest.Builder builder = HttpRequest.newBuilder().uri(URI.create(baseUrl() + path)).GET();
+        addAuthorization(builder, accessToken);
+        HttpResponse<byte[]> response = HttpClient.newHttpClient().send(builder.build(), HttpResponse.BodyHandlers.ofByteArray());
+        return new ByteResponse(response.statusCode(), response.body());
     }
 
     private void assertLoginRole(String username, String password, String expectedRole, String returnedRole)
@@ -449,5 +560,8 @@ class RenZhengJiChengTest {
     }
 
     private record TestResponse(int status, String body) {
+    }
+
+    private record ByteResponse(int status, byte[] body) {
     }
 }
