@@ -4,7 +4,7 @@
 
 ## 当前轮次：管理员学生Excel导入模板与预检查后端
 
-当前分支为`feat/student-import-preview`，基于`main@fb1799a`。本轮只做学生Excel模板和上传预检查预览，当前PR未合并。
+当前分支为`main`。PR #7已以普通merge合并，合并提交为`68cbb17`；远程`feat/student-import-preview`已删除。合并后`main@68cbb17`的`mvn clean test`与`mvn clean package`均为25/25 PASS。
 
 - 模板由Apache POI动态生成，包含固定列、匿名示例、填写说明、冻结首行和`ENABLED/DISABLED`下拉。
 - 预检查接口为`POST /api/v1/admin/student-import/preview`，仅允许ADMIN；检查文件、Sheet、表头、行数、公式、学号、班级、年级、用户名、密码和账号状态。
