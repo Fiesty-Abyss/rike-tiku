@@ -170,8 +170,10 @@ class RenZhengJiChengTest {
     void expiredAndTamperedTokensShouldBeRejectedWithoutLeakingToken() throws Exception {
         long userId = insertUser("token_user", "TokenPass1", false, "ENABLED", "STUDENT");
         String validToken = token(login("token_user", "TokenPass1", "STUDENT"));
-        String tampered = validToken.substring(0, validToken.length() - 1)
-                + (validToken.endsWith("a") ? "b" : "a");
+        String[] tokenParts = validToken.split("\\.");
+        String signature = tokenParts[2];
+        String tampered = tokenParts[0] + "." + tokenParts[1] + "."
+                + (signature.startsWith("a") ? "b" : "a") + signature.substring(1);
         TestResponse tamperedResponse = get("/api/v1/auth/me", tampered);
         assertError(tamperedResponse, 401, "TOKEN_INVALID");
         assertThat(tamperedResponse.body()).doesNotContain(tampered);
