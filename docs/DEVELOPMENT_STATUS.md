@@ -20,6 +20,7 @@
 - 当前分支：`feat/student-import-confirm`；当前PR尚未合并。
 - 不新增V7，不使用`dao_ru_pi_ci`或批次表；确认接口使用单一事务写入账号、角色关系、学生档案和主班级关系。
 - 成功响应只一次返回初始密码，数据库只保存BCrypt摘要；确认入库前重新执行预检查。
+- JAR临时库实测：确认接口200、`Cache-Control: no-store`、`Pragma: no-cache`、四表各2条、重复提交400；临时库已删除，正式库用户数0。并发竞争：NOT_RUN。
 
 ## 当前轮次：学生Excel模板与预检查
 
