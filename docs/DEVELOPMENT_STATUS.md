@@ -5,10 +5,11 @@
 ## 当前基线
 
 - 设计基线：V3.0。
-- 当前轮次：管理员班级基础管理后端。
-- 当前分支：`feat/admin-class-management`。
-- 当前实现HEAD：`b3115a8`；本文件的后续文档提交与该实现位于同一PR。
-- Pull Request：[#6](https://github.com/Fiesty-Abyss/rike-tiku/pull/6)，READY_FOR_REVIEW前状态为DRAFT / OPEN，尚未合并。
+- 当前轮次：PR #6合并收尾。
+- 当前分支：`main`。
+- 班级管理普通merge提交：`02646fa`。
+- 合并后回归基线：`main@02646fa`；本文件的后续文档提交将继续位于`main`。
+- Pull Request：[#6](https://github.com/Fiesty-Abyss/rike-tiku/pull/6)，MERGED；远程功能分支已删除。
 - 当前Flyway：V6；18张业务表。本轮没有新增或修改迁移。
 - 本轮自动化测试：`mvn clean test`，24/24 PASS。
 
@@ -30,7 +31,7 @@
 - 随机临时库从V1迁移至V6后启动JAR：健康接口`UP/UP`、未登录班级接口401、ADMIN Token访问200：PASS。
 - 临时库`rike_tiku_jar_verify_f62284422a6444b38fbfed4dd5bf65d4`已删除；正式库`rike_tiku.yong_hu`复查为0行。
 
-接口细节见[管理员班级管理接口](ADMIN_CLASS_MANAGEMENT_API.md)。当前PR尚未合并，因此`main`尚不包含本轮班级管理后端。
+接口细节见[管理员班级管理接口](ADMIN_CLASS_MANAGEMENT_API.md)。PR #6已普通merge，因此`main`已包含本轮班级管理后端。
 
 ## 当前未实施
 
@@ -48,6 +49,7 @@
 
 ## 已合并历史
 
+- PR [#6](https://github.com/Fiesty-Abyss/rike-tiku/pull/6)：管理员班级基础管理后端，已普通merge到`main`，合并提交`02646fa`。
 - PR [#5](https://github.com/Fiesty-Abyss/rike-tiku/pull/5)：前端认证基础，已普通merge到`main`；三角色登录、Pinia认证状态、Axios Bearer注入、会话恢复、首次改密、路由守卫和最小工作台已完成并经人工浏览器联调验证。
 - PR [#4](https://github.com/Fiesty-Abyss/rike-tiku/pull/4)：后端统一认证与JWT，已普通merge到`main`；登录、`/auth/me`、首次改密、JWT及三角色鉴权已完成。
 - PR [#1](https://github.com/Fiesty-Abyss/rike-tiku/pull/1)：账号与教学组织数据库模型，已普通merge到`main`；V5/V6及现有班级、学生关系、任课关系数据模型已完成。
