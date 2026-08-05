@@ -4,7 +4,7 @@
 
 ## 0. 最新轮次：管理员班级基础管理后端
 
-当前分支：`feat/admin-class-management`。本轮只实现后端班级基础管理，已完成自动化和JAR实测，当前PR尚未创建/合并。
+当前分支：`feat/admin-class-management`。本轮只实现后端班级基础管理，已完成自动化和JAR实测；草稿PR [#6](https://github.com/Fiesty-Abyss/rike-tiku/pull/6) 尚未合并。
 
 已实现：
 
