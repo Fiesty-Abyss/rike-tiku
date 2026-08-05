@@ -4,9 +4,8 @@
 
 ## 当前开发轮
 
-- 分支：`feat/admin-student-import-ui`。
-- 基线：`main@cfab590f31b2f6f71545647265544bab15a4a661`。
-- 本轮修正开始 HEAD：`d6e7544ca423d1867493b52c4edfdf9d4a1a5c4c`；Draft PR [#9](https://github.com/Fiesty-Abyss/rike-tiku/pull/9) 已提交并推送，尚未合并到 `main`。
+- 当前分支：`main`。
+- PR [#9](https://github.com/Fiesty-Abyss/rike-tiku/pull/9) 已普通 merge 合并；合并提交：`ffdc7a553cfaf284e03196cf1e9ef75f657c9bb0`。原远程功能分支 `feat/admin-student-import-ui` 已删除。
 - 任务：管理员班级管理与学生 Excel 导入前端业务闭环。
 - Flyway：V1–V6，18 张业务表；本轮未修改迁移或新增表。
 
@@ -23,6 +22,7 @@
 - 前端：`npm test` 31/31 PASS；`npm run type-check` PASS；`npm run build` PASS。
 - 依赖：`npm audit` 为 0 vulnerabilities；原 `xlsx@0.18.5` 已移除。
 - 后端：`mvn clean test` 26/26 PASS；`mvn clean package` 26/26 PASS。
+- 合并后回归（`main@ffdc7a5`）：前端 31/31、类型检查、构建、`npm audit` 0 vulnerabilities；后端 26/26 测试及打包均 PASS。
 - 浏览器：随机临时库已从 V1–V6 迁移；管理员登录、班级列表/创建/编辑/状态切换、模板请求、合法和错误 Excel 预检查、确认入库、账号结果与下载按钮、导入学生首次改密均已验证。浏览器控制台无 error。
 - 清理：临时库 `rike_tiku_ui_e2e_019fd`、测试 Excel 和本地前后端进程已删除/停止；正式 `rike_tiku.yong_hu` 为 0 行。
 

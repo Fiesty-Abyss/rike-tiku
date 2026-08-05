@@ -1,6 +1,6 @@
 # 管理员班级与学生导入前端
 
-当前实现分支为`feat/admin-student-import-ui`，本轮修正开始HEAD为`d6e7544`。功能已提交并推送至Draft PR [#9](https://github.com/Fiesty-Abyss/rike-tiku/pull/9)，尚未合并到`main`。
+该功能已通过普通 merge 合并至`main`：PR [#9](https://github.com/Fiesty-Abyss/rike-tiku/pull/9)，合并提交为`ffdc7a5`；原远程功能分支`feat/admin-student-import-ui`已删除。合并后已实际执行前端31/31、类型检查、构建、`npm audit`（0 vulnerabilities）以及后端26/26测试和打包。
 
 ## 路由与权限
 

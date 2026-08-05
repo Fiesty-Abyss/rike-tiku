@@ -4,7 +4,7 @@
 
 ## 当前状态
 
-当前工作在分支 `feat/admin-student-import-ui`，基于 `main@cfab590`。本轮修正开始 HEAD 为 `d6e7544ca423d1867493b52c4edfdf9d4a1a5c4c`；管理员班级管理与学生 Excel 导入前端闭环已提交、推送，并处于 Draft PR [#9](https://github.com/Fiesty-Abyss/rike-tiku/pull/9)，尚未合并到 `main`。
+当前工作在 `main`。管理员班级管理与学生 Excel 导入前端闭环已通过普通 merge 合并：PR [#9](https://github.com/Fiesty-Abyss/rike-tiku/pull/9)，合并提交 `ffdc7a553cfaf284e03196cf1e9ef75f657c9bb0`；原远程功能分支 `feat/admin-student-import-ui` 已删除。
 
 ### 本轮变更
 
@@ -21,6 +21,7 @@
 - 前端 31/31 测试、类型检查、生产构建：PASS。
 - 后端 26/26 测试及打包：PASS。
 - `npm audit`：0 vulnerabilities。
+- PR #9 合并后在 `main@ffdc7a5` 回归：前端 31/31、类型检查、构建、审计均 PASS；后端 26/26 与打包均 PASS。
 - 账号发放表已实际生成并通过OOXML工作表名、中文、列顺序和文本初始密码校验；本机没有Excel/WPS/LibreOffice，桌面应用打开验证为`NOT_RUN`。
 - 真实浏览器临时库联调：PASS；管理员操作班级、模板请求、有效/无效导入预检查、确认入库、账号结果、下载按钮、导入学生首次改密均执行。
 - 临时库、临时 Excel、前后端进程已清理，正式库 `rike_tiku.yong_hu` 为 0 行。
