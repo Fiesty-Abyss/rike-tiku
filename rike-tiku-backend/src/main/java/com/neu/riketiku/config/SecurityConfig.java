@@ -45,6 +45,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/test/teacher").hasRole("TEACHER")
                         .requestMatchers("/api/v1/test/admin").hasRole("ADMIN")
                         .requestMatchers("/api/v1/admin/classes/**").hasRole("ADMIN")
+                        .requestMatchers("/api/v1/admin/student-import/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterAfter(initialPasswordGateFilter, JwtRenZhengGuoLvQi.class);

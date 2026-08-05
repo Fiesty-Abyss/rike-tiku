@@ -2,9 +2,17 @@
 
 更新时间：2026-08-05
 
-## 当前轮次：PR #6合并收尾
+## 当前轮次：管理员学生Excel导入模板与预检查后端
 
-当前分支为`main`。PR [#6](https://github.com/Fiesty-Abyss/rike-tiku/pull/6) 已以普通merge合并，合并提交为`02646fa`；远程`feat/admin-class-management`已删除。合并后`main@02646fa`重新执行`mvn clean test`，24/24 PASS。
+当前分支为`feat/student-import-preview`，基于`main@fb1799a`。本轮只做学生Excel模板和上传预检查预览，当前PR未合并。
+
+- 模板由Apache POI动态生成，包含固定列、匿名示例、填写说明、冻结首行和`ENABLED/DISABLED`下拉。
+- 预检查接口为`POST /api/v1/admin/student-import/preview`，仅允许ADMIN；检查文件、Sheet、表头、行数、公式、学号、班级、年级、用户名、密码和账号状态。
+- 预检查不落盘、不写导入批次，不写账号、学生档案或班级学生关系；密码绝不在响应或日志中回显。
+- `dao_ru_pi_ci`为既有题库导入批次表，不适用于本轮无持久化学生预检查；无需V7。
+- `mvn clean test`与`mvn clean package`均为25/25 PASS；随机临时库JAR健康接口`UP/UP`后已删除，正式库`rike_tiku.yong_hu`仍为0行。
+
+下一步仅在本PR合并后实现“管理员学生Excel确认入库后端”，必须复用本轮已验证数据，仍不得同时开发前端或教师导入。
 
 已实现：
 
