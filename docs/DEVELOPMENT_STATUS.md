@@ -5,9 +5,9 @@
 ## 当前基线
 
 - 设计基线：V3.0
-- 当前轮次：后端统一认证与JWT登录基础
-- 当前状态：DONE_VERIFIED；PR #4已普通merge，main回归测试通过
-- 当前分支：`main`
+- 当前轮次：前端登录与认证状态基础
+- 当前状态：IN_PROGRESS；待创建PR
+- 当前分支：`feat/frontend-auth`
 - 本轮实现分支：`feat/backend-auth-jwt`（远程分支已删除）
 - 开始时HEAD：`74af93327f8fd41a15401cab3fa87475a4bd1f0a`
 - 远程仓库：`https://github.com/Fiesty-Abyss/rike-tiku`
@@ -81,6 +81,13 @@
 - V1/V2旧迁移仍有MySQL整数显示宽度弃用警告；已执行迁移不改写。
 - JDK 25下Mockito/Byte Buddy仍输出动态Agent兼容性警告，测试实际通过。
 
+## 本轮前端认证基础
+
+- 已实现三角色登录入口、共用登录表单、Pinia认证状态、Axios Bearer Token注入、会话恢复、首次改密页、角色路由守卫、最小工作台和退出登录。
+- 未修改后端接口、Flyway或数据库；未实现任何学生导入、题库、练习、错题、AI或正式工作台业务。
+- 前端`npm test`：17/17 PASS；`npm run type-check`与`npm run build`：PASS；后端`mvn clean test`：23/23 PASS。
+- 浏览器验证了入口、表单和入口切换；真实账号登录、首次改密、刷新和退出的浏览器联调为NOT_RUN，因为本轮未启动带匿名临时账号的后端实例，正式库未被污染。
+
 ## 下一步唯一任务
 
-前端登录页面与认证状态基础：实现三角色登录入口、Pinia认证状态、Axios Bearer Token注入、首次改密页面和路由守卫；不同时开发学生导入、题库、练习或AI。
+待本轮PR经用户确认合并后，再单独实现管理员端学生Excel批量导入后端接口；本轮结束前不提前开发。

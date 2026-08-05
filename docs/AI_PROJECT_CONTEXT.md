@@ -49,14 +49,14 @@
 ## 5. 当前实现状态
 
 - 状态：题库核心数据库与账号/教学组织数据库模型均为 `DONE_VERIFIED`。
-- 当前分支：`main`；实现提交 `56cb779` 已通过PR #1合并，最终HEAD以 `git log -1` 为准。
+- 当前分支：`feat/frontend-auth`（基于`main@8f7aa13`）；认证后端已完成，前端认证基础正在实现，最终HEAD以 `git log -1` 为准。
 - 当前Flyway：V1–V6。
 - 当前业务表：题库核心10表，加 `yong_hu`、`jiao_se`、`yong_hu_jiao_se`、`xue_sheng_dang_an`、`jiao_shi_dang_an`、`ban_ji`、`ban_ji_xue_sheng`、`ren_ke_guan_xi`，共18表。
 - 当前样本：物理、化学、生物各1题，共3题，均为 `PENDING`；权利状态为 `COPYRIGHT_UNKNOWN`。
-- 最近验证：后端16项测试、空库V1–V6迁移、Maven测试与打包、JAR健康检查、MySQL连接均通过；前端基础工程的启动、类型检查、构建和浏览器联调在基础轮通过。
+- 最近验证：后端认证与数据库回归23项测试、空库V1–V6迁移、Maven测试与打包、JAR健康检查、MySQL连接均通过；前端认证基础的类型检查、17项单元测试和生产构建均通过。
 - 远程仓库：`https://github.com/Fiesty-Abyss/rike-tiku`，公开仓库，默认分支 `main`。
 
-未完成的核心模块包括认证授权、学生导入、题库业务API、练习判分、错题、AI Provider和正式角色工作台。
+未完成的核心模块包括学生导入、题库业务API、练习判分、错题、AI Provider和正式角色工作台；前端认证基础完成后以本轮PR与状态文档为准。
 
 ## 6. AI接管规则
 
