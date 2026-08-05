@@ -6,8 +6,9 @@
 
 - 设计基线：V3.0
 - 当前轮次：前端登录与认证状态基础
-- 当前状态：IN_PROGRESS；待创建PR
+- 当前状态：DONE_VERIFIED；PR #5草稿待用户审查
 - 当前分支：`feat/frontend-auth`
+- Pull Request：[#5](https://github.com/Fiesty-Abyss/rike-tiku/pull/5)，DRAFT，未合并
 - 本轮实现分支：`feat/backend-auth-jwt`（远程分支已删除）
 - 开始时HEAD：`74af93327f8fd41a15401cab3fa87475a4bd1f0a`
 - 远程仓库：`https://github.com/Fiesty-Abyss/rike-tiku`
