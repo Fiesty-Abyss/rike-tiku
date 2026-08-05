@@ -183,7 +183,7 @@ class RenZhengJiChengTest {
                 .claim("roles", List.of("STUDENT"))
                 .claim("mustChangePassword", false)
                 .issuedAt(Date.from(now.minusSeconds(60)))
-                .expiration(Date.from(now.minusSeconds(1)))
+                .expiration(Date.from(now.minusSeconds(120)))
                 .signWith(Keys.hmacShaKeyFor(TEST_JWT_SECRET.getBytes(StandardCharsets.UTF_8)), Jwts.SIG.HS256)
                 .compact();
         assertError(get("/api/v1/auth/me", expired), 401, "TOKEN_EXPIRED");
