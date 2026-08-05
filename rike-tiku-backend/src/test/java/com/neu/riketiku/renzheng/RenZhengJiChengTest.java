@@ -307,6 +307,36 @@ class RenZhengJiChengTest {
     }
 
     @Test
+    void teacherManagementShouldRequireAdminAndRejectDuplicateTriple() throws Exception {
+        String adminToken = token(login("teacher_admin", "AdminPass1", "ADMIN", false));
+        String studentToken = token(login("teacher_student", "StudentPass1", "STUDENT", false));
+        String teacherToken = token(login("teacher_teacher", "TeacherPass1", "TEACHER", false));
+        String firstAdminToken = token(login("teacher_first_admin", "AdminPass1", "ADMIN", true));
+        assertError(get("/api/v1/admin/teachers", null), 401, "UNAUTHENTICATED");
+        assertError(get("/api/v1/admin/teachers", studentToken), 403, "ACCESS_DENIED");
+        assertError(get("/api/v1/admin/teachers", teacherToken), 403, "ACCESS_DENIED");
+        assertError(get("/api/v1/admin/teachers", firstAdminToken), 403, "MUST_CHANGE_PASSWORD");
+        TestResponse created = json("POST", "/api/v1/admin/teachers", """
+                {"employeeNumber":"T-API-01","name":"教师接口甲","username":"teacher_created","initialPassword":"TeacherPass1","accountStatus":"ENABLED"}
+                """, adminToken);
+        assertThat(created.status()).isEqualTo(200); assertThat(created.body()).contains("initialPassword");
+        Integer teacherId = JsonPath.read(created.body(), "$.teacher.id");
+        assertThat(jdbcTemplate.queryForObject("""
+                SELECT COUNT(*) FROM yong_hu_jiao_se ur JOIN jiao_se r ON r.id=ur.jiao_se_id
+                JOIN jiao_shi_dang_an p ON p.yong_hu_id=ur.yong_hu_id
+                WHERE p.id=? AND r.jiao_se_dai_ma='TEACHER' AND ur.zhuang_tai='ACTIVE'
+                """, Integer.class, teacherId)).isEqualTo(1);
+        long classId = createClass("T-API-C", "教师接口班", "高一", "ACTIVE");
+        TestResponse relation = json("POST", "/api/v1/admin/teachers/" + teacherId + "/teaching-assignments", """
+                {"classId":%d,"subjectId":1,"primary":true,"startTime":"2026-08-05T08:00:00"}
+                """.formatted(classId), adminToken);
+        assertThat(relation.status()).isEqualTo(200);
+        assertError(json("POST", "/api/v1/admin/teachers/" + teacherId + "/teaching-assignments", """
+                {"classId":%d,"subjectId":1,"primary":false,"startTime":"2026-08-05T08:00:00"}
+                """.formatted(classId), adminToken), 409, "TEACHING_ASSIGNMENT_EXISTS");
+    }
+
+    @Test
     void studentImportTemplateAndPreviewShouldValidateWithoutWritingStudents() throws Exception {
         String adminToken = token(login("import_admin", "AdminPass1", "ADMIN", false));
         String studentToken = token(login("import_student", "StudentPass1", "STUDENT", false));
