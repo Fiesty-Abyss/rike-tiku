@@ -86,7 +86,7 @@
 
 - 已实现三角色登录入口、共用登录表单、Pinia认证状态、Axios Bearer Token注入、会话恢复、首次改密页、角色路由守卫、最小工作台和退出登录。
 - 未修改后端接口、Flyway或数据库；未实现任何学生导入、题库、练习、错题、AI或正式工作台业务。
-- 前端`npm test`：17/17 PASS；`npm run type-check`与`npm run build`：PASS；后端`mvn clean test`：23/23 PASS。
+- 前端`npm test`：26/26 PASS（新增Axios拦截器10项）；`npm run type-check`与`npm run build`：PASS；后端`mvn clean test`：23/23 PASS。
 - 浏览器验证了入口、表单和入口切换；真实账号登录、首次改密、刷新和退出的浏览器联调为NOT_RUN，因为本轮未启动带匿名临时账号的后端实例，正式库未被污染。
 
 ## 下一步唯一任务
