@@ -5,9 +5,10 @@
 ## 当前基线
 
 - 设计基线：V3.0
-- 当前轮次：后端统一认证与JWT登录基础
-- 当前状态：DONE_VERIFIED；PR #4已普通merge，main回归测试通过
-- 当前分支：`main`
+- 当前轮次：前端登录与认证状态基础
+- 当前状态：DONE_VERIFIED；PR #5已完成真实人工联调，Ready for review
+- 当前分支：`feat/frontend-auth`
+- Pull Request：[#5](https://github.com/Fiesty-Abyss/rike-tiku/pull/5)，DRAFT，未合并
 - 本轮实现分支：`feat/backend-auth-jwt`（远程分支已删除）
 - 开始时HEAD：`74af93327f8fd41a15401cab3fa87475a4bd1f0a`
 - 远程仓库：`https://github.com/Fiesty-Abyss/rike-tiku`
@@ -81,6 +82,13 @@
 - V1/V2旧迁移仍有MySQL整数显示宽度弃用警告；已执行迁移不改写。
 - JDK 25下Mockito/Byte Buddy仍输出动态Agent兼容性警告，测试实际通过。
 
+## 本轮前端认证基础
+
+- 已实现三角色登录入口、共用登录表单、Pinia认证状态、Axios Bearer Token注入、会话恢复、首次改密页、角色路由守卫、最小工作台和退出登录。
+- 未修改后端接口、Flyway或数据库；未实现任何学生导入、题库、练习、错题、AI或正式工作台业务。
+- 前端`npm test`：26/26 PASS（新增Axios拦截器10项）；`npm run type-check`与`npm run build`：PASS；后端`mvn clean test`：23/23 PASS。
+- 真实人工浏览器联调：DONE_VERIFIED。学生/教师/管理员登录、首次改密、刷新恢复、角色越权拦截、多角色、退出、CORS和控制台均通过；临时库已删除，正式库用户数仍为0。
+
 ## 下一步唯一任务
 
-前端登录页面与认证状态基础：实现三角色登录入口、Pinia认证状态、Axios Bearer Token注入、首次改密页面和路由守卫；不同时开发学生导入、题库、练习或AI。
+待本轮PR经用户确认合并后，再单独实现管理员端学生Excel批量导入后端接口；本轮结束前不提前开发。
