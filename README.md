@@ -123,4 +123,4 @@ npm run build
 
 ## 下一阶段
 
-管理员班级管理与学生Excel导入闭环已在功能分支完成并待审查；下一阶段应单独实现教师管理或任课关系管理，不能提前开发题库、练习或AI。
+管理员班级管理与学生Excel导入闭环已提交并推送至`feat/admin-student-import-ui`，当前为 Draft PR [#9](https://github.com/Fiesty-Abyss/rike-tiku/pull/9)，尚未合并到`main`。本轮修正开始HEAD为`d6e7544`；实际测试包括前端31/31、类型检查、构建、`npm audit`（0 vulnerabilities）及后端26/26测试和打包。账号发放表采用只写出受控确认响应的`write-excel-file@4.1.1`，不解析用户上传Excel。下一阶段仅建议教师管理或任课关系管理，不能提前开发题库、练习或AI。

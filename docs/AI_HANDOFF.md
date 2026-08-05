@@ -4,7 +4,7 @@
 
 ## 当前状态
 
-当前工作在分支 `feat/admin-student-import-ui`，基于 `main@cfab590`。本轮已完成管理员班级管理与学生 Excel 导入前端闭环，尚未提交、推送或创建 PR。
+当前工作在分支 `feat/admin-student-import-ui`，基于 `main@cfab590`。本轮修正开始 HEAD 为 `d6e7544ca423d1867493b52c4edfdf9d4a1a5c4c`；管理员班级管理与学生 Excel 导入前端闭环已提交、推送，并处于 Draft PR [#9](https://github.com/Fiesty-Abyss/rike-tiku/pull/9)，尚未合并到 `main`。
 
 ### 本轮变更
 
@@ -12,7 +12,7 @@
 - 新增管理员布局和三个路由：`/admin`、`/admin/classes`、`/admin/students/import`。
 - 班级页面仅调用已有五个后端接口；没有删除功能，编辑请求没有 `classCode`。
 - 导入页面重新上传原始文件确认入库；预览 JSON 不参与确认。初始密码结果不写 `localStorage`、`sessionStorage` 或控制台。
-- 新增 `xlsx@0.18.5`，只用于前端账号发放表；`package-lock.json` 已同步。
+- 使用 `write-excel-file@4.1.1` 取代存在High风险的`xlsx@0.18.5`，只用于前端账号发放表；`package-lock.json` 已同步。该库只写出受控确认响应，绝不读取或解析用户上传Excel。
 - 为使浏览器能调用已有的班级 `PUT/PATCH` 接口，`SecurityConfig` 的 CORS 方法白名单补充 `PUT`、`PATCH`；没有新增业务接口。
 - 认证集成测试将 JWT 篡改位置移至签名段首字符，修复最后一位 Base64URL 非有效位改变时仍可验签的测试偶发问题。
 
@@ -20,6 +20,8 @@
 
 - 前端 31/31 测试、类型检查、生产构建：PASS。
 - 后端 26/26 测试及打包：PASS。
+- `npm audit`：0 vulnerabilities。
+- 账号发放表已实际生成并通过OOXML工作表名、中文、列顺序和文本初始密码校验；本机没有Excel/WPS/LibreOffice，桌面应用打开验证为`NOT_RUN`。
 - 真实浏览器临时库联调：PASS；管理员操作班级、模板请求、有效/无效导入预检查、确认入库、账号结果、下载按钮、导入学生首次改密均执行。
 - 临时库、临时 Excel、前后端进程已清理，正式库 `rike_tiku.yong_hu` 为 0 行。
 

@@ -1,4 +1,4 @@
-import * as XLSX from 'xlsx'
+import writeExcelFile from 'write-excel-file/browser'
 
 import http from '../http'
 
@@ -67,19 +67,21 @@ export async function confirmStudentImport(file: File): Promise<StudentImportCon
   return response.data
 }
 
-export function downloadAccountWorkbook(accounts: StudentAccountResult[]) {
-  const rows = accounts.map((account) => ({
-    学号: account.studentNumber,
-    姓名: account.name,
-    班级: account.classCode,
-    用户名: account.username,
-    初始密码: account.initialPassword,
-    账号状态: account.accountStatus,
-    首次登录提示: account.mustChangePassword ? '首次登录后必须修改初始密码' : '无需修改初始密码',
-  }))
-  const sheet = XLSX.utils.json_to_sheet(rows)
-  sheet['!cols'] = [12, 12, 16, 18, 18, 14, 30].map((wch) => ({ wch }))
-  const workbook = XLSX.utils.book_new()
-  XLSX.utils.book_append_sheet(workbook, sheet, '学生账号发放表')
-  XLSX.writeFile(workbook, `学生账号发放表_${new Date().toISOString().replace(/[:.]/g, '-')}.xlsx`)
+export async function downloadAccountWorkbook(accounts: StudentAccountResult[]) {
+  const rows = [
+    ['学号', '姓名', '班级', '用户名', '初始密码', '账号状态', '首次登录提示'],
+    ...accounts.map((account) => [
+      account.studentNumber,
+      account.name,
+      account.classCode,
+      account.username,
+      account.initialPassword,
+      account.accountStatus,
+      account.mustChangePassword ? '首次登录后必须修改初始密码' : '无需修改初始密码',
+    ]),
+  ].map((row) => row.map((value) => ({ value, type: String, format: '@' })))
+  await writeExcelFile(rows, {
+    sheet: '学生账号发放表',
+    columns: [12, 12, 16, 18, 18, 14, 30].map((width) => ({ width })),
+  }).toFile(`学生账号发放表_${new Date().toISOString().replace(/[:.]/g, '-')}.xlsx`)
 }
