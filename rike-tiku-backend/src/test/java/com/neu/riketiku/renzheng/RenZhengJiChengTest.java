@@ -369,6 +369,31 @@ class RenZhengJiChengTest {
         assertThat(jdbcTemplate.queryForObject("SELECT COUNT(*) FROM ban_ji_xue_sheng", Integer.class)).isEqualTo(relationCount);
     }
 
+    @Test
+    void studentImportConfirmShouldWriteFourTablesAtomically() throws Exception {
+        String adminToken = token(login("confirm_admin", "AdminPass1", "ADMIN", false));
+        String studentToken = token(login("confirm_student", "StudentPass1", "STUDENT", false));
+        String teacherToken = token(login("confirm_teacher", "TeacherPass1", "TEACHER", false));
+        String initialAdminToken = token(login("confirm_initial_admin", "AdminPass1", "ADMIN", true));
+        createClass("CONFIRM-CLASS", "确认导入班", "高三", "ACTIVE");
+        byte[] workbook = workbookBytes(List.of(
+                new String[] {"20260101", "学生甲", "CONFIRM-CLASS", "高三", "", "", ""},
+                new String[] {"20260102", "学生乙", "CONFIRM-CLASS", "高三", "confirm_two", "CustomPass1", "DISABLED"}), false);
+        assertThat(uploadPath("/api/v1/admin/student-import/confirm", workbook, "confirm.xlsx", null).status()).isEqualTo(401);
+        assertThat(uploadPath("/api/v1/admin/student-import/confirm", workbook, "confirm.xlsx", studentToken).status()).isEqualTo(403);
+        assertThat(uploadPath("/api/v1/admin/student-import/confirm", workbook, "confirm.xlsx", teacherToken).status()).isEqualTo(403);
+        assertThat(uploadPath("/api/v1/admin/student-import/confirm", workbook, "confirm.xlsx", initialAdminToken).status()).isEqualTo(403);
+        TestResponse response = uploadPath("/api/v1/admin/student-import/confirm", workbook, "confirm.xlsx", adminToken);
+        assertThat(response.status()).isEqualTo(200);
+        assertThat(response.body()).contains("\"importedCount\":2", "CustomPass1", "\"mustChangePassword\":true");
+        assertThat(jdbcTemplate.queryForObject("SELECT COUNT(*) FROM yong_hu WHERE yong_hu_ming IN ('20260101','confirm_two')", Integer.class)).isEqualTo(2);
+        assertThat(jdbcTemplate.queryForObject("SELECT COUNT(*) FROM xue_sheng_dang_an WHERE xue_hao IN ('20260101','20260102')", Integer.class)).isEqualTo(2);
+        assertThat(jdbcTemplate.queryForObject("SELECT COUNT(*) FROM ban_ji_xue_sheng WHERE zhuang_tai='ACTIVE'", Integer.class)).isGreaterThanOrEqualTo(2);
+        assertThat(jdbcTemplate.queryForObject("SELECT shi_fou_shou_ci_deng_lu FROM yong_hu WHERE yong_hu_ming='20260101'", Boolean.class)).isTrue();
+        assertThat(PASSWORD_ENCODER.matches("CustomPass1", jdbcTemplate.queryForObject("SELECT mi_ma_zhai_yao FROM yong_hu WHERE yong_hu_ming='confirm_two'", String.class))).isTrue();
+        assertThat(uploadPath("/api/v1/admin/student-import/confirm", workbook, "confirm.xlsx", adminToken).status()).isEqualTo(400);
+    }
+
     private long createClass(String code, String name, String grade, String status) {
         jdbcTemplate.update("INSERT INTO ban_ji(ban_ji_bian_ma,ban_ji_ming_cheng,nian_ji,ru_xue_nian_fen,zhuang_tai) VALUES (?,?,?,?,?)",
                 code, name, grade, 2025, status);
@@ -392,13 +417,17 @@ class RenZhengJiChengTest {
     }
 
     private TestResponse upload(byte[] bytes, String filename, String accessToken) throws Exception {
+        return uploadPath("/api/v1/admin/student-import/preview", bytes, filename, accessToken);
+    }
+
+    private TestResponse uploadPath(String path, byte[] bytes, String filename, String accessToken) throws Exception {
         String boundary = "----test" + UUID.randomUUID().toString().replace("-", "");
         ByteArrayOutputStream body = new ByteArrayOutputStream();
         body.write(("--" + boundary + "\r\nContent-Disposition: form-data; name=\"file\"; filename=\"" + filename
                 + "\"\r\nContent-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet\r\n\r\n").getBytes());
         body.write(bytes);
         body.write(("\r\n--" + boundary + "--\r\n").getBytes());
-        HttpRequest.Builder builder = HttpRequest.newBuilder().uri(URI.create(baseUrl() + "/api/v1/admin/student-import/preview"))
+        HttpRequest.Builder builder = HttpRequest.newBuilder().uri(URI.create(baseUrl() + path))
                 .header("Content-Type", "multipart/form-data; boundary=" + boundary)
                 .POST(HttpRequest.BodyPublishers.ofByteArray(body.toByteArray()));
         addAuthorization(builder, accessToken);
