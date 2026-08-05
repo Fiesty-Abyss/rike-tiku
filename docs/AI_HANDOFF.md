@@ -6,7 +6,7 @@
 
 ## 0.1 进行中：前端登录与认证状态基础
 
-分支：`feat/frontend-auth`，基于`main@8f7aa13`。本轮只实现前端认证闭环：三角色入口和共用表单、Pinia会话、Axios Bearer Token注入、`/auth/me`恢复、首次改密、角色守卫、最小工作台及退出登录。未新增迁移、未修改后端接口，未开发导入、题库、练习、错题或AI。
+分支：`feat/frontend-auth`，基于`main@8f7aa13`。本轮只实现前端认证闭环：三角色入口和共用表单、Pinia会话、Axios Bearer Token注入、`/auth/me`恢复、首次改密、角色守卫、最小工作台及退出登录。PR [#5](https://github.com/Fiesty-Abyss/rike-tiku/pull/5)为草稿，等待用户审查，尚未合并。未新增迁移、未修改后端接口，未开发导入、题库、练习、错题或AI。
 
 当前验证：前端17项Vitest测试、类型检查、生产构建均通过；后端`mvn clean test`23/23通过。浏览器仅验证本地登录页面渲染、入口切换和控制台；真实账号成功登录及改密浏览器联调未执行，正式库没有测试账号污染。详见`docs/FRONTEND_AUTHENTICATION.md`。
 
