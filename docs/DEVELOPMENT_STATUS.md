@@ -6,9 +6,10 @@
 
 - 设计基线：V3.0
 - 当前轮次：前端登录与认证状态基础
-- 当前状态：DONE_VERIFIED；PR #5已完成真实人工联调，Ready for review
-- 当前分支：`feat/frontend-auth`
-- Pull Request：[#5](https://github.com/Fiesty-Abyss/rike-tiku/pull/5)，DRAFT，未合并
+- 当前状态：DONE_VERIFIED；PR #5已普通merge并完成main回归
+- 当前分支：`main`
+- Pull Request：[#5](https://github.com/Fiesty-Abyss/rike-tiku/pull/5)，MERGED
+- 合并提交：`b519134`
 - 本轮实现分支：`feat/backend-auth-jwt`（远程分支已删除）
 - 开始时HEAD：`74af93327f8fd41a15401cab3fa87475a4bd1f0a`
 - 远程仓库：`https://github.com/Fiesty-Abyss/rike-tiku`
