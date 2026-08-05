@@ -9,7 +9,7 @@
 - 当前状态：DONE_VERIFIED；当前PR尚未合并
 - 当前分支：`feat/admin-class-management`
 - Pull Request：[#6](https://github.com/Fiesty-Abyss/rike-tiku/pull/6)，DRAFT / OPEN
-- 当前PR HEAD：`b639a627668d6b2bc7d76ce9d618c62c8f534d32`
+- 当前PR提交请以GitHub PR页面为准
 - 本轮实现分支：`feat/backend-auth-jwt`（远程分支已删除）
 - 开始时HEAD：`74af93327f8fd41a15401cab3fa87475a4bd1f0a`
 - 远程仓库：`https://github.com/Fiesty-Abyss/rike-tiku`
