@@ -106,6 +106,7 @@ describe('路由守卫', () => {
   it('学生不能访问教师工作台', async () => { authenticated(['STUDENT']); await router.push('/teacher'); expect(router.currentRoute.value.path).toBe('/student') })
   it('学生不能访问管理员工作台', async () => { authenticated(['STUDENT']); await router.push('/admin'); expect(router.currentRoute.value.path).toBe('/student') })
   it('教师不能访问管理员工作台', async () => { authenticated(['TEACHER']); await router.push('/admin'); expect(router.currentRoute.value.path).toBe('/teacher') })
+  it('管理员可访问班级管理与学生导入页面', async () => { authenticated(['ADMIN']); await router.push('/admin/classes'); expect(router.currentRoute.value.path).toBe('/admin/classes'); await router.push('/admin/students/import'); expect(router.currentRoute.value.path).toBe('/admin/students/import') })
   it('多角色用户可访问多个工作台', async () => { authenticated(['STUDENT', 'TEACHER']); await router.push('/teacher'); expect(router.currentRoute.value.path).toBe('/teacher'); await router.push('/student'); expect(router.currentRoute.value.path).toBe('/student') })
   it('首次改密用户只能前往改密页', async () => { authenticated(['STUDENT'], true); await router.push('/login/student'); expect(router.currentRoute.value.path).toBe('/change-initial-password') })
   it('已登录访问登录页跳转真实最高角色工作台', async () => { authenticated(['STUDENT', 'ADMIN']); await router.push('/login/student'); expect(router.currentRoute.value.path).toBe('/admin') })

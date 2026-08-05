@@ -49,9 +49,13 @@ const router = createRouter({
     },
     {
       path: '/admin',
-      name: 'admin-home',
-      component: () => import('../views/AdminHomeView.vue'),
+      component: () => import('../layouts/AdminLayout.vue'),
       meta: { requiresAuth: true, roles: ['ADMIN'] },
+      children: [
+        { path: '', name: 'admin-home', component: () => import('../views/AdminHomeView.vue') },
+        { path: 'classes', name: 'admin-classes', component: () => import('../views/admin/ClassesView.vue') },
+        { path: 'students/import', name: 'admin-student-import', component: () => import('../views/admin/StudentImportView.vue') },
+      ],
     },
     { path: '/:pathMatch(.*)*', redirect: '/login/student' },
   ],
