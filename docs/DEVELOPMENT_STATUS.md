@@ -8,8 +8,8 @@
 - 当前轮次：管理员班级基础管理后端
 - 当前状态：DONE_VERIFIED；当前PR尚未合并
 - 当前分支：`feat/admin-class-management`
-- Pull Request：[#5](https://github.com/Fiesty-Abyss/rike-tiku/pull/5)，MERGED
-- 合并提交：`b519134`
+- Pull Request：[#6](https://github.com/Fiesty-Abyss/rike-tiku/pull/6)，DRAFT / OPEN
+- 当前PR HEAD：`b639a627668d6b2bc7d76ce9d618c62c8f534d32`
 - 本轮实现分支：`feat/backend-auth-jwt`（远程分支已删除）
 - 开始时HEAD：`74af93327f8fd41a15401cab3fa87475a4bd1f0a`
 - 远程仓库：`https://github.com/Fiesty-Abyss/rike-tiku`
@@ -32,7 +32,7 @@
 - 不新增Flyway迁移，不修改V1-V6，不新增数据库表；现有`ban_ji`表和逻辑删除继续使用。
 - 不提供删除接口；不实现班级前端、学生导入、教师管理、任课关系、题库或AI。
 - 实测临时库为`rike_tiku_jar_verify_f62284422a6444b38fbfed4dd5bf65d4`，验证结束后已删除；正式库`rike_tiku.yong_hu`实测仍为0行。
-- 当前功能分支和后续草稿PR尚未合并；详细接口见`docs/ADMIN_CLASS_MANAGEMENT_API.md`。
+- 草稿PR [#6](https://github.com/Fiesty-Abyss/rike-tiku/pull/6) 尚未合并；详细接口见`docs/ADMIN_CLASS_MANAGEMENT_API.md`。
 
 ## 本轮已完成
 
