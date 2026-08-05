@@ -248,6 +248,59 @@ class RenZhengJiChengTest {
         assertError(post("/api/v1/auth/login", "{}", null), 400, "INVALID_REQUEST");
     }
 
+    @Test
+    void adminClassManagementShouldValidateRulesAndAccess() throws Exception {
+        String adminToken = token(login("class_admin", "AdminPass1", "ADMIN", false));
+        String studentToken = token(login("class_student", "StudentPass1", "STUDENT", false));
+        String teacherToken = token(login("class_teacher", "TeacherPass1", "TEACHER", false));
+        String firstAdminToken = token(login("class_first_admin", "AdminPass1", "ADMIN", true));
+
+        assertError(get("/api/v1/admin/classes", null), 401, "UNAUTHENTICATED");
+        assertError(get("/api/v1/admin/classes", studentToken), 403, "ACCESS_DENIED");
+        assertError(get("/api/v1/admin/classes", teacherToken), 403, "ACCESS_DENIED");
+        assertError(get("/api/v1/admin/classes", firstAdminToken), 403, "MUST_CHANGE_PASSWORD");
+
+        TestResponse created = json("POST", "/api/v1/admin/classes", """
+                {"classCode":" G1-A ","className":" 一班 ","grade":" 高一 ","enrollmentYear":2025}
+                """, adminToken);
+        assertThat(created.status()).isEqualTo(200);
+        assertThat((String) JsonPath.read(created.body(), "$.classCode")).isEqualTo("G1-A");
+        assertThat((String) JsonPath.read(created.body(), "$.status")).isEqualTo("ACTIVE");
+        Integer id = JsonPath.read(created.body(), "$.id");
+
+        assertError(json("POST", "/api/v1/admin/classes", """
+                {"classCode":"G1-A","className":"重复","grade":"高一","enrollmentYear":2025}
+                """, adminToken), 409, "CLASS_CODE_EXISTS");
+        assertError(json("POST", "/api/v1/admin/classes", """
+                {"classCode":" ","className":"一班","grade":"高一","enrollmentYear":2025}
+                """, adminToken), 400, "INVALID_REQUEST");
+        assertError(json("POST", "/api/v1/admin/classes", """
+                {"classCode":"G1-B","className":" ","grade":"高一","enrollmentYear":2025}
+                """, adminToken), 400, "INVALID_REQUEST");
+        assertError(json("POST", "/api/v1/admin/classes", """
+                {"classCode":"G1-B","className":"二班","grade":"高一","enrollmentYear":1999}
+                """, adminToken), 400, "INVALID_REQUEST");
+        assertThat(json("POST", "/api/v1/admin/classes", """
+                {"classCode":"G2-B","className":"二班","grade":"高二","enrollmentYear":2024}
+                """, adminToken).status()).isEqualTo(200);
+
+        assertThat(get("/api/v1/admin/classes?page=1&size=1", adminToken).body()).contains("\"total\":2");
+        assertThat(get("/api/v1/admin/classes?code=G1-A", adminToken).body()).contains("G1-A");
+        assertThat(get("/api/v1/admin/classes?name=二班", adminToken).body()).contains("G2-B");
+        assertThat(get("/api/v1/admin/classes?grade=高二", adminToken).body()).contains("G2-B");
+        assertThat(get("/api/v1/admin/classes?status=ACTIVE", adminToken).body()).contains("G1-A", "G2-B");
+        assertThat(get("/api/v1/admin/classes/" + id, adminToken).status()).isEqualTo(200);
+        assertError(get("/api/v1/admin/classes/999999", adminToken), 404, "CLASS_NOT_FOUND");
+
+        TestResponse updated = json("PUT", "/api/v1/admin/classes/" + id, """
+                {"className":"一班（调整）","grade":"高二","enrollmentYear":2024}
+                """, adminToken);
+        assertThat(updated.body()).contains("一班（调整）", "高二", "G1-A");
+        assertThat(json("PATCH", "/api/v1/admin/classes/" + id + "/status", "{\"status\":\"DISABLED\"}", adminToken).body()).contains("DISABLED");
+        assertThat(json("PATCH", "/api/v1/admin/classes/" + id + "/status", "{\"status\":\"GRADUATED\"}", adminToken).body()).contains("GRADUATED");
+        assertError(json("PATCH", "/api/v1/admin/classes/" + id + "/status", "{\"status\":\"UNKNOWN\"}", adminToken), 400, "INVALID_CLASS_STATUS");
+    }
+
     private void assertLoginRole(String username, String password, String expectedRole, String returnedRole)
             throws Exception {
         TestResponse response = login(username, password, expectedRole);
@@ -288,6 +341,19 @@ class RenZhengJiChengTest {
                 .POST(HttpRequest.BodyPublishers.ofString(body));
         addAuthorization(builder, accessToken);
         return send(builder.build());
+    }
+
+    private TestResponse json(String method, String path, String body, String accessToken) throws Exception {
+        HttpRequest.Builder builder = HttpRequest.newBuilder().uri(URI.create(baseUrl() + path))
+                .header("Content-Type", "application/json")
+                .method(method, HttpRequest.BodyPublishers.ofString(body));
+        addAuthorization(builder, accessToken);
+        return send(builder.build());
+    }
+
+    private TestResponse login(String username, String password, String role, boolean firstLogin) throws Exception {
+        insertUser(username, password, firstLogin, "ENABLED", role);
+        return login(username, password, role);
     }
 
     private void addAuthorization(HttpRequest.Builder builder, String accessToken) {
