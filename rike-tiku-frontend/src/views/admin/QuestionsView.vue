@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox, type FormInstance, type FormRules } from 'element-plus'
 import { fetchSubjects, type SubjectItem } from '../../api/admin/teachers'
 import { createQuestion, fetchKnowledgePoints, fetchQuestion, fetchQuestions, questionAction, updateQuestion, type Detail, type QuestionItem, type QuestionType, type Save, type Source } from '../../api/admin/questions'
@@ -7,6 +8,7 @@ import { defaultOptions, normaliseForSave, sourceParts } from './questionForm'
 import type { ApiError } from '../../api/http'
 
 const loading = ref(false)
+const router = useRouter()
 const saving = ref(false)
 const dialogVisible = ref(false)
 const detailVisible = ref(false)
@@ -58,7 +60,7 @@ onMounted(async () => { try { subjects.value = await fetchSubjects(); await load
 
 <template>
   <section class="admin-page question-page">
-    <div class="page-heading"><div><h1>题库审核发布</h1><p>草稿、审核与发布由后端状态机控制；版权与来源必须在发布时通过复核。</p></div><el-button type="primary" @click="openCreate">创建草稿</el-button></div>
+    <div class="page-heading"><div><h1>题库审核发布</h1><p>草稿、审核与发布由后端状态机控制；版权与来源必须在发布时通过复核。</p></div><div><el-button @click="router.push('/admin/questions/import')">MVP30 Excel 导入</el-button><el-button type="primary" @click="openCreate">创建草稿</el-button></div></div>
     <el-form class="filter-panel" :inline="true" @submit.prevent="filters.page = 1; load()">
       <el-form-item label="学科"><el-select v-model="filters.subjectCode" clearable><el-option v-for="subject in subjects" :key="subject.id" :label="subject.subjectName" :value="subject.subjectCode" /></el-select></el-form-item>
       <el-form-item label="题型"><el-select v-model="filters.questionType" clearable><el-option v-for="item in questionTypes" :key="item.value" :label="item.label" :value="item.value" /></el-select></el-form-item>
