@@ -4,9 +4,9 @@
 
 ## 当前开发轮
 
-- 当前分支：`feat/admin-question-import`（基于 `main@76fdfe4`，尚未合并）。
+- 当前基线：`main@f499f0c2e1e3b4637d22480868e94dbdacdcbaa0`。
 - PR [#9](https://github.com/Fiesty-Abyss/rike-tiku/pull/9) 已普通 merge 合并；合并提交：`ffdc7a553cfaf284e03196cf1e9ef75f657c9bb0`。原远程功能分支 `feat/admin-student-import-ui` 已删除。
-- 当前任务：Draft PR #12 的管理员 MVP30 题库导入审查修正；不开发练习、判分、错题或 AI。
+- PR #12 的管理员 MVP30 题库导入已普通 merge；不开发练习、判分、错题或 AI。
 - PR [#10](https://github.com/Fiesty-Abyss/rike-tiku/pull/10) 已普通 merge 合并，合并提交为`9495ecced52291c82ee67c9f6229b141754e4998`；原远程功能分支已删除。
 - PR [#11](https://github.com/Fiesty-Abyss/rike-tiku/pull/11) 已普通 merge 合并，合并提交为`dda66d4c7b530b9af44c692aa4d03027718a5e65`；远程 `feat/admin-question-review` 已删除。
 - Flyway：V1–V6，18 张业务表；本轮未修改迁移或新增表。
@@ -46,9 +46,9 @@
 
 ## 下一轮建议
 
-当前轮正在实现 MVP30 题库预检查与确认入库；在该 PR 独立审查前不启动下一业务模块。
+管理员 MVP30 题库导入已进入 `main`；下一模块必须在新的独立任务中确定。
 
-## 当前分支：MVP30 管理员题库导入（尚未合并）
+## MVP30 管理员题库导入（已合并至 `main`）
 
 - 接口：`POST /api/v1/admin/question-import/preview` 与 `POST /api/v1/admin/question-import/confirm`，均使用 multipart 字段 `file`；确认请求还必须携带预检查返回的文件哈希。
 - 预检查不写业务表；确认时服务端重新解析原文件、复验全部规则，并在一个事务内写入既有批次、题目、选项、解析、知识点、附件、来源与审核记录表。
@@ -56,8 +56,9 @@
 - 纯 V1–V6 真实基线（不预置 Excel 知识点）：物理 0/10 有效、化学 1/10 有效、生物 1/10 有效；错误同时覆盖 `KNOWLEDGE_POINT_NOT_FOUND` 与附件完整性错误。预检查前后导入批次、题目及全部题目子表行数不变。
 - 附件专项基线（仅在测试事务预置 Excel 所需知识点后）：物理 2/10 有效、化学 1/10 有效、生物 6/10 有效。其余行因声明图片数与正文 IMAGE 对象不一致、对象缺失或多候选被阻断；此数据只用于隔离附件问题，不能表示 V1–V6 数据库天然可导入数量。
 - 原始三份 Excel、Flyway V1–V6 和正式 `rike_tiku` 均未修改。
-- 当前分支自动化回归：后端 `mvn clean test` 54/54、`mvn clean package` 通过；前端 `npm test` 56/56、`npm run type-check`、`npm run build` 通过，`npm audit` 为 0 vulnerabilities。
+- PR #12 合并后回归（`main@f499f0c`）：后端 `mvn clean test` 54/54、`mvn clean package` 通过；前端 `npm test` 56/56、`npm run type-check`、`npm run build` 通过，`npm audit` 为 0 vulnerabilities。
 - 本轮随机临时库联调：`PASS_WITH_ENV_LIMITATION`。管理员通过浏览器完成登录、导入页访问、导入后题库列表/详情回查、版权发布拒绝与刷新持久化；匿名临时物理题通过真实 HTTP multipart 预检查 1/1、确认 1/1，批次、PENDING 题目和 STANDARD 解析、三条 `COPYRIGHT_UNKNOWN` 受控来源及当前管理员的 `SUBMITTED` 记录均已核对。内置浏览器无法操作系统本地文件选择器，因此上传步骤由真实 HTTP multipart 完成；该匿名题不是 MVP30 正式入库数据。
+- PR #12 已普通 merge 至 `main`，合并提交：`f499f0c2e1e3b4637d22480868e94dbdacdcbaa0`；远程 `feat/admin-question-import` 已删除。原始 MVP30 三份 Excel 仍未确认入库。
 ## 题库审核发布（已合并至 `main`）
 
 - PR #11 已普通 merge 至 `main`，合并提交：`dda66d4c7b530b9af44c692aa4d03027718a5e65`；未修改 Flyway V1–V6，继续使用既有题目、来源、解析、审核轨迹和附件表。
