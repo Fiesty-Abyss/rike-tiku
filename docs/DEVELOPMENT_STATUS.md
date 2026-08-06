@@ -45,11 +45,12 @@
 
 ## 下一轮建议
 
-单独实现教师管理与教师导入基础，随后再实施教师—班级—科目三元任课关系；这能在不触及题库和 AI 的前提下完成教学组织权限的剩余基础。
+等待 PR #11 合并后，才评估 MVP30 题库预检查、逐行错误、知识点/附件映射与确认入库；成功记录统一进入 `PENDING`。不提前开发练习、判分、错题或 AI。
 ## 题库审核发布（当前分支，尚未合并）
 
 - 分支：`feat/admin-question-review`，基线：`main@eecae66`；未修改 Flyway V1–V6，继续使用既有题目、来源、解析、审核轨迹和附件表。
 - 已实现：管理员题目分页和组合筛选、草稿创建/编辑、详情、受控附件信息、来源与版权复核，以及 `DRAFT → PENDING → PUBLISHED → DISABLED → PUBLISHED` 状态机；仅 `DRAFT` 可编辑。
-- 验证：后端 `mvn clean test` 43/43、`mvn clean package` PASS；前端 `npm test` 51/51、`npm run type-check`、`npm run build` PASS。题库专项测试使用随机临时 MySQL 库并从 V1–V6 完整迁移。
+- 验证：后端 `mvn clean test` 44/44、`mvn clean package` PASS；前端 `npm test` 51/51、`npm run type-check`、`npm run build` PASS、`npm audit` 为 0 vulnerabilities。题库专项测试使用随机临时 MySQL 库并从 V1–V6 完整迁移。
+- 浏览器联调：随机临时 MySQL 库已完整执行 V1–V6；ADMIN 登录、PENDING 样本详情、单选草稿创建/编辑/提交、合法来源发布、停用、重新发布、多选/填空/主观题动态表单、版权拒绝、退回草稿后再次编辑、刷新持久化均已完成。STUDENT、TEACHER 与首次未改密 ADMIN 调用管理员题库接口均为 403，浏览器控制台无 error。正式 `rike_tiku` 未写入联调数据；临时库、临时配置和前后端进程均已清理。
 - 已知结构边界：V1–V6 的 `ti_mu` 没有创建人字段；创建请求不接受前端创建人 ID，审核人则由认证上下文写入既有审核记录。不得伪造创建人持久化结果。
 - MVP30 三份 Excel 已只读核对，共 30 道；没有修改原文件、没有写入正式数据库、没有实现批量导入。详细映射和风险见 `ADMIN_QUESTION_REVIEW_API.md`。

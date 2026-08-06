@@ -80,6 +80,7 @@ public class QuestionAdminService {
         if ("SUBMITTED".equals(action)) validateComplete(id);
         if ("APPROVED".equals(action)) validatePublishableSources(id);
         jdbc.update("UPDATE ti_mu SET zhuang_tai=? WHERE id=?", target, id);
+        jdbc.update("UPDATE ti_mu_jie_xi SET zhuang_tai=? WHERE ti_mu_id=? AND jie_xi_lei_xing='STANDARD' AND ban_ben_hao=1 AND yi_shan_chu=0", target, id);
         jdbc.update("INSERT INTO ti_mu_shen_he_ji_lu(ti_mu_id,shen_he_dong_zuo,yuan_zhuang_tai,mu_biao_zhuang_tai,shen_he_ren_id,shen_he_yi_jian) VALUES (?,?,?,?,?,?)", id, action, expected, target, reviewerId, blank(opinion));
         return detailInternal(id);
     }
