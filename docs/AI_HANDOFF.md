@@ -4,9 +4,9 @@
 
 ## 当前状态
 
-当前分支为 `feat/student-practice-loop`，开始基线为 `main@4f10f6486de8f4d732abb6e52eeca7734bc3dfde`。PR #10、#11、#12 均已普通 merge；本分支尚未合并。
+当前分支为 `feat/student-practice-loop`，开始基线为 `main@4f10f6486de8f4d732abb6e52eeca7734bc3dfde`。PR #10、#11、#12 均已普通 merge；Draft PR #13 已创建、当前尚未合并。
 
-本轮新增 V7 的学生练习、正式答题、结果和错题聚合模型。V1–V6、MVP30 原始 Excel 和既有管理员模块均未改动。当前后端 68/68、前端 68/68 自动化测试通过；真实临时库浏览器联调因自动环境拒绝启动后台服务而为 `NOT_RUN`，不得写成 PASS。
+本轮新增 V7 的学生练习、正式答题、结果和错题聚合模型。V1–V6、MVP30 原始 Excel 和既有管理员模块均未改动。当前后端 68/68、前端 68/68 自动化测试通过，真实 HTTP 验证为 `PASS`，学生页面回查为 `NOT_RUN`，综合结论为 `PASS_WITH_ENV_LIMITATION`。
 
 ## 继续时必须保持
 
@@ -24,6 +24,6 @@
 - [数据库模型](QUESTION_DATABASE_MODEL_V1.md)
 - [开发状态](DEVELOPMENT_STATUS.md)
 
-## 后续唯一动作
+## 下一模块候选
 
-完成本轮真实临时库浏览器验收、完整回归、提交、普通 push 与 Draft PR 后停止，等待独立审查。未经审查不得创建下一模块分支。
+PR #13 合并后可单独规划最小 AI 错题答疑闭环。AI Provider、AI 答疑、掌握度和推荐当前均未实现，未经新任务不得开始。

@@ -49,7 +49,7 @@ Flyway 是数据库结构的唯一建表和升级入口。已经执行的迁移�
 - 管理员教师账号与档案、教师—班级—科目三元任课关系：管理员分页筛选、创建、修改、一次性初始密码、任课关系创建与状态结束/停用。
 - 管理员题库审核发布：题目分页与筛选、草稿创建/编辑、完整详情、版权复核和 `DRAFT → PENDING → PUBLISHED → DISABLED → PUBLISHED` 状态流；已通过普通 merge 合并到 `main`（PR #11）。
 - 管理员 MVP30 题库导入：单文件 Excel 预检查、逐行错误、知识点精确匹配、来源文件追溯、附件对象精确映射与全批次确认入库；成功题目和 STANDARD 解析统一为 `PENDING`。已通过普通 merge 合并至 `main`（PR #12，合并提交 `f499f0c2e1e3b4637d22480868e94dbdacdcbaa0`）。纯 V1–V6 测试库预检查结果为物理 0/10、化学 1/10、生物 1/10；仅在测试事务预置 Excel 所需知识点后，附件专项结果为 2/10、1/10、6/10。随机临时库的真实 HTTP multipart 与浏览器回查结论为 `PASS_WITH_ENV_LIMITATION`；匿名临时题已清理，MVP30 原始 Excel 尚未确认入库。
-- 学生自主练习、自动判分与错题闭环（PR #13 当前分支，尚未合并）：创建时仅冻结无活动附件、无图片/公式对象标记的题集，提交整场答案后完成单选/多选/填空自动判分、结果与错题聚合；未提交前不返回标准答案或解析。附件文件访问、图片展示和公式渲染不在首版范围内。
+- 学生自主练习、自动判分与错题闭环（PR #13 已创建、尚未合并）：创建时仅冻结无活动附件、无图片/公式对象标记的题集，提交整场答案后完成单选/多选/填空自动判分、结果与错题聚合；未提交前不返回标准答案或解析。当前后端 68/68、前端 68/68 测试通过，真实 HTTP 验证为 PASS，学生页面回查为 NOT_RUN，综合结论为 `PASS_WITH_ENV_LIMITATION`。附件文件访问、图片展示和公式渲染不在首版范围内。
 
 已完成前端认证基础：三角色登录入口、Pinia认证状态、Bearer Token注入、会话恢复、首次改密、路由守卫、管理员业务页及最小学生练习工作台。尚未完成：AI Provider、AI 答疑、掌握度、推荐、教师任务与考试。题库30题候选数据尚未正式发布。
 
@@ -135,4 +135,4 @@ npm run build
 
 ## 下一阶段
 
-管理员教师账号、档案与三元任课关系已通过普通 merge 合并至`main`：PR [#10](https://github.com/Fiesty-Abyss/rike-tiku/pull/10)，合并提交为`9495ecc`。管理员题库审核发布已通过普通 merge 合并至`main`：PR [#11](https://github.com/Fiesty-Abyss/rike-tiku/pull/11)，合并提交为`dda66d4c7b530b9af44c692aa4d03027718a5e65`。管理员 MVP30 题库导入已通过普通 merge 合并至`main`：PR [#12](https://github.com/Fiesty-Abyss/rike-tiku/pull/12)，合并提交为`f499f0c2e1e3b4637d22480868e94dbdacdcbaa0`。原始 Excel、Flyway V1–V6 与正式库均未修改；下一轮只可在新任务中审慎处理 MVP30 原始数据的预检查与确认入库。
+管理员教师账号、档案与三元任课关系已通过普通 merge 合并至`main`：PR [#10](https://github.com/Fiesty-Abyss/rike-tiku/pull/10)，合并提交为`9495ecc`。管理员题库审核发布已通过普通 merge 合并至`main`：PR [#11](https://github.com/Fiesty-Abyss/rike-tiku/pull/11)，合并提交为`dda66d4c7b530b9af44c692aa4d03027718a5e65`。管理员 MVP30 题库导入已通过普通 merge 合并至`main`：PR [#12](https://github.com/Fiesty-Abyss/rike-tiku/pull/12)，合并提交为`f499f0c2e1e3b4637d22480868e94dbdacdcbaa0`。PR #13 合并后，下一模块候选为最小 AI 错题答疑闭环；AI 当前尚未实现。
