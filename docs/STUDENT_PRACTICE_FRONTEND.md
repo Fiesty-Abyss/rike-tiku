@@ -1,6 +1,6 @@
 # 学生练习前端
 
-当前分支：`feat/student-practice-loop`（尚未合并）。学生页面不把题目、答题内容或练习结果写入 `localStorage`、`sessionStorage` 或控制台。
+当前分支：`feat/student-practice-loop`；Draft PR #13 已创建、当前尚未合并。前端 68/68 测试、类型检查和构建通过，`npm audit` 为 0 vulnerabilities。真实 HTTP 验证为 `PASS`，学生页面回查为 `NOT_RUN`，综合结论为 `PASS_WITH_ENV_LIMITATION`。学生页面不把题目、答题内容或练习结果写入 `localStorage`、`sessionStorage` 或控制台。
 
 | 路由 | 页面 | 行为 |
 |---|---|---|

@@ -5,7 +5,7 @@
 ## 当前开发轮
 
 - 开始基线：`main@4f10f6486de8f4d732abb6e52eeca7734bc3dfde`。
-- 当前分支：`feat/student-practice-loop`，尚未合并、尚未创建 PR。
+- 当前分支：`feat/student-practice-loop`；Draft PR #13 已创建、当前尚未合并。
 - 本轮范围：学生自主练习、自动判分、结果与错题闭环；不开发 AI、掌握度、推荐、教师任务、组卷考试或主观题评分。
 - Flyway：新增 `V7__create_student_practice_and_wrong_question_tables.sql`；V1–V6 未修改。业务表由 18 张增至 23 张。
 
@@ -22,8 +22,8 @@
 
 - 后端：`mvn clean test` 68/68 PASS；`mvn clean package` PASS。
 - 前端：`npm test` 68/68 PASS；`npm run type-check`、`npm run build` PASS。构建仅有既有大 chunk 提示。
-- 依赖审计和最终敏感信息扫描尚待本轮收尾执行。
-- 随机临时库浏览器联调：`NOT_RUN`。当前自动执行环境拒绝启动受控后台服务；未绕过限制，已清理空临时目录与数据库。真实 HTTP 会话安全验证已在随机集成测试库通过。
+- `npm audit`：0 vulnerabilities；最终敏感信息扫描通过。
+- 真实 HTTP：`PASS`，已覆盖会话创建、未提交响应防泄露、权限和结果访问。学生页面回查：`NOT_RUN`，受控后台服务无法启动。综合结论：`PASS_WITH_ENV_LIMITATION`。
 
 ## 已合并基线
 
@@ -33,4 +33,4 @@
 
 ## 下一步
 
-本轮完成并通过独立审查后，下一模块才可讨论；不得提前实现 AI、推荐或教师任务。
+PR #13 合并后，下一模块候选为最小 AI 错题答疑闭环。AI 当前尚未实现，本轮不得提前开发。
