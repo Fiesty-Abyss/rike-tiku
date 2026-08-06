@@ -57,7 +57,7 @@
 - 附件专项基线（仅在测试事务预置 Excel 所需知识点后）：物理 2/10 有效、化学 1/10 有效、生物 6/10 有效。其余行因声明图片数与正文 IMAGE 对象不一致、对象缺失或多候选被阻断；此数据只用于隔离附件问题，不能表示 V1–V6 数据库天然可导入数量。
 - 原始三份 Excel、Flyway V1–V6 和正式 `rike_tiku` 均未修改。
 - 当前分支自动化回归：后端 `mvn clean test` 54/54、`mvn clean package` 通过；前端 `npm test` 56/56、`npm run type-check`、`npm run build` 通过，`npm audit` 为 0 vulnerabilities。
-- 本轮真实浏览器临时库联调：`NOT_RUN`。自动执行环境拒绝后台启动本地服务；已创建并删除随机临时数据库，未启动持久化服务、未写入正式 `rike_tiku`，也未绕过该限制。
+- 本轮随机临时库联调：`PASS_WITH_ENV_LIMITATION`。管理员通过浏览器完成登录、导入页访问、导入后题库列表/详情回查、版权发布拒绝与刷新持久化；匿名临时物理题通过真实 HTTP multipart 预检查 1/1、确认 1/1，批次、PENDING 题目和 STANDARD 解析、三条 `COPYRIGHT_UNKNOWN` 受控来源及当前管理员的 `SUBMITTED` 记录均已核对。内置浏览器无法操作系统本地文件选择器，因此上传步骤由真实 HTTP multipart 完成；该匿名题不是 MVP30 正式入库数据。
 ## 题库审核发布（已合并至 `main`）
 
 - PR #11 已普通 merge 至 `main`，合并提交：`dda66d4c7b530b9af44c692aa4d03027718a5e65`；未修改 Flyway V1–V6，继续使用既有题目、来源、解析、审核轨迹和附件表。
