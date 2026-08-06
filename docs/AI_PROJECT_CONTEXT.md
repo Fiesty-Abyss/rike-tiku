@@ -49,14 +49,14 @@
 ## 5. 当前实现状态
 
 - 状态：题库、账号、教学组织和学生练习闭环均已进入 `main`。
-- 当前分支：`main`；PR #13 已普通 merge，合并提交为 `db04fbc9caeeb5e4eb003a45581e62e76dbab420`。
+- 当前分支：`feat/demo-data-manual-acceptance`，基于 `main@2161080427fd432634325bea3c3d1ebd7e0f519a`；PR #13 已普通 merge。
 - 当前Flyway：V1–V7。
 - 当前业务表：既有18表，加练习会话、冻结题目、学生答题、结果、错题聚合，共23表。
 - 当前样本：物理、化学、生物各1题，共3题，均为 `PENDING`；权利状态为 `COPYRIGHT_UNKNOWN`。
 - 合并后验证：后端 68/68 测试与打包通过；前端 68/68、类型检查和生产构建通过；`npm audit` 为 0 vulnerabilities。真实 HTTP 验证为 `PASS`，学生页面回查为 `NOT_RUN`，综合结论为 `PASS_WITH_ENV_LIMITATION`。
 - 远程仓库：`https://github.com/Fiesty-Abyss/rike-tiku`，公开仓库，默认分支 `main`。
 
-学生导入、教师管理、三元任课关系、题库审核发布、MVP30 导入及学生练习闭环均已进入 `main`。下一模块候选为最小 AI 错题答疑闭环，但 AI Provider、AI 答疑、掌握度和推荐当前仍未实现。
+学生导入、教师管理、三元任课关系、题库审核发布、MVP30 导入及学生练习闭环均已进入 `main`。当前分支只建立独立演示库和人工验收资料；下一步是三角色人工验收与问题修正。MVP30 尚未正式入库，教师正式业务工作台、AI Provider、DeepSeek、GLM、AI 答疑、掌握度和推荐均未实现。
 
 ## 6. AI接管规则
 
