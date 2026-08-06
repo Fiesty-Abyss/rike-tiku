@@ -20,10 +20,10 @@
 
 ## 当前验证
 
-- 后端：`mvn clean test` 61/61 PASS；`mvn clean package` PASS。
-- 前端：`npm test` 64/64 PASS；`npm run type-check`、`npm run build` PASS。构建仅有既有大 chunk 提示。
+- 后端：`mvn clean test` 68/68 PASS；`mvn clean package` PASS。
+- 前端：`npm test` 68/68 PASS；`npm run type-check`、`npm run build` PASS。构建仅有既有大 chunk 提示。
 - 依赖审计和最终敏感信息扫描尚待本轮收尾执行。
-- 随机临时库浏览器联调：`NOT_RUN`。当前自动执行环境拒绝启动受控后台服务；未绕过限制，已清理空临时目录与数据库。
+- 随机临时库浏览器联调：`NOT_RUN`。当前自动执行环境拒绝启动受控后台服务；未绕过限制，已清理空临时目录与数据库。真实 HTTP 会话安全验证已在随机集成测试库通过。
 
 ## 已合并基线
 

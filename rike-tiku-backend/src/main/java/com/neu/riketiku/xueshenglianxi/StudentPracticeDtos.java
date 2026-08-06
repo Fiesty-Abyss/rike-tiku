@@ -22,7 +22,8 @@ public final class StudentPracticeDtos {
             @NotNull @Min(1) @Max(50) Integer count) {
     }
 
-    public record Answer(@NotNull Long practiceQuestionId, @NotNull JsonNode answer, @Min(0) Integer elapsedSeconds) {
+    public record Answer(@NotNull Long practiceQuestionId, @NotNull JsonNode answer,
+                         @Min(0) @Max(86400) Integer elapsedSeconds) {
     }
 
     public record SubmitRequest(@NotEmpty List<@Valid Answer> answers) {

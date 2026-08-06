@@ -15,7 +15,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
+import java.util.regex.Pattern;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -24,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class StudentPracticeService {
     private static final List<String> AUTO_GRADABLE_TYPES = List.of("SINGLE_CHOICE", "MULTIPLE_CHOICE", "FILL_BLANK");
+    private static final Pattern OBJECT_MARKER = Pattern.compile("〔(?:图片|公式)对象\\s+[IF]\\d{3}〕");
     private final JdbcTemplate jdbc;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -252,36 +255,89 @@ public class StudentPracticeService {
                     .append(placeholders(request.knowledgePointIds().size())).append("))");
             arguments.addAll(request.knowledgePointIds());
         }
-        sql.append(" ORDER BY q.id");
-        return jdbc.query(sql.toString(), (rs, row) -> new QuestionPoolItem(rs.getLong(1), rs.getLong(2), rs.getString(3),
-                rs.getString(4), rs.getString(5), rs.getInt(6)), arguments.toArray());
+        sql.append(" ORDER BY q.id DESC");
+        List<QuestionPoolSeed> seeds = jdbc.query(sql.toString(), (rs, row) -> new QuestionPoolSeed(rs.getLong(1), rs.getLong(2),
+                rs.getString(3), rs.getString(4), rs.getString(5), rs.getInt(6)), arguments.toArray());
+        return seeds.stream().map(this::toEligibleQuestion).flatMap(Optional::stream).toList();
     }
 
-    private void writeFrozenQuestion(long sessionId, QuestionPoolItem question, int order) {
+    private Optional<QuestionPoolItem> toEligibleQuestion(QuestionPoolSeed question) {
         List<StudentPracticeDtos.Option> options = question.type().equals("FILL_BLANK") ? List.of() : jdbc.query("""
                 SELECT xuan_xiang_biao_shi,xuan_xiang_nei_rong
                 FROM ti_mu_xuan_xiang WHERE ti_mu_id=? AND yi_shan_chu=0 ORDER BY pai_xu,id
                 """, (rs, row) -> new StudentPracticeDtos.Option(rs.getString(1), rs.getString(2)), question.id());
-        String analysis = jdbc.query("""
+        Optional<String> analysis = jdbc.query("""
                 SELECT jie_xi_nei_rong FROM ti_mu_jie_xi
                 WHERE ti_mu_id=? AND jie_xi_lei_xing='STANDARD' AND ban_ben_hao=1 AND zhuang_tai='PUBLISHED' AND yi_shan_chu=0
-                """, (rs, row) -> rs.getString(1), question.id()).stream().findFirst()
-                .orElseThrow(() -> business("PRACTICE_QUESTION_INVALID", "已发布题目缺少有效标准解析", HttpStatus.CONFLICT));
+                """, (rs, row) -> rs.getString(1), question.id()).stream().findFirst();
         List<StudentPracticeDtos.KnowledgePoint> points = jdbc.query("""
                 SELECT k.id,k.zhi_shi_dian_ming_cheng,k.wan_zheng_lu_jing
                 FROM ti_mu_zhi_shi_dian qkp JOIN zhi_shi_dian k ON k.id=qkp.zhi_shi_dian_id
                 WHERE qkp.ti_mu_id=? AND qkp.yi_shan_chu=0 AND k.zhuang_tai='ACTIVE' AND k.yi_shan_chu=0
                 ORDER BY qkp.pai_xu,qkp.id
                 """, (rs, row) -> new StudentPracticeDtos.KnowledgePoint(rs.getLong(1), rs.getString(2), rs.getString(3)), question.id());
-        if (points.isEmpty()) {
-            fail("PRACTICE_QUESTION_INVALID", "已发布题目缺少有效知识点", HttpStatus.CONFLICT);
+        if (analysis.isEmpty() || points.isEmpty() || hasActiveAttachment(question.id())
+                || containsObjectMarker(question.stem()) || containsObjectMarker(question.correctAnswer())
+                || containsObjectMarker(analysis.get()) || options.stream().anyMatch(item -> containsObjectMarker(item.content()))
+                || !hasValidAnswerStructure(question.type(), question.correctAnswer(), options)) {
+            return Optional.empty();
         }
+        return Optional.of(new QuestionPoolItem(question.id(), question.subjectId(), question.type(), question.stem(),
+                question.correctAnswer(), question.difficulty(), options, analysis.get(), points));
+    }
+
+    private void writeFrozenQuestion(long sessionId, QuestionPoolItem question, int order) {
         jdbc.update("""
                 INSERT INTO lian_xi_ti_mu(lian_xi_hui_hua_id,ti_mu_id,ti_mu_shun_xu,fen_zhi,ti_mu_lei_xing,nan_du_kuai_zhao,ti_gan_kuai_zhao,
                     xuan_xiang_kuai_zhao,zheng_que_da_an_kuai_zhao,biao_zhun_jie_xi_kuai_zhao,zhi_shi_dian_kuai_zhao)
                 VALUES (?,?,?,?,?,?,?,?,?,?,?)
                 """, sessionId, question.id(), order, BigDecimal.ONE, question.type(), question.difficulty(), question.stem(),
-                options.isEmpty() ? null : writeJson(options), question.correctAnswer(), analysis, writeJson(points));
+                question.options().isEmpty() ? null : writeJson(question.options()), question.correctAnswer(), question.standardAnalysis(),
+                writeJson(question.knowledgePoints()));
+    }
+
+    private boolean hasActiveAttachment(long questionId) {
+        return count("SELECT COUNT(*) FROM ti_mu_fu_jian WHERE ti_mu_id=? AND yi_shan_chu=0 AND zhuang_tai='ACTIVE'", questionId) > 0;
+    }
+
+    private boolean containsObjectMarker(String value) {
+        return value != null && OBJECT_MARKER.matcher(value).find();
+    }
+
+    private boolean hasValidAnswerStructure(String type, String answerJson, List<StudentPracticeDtos.Option> options) {
+        try {
+            JsonNode answer = objectMapper.readTree(answerJson);
+            if (!answer.isObject() || !type.equals(answer.path("type").asText())) {
+                return false;
+            }
+            if ("FILL_BLANK".equals(type)) {
+                JsonNode blanks = answer.path("blanks");
+                if (!blanks.isArray() || blanks.isEmpty()) return false;
+                for (int index = 0; index < blanks.size(); index++) {
+                    JsonNode blank = blanks.get(index);
+                    JsonNode accepted = blank.path("acceptedAnswers");
+                    if (blank.path("index").asInt() != index + 1 || !accepted.isArray() || accepted.isEmpty()
+                            || java.util.stream.StreamSupport.stream(accepted.spliterator(), false)
+                            .anyMatch(value -> !value.isTextual() || value.asText().isBlank())) return false;
+                }
+                return true;
+            }
+            if (options.size() < 2 || options.stream().anyMatch(option -> option.label() == null || option.label().isBlank()
+                    || option.content() == null || option.content().isBlank()) || optionLabels(writeJson(options)).size() != options.size()) {
+                return false;
+            }
+            JsonNode labels = answer.path("optionLabels");
+            int minimum = "SINGLE_CHOICE".equals(type) ? 1 : 2;
+            if (!labels.isArray() || labels.size() < minimum || ("SINGLE_CHOICE".equals(type) && labels.size() != 1)) return false;
+            Set<String> optionLabels = optionLabels(writeJson(options));
+            Set<String> answerLabels = new HashSet<>();
+            for (JsonNode label : labels) {
+                if (!label.isTextual() || !optionLabels.contains(label(label.asText())) || !answerLabels.add(label(label.asText()))) return false;
+            }
+            return answerLabels.size() == labels.size();
+        } catch (Exception exception) {
+            return false;
+        }
     }
 
     private SessionHeader findSession(long studentId, long sessionId, boolean forUpdate) {
@@ -323,6 +379,9 @@ public class StudentPracticeService {
         for (StudentPracticeDtos.Answer answer : answers) {
             if (!expected.contains(answer.practiceQuestionId()) || result.put(answer.practiceQuestionId(), answer) != null) {
                 fail("PRACTICE_ANSWER_SET_INVALID", "提交答案包含未知或重复练习题", HttpStatus.BAD_REQUEST);
+            }
+            if (answer.elapsedSeconds() != null && answer.elapsedSeconds() > 86400) {
+                fail("PRACTICE_ELAPSED_SECONDS_INVALID", "单题用时不能超过86400秒", HttpStatus.BAD_REQUEST);
             }
         }
         return result;
@@ -408,33 +467,22 @@ public class StudentPracticeService {
     }
 
     private void updateWrongQuestion(long studentId, long questionId, long answerId, boolean correct, LocalDateTime submittedAt) {
-        List<Long> existing = jdbc.query("SELECT id FROM cuo_ti_ji_lu WHERE xue_sheng_id=? AND ti_mu_id=? FOR UPDATE",
-                (rs, row) -> rs.getLong(1), studentId, questionId);
         if (!correct) {
-            if (existing.isEmpty()) {
-                jdbc.update("""
-                        INSERT INTO cuo_ti_ji_lu(xue_sheng_id,ti_mu_id,cuo_wu_ci_shu,lian_xu_zheng_que_ci_shu,zhuang_tai,zui_jin_da_ti_id,zui_jin_cuo_wu_shi_jian)
-                        VALUES (?,?,1,0,'NEW',?,?)
-                        """, studentId, questionId, answerId, submittedAt);
-            } else {
-                jdbc.update("""
-                        UPDATE cuo_ti_ji_lu
-                        SET cuo_wu_ci_shu=cuo_wu_ci_shu+1,lian_xu_zheng_que_ci_shu=0,zhuang_tai='NEW',
-                            zui_jin_da_ti_id=?,zui_jin_cuo_wu_shi_jian=?
-                        WHERE id=?
-                        """, answerId, submittedAt, existing.getFirst());
-            }
+            jdbc.update("""
+                    INSERT INTO cuo_ti_ji_lu(xue_sheng_id,ti_mu_id,cuo_wu_ci_shu,lian_xu_zheng_que_ci_shu,zhuang_tai,zui_jin_da_ti_id,zui_jin_cuo_wu_shi_jian)
+                    VALUES (?,?,1,0,'NEW',?,?)
+                    ON DUPLICATE KEY UPDATE cuo_wu_ci_shu=cuo_wu_ci_shu+1,lian_xu_zheng_que_ci_shu=0,zhuang_tai='NEW',
+                        zui_jin_da_ti_id=VALUES(zui_jin_da_ti_id),zui_jin_cuo_wu_shi_jian=VALUES(zui_jin_cuo_wu_shi_jian)
+                    """, studentId, questionId, answerId, submittedAt);
             return;
         }
-        if (!existing.isEmpty()) {
-            jdbc.update("""
-                    UPDATE cuo_ti_ji_lu
-                    SET lian_xu_zheng_que_ci_shu=lian_xu_zheng_que_ci_shu+1,
-                        zhuang_tai=CASE WHEN lian_xu_zheng_que_ci_shu+1>=2 THEN 'MASTERED' ELSE 'REVIEWING' END,
-                        zui_jin_da_ti_id=?
-                    WHERE id=?
-                    """, answerId, existing.getFirst());
-        }
+        jdbc.update("""
+                UPDATE cuo_ti_ji_lu
+                SET lian_xu_zheng_que_ci_shu=lian_xu_zheng_que_ci_shu+1,
+                    zhuang_tai=CASE WHEN lian_xu_zheng_que_ci_shu+1>=2 THEN 'MASTERED' ELSE 'REVIEWING' END,
+                    zui_jin_da_ti_id=?
+                WHERE xue_sheng_id=? AND ti_mu_id=?
+                """, answerId, studentId, questionId);
     }
 
     private StudentPracticeDtos.WrongQuestionItem wrongItem(ResultSet rs) throws SQLException {
@@ -537,7 +585,12 @@ public class StudentPracticeService {
         throw business(code, message, status);
     }
 
-    private record QuestionPoolItem(long id, long subjectId, String type, String stem, String correctAnswer, int difficulty) {
+    private record QuestionPoolSeed(long id, long subjectId, String type, String stem, String correctAnswer, int difficulty) {
+    }
+
+    private record QuestionPoolItem(long id, long subjectId, String type, String stem, String correctAnswer, int difficulty,
+                                    List<StudentPracticeDtos.Option> options, String standardAnalysis,
+                                    List<StudentPracticeDtos.KnowledgePoint> knowledgePoints) {
     }
 
     private record SessionHeader(long id, long subjectId, String subjectCode, String subjectName, String status, int questionCount,
