@@ -47,8 +47,9 @@ Flyway 是数据库结构的唯一建表和升级入口。已经执行的迁移�
 - 管理员学生Excel导入后端：模板、预检查与确认入库；确认时在一个事务中创建账号、STUDENT角色、学生档案和主班级关系。
 - 管理员班级管理与学生Excel导入前端：管理员布局、班级分页筛选/创建/编辑/状态切换，以及模板下载、预检查、确认入库、账号发放结果与Excel下载。
 - 管理员教师账号与档案、教师—班级—科目三元任课关系：管理员分页筛选、创建、修改、一次性初始密码、任课关系创建与状态结束/停用。
+- 当前分支的管理员题库审核发布：题目分页与筛选、草稿创建/编辑、完整详情、版权复核和 `DRAFT → PENDING → PUBLISHED → DISABLED → PUBLISHED` 状态流；尚未合并到 `main`。
 
-已完成前端认证基础：三角色登录入口、Pinia认证状态、Bearer Token注入、会话恢复、首次改密、路由守卫和管理员业务页。尚未完成：学生普通管理、教师管理、任课关系管理、题库正式业务API、练习判分、错题、AI Provider和学生/教师正式工作台。题库30题候选数据尚未正式发布。
+已完成前端认证基础：三角色登录入口、Pinia认证状态、Bearer Token注入、会话恢复、首次改密、路由守卫和管理员业务页。尚未完成：学生普通管理、练习判分、错题、AI Provider和学生/教师正式工作台；题库审核发布当前位于未合并分支。题库30题候选数据尚未正式发布。
 
 准确状态请以 [开发状态](docs/DEVELOPMENT_STATUS.md) 和 [AI交接](docs/AI_HANDOFF.md) 为准。
 
@@ -116,6 +117,8 @@ npm run build
 - [管理员班级与学生导入前端](docs/ADMIN_STUDENT_IMPORT_FRONTEND.md)
 - [管理员教师与任课关系接口](docs/ADMIN_TEACHER_ASSIGNMENT_API.md)
 - [管理员教师与任课关系前端](docs/ADMIN_TEACHER_ASSIGNMENT_FRONTEND.md)
+- [管理员题库审核发布接口](docs/ADMIN_QUESTION_REVIEW_API.md)
+- [管理员题库审核发布前端](docs/ADMIN_QUESTION_REVIEW_FRONTEND.md)
 - V3.0总体设计公开脱敏版（位于 `docs/`）
 
 ## 题库资料和权利说明
@@ -126,4 +129,4 @@ npm run build
 
 ## 下一阶段
 
-管理员教师账号、档案与三元任课关系已通过普通 merge 合并至`main`：PR [#10](https://github.com/Fiesty-Abyss/rike-tiku/pull/10)，合并提交为`9495ecc`，原远程功能分支已删除。合并后实际回归包括前端35/35、类型检查、构建、`npm audit`（0 vulnerabilities）及后端30/30测试和打包。下一阶段进入管理员题库审核、发布与停用闭环；不提前开发练习、判分或AI。
+管理员教师账号、档案与三元任课关系已通过普通 merge 合并至`main`：PR [#10](https://github.com/Fiesty-Abyss/rike-tiku/pull/10)，合并提交为`9495ecc`，原远程功能分支已删除。当前开发分支为 `feat/admin-question-review`，题库审核发布模块尚未合并；MVP30 Excel 仍仅完成只读兼容核对，尚未实现或执行批量入库。

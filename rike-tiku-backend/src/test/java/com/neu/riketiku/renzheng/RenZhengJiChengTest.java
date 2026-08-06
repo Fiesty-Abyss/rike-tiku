@@ -111,6 +111,20 @@ class RenZhengJiChengTest {
     }
 
     @Test
+    void adminQuestionEndpointsRequireAuthenticatedNonInitialAdminRole() throws Exception {
+        String adminToken = token(login("question_admin", "AdminPass1", "ADMIN", false));
+        String studentToken = token(login("question_student", "StudentPass1", "STUDENT", false));
+        String teacherToken = token(login("question_teacher", "TeacherPass1", "TEACHER", false));
+        String initialAdminToken = token(login("question_initial_admin", "AdminPass1", "ADMIN", true));
+
+        assertThat(get("/api/v1/admin/questions?page=1&size=10", null).status()).isEqualTo(401);
+        assertThat(get("/api/v1/admin/questions?page=1&size=10", studentToken).status()).isEqualTo(403);
+        assertThat(get("/api/v1/admin/questions?page=1&size=10", teacherToken).status()).isEqualTo(403);
+        assertThat(get("/api/v1/admin/questions?page=1&size=10", initialAdminToken).status()).isEqualTo(403);
+        assertThat(get("/api/v1/admin/questions?page=1&size=10", adminToken).status()).isEqualTo(200);
+    }
+
+    @Test
     void invalidCredentialsAndUnavailableAccountsShouldBeRejected() throws Exception {
         insertUser("valid", "ValidPass1", false, "ENABLED", "STUDENT");
         insertUser("disabled", "DisabledPass1", false, "DISABLED", "STUDENT");
