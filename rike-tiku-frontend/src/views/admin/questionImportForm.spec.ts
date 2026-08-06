@@ -18,4 +18,13 @@ describe('题库导入表单状态', () => {
     expect(canConfirmQuestionImport(file, preview(), true)).toBe(false)
     expect(canConfirmQuestionImport(file, preview(), false)).toBe(true)
   })
+  it('预检查失败、移除文件和后端可空映射字段均不能遗留可确认状态', () => {
+    const failed = preview({ validCount:0, invalidCount:1, subjectCode:null, rows:[{
+      rowNumber:3, subjectCode:null, questionType:null, usageMode:null, stemSummary:'无效行', knowledgePointPaths:[], attachmentCount:0,
+      contentHash:'', status:'INVALID', errors:[], warnings:[],
+    }] })
+    expect(canConfirmQuestionImport(file, failed, false)).toBe(false)
+    expect(canConfirmQuestionImport(null, preview(), false)).toBe(false)
+    expect(failed.rows[0].subjectCode).toBeNull()
+  })
 })

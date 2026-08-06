@@ -71,7 +71,7 @@ public class QuestionImportService {
         String batchCode = "QUESTION_" + DateTimeFormatter.ofPattern("yyyyMMddHHmmss").format(LocalDateTime.now())
                 + "_" + UUID.randomUUID().toString().substring(0, 8);
         jdbc.update("INSERT INTO dao_ru_pi_ci(pi_ci_bian_hao,dao_ru_lei_xing,yuan_shi_wen_jian_ming,yuan_shi_wen_jian_lu_jing,wen_jian_ha_xi,zong_ji_lu_shu,cheng_gong_shu,shi_bai_shu,zhuang_tai,bei_zhu) VALUES (?,?,?,?,?,?,?,?,?,?)",
-                batchCode, "QUESTION", result.fileName(), controlledFilePath(result.subjectCode(), result.fileName()), result.fileHash(),
+                batchCode, "QUESTION", result.fileName(), null, result.fileHash(),
                 result.rows().size(), result.rows().size(), 0, "IMPORTED", "MVP30 管理员题库导入；全部进入 PENDING");
         Long batchId = jdbc.queryForObject("SELECT LAST_INSERT_ID()", Long.class);
         for (ImportedRow row : result.rows()) {
@@ -84,12 +84,19 @@ public class QuestionImportService {
         validateFile(file);
         String fileHash = sha256(bytes(file));
         List<RawRow> rawRows = readRows(file);
-        String subjectCode = rawRows.isEmpty() ? null : subjectCode(rawRows.getFirst().subject());
         Map<String, Integer> seenHashes = new HashMap<>();
         List<ImportedRow> rows = new ArrayList<>();
         for (RawRow raw : rawRows) {
             rows.add(validateRow(raw, seenHashes));
         }
+        Set<String> subjectCodes = new HashSet<>();
+        for (ImportedRow row : rows) if (row.subjectCode() != null) subjectCodes.add(row.subjectCode());
+        if (subjectCodes.size() > 1) {
+            List<ImportedRow> mixedRows = new ArrayList<>();
+            for (ImportedRow row : rows) mixedRows.add(withError(row, "subject", "SUBJECT_MIXED_FILE", "同一Excel只能导入一个学科"));
+            rows = mixedRows;
+        }
+        String subjectCode = subjectCodes.size() == 1 ? subjectCodes.iterator().next() : null;
         boolean alreadyImported = count("SELECT COUNT(*) FROM dao_ru_pi_ci WHERE dao_ru_lei_xing='QUESTION' AND wen_jian_ha_xi=? AND zhuang_tai='IMPORTED'", fileHash) > 0;
         return new ValidationResult(file.getOriginalFilename(), fileHash, subjectCode, alreadyImported, List.copyOf(rows));
     }
@@ -121,8 +128,9 @@ public class QuestionImportService {
             error(errors, "knowledgePoints", "KNOWLEDGE_POINT_REQUIRED", "至少需要一个知识点路径");
         }
         List<Long> pointIds = new ArrayList<>();
+        Long subjectId = null;
         if (subjectCode != null) {
-            Long subjectId = jdbc.query("SELECT id FROM ke_mu WHERE ke_mu_dai_ma=? AND zhuang_tai='ACTIVE' AND yi_shan_chu=0",
+            subjectId = jdbc.query("SELECT id FROM ke_mu WHERE ke_mu_dai_ma=? AND zhuang_tai='ACTIVE' AND yi_shan_chu=0",
                     rs -> rs.next() ? rs.getLong(1) : null, subjectCode);
             if (subjectId == null) {
                 error(errors, "subject", "SUBJECT_UNAVAILABLE", "学科不存在或已停用");
@@ -137,47 +145,51 @@ public class QuestionImportService {
         }
         String hash = subjectCode == null || mapping == null ? "" : contentHash(raw.stem(), options);
         if (!hash.isEmpty()) {
-            if (seenHashes.putIfAbsent(hash, raw.rowNumber()) != null) error(errors, "content", "CONTENT_DUPLICATE_IN_FILE", "与当前文件中的其他题目内容完全重复");
-            if (count("SELECT COUNT(*) FROM ti_mu WHERE nei_rong_ha_xi=? AND yi_shan_chu=0", hash) > 0) error(errors, "content", "CONTENT_DUPLICATE_IN_DATABASE", "与数据库现有题目内容完全重复");
+            String duplicateKey = subjectCode + ":" + hash;
+            if (seenHashes.putIfAbsent(duplicateKey, raw.rowNumber()) != null) error(errors, "content", "CONTENT_DUPLICATE_IN_FILE", "与当前文件中的其他题目内容完全重复");
+            if (subjectId != null && count("SELECT COUNT(*) FROM ti_mu WHERE ke_mu_id=? AND nei_rong_ha_xi=? AND yi_shan_chu=0", subjectId, hash) > 0) error(errors, "content", "CONTENT_DUPLICATE_IN_DATABASE", "与当前学科数据库现有题目内容完全重复");
         }
-        List<AttachmentDraft> attachments = attachments(raw, subjectCode, options, errors, warnings);
-        if (!validImageCount(raw, attachments, "QUESTION") || !validImageCount(raw, attachments, "STANDARD_ANALYSIS")) {
-            warnings.add("Excel图片数量仅用于复核；实际关联以正文对象标记和精确对象文件为准");
-        }
-        return new ImportedRow(raw, subjectCode, mapping, difficulty, options, answer, List.copyOf(pointPaths), List.copyOf(pointIds),
+        SourceDraft sources = sources(raw.sourceFile(), errors);
+        List<AttachmentDraft> attachments = attachments(raw, subjectCode, options, answer, errors);
+        validateImageCount(raw, attachments, "QUESTION", errors);
+        validateImageCount(raw, attachments, "STANDARD_ANALYSIS", errors);
+        return new ImportedRow(raw, subjectCode, mapping, difficulty, options, answer, sources, List.copyOf(pointPaths), List.copyOf(pointIds),
                 List.copyOf(attachments), hash, List.copyOf(errors), List.copyOf(warnings));
     }
 
-    private boolean validImageCount(RawRow raw, List<AttachmentDraft> attachments, String position) {
+    private void validateImageCount(RawRow raw, List<AttachmentDraft> attachments, String position, List<QuestionImportDtos.Error> errors) {
         int declared = "QUESTION".equals(position) ? raw.questionImageCount() : raw.analysisImageCount();
         int actual = (int) attachments.stream().filter(item -> item.position().equals(position) && item.type().equals("IMAGE")).count();
-        return declared == actual;
+        if (declared > 0 && actual == 0) error(errors, "attachments", "ATTACHMENT_MARKER_MISSING", "Excel声明存在图片，但正文没有可解析的图片对象标记");
+        if (declared != actual) error(errors, "attachments", "ATTACHMENT_IMAGE_COUNT_MISMATCH", "Excel声明图片数量与正文图片对象数量不一致");
     }
 
-    private List<AttachmentDraft> attachments(RawRow raw, String subjectCode, List<OptionDraft> options,
-                                               List<QuestionImportDtos.Error> errors, List<String> warnings) {
+    private List<AttachmentDraft> attachments(RawRow raw, String subjectCode, List<OptionDraft> options, String answer,
+                                               List<QuestionImportDtos.Error> errors) {
         if (subjectCode == null) return List.of();
         List<TextPart> textParts = new ArrayList<>();
         textParts.add(new TextPart("QUESTION", null, raw.stem()));
         for (int index = 0; index < options.size(); index++) textParts.add(new TextPart("OPTION", index, options.get(index).content()));
-        textParts.add(new TextPart("ANSWER", null, raw.answer()));
+        textParts.add(new TextPart("ANSWER", null, answer));
         textParts.add(new TextPart("STANDARD_ANALYSIS", null, raw.standardAnalysis()));
         List<AttachmentDraft> result = new ArrayList<>();
+        Set<String> markers = new HashSet<>();
         for (TextPart part : textParts) {
             Matcher matcher = MARKER.matcher(part.text());
             int order = 1;
             while (matcher.find()) {
                 String marker = matcher.group(2);
                 String type = marker.startsWith("I") ? "IMAGE" : "FORMULA";
+                if (!markers.add(part.position() + ":" + marker)) {
+                    error(errors, "attachments", "ATTACHMENT_OBJECT_DUPLICATE", "同一关联位置重复使用附件对象" + marker);
+                    continue;
+                }
                 Path file = findObjectFile(subjectCode, raw.questionNumber(), marker, type, errors, raw.rowNumber());
                 if (file != null) {
                     result.add(new AttachmentDraft(part.position(), part.optionIndex(), type, marker, file.getFileName().toString(),
                             controlledRelativePath(file), sha256(file), matcher.start() + 1, order++));
                 }
             }
-        }
-        if (result.isEmpty() && (raw.questionImageCount() > 0 || raw.analysisImageCount() > 0)) {
-            warnings.add("Excel声明存在图片对象，但正文没有可解析的对象标记");
         }
         return result;
     }
@@ -186,23 +198,26 @@ public class QuestionImportService {
                                 List<QuestionImportDtos.Error> errors, int rowNumber) {
         String subject = Map.of("PHYSICS", "物理", "CHEMISTRY", "化学", "BIOLOGY", "生物").get(subjectCode);
         List<Path> roots = List.of(
-                sourceRoot.resolve("理综").resolve("测试结果").resolve(subject).resolve("images").normalize(),
-                sourceRoot.resolve(subject).resolve("母题库").resolve("images").normalize());
+                sourceRoot.resolve(subject).resolve("母题库").resolve("images").normalize(),
+                sourceRoot.resolve(subject).resolve("母题库").resolve("attachments").normalize());
         String numeric = marker.substring(1);
         String expected = "(?i)^q" + Pattern.quote(questionNumber) + "_.+_"
                 + ("IMAGE".equals(type) ? "image" : "formula") + "_" + numeric + "\\.[a-z0-9]+$";
         try {
+            List<Path> matches = new ArrayList<>();
             for (Path root : roots) {
                 if (!root.startsWith(sourceRoot) || !Files.isDirectory(root)) continue;
                 try (var files = Files.walk(root)) {
-                    List<Path> matches = files.filter(Files::isRegularFile)
-                            .filter(path -> path.getFileName().toString().matches(expected)).toList();
-                    if (matches.size() == 1) return matches.getFirst();
-                    if (matches.size() > 1) {
-                        error(errors, "attachments", "ATTACHMENT_OBJECT_AMBIGUOUS", "第" + rowNumber + "行对象" + marker + "匹配到多个附件");
-                        return null;
-                    }
+                    matches.addAll(files.filter(Files::isRegularFile)
+                            .map(path -> path.toAbsolutePath().normalize())
+                            .filter(path -> path.startsWith(sourceRoot) && path.startsWith(root))
+                            .filter(path -> path.getFileName().toString().matches(expected)).toList());
                 }
+            }
+            if (matches.size() == 1) return matches.getFirst();
+            if (matches.size() > 1) {
+                error(errors, "attachments", "ATTACHMENT_OBJECT_AMBIGUOUS", "第" + rowNumber + "行对象" + marker + "匹配到多个附件");
+                return null;
             }
             error(errors, "attachments", "ATTACHMENT_OBJECT_MISSING", "第" + rowNumber + "行对象" + marker + "未找到精确附件");
             return null;
@@ -230,7 +245,7 @@ public class QuestionImportService {
         for (Long pointId : row.pointIds()) jdbc.update("INSERT INTO ti_mu_zhi_shi_dian(ti_mu_id,zhi_shi_dian_id,shi_fou_zhu_yao,pai_xu) VALUES (?,?,?,?)", questionId, pointId, order == 1, order++);
         for (String contentType : List.of("QUESTION", "ANSWER", "STANDARD_ANALYSIS")) {
             jdbc.update("INSERT INTO ti_mu_lai_yuan(ti_mu_id,nei_rong_lei_xing,lai_yuan_lei_xing,lai_yuan_ming_cheng,lai_yuan_di_zhi,nian_fen,di_qu,shi_juan_ming_cheng,ti_hao,quan_li_zhuang_tai,quan_li_yi_ju) VALUES (?,?,?,?,?,?,?,?,?,?,?)",
-                    questionId, contentType, "REAL_EXAM", row.raw().paperName(), controlledSourceAddress(row.raw().sourceFile()), row.raw().year(), blank(row.raw().region()), row.raw().paperName(), row.raw().questionNumber(), "COPYRIGHT_UNKNOWN", "MVP30 本地候选文件未提供可发布权利依据");
+                    questionId, contentType, "REAL_EXAM", row.raw().paperName(), row.sources().address(contentType), row.raw().year(), blank(row.raw().region()), row.raw().paperName(), row.raw().questionNumber(), "COPYRIGHT_UNKNOWN", "MVP30 本地候选文件未提供可发布权利依据");
         }
         for (AttachmentDraft attachment : row.attachments()) {
             Long optionId = "OPTION".equals(attachment.position()) ? optionIds.get(attachment.optionIndex() + 1) : null;
@@ -257,6 +272,7 @@ public class QuestionImportService {
                 for (int column = 0; column < HEADERS.size(); column++) values.add(text(row, column, formatter));
                 rows.add(new RawRow(index + 1, values));
             }
+            if (rows.isEmpty()) fail("WORKBOOK_NO_DATA", "Excel未包含题目数据行", HttpStatus.BAD_REQUEST);
             return List.copyOf(rows);
         } catch (RenZhengYeWuYiChang exception) {
             throw exception;
@@ -320,7 +336,10 @@ public class QuestionImportService {
     }
 
     private String parseAnswer(String raw, Mapping mapping, List<OptionDraft> options, List<QuestionImportDtos.Error> errors) {
-        if (mapping.type().equals("SUBJECTIVE")) return "{\"schemaVersion\":1,\"type\":\"SUBJECTIVE\"}";
+        if (mapping.type().equals("SUBJECTIVE")) {
+            if (blank(raw) == null) error(errors, "answer", "SUBJECTIVE_REFERENCE_ANSWER_REQUIRED", "主观题必须保留Excel原始参考答案");
+            return "{\"schemaVersion\":1,\"type\":\"SUBJECTIVE\",\"referenceAnswer\":" + json(raw == null ? "" : raw) + "}";
+        }
         if (mapping.type().equals("FILL_BLANK")) {
             List<String> answers = new ArrayList<>();
             for (String segment : BLANK.split(raw)) {
@@ -329,7 +348,7 @@ public class QuestionImportService {
             }
             if (answers.isEmpty()) error(errors, "answer", "FILL_BLANK_ANSWER_INVALID", "实验填空题答案无法安全拆分为多个空位");
             StringBuilder result = new StringBuilder("{\"schemaVersion\":1,\"type\":\"FILL_BLANK\",\"blanks\":[");
-            for (int index = 0; index < answers.size(); index++) { if (index > 0) result.append(','); result.append("{\"acceptedAnswers\":[").append(json(answers.get(index))).append("]}"); }
+            for (int index = 0; index < answers.size(); index++) { if (index > 0) result.append(','); result.append("{\"index\":").append(index + 1).append(",\"acceptedAnswers\":[").append(json(answers.get(index))).append("]}"); }
             return result.append("]}").toString();
         }
         List<String> labels = new ArrayList<>();
@@ -360,7 +379,9 @@ public class QuestionImportService {
     }
 
     private String subjectCode(String subject) {
-        return Map.of("物理", "PHYSICS", "化学", "CHEMISTRY", "生物", "BIOLOGY").get(blank(subject));
+        String normalized = blank(subject);
+        if (normalized == null) return null;
+        return Map.of("物理", "PHYSICS", "化学", "CHEMISTRY", "生物", "BIOLOGY").get(normalized);
     }
 
     private Integer mapDifficulty(String value) {
@@ -392,9 +413,50 @@ public class QuestionImportService {
     private byte[] bytes(MultipartFile file) { try { return file.getBytes(); } catch (IOException exception) { fail("WORKBOOK_INVALID", "Excel文件无法读取", HttpStatus.BAD_REQUEST); return new byte[0]; } }
     private String sha256(Path file) { try { return sha256(Files.readAllBytes(file)); } catch (IOException exception) { throw new IllegalStateException("无法计算附件哈希", exception); } }
     private String sha256(byte[] content) { try { return java.util.HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(content)); } catch (Exception exception) { throw new IllegalStateException(exception); } }
+    private SourceDraft sources(String value, List<QuestionImportDtos.Error> errors) {
+        String question = null;
+        String answer = null;
+        for (String line : value == null ? new String[0] : value.split("\\R")) {
+            String[] pair = line.split("[：:]", 2);
+            if (pair.length != 2) continue;
+            String label = pair[0].trim();
+            String path = pair[1].trim();
+            if (label.matches("试题文件|试题|试卷|题目文件")) question = path;
+            if (label.matches("答案解析文件|答案解析|答案文件|答案")) answer = path;
+        }
+        if (question == null || answer == null) {
+            error(errors, "sourceFile", "SOURCE_FORMAT_INVALID", "来源文件必须包含试题文件和答案解析文件");
+            return new SourceDraft(null, null);
+        }
+        return new SourceDraft(resolveSourceFile(question, errors), resolveSourceFile(answer, errors));
+    }
+
+    private String resolveSourceFile(String value, List<QuestionImportDtos.Error> errors) {
+        try {
+            Path declared = Path.of(value.replace('\\', '/'));
+            Path resolved = (declared.isAbsolute() ? declared : sourceRoot.resolve(declared)).toAbsolutePath().normalize();
+            if (!resolved.startsWith(sourceRoot)) {
+                error(errors, "sourceFile", "SOURCE_PATH_OUTSIDE_ROOT", "来源文件路径超出受控目录");
+                return null;
+            }
+            if (!Files.isRegularFile(resolved)) {
+                error(errors, "sourceFile", "SOURCE_FILE_MISSING", "来源文件不存在或不是普通文件");
+                return null;
+            }
+            return controlledRelativePath(resolved);
+        } catch (Exception exception) {
+            error(errors, "sourceFile", "SOURCE_PATH_INVALID", "来源文件路径无法安全解析");
+            return null;
+        }
+    }
+
+    private ImportedRow withError(ImportedRow row, String field, String code, String message) {
+        List<QuestionImportDtos.Error> errors = new ArrayList<>(row.errors());
+        error(errors, field, code, message);
+        return new ImportedRow(row.raw(), row.subjectCode(), row.mapping(), row.difficulty(), row.options(), row.answer(), row.sources(), row.pointPaths(), row.pointIds(), row.attachments(), row.contentHash(), List.copyOf(errors), row.warnings());
+    }
+
     private String controlledRelativePath(Path path) { return sourceRoot.relativize(path.toAbsolutePath().normalize()).toString().replace('\\', '/'); }
-    private String controlledFilePath(String subjectCode, String fileName) { String subject = Map.of("PHYSICS", "物理", "CHEMISTRY", "化学", "BIOLOGY", "生物").get(subjectCode); return "理综/测试结果/" + subject + "/" + fileName; }
-    private String controlledSourceAddress(String value) { if (value == null) return null; String name = value.replace('\\', '/'); int index = name.lastIndexOf('/'); return index >= 0 ? "理综/" + name.substring(index + 1) : "理综/来源文件"; }
     private String json(String value) { return "\"" + value.replace("\\", "\\\\").replace("\"", "\\\"").replace("\n", "\\n") + "\""; }
     private void fail(String code, String message, HttpStatus status) { throw new RenZhengYeWuYiChang(code, message, status); }
 
@@ -409,8 +471,11 @@ public class QuestionImportService {
     }
     private record TextPart(String position, Integer optionIndex, String text) {
     }
+    private record SourceDraft(String questionAddress, String answerAddress) {
+        String address(String contentType) { return "QUESTION".equals(contentType) ? questionAddress : answerAddress; }
+    }
     private record ImportedRow(RawRow raw, String subjectCode, Mapping mapping, Integer difficulty, List<OptionDraft> options,
-                               String answer, List<String> pointPaths, List<Long> pointIds, List<AttachmentDraft> attachments,
+                               String answer, SourceDraft sources, List<String> pointPaths, List<Long> pointIds, List<AttachmentDraft> attachments,
                                String contentHash, List<QuestionImportDtos.Error> errors, List<String> warnings) {
     }
     private record RawRow(int rowNumber, List<String> values) {
