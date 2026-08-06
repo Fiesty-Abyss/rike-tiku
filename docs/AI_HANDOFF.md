@@ -4,51 +4,26 @@
 
 ## 当前状态
 
-当前基线为 `main@dda66d4`。管理员教师账号、档案与教师—班级—科目三元任课关系已通过普通 merge 合并：PR [#10](https://github.com/Fiesty-Abyss/rike-tiku/pull/10)，合并提交`9495ecced52291c82ee67c9f6229b141754e4998`；管理员题库审核发布已通过普通 merge 合并：PR [#11](https://github.com/Fiesty-Abyss/rike-tiku/pull/11)，合并提交`dda66d4c7b530b9af44c692aa4d03027718a5e65`。
+当前分支为 `feat/student-practice-loop`，开始基线为 `main@4f10f6486de8f4d732abb6e52eeca7734bc3dfde`。PR #10、#11、#12 均已普通 merge；Draft PR #13 已创建、当前尚未合并。
 
-### 本轮变更
+本轮新增 V7 的学生练习、正式答题、结果和错题聚合模型。V1–V6、MVP30 原始 Excel 和既有管理员模块均未改动。当前后端 68/68、前端 68/68 自动化测试通过，真实 HTTP 验证为 `PASS`，学生页面回查为 `NOT_RUN`，综合结论为 `PASS_WITH_ENV_LIMITATION`。
 
-- 新增 `src/api/admin/classes.ts` 与 `src/api/admin/studentImport.ts`，复用已有 Axios 实例与认证错误处理。
-- 新增管理员布局和三个路由：`/admin`、`/admin/classes`、`/admin/students/import`。
-- 班级页面仅调用已有五个后端接口；没有删除功能，编辑请求没有 `classCode`。
-- 导入页面重新上传原始文件确认入库；预览 JSON 不参与确认。初始密码结果不写 `localStorage`、`sessionStorage` 或控制台。
-- 使用 `write-excel-file@4.1.1` 取代存在High风险的`xlsx@0.18.5`，只用于前端账号发放表；`package-lock.json` 已同步。该库只写出受控确认响应，绝不读取或解析用户上传Excel。
-- 为使浏览器能调用已有的班级 `PUT/PATCH` 接口，`SecurityConfig` 的 CORS 方法白名单补充 `PUT`、`PATCH`；没有新增业务接口。
-- 认证集成测试将 JWT 篡改位置移至签名段首字符，修复最后一位 Base64URL 非有效位改变时仍可验签的测试偶发问题。
-- 当前轮新增管理员教师账号/档案、固定TEACHER角色绑定、只读科目选择和三元任课关系接口及`/admin/teachers`页面；不新增V7，不做教师Excel导入。
-- 本轮实际验证：后端30/30与打包 PASS；前端35/35、类型检查、构建与审计（0 vulnerabilities）PASS。随机临时库浏览器联调已覆盖管理员登录、教师创建、初始密码一次性提示、三元关系创建、重复拒绝、结束状态及历史显示；临时数据库、进程和`.env.local`均已清理。
-- PR #10 合并后在`main@9495ecc`已完成相同回归，结果均为 PASS。
+## 继续时必须保持
 
-### 已完成验证
+- 仅 `STUDENT` 且有有效 `xue_sheng_dang_an` 可访问学生练习资源；会话、结果和错题均以当前学生档案隔离。
+- 题池只取可真正冻结的 `PUBLISHED + ONLINE_PRACTICE + shi_fou_ke_zi_dong_pan_fen=1` 单选、多选、填空：要求有效版本 1 STANDARD 解析、活动知识点、足够选项和合法答案 JSON；首版排除活动附件及图片/公式对象标记，不进入主观题。
+- 未提交会话 API 绝不返回正确答案或标准解析；答题内容和结果不存浏览器持久化存储。
+- 提交事务必须同步保存答题事实、错题聚合、结果和会话 `SUBMITTED`，重复提交返回 `409`。
+- 错题错误次数永久保留；答对只更新连续正确次数和复习状态。
+- 不引入 AI Provider、AI 判分、掌握度、推荐、教师任务、WebSocket、Redis 或附件修复。
 
-- 前端 31/31 测试、类型检查、生产构建：PASS。
-- 后端 26/26 测试及打包：PASS。
-- `npm audit`：0 vulnerabilities。
-- PR #9 合并后在 `main@ffdc7a5` 回归：前端 31/31、类型检查、构建、审计均 PASS；后端 26/26 与打包均 PASS。
-- 账号发放表已实际生成并通过OOXML工作表名、中文、列顺序和文本初始密码校验；本机没有Excel/WPS/LibreOffice，桌面应用打开验证为`NOT_RUN`。
-- 真实浏览器临时库联调：PASS；管理员操作班级、模板请求、有效/无效导入预检查、确认入库、账号结果、下载按钮、导入学生首次改密均执行。
-- 临时库、临时 Excel、前后端进程已清理，正式库 `rike_tiku.yong_hu` 为 0 行。
+## 重要文档
 
-## 事实来源和限制
+- [学生练习 API](STUDENT_PRACTICE_API.md)
+- [学生练习前端](STUDENT_PRACTICE_FRONTEND.md)
+- [数据库模型](QUESTION_DATABASE_MODEL_V1.md)
+- [开发状态](DEVELOPMENT_STATUS.md)
 
-- 代码、Flyway、测试与 Git 优先于旧文档和历史会话。
-- 不修改 V1–V6；首版角色固定为 STUDENT、TEACHER、ADMIN；学生不能自行获得角色。
-- 班级删除、学生普通管理、练习、错题和 AI 均未实现；教师管理、三元任课关系和题库审核发布均已合并到 `main`。
-- 后续不得把一次性初始密码持久化到浏览器存储或增加查询初始密码接口。
+## 下一模块候选
 
-## 下一步
-
-管理员 MVP30 题库导入已合并至 `main`。原始 MVP30 Excel 仍未确认入库；后续工作必须以新的独立任务确定，不要提前开发练习或 AI。
-
-## 已合并功能：管理员 MVP30 题库导入
-
-- 提供管理员 Excel 预检查与确认接口、导入页面和专项测试；确认不信任前端预览 JSON，而是重新解析原文件。
-- 附件仅通过正文对象标识和精确文件名关联，来源统一保留 `COPYRIGHT_UNKNOWN`。任何缺失或多候选附件都会令所在行无效，确认拒绝整批，避免错误绑定。
-- PR #12 已普通 merge 至 `main`，合并提交为`f499f0c2e1e3b4637d22480868e94dbdacdcbaa0`，远程功能分支已删除。审查修正后，附件声明数、对象标记、唯一文件、受控来源和单学科均为阻断规则；原先物理 10/10 是旧的“图片计数只警告”结果，不再作为当前结论。纯 V1–V6 真实预检查为物理 0/10、化学 1/10、生物 1/10；测试事务预置 Excel 所需知识点后的附件专项为物理 2/10、化学 1/10、生物 6/10。两组预检查均不写导入批次、题目或子表，后者不能表示 V1–V6 数据库天然可导入数量。
-- 合并后回归（`main@f499f0c`）：后端 54/54 测试与打包通过；前端 56/56、类型检查、构建通过，`npm audit` 为 0 vulnerabilities。
-- 本轮随机临时库联调为 `PASS_WITH_ENV_LIMITATION`：管理员浏览器登录、导入页访问、题库列表/详情回查、`COPYRIGHT_UNKNOWN` 发布拒绝和刷新持久化均通过。匿名临时物理题的上传与确认使用真实 HTTP multipart：预检查 1/1、确认 1/1；数据库已核对批次路径为 `NULL`、题目和 STANDARD 解析为 `PENDING`、三条受控 `COPYRIGHT_UNKNOWN` 来源以及当前 ADMIN 的 `SUBMITTED` 审核记录。内置浏览器不能操作系统本地文件选择器，故不以页面选择文件覆盖该环境限制；匿名题并非 MVP30 原始 Excel 的正式入库。
-## 已合并功能：管理员题库审核发布
-
-PR #11 已普通 merge 合并至 `main`，合并提交为`dda66d4c7b530b9af44c692aa4d03027718a5e65`。管理员题库草稿、审核、发布、停用、前端页面和专项测试均已进入 `main`；未实现题库批量导入或新迁移。合并后实际回归为后端 44/44、前端 51/51，打包、类型检查、构建均通过，`npm audit` 为 0 vulnerabilities。MVP30 Excel 已进行只读兼容检查，合计 30 道，原始文件和正式数据库均未改动。
-
-后续继续时：保持 V1–V6 不变；题目详情不返回附件相对路径；创建请求不接受创建人 ID；审核人由 JWT 上下文写入 `ti_mu_shen_he_ji_lu`。`ti_mu` 不存在创建人字段，因此在不新增迁移的约束下不得声称创建人已持久化。随机临时 MySQL 库已从 V1–V6 迁移并完成真实浏览器联调：状态流、动态表单、版权拒绝、权限拒绝、刷新持久化和控制台无 error 均已验证；正式 `rike_tiku` 未写入联调数据；远程功能分支已删除。
+PR #13 合并后可单独规划最小 AI 错题答疑闭环。AI Provider、AI 答疑、掌握度和推荐当前均未实现，未经新任务不得开始。

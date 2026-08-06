@@ -140,6 +140,44 @@ class RenZhengJiChengTest {
     }
 
     @Test
+    void studentPracticeEndpointsRequireActiveStudentRoleAndProfile() throws Exception {
+        long studentId = insertUser("practice_student", "StudentPass1", false, "ENABLED", "STUDENT");
+        insertStudentProfile(studentId, "练习学生");
+        String studentToken = token(login("practice_student", "StudentPass1", "STUDENT"));
+        String teacherToken = token(login("practice_teacher", "TeacherPass1", "TEACHER", false));
+        String adminToken = token(login("practice_admin", "AdminPass1", "ADMIN", false));
+        long initialStudentId = insertUser("practice_initial_student", "StudentPass1", true, "ENABLED", "STUDENT");
+        insertStudentProfile(initialStudentId, "首次登录学生");
+        String initialStudentToken = token(login("practice_initial_student", "StudentPass1", "STUDENT"));
+
+        assertError(get("/api/v1/student/practice-options", null), 401, "UNAUTHENTICATED");
+        assertError(get("/api/v1/student/practice-options", teacherToken), 403, "ACCESS_DENIED");
+        assertError(get("/api/v1/student/practice-options", adminToken), 403, "ACCESS_DENIED");
+        assertError(get("/api/v1/student/practice-options", initialStudentToken), 403, "MUST_CHANGE_PASSWORD");
+        assertThat(get("/api/v1/student/practice-options", studentToken).status()).isEqualTo(200);
+    }
+
+    @Test
+    void studentPracticeSessionResponseDoesNotLeakAnswersBeforeSubmission() throws Exception {
+        long userId = insertUser("practice_safe_session", "StudentPass1", false, "ENABLED", "STUDENT");
+        insertStudentProfile(userId, "练习安全学生");
+        insertPublishedPracticeQuestion();
+        String accessToken = token(login("practice_safe_session", "StudentPass1", "STUDENT"));
+
+        TestResponse created = post("/api/v1/student/practice-sessions", """
+                {"subjectId":1,"questionTypes":["SINGLE_CHOICE"],"count":1}
+                """, accessToken);
+        assertThat(created.status()).isEqualTo(200);
+        assertThat(created.body()).doesNotContain("correctAnswer", "standardAnalysis", "zheng_que_da_an", "shi_fou_zheng_que");
+        Number sessionId = JsonPath.read(created.body(), "$.id");
+        TestResponse session = get("/api/v1/student/practice-sessions/" + sessionId.longValue(), accessToken);
+        assertThat(session.status()).isEqualTo(200);
+        assertThat(session.body()).doesNotContain("correctAnswer", "standardAnalysis", "zheng_que_da_an", "shi_fou_zheng_que");
+        assertError(get("/api/v1/student/practice-sessions/" + sessionId.longValue() + "/result", accessToken),
+                409, "PRACTICE_NOT_SUBMITTED");
+    }
+
+    @Test
     void invalidCredentialsAndUnavailableAccountsShouldBeRejected() throws Exception {
         insertUser("valid", "ValidPass1", false, "ENABLED", "STUDENT");
         insertUser("disabled", "DisabledPass1", false, "DISABLED", "STUDENT");
@@ -459,6 +497,26 @@ class RenZhengJiChengTest {
         jdbcTemplate.update("INSERT INTO ban_ji(ban_ji_bian_ma,ban_ji_ming_cheng,nian_ji,ru_xue_nian_fen,zhuang_tai) VALUES (?,?,?,?,?)",
                 code, name, grade, 2025, status);
         return jdbcTemplate.queryForObject("SELECT LAST_INSERT_ID()", Long.class);
+    }
+
+    private void insertPublishedPracticeQuestion() {
+        String hash = UUID.randomUUID().toString().replace("-", "");
+        jdbcTemplate.update("""
+                INSERT INTO ti_mu(ke_mu_id,ti_mu_lei_xing,shi_yong_mo_shi,ti_gan,zheng_que_da_an,nan_du,
+                    shi_fou_ke_zi_dong_pan_fen,zhuang_tai,nei_rong_ha_xi)
+                VALUES (1,'SINGLE_CHOICE','ONLINE_PRACTICE','HTTP安全题',?,1,1,'PUBLISHED',?)
+                """, "{\"schemaVersion\":1,\"type\":\"SINGLE_CHOICE\",\"optionLabels\":[\"A\"]}", hash);
+        long questionId = jdbcTemplate.queryForObject("SELECT LAST_INSERT_ID()", Long.class);
+        jdbcTemplate.update("""
+                INSERT INTO ti_mu_xuan_xiang(ti_mu_id,xuan_xiang_biao_shi,xuan_xiang_nei_rong,shi_fou_zheng_que,pai_xu)
+                VALUES (?,'A','选项A',1,1),(?,'B','选项B',0,2)
+                """, questionId, questionId);
+        jdbcTemplate.update("""
+                INSERT INTO ti_mu_jie_xi(ti_mu_id,jie_xi_lei_xing,jie_xi_nei_rong,ban_ben_hao,zhuang_tai)
+                VALUES (?,'STANDARD','HTTP标准解析',1,'PUBLISHED')
+                """, questionId);
+        long pointId = jdbcTemplate.queryForObject("SELECT id FROM zhi_shi_dian WHERE ke_mu_id=1 AND zhuang_tai='ACTIVE' LIMIT 1", Long.class);
+        jdbcTemplate.update("INSERT INTO ti_mu_zhi_shi_dian(ti_mu_id,zhi_shi_dian_id,shi_fou_zhu_yao,pai_xu) VALUES (?,?,1,1)", questionId, pointId);
     }
 
     private byte[] workbookBytes(List<String[]> rows, boolean formula) throws Exception {
