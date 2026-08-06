@@ -55,6 +55,7 @@ const router = createRouter({
         { path: '', name: 'admin-home', component: () => import('../views/AdminHomeView.vue') },
         { path: 'classes', name: 'admin-classes', component: () => import('../views/admin/ClassesView.vue') },
         { path: 'teachers', name: 'admin-teachers', component: () => import('../views/admin/TeachersView.vue') },
+        { path: 'questions', name: 'admin-questions', component: () => import('../views/admin/QuestionsView.vue') },
         { path: 'students/import', name: 'admin-student-import', component: () => import('../views/admin/StudentImportView.vue') },
       ],
     },
