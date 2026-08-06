@@ -49,14 +49,14 @@
 ## 5. 当前实现状态
 
 - 状态：题库核心数据库与账号/教学组织数据库模型均为 `DONE_VERIFIED`。
-- 当前分支：`feat/frontend-auth`（基于`main@8f7aa13`）；认证后端已完成，前端认证基础正在实现，最终HEAD以 `git log -1` 为准。
+- 当前分支：`feat/admin-question-import`（基于已合并 PR #11 的 `main@76fdfe4`）；Draft PR #12 正在处理管理员 MVP30 题库导入审查修正，最终 HEAD 以 `git log -1` 为准。
 - 当前Flyway：V1–V6。
 - 当前业务表：题库核心10表，加 `yong_hu`、`jiao_se`、`yong_hu_jiao_se`、`xue_sheng_dang_an`、`jiao_shi_dang_an`、`ban_ji`、`ban_ji_xue_sheng`、`ren_ke_guan_xi`，共18表。
 - 当前样本：物理、化学、生物各1题，共3题，均为 `PENDING`；权利状态为 `COPYRIGHT_UNKNOWN`。
-- 最近验证：后端认证与数据库回归23项测试、空库V1–V6迁移、Maven测试与打包、JAR健康检查、MySQL连接均通过；前端认证基础的类型检查、17项单元测试和生产构建均通过。
+- 当前分支验证：后端 54/54 测试、`mvn clean package` 通过；前端 56/56、类型检查和生产构建通过，`npm audit` 为 0 vulnerabilities。MVP30 纯 V1–V6 预检查为物理 0/10、化学 1/10、生物 1/10；测试事务预置 Excel 所需知识点后的附件专项结果为 2/10、1/10、6/10。预检查不写导入批次、题目或任何题目子表。
 - 远程仓库：`https://github.com/Fiesty-Abyss/rike-tiku`，公开仓库，默认分支 `main`。
 
-未完成的核心模块包括学生导入、题库业务API、练习判分、错题、AI Provider和正式角色工作台；前端认证基础完成后以本轮PR与状态文档为准。
+学生导入、教师管理、三元任课关系和题库审核发布均已进入 `main`。PR #12 尚未合并；在其合并前不得启动练习判分、错题、AI Provider或其他新业务模块。
 
 ## 6. AI接管规则
 

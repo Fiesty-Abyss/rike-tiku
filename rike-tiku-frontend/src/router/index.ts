@@ -56,6 +56,7 @@ const router = createRouter({
         { path: 'classes', name: 'admin-classes', component: () => import('../views/admin/ClassesView.vue') },
         { path: 'teachers', name: 'admin-teachers', component: () => import('../views/admin/TeachersView.vue') },
         { path: 'questions', name: 'admin-questions', component: () => import('../views/admin/QuestionsView.vue') },
+        { path: 'questions/import', name: 'admin-question-import', component: () => import('../views/admin/QuestionImportView.vue') },
         { path: 'students/import', name: 'admin-student-import', component: () => import('../views/admin/StudentImportView.vue') },
       ],
     },
