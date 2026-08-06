@@ -12,7 +12,7 @@ V7 的学生练习、正式答题、结果和错题聚合模型已进入 `main`�
 
 当前分支验证：后端 74/74、打包 PASS；前端 68/68、类型检查与构建 PASS；依赖审计 0 vulnerabilities。完整脚本链及三角色真实 HTTP smoke PASS，正式库未出现演示账号、演示题或学习记录。
 
-人工验收问题 MA-001 的根因不是账号或 BCrypt：IDEA 默认连接 `rike_tiku`，而演示账号只在 `rike_tiku_demo`。PR #14 修复脚本使用的 `RIKE_TIKU_BACKEND_PORT`、`RIKE_TIKU_CORS_ALLOWED_ORIGINS` 和带 `/api/v1` 的前端 API 地址，并补充 IDE 配置与真实 HTTP smoke；修复完成后仍需用户重新人工验收。
+人工验收问题 MA-001 的根因不是账号或 BCrypt：IDEA 默认连接 `rike_tiku`，而演示账号只在 `rike_tiku_demo`。PR #14 已修复脚本使用的 `RIKE_TIKU_BACKEND_PORT`、`RIKE_TIKU_CORS_ALLOWED_ORIGINS` 和带 `/api/v1` 的前端 API 地址，并补充 IDE 配置与真实 HTTP smoke。demo_admin 登录、demo_teacher 真实 HTTP 登录和 demo_student 浏览器登录均已复验，MA-001 已关闭。MA-002 至 MA-009 是用户登记的待规划反馈，尚未实现。
 
 ## 继续时必须保持
 
@@ -32,4 +32,4 @@ V7 的学生练习、正式答题、结果和错题聚合模型已进入 `main`�
 
 ## 当前下一步
 
-先完成人工验收和同一 PR 内的问题修正，不启动新业务模块。AI Provider、DeepSeek、GLM、AI 答疑、掌握度和推荐均未实现；教师正式业务工作台也未实现。
+PR #14 收尾后，后续顺序为：先处理 UI、认证和学生三科工作台；再补管理员学生手动管理；随后规划高频考点和受三元任课关系约束的师生私信；最后才接入 DeepSeek 与 GLM。以上均未实现，不得提前写成完成状态。AI 答疑、掌握度、推荐和教师正式业务工作台也仍未实现。

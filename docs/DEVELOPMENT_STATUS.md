@@ -33,8 +33,8 @@
 - 本轮不修改 V1–V7，不写正式 `rike_tiku`，不修改 MVP30 原始 Excel。
 - 当前分支回归：后端 74/74、`mvn clean package` PASS；前端 68/68、类型检查和构建 PASS；`npm audit` 为 0 vulnerabilities。
 - 真实脚本链 `reset → seed → validate → clean → reset → seed` PASS，末次 seed 后演示库保持待人工验收状态；正式库演示账号、演示题和 V7 五张学习表均为 0。
-- 人工验收发现 MA-001：IDEA 未配置 `RIKE_TIKU_DB_NAME` 时连接 `rike_tiku`，demo 登录返回 `INVALID_CREDENTIALS`；同时定位到脚本端口/CORS变量名和前端 API 前缀错误。当前 PR #14 正在修复并等待重新人工验收。
-- 修复后真实启动验证：后端 18081、前端 18080、`/api/v1` 基址和 `rike_tiku_demo` 连接均正确；三角色登录 PASS，错误入口 `ROLE_MISMATCH` PASS。自动 smoke 已通过，MA-001 仍等待用户在 IDEA/WebStorm 中复验。
+- 人工验收问题 MA-001 已关闭：后端 18081、前端 18080、`/api/v1` 基址和 `rike_tiku_demo` 连接均正确；demo_admin 登录、demo_teacher 真实 HTTP 登录和 demo_student 浏览器登录均已复验，原 `INVALID_CREDENTIALS` 不再复现。
+- 用户已登记 MA-002 至 MA-009，覆盖学生三科学科入口与首页体验、登录角色识别、中文展示、个人中心、管理员单个学生管理、高频考点和受三元任课关系约束的师生私信。这些均为待规划事项，尚未实现。
 
 ## 已合并基线
 
@@ -45,4 +45,11 @@
 
 ## 下一步
 
-下一步是用户使用演示账号按人工验收清单完成 ADMIN、TEACHER、STUDENT 流程，并在当前 PR 记录和修正真实问题。AI、DeepSeek、GLM 继续暂缓；教师任务、统计等正式工作台尚未实现。
+后续按以下顺序规划，不代表已经实现：
+
+1. UI、认证和学生三科工作台；
+2. 管理员学生手动管理；
+3. 高频考点和受三元任课关系约束的师生私信；
+4. 最后再接入 DeepSeek 与 GLM。
+
+AI、教师任务、统计等正式工作台仍未实现。
