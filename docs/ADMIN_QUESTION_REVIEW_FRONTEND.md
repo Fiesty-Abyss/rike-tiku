@@ -14,3 +14,5 @@
 不包含附件上传、富文本、Markdown、公式渲染、批量导入或 MVP30 入库。题目敏感状态不写入浏览器存储；列表和详情均以实时后端响应为准。`COPYRIGHT_UNKNOWN` 和 `RESTRICTED` 的发布失败消息直接显示后端业务结果。
 
 `npm test`：51/51 PASS；`npm run type-check` 和 `npm run build`：PASS。新增 API 路径/方法、全筛选参数、受控答案结构、主观题限制和来源字段测试。
+
+真实浏览器已在随机临时 MySQL 库（完整执行 V1–V6）验证：ADMIN 登录和 PENDING 样本完整详情；单选草稿创建、编辑、提交、合法来源发布、停用、重新发布；多选、填空和主观题动态表单；`COPYRIGHT_UNKNOWN` 发布拒绝；退回后再次编辑；刷新后的列表与详情状态持久化；STUDENT、TEACHER 与首次未改密 ADMIN 访问管理员题库接口均为 403；浏览器控制台无 error。临时库、临时配置和前后端进程均已清理，正式 `rike_tiku` 未写入联调数据。
