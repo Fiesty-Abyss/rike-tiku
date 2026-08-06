@@ -1,6 +1,6 @@
 # 学生自主练习、自动判分与错题 API
 
-当前分支：`feat/student-practice-loop`；Draft PR #13 已创建、当前尚未合并。后端 68/68 测试与打包通过；真实 HTTP 验证为 `PASS`，学生页面回查为 `NOT_RUN`，综合结论为 `PASS_WITH_ENV_LIMITATION`。接口仅允许已经完成首次改密、且具备有效学生档案的 `STUDENT` 调用。
+本模块已通过普通 merge 进入 `main`（PR #13，合并提交 `db04fbc9caeeb5e4eb003a45581e62e76dbab420`）。合并后后端 68/68 测试与打包通过；真实 HTTP 验证为 `PASS`，学生页面回查为 `NOT_RUN`，综合结论为 `PASS_WITH_ENV_LIMITATION`。接口仅允许已经完成首次改密、且具备有效学生档案的 `STUDENT` 调用。
 
 ## 练习配置与会话
 
