@@ -140,6 +140,24 @@ class RenZhengJiChengTest {
     }
 
     @Test
+    void studentPracticeEndpointsRequireActiveStudentRoleAndProfile() throws Exception {
+        long studentId = insertUser("practice_student", "StudentPass1", false, "ENABLED", "STUDENT");
+        insertStudentProfile(studentId, "练习学生");
+        String studentToken = token(login("practice_student", "StudentPass1", "STUDENT"));
+        String teacherToken = token(login("practice_teacher", "TeacherPass1", "TEACHER", false));
+        String adminToken = token(login("practice_admin", "AdminPass1", "ADMIN", false));
+        long initialStudentId = insertUser("practice_initial_student", "StudentPass1", true, "ENABLED", "STUDENT");
+        insertStudentProfile(initialStudentId, "首次登录学生");
+        String initialStudentToken = token(login("practice_initial_student", "StudentPass1", "STUDENT"));
+
+        assertError(get("/api/v1/student/practice-options", null), 401, "UNAUTHENTICATED");
+        assertError(get("/api/v1/student/practice-options", teacherToken), 403, "ACCESS_DENIED");
+        assertError(get("/api/v1/student/practice-options", adminToken), 403, "ACCESS_DENIED");
+        assertError(get("/api/v1/student/practice-options", initialStudentToken), 403, "MUST_CHANGE_PASSWORD");
+        assertThat(get("/api/v1/student/practice-options", studentToken).status()).isEqualTo(200);
+    }
+
+    @Test
     void invalidCredentialsAndUnavailableAccountsShouldBeRejected() throws Exception {
         insertUser("valid", "ValidPass1", false, "ENABLED", "STUDENT");
         insertUser("disabled", "DisabledPass1", false, "DISABLED", "STUDENT");

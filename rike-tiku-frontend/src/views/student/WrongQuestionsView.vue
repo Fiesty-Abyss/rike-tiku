@@ -1,0 +1,14 @@
+<script setup lang="ts">
+import { onMounted, ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { ElMessage } from 'element-plus'
+import { fetchWrongQuestion, fetchWrongQuestions, type WrongQuestion, type WrongQuestionDetail } from '../../api/student/practice'
+import type { ApiError } from '../../api/http'
+const router=useRouter();const loading=ref(false);const records=ref<WrongQuestion[]>([]);const detail=ref<WrongQuestionDetail|null>(null);const visible=ref(false)
+const state=(value:string)=>({NEW:'新错题',REVIEWING:'复习中',MASTERED:'已掌握'} as Record<string,string>)[value]||value
+async function load(){loading.value=true;try{records.value=await fetchWrongQuestions()}catch(error){const api=error as ApiError;ElMessage.error(api.message||'错题本加载失败。')}finally{loading.value=false}}
+async function show(item:WrongQuestion){try{detail.value=await fetchWrongQuestion(item.questionId);visible.value=true}catch(error){const api=error as ApiError;ElMessage.error(api.message||'错题详情加载失败。')}}
+function answer(value:unknown){return Array.isArray(value)?value.join('、'):typeof value==='string'?value:JSON.stringify(value)}
+onMounted(()=>void load())
+</script>
+<template><section class="student-page"><div class="student-page-heading"><div><h1>错题本</h1><p>错误次数会保留；连续两次答对后标为已掌握，不删除历史记录。</p></div><el-button @click="router.push('/student/practice/new')">创建练习</el-button></div><el-table v-loading="loading" :data="records" class="data-table" empty-text="暂时没有错题，继续保持。"><el-table-column prop="subjectName" label="学科" /><el-table-column prop="stemSummary" label="题干摘要" min-width="300" show-overflow-tooltip /><el-table-column prop="errorCount" label="错误次数" /><el-table-column prop="consecutiveCorrectCount" label="连续正确" /><el-table-column label="状态"><template #default="{row}"><el-tag>{{ state(row.status) }}</el-tag></template></el-table-column><el-table-column label="操作"><template #default="{row}"><el-button link type="primary" @click="show(row)">查看详情</el-button></template></el-table-column></el-table><el-drawer v-model="visible" title="错题详情" size="min(760px,100%)"><template v-if="detail"><h2>{{ detail.stem }}</h2><el-table :data="detail.options" class="data-table" v-if="detail.options.length"><el-table-column prop="label" label="选项" width="90"/><el-table-column prop="content" label="内容"/></el-table><p>最近答案：{{ answer(detail.latestStudentAnswer) }}</p><p>正确答案：{{ answer(detail.correctAnswer) }}</p><p>标准解析：{{ detail.standardAnalysis }}</p><p>知识点：{{ detail.knowledgePoints.map(item=>item.path).join('；') }}</p><h3>附件业务信息</h3><el-table :data="detail.attachments" class="data-table" empty-text="暂无附件"><el-table-column prop="position" label="位置"/><el-table-column prop="type" label="类型"/><el-table-column prop="fileName" label="文件名"/><el-table-column prop="objectMarker" label="对象标识"/></el-table></template></el-drawer></section></template>

@@ -49,6 +49,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/admin/question-import/**").hasRole("ADMIN")
                         .requestMatchers("/api/v1/admin/teachers/**", "/api/v1/admin/teaching-assignments/**", "/api/v1/admin/subjects").hasRole("ADMIN")
                         .requestMatchers("/api/v1/admin/questions/**", "/api/v1/admin/knowledge-points").hasRole("ADMIN")
+                        .requestMatchers("/api/v1/student/practice-options", "/api/v1/student/practice-sessions/**", "/api/v1/student/wrong-questions/**").hasRole("STUDENT")
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterAfter(initialPasswordGateFilter, JwtRenZhengGuoLvQi.class);

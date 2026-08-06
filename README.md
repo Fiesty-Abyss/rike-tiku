@@ -49,8 +49,9 @@ Flyway 是数据库结构的唯一建表和升级入口。已经执行的迁移�
 - 管理员教师账号与档案、教师—班级—科目三元任课关系：管理员分页筛选、创建、修改、一次性初始密码、任课关系创建与状态结束/停用。
 - 管理员题库审核发布：题目分页与筛选、草稿创建/编辑、完整详情、版权复核和 `DRAFT → PENDING → PUBLISHED → DISABLED → PUBLISHED` 状态流；已通过普通 merge 合并到 `main`（PR #11）。
 - 管理员 MVP30 题库导入：单文件 Excel 预检查、逐行错误、知识点精确匹配、来源文件追溯、附件对象精确映射与全批次确认入库；成功题目和 STANDARD 解析统一为 `PENDING`。已通过普通 merge 合并至 `main`（PR #12，合并提交 `f499f0c2e1e3b4637d22480868e94dbdacdcbaa0`）。纯 V1–V6 测试库预检查结果为物理 0/10、化学 1/10、生物 1/10；仅在测试事务预置 Excel 所需知识点后，附件专项结果为 2/10、1/10、6/10。随机临时库的真实 HTTP multipart 与浏览器回查结论为 `PASS_WITH_ENV_LIMITATION`；匿名临时题已清理，MVP30 原始 Excel 尚未确认入库。
+- 学生自主练习、自动判分与错题闭环（当前分支，尚未合并）：创建时冻结题集，提交整场答案后完成单选/多选/填空自动判分、结果与错题聚合；未提交前不返回标准答案或解析。
 
-已完成前端认证基础：三角色登录入口、Pinia认证状态、Bearer Token注入、会话恢复、首次改密、路由守卫和管理员业务页。尚未完成：学生普通管理、练习判分、错题、AI Provider和学生/教师正式工作台。题库30题候选数据尚未正式发布。
+已完成前端认证基础：三角色登录入口、Pinia认证状态、Bearer Token注入、会话恢复、首次改密、路由守卫、管理员业务页及最小学生练习工作台。尚未完成：AI Provider、AI 答疑、掌握度、推荐、教师任务与考试。题库30题候选数据尚未正式发布。
 
 准确状态请以 [开发状态](docs/DEVELOPMENT_STATUS.md) 和 [AI交接](docs/AI_HANDOFF.md) 为准。
 
@@ -122,6 +123,8 @@ npm run build
 - [管理员题库审核发布前端](docs/ADMIN_QUESTION_REVIEW_FRONTEND.md)
 - [管理员题库导入接口](docs/ADMIN_QUESTION_IMPORT_API.md)
 - [管理员题库导入前端](docs/ADMIN_QUESTION_IMPORT_FRONTEND.md)
+- [学生练习与自动判分接口](docs/STUDENT_PRACTICE_API.md)
+- [学生练习前端](docs/STUDENT_PRACTICE_FRONTEND.md)
 - V3.0总体设计公开脱敏版（位于 `docs/`）
 
 ## 题库资料和权利说明
