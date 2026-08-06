@@ -26,6 +26,7 @@ docs/                 设计、状态与AI交接文档
 database/             数据库说明、ER图和结构快照
 题库/                 离线题库候选资料及质量检查结果
 脚本/                 离线整理与检查脚本
+scripts/              本地开发与演示环境PowerShell工具
 ```
 
 Flyway 是数据库结构的唯一建表和升级入口。已经执行的迁移不得修改，后续结构变化必须新增版本迁移。
@@ -54,6 +55,27 @@ Flyway 是数据库结构的唯一建表和升级入口。已经执行的迁移�
 已完成前端认证基础：三角色登录入口、Pinia认证状态、Bearer Token注入、会话恢复、首次改密、路由守卫、管理员业务页及最小学生练习工作台。尚未完成：AI Provider、AI 答疑、掌握度、推荐、教师任务与考试。题库30题候选数据尚未正式发布。
 
 准确状态请以 [开发状态](docs/DEVELOPMENT_STATUS.md) 和 [AI交接](docs/AI_HANDOFF.md) 为准。
+
+## 本地演示验收环境
+
+当前功能分支提供显式执行的独立演示库工具。它默认操作 `rike_tiku_demo`，拒绝操作 `rike_tiku` 及 MySQL 系统库，不会在应用正常启动时自动写入数据。准备好 `RIKE_TIKU_DB_PASSWORD` 后执行：
+
+```powershell
+.\scripts\demo-environment.ps1 reset
+.\scripts\demo-environment.ps1 seed
+.\scripts\demo-environment.ps1 validate
+```
+
+演示账号为 `demo_admin`、`demo_teacher`、`demo_student`，本地演示密码均为 `a1234567`；数据库仅保存 BCrypt 摘要。分别启动前后端：
+
+```powershell
+.\scripts\demo-environment.ps1 backend
+.\scripts\demo-environment.ps1 frontend
+```
+
+详细安全边界与操作说明见 [演示环境说明](docs/DEMO_ENVIRONMENT.md)，人工检查步骤见 [人工验收清单](docs/MANUAL_ACCEPTANCE_CHECKLIST.md)。
+
+当前分支自动化验证为后端 72/72、前端 68/68，后端打包、前端类型检查与构建均通过，`npm audit` 为 0 vulnerabilities；真实脚本链已完成一次清理与重建，最终演示库处于已 seed、学习记录为 0 的待验收状态。
 
 ## 本地启动
 
@@ -125,6 +147,9 @@ npm run build
 - [管理员题库导入前端](docs/ADMIN_QUESTION_IMPORT_FRONTEND.md)
 - [学生练习与自动判分接口](docs/STUDENT_PRACTICE_API.md)
 - [学生练习前端](docs/STUDENT_PRACTICE_FRONTEND.md)
+- [本地演示环境](docs/DEMO_ENVIRONMENT.md)
+- [人工验收清单](docs/MANUAL_ACCEPTANCE_CHECKLIST.md)
+- [人工验收问题记录](docs/MANUAL_ACCEPTANCE_FINDINGS.md)
 - V3.0总体设计公开脱敏版（位于 `docs/`）
 
 ## 题库资料和权利说明
@@ -135,4 +160,4 @@ npm run build
 
 ## 下一阶段
 
-管理员教师账号、档案与三元任课关系已通过普通 merge 合并至`main`：PR [#10](https://github.com/Fiesty-Abyss/rike-tiku/pull/10)，合并提交为`9495ecc`。管理员题库审核发布已通过普通 merge 合并至`main`：PR [#11](https://github.com/Fiesty-Abyss/rike-tiku/pull/11)，合并提交为`dda66d4c7b530b9af44c692aa4d03027718a5e65`。管理员 MVP30 题库导入已通过普通 merge 合并至`main`：PR [#12](https://github.com/Fiesty-Abyss/rike-tiku/pull/12)，合并提交为`f499f0c2e1e3b4637d22480868e94dbdacdcbaa0`。学生练习闭环已通过普通 merge 合并至 `main`：PR [#13](https://github.com/Fiesty-Abyss/rike-tiku/pull/13)，合并提交为 `db04fbc9caeeb5e4eb003a45581e62e76dbab420`。下一模块候选为最小 AI 错题答疑闭环；AI 当前尚未实现。
+PR #13 已普通 merge，学生练习闭环已进入 `main`。当前 `feat/demo-data-manual-acceptance` 分支只建设独立演示数据与人工验收环境，尚未合并；下一步是用户按清单完成三角色人工验收，并在同一 PR 记录和修正发现的问题。AI 暂缓，DeepSeek 与 GLM 均尚未接入；MVP30 尚未正式入库，教师正式业务工作台尚未实现。
