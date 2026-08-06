@@ -7,7 +7,7 @@ import java.util.UUID;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
-abstract class AdminQuestionIntegrationTestSupport {
+public abstract class AdminQuestionIntegrationTestSupport {
     private static final String PASSWORD = requiredEnvironment("RIKE_TIKU_DB_PASSWORD");
     private static final String USERNAME = environment("RIKE_TIKU_DB_USERNAME", "root");
     private static final String HOST = environment("RIKE_TIKU_DB_HOST", "localhost");

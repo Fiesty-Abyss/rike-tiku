@@ -49,7 +49,7 @@
 ## 5. 当前实现状态
 
 - 状态：题库核心数据库与账号/教学组织数据库模型均为 `DONE_VERIFIED`。
-- 当前分支：`feat/frontend-auth`（基于`main@8f7aa13`）；认证后端已完成，前端认证基础正在实现，最终HEAD以 `git log -1` 为准。
+- 当前分支：`feat/admin-question-import`（基于已合并 PR #11 的 `main@76fdfe4`）；管理员 MVP30 题库导入正在实现，最终 HEAD 以 `git log -1` 为准。
 - 当前Flyway：V1–V6。
 - 当前业务表：题库核心10表，加 `yong_hu`、`jiao_se`、`yong_hu_jiao_se`、`xue_sheng_dang_an`、`jiao_shi_dang_an`、`ban_ji`、`ban_ji_xue_sheng`、`ren_ke_guan_xi`，共18表。
 - 当前样本：物理、化学、生物各1题，共3题，均为 `PENDING`；权利状态为 `COPYRIGHT_UNKNOWN`。
