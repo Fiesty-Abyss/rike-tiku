@@ -10,7 +10,9 @@ V7 的学生练习、正式答题、结果和错题聚合模型已进入 `main`�
 
 当前分支增加独立 `rike_tiku_demo` 的显式重建工具、三角色账号、教学组织、九个知识点和 18 道无附件演示题。它不使用 Flyway 承载演示数据，不公开 seed 接口，也不在正常启动时执行。用户下一步应先阅读 `DEMO_ENVIRONMENT.md`，再按 `MANUAL_ACCEPTANCE_CHECKLIST.md` 人工验收，并把真实问题登记到 `MANUAL_ACCEPTANCE_FINDINGS.md`。
 
-当前分支验证：后端 72/72、打包 PASS；前端 68/68、类型检查与构建 PASS；依赖审计 0 vulnerabilities。`reset → seed → validate → clean → reset → seed` 真实执行 PASS，正式库未出现演示账号、演示题或学习记录。
+当前分支验证：后端 74/74、打包 PASS；前端 68/68、类型检查与构建 PASS；依赖审计 0 vulnerabilities。完整脚本链及三角色真实 HTTP smoke PASS，正式库未出现演示账号、演示题或学习记录。
+
+人工验收问题 MA-001 的根因不是账号或 BCrypt：IDEA 默认连接 `rike_tiku`，而演示账号只在 `rike_tiku_demo`。PR #14 修复脚本使用的 `RIKE_TIKU_BACKEND_PORT`、`RIKE_TIKU_CORS_ALLOWED_ORIGINS` 和带 `/api/v1` 的前端 API 地址，并补充 IDE 配置与真实 HTTP smoke；修复完成后仍需用户重新人工验收。
 
 ## 继续时必须保持
 

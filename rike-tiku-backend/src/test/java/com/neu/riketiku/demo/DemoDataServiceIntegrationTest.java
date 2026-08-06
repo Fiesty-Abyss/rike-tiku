@@ -7,19 +7,28 @@ import com.neu.riketiku.tiku.admin.AdminQuestionIntegrationTestSupport;
 import com.neu.riketiku.xueshenglianxi.StudentPracticeDtos;
 import com.neu.riketiku.xueshenglianxi.StudentPracticeService;
 import java.util.List;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class DemoDataServiceIntegrationTest extends AdminQuestionIntegrationTestSupport {
     @Autowired private DemoDataService demo;
     @Autowired private StudentPracticeService practice;
     @Autowired private PasswordEncoder passwordEncoder;
     @Autowired private JdbcTemplate jdbc;
+    @LocalServerPort private int port;
 
     @Test
     @Transactional
@@ -73,5 +82,41 @@ class DemoDataServiceIntegrationTest extends AdminQuestionIntegrationTestSupport
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM ti_mu", Integer.class)).isEqualTo(baselineQuestions);
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM ke_mu", Integer.class)).isEqualTo(3);
         assertThat(jdbc.queryForObject("SELECT MAX(CAST(version AS UNSIGNED)) FROM flyway_schema_history WHERE success=1", Integer.class)).isEqualTo(7);
+    }
+
+    @Test
+    void seededDemoAccountsLoginThroughRealHttpAndWrongEntryIsRejected() throws Exception {
+        demo.seed();
+        try {
+            assertHttpLogin("demo_admin", "ADMIN", 200, "\"ADMIN\"");
+            assertHttpLogin("demo_teacher", "TEACHER", 200, "\"TEACHER\"");
+            assertHttpLogin("demo_student", "STUDENT", 200, "\"STUDENT\"");
+            assertHttpLogin("demo_admin", "STUDENT", 403, "ROLE_MISMATCH");
+            String digest = jdbc.queryForObject("SELECT mi_ma_zhai_yao FROM yong_hu WHERE yong_hu_ming='demo_admin'", String.class);
+            assertThat(digest).doesNotContain(DemoDataService.DEMO_PASSWORD);
+        } finally {
+            demo.clean();
+        }
+    }
+
+    @Test
+    void demoScriptUsesExactBackendCorsAndApiEnvironmentContracts() throws Exception {
+        String script = Files.readString(Path.of("..", "scripts", "demo-environment.ps1"), StandardCharsets.UTF_8);
+        assertThat(script)
+                .contains("RIKE_TIKU_BACKEND_PORT", "RIKE_TIKU_CORS_ALLOWED_ORIGINS", "http://localhost:18081/api/v1")
+                .doesNotContain("RIKE_TIKU_SERVER_PORT", "RIKE_TIKU_CORS_ALLOWED_ORIGIN =");
+    }
+
+    private void assertHttpLogin(String username, String role, int status, String expectedBody) throws Exception {
+        String body = "{\"username\":\"" + username + "\",\"password\":\"a1234567\",\"expectedRole\":\"" + role + "\"}";
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:" + port + "/api/v1/auth/login"))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(body, StandardCharsets.UTF_8))
+                .build();
+        HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+        assertThat(response.statusCode()).isEqualTo(status);
+        assertThat(response.body()).contains(expectedBody);
+        if (status == 200) assertThat(response.body()).contains("\"accessToken\"").doesNotContain("a1234567");
     }
 }

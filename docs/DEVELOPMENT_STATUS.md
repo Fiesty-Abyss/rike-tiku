@@ -31,8 +31,10 @@
 - 固定三角色演示账号、学生/教师档案、演示班级、三科三元任课关系和九个知识点。
 - 18 道自行编写、无附件、可自动判分的 `PUBLISHED` 演示题；每科 6 道，单选/多选/填空各 2 道，来源权利状态为 `USER_PROVIDED`，审核轨迹完整。
 - 本轮不修改 V1–V7，不写正式 `rike_tiku`，不修改 MVP30 原始 Excel。
-- 当前分支回归：后端 72/72、`mvn clean package` PASS；前端 68/68、类型检查和构建 PASS；`npm audit` 为 0 vulnerabilities。
+- 当前分支回归：后端 74/74、`mvn clean package` PASS；前端 68/68、类型检查和构建 PASS；`npm audit` 为 0 vulnerabilities。
 - 真实脚本链 `reset → seed → validate → clean → reset → seed` PASS，末次 seed 后演示库保持待人工验收状态；正式库演示账号、演示题和 V7 五张学习表均为 0。
+- 人工验收发现 MA-001：IDEA 未配置 `RIKE_TIKU_DB_NAME` 时连接 `rike_tiku`，demo 登录返回 `INVALID_CREDENTIALS`；同时定位到脚本端口/CORS变量名和前端 API 前缀错误。当前 PR #14 正在修复并等待重新人工验收。
+- 修复后真实启动验证：后端 18081、前端 18080、`/api/v1` 基址和 `rike_tiku_demo` 连接均正确；三角色登录 PASS，错误入口 `ROLE_MISMATCH` PASS。自动 smoke 已通过，MA-001 仍等待用户在 IDEA/WebStorm 中复验。
 
 ## 已合并基线
 
