@@ -4,8 +4,8 @@
 
 ## 当前主线状态
 
-- 开始基线：`main@4f10f6486de8f4d732abb6e52eeca7734bc3dfde`。
-- 当前分支：`main`。PR #13 已普通 merge，合并提交为 `db04fbc9caeeb5e4eb003a45581e62e76dbab420`。
+- 本轮开始基线：`main@2161080427fd432634325bea3c3d1ebd7e0f519a`。
+- 当前分支：`feat/demo-data-manual-acceptance`，演示验收环境尚未合并。PR #13 已普通 merge，合并提交为 `db04fbc9caeeb5e4eb003a45581e62e76dbab420`。
 - 学生自主练习、自动判分、结果与错题闭环已进入 `main`；AI、掌握度、推荐、教师任务、组卷考试和主观题评分仍未实现。
 - Flyway：V1–V7，共 23 张业务表；V1–V6 未修改。
 
@@ -25,6 +25,15 @@
 - `npm audit`：0 vulnerabilities；最终敏感信息扫描通过。
 - 真实 HTTP：`PASS`，已覆盖会话创建、未提交响应防泄露、权限和结果访问。学生页面回查：`NOT_RUN`，受控后台服务无法启动。综合结论：`PASS_WITH_ENV_LIMITATION`。
 
+## 当前功能分支
+
+- 显式 PowerShell 工具创建、重置、播种、校验和清理独立 `rike_tiku_demo`，正常应用启动不会自动写入演示数据。
+- 固定三角色演示账号、学生/教师档案、演示班级、三科三元任课关系和九个知识点。
+- 18 道自行编写、无附件、可自动判分的 `PUBLISHED` 演示题；每科 6 道，单选/多选/填空各 2 道，来源权利状态为 `USER_PROVIDED`，审核轨迹完整。
+- 本轮不修改 V1–V7，不写正式 `rike_tiku`，不修改 MVP30 原始 Excel。
+- 当前分支回归：后端 72/72、`mvn clean package` PASS；前端 68/68、类型检查和构建 PASS；`npm audit` 为 0 vulnerabilities。
+- 真实脚本链 `reset → seed → validate → clean → reset → seed` PASS，末次 seed 后演示库保持待人工验收状态；正式库演示账号、演示题和 V7 五张学习表均为 0。
+
 ## 已合并基线
 
 - PR #10：教师与三元任课关系，普通 merge `9495ecc`。
@@ -34,4 +43,4 @@
 
 ## 下一步
 
-下一模块候选为最小 AI 错题答疑闭环。AI 当前尚未实现，需在新的任务和分支中单独规划。
+下一步是用户使用演示账号按人工验收清单完成 ADMIN、TEACHER、STUDENT 流程，并在当前 PR 记录和修正真实问题。AI、DeepSeek、GLM 继续暂缓；教师任务、统计等正式工作台尚未实现。
