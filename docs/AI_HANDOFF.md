@@ -4,7 +4,7 @@
 
 ## 当前状态
 
-当前工作在 `main`。管理员班级管理与学生 Excel 导入前端闭环已通过普通 merge 合并：PR [#9](https://github.com/Fiesty-Abyss/rike-tiku/pull/9)，合并提交 `ffdc7a553cfaf284e03196cf1e9ef75f657c9bb0`；原远程功能分支 `feat/admin-student-import-ui` 已删除。
+当前工作在 `feat/admin-teacher-assignment`，起点为`main@3bec4af`。管理员班级管理与学生 Excel 导入前端闭环已通过普通 merge 合并：PR [#9](https://github.com/Fiesty-Abyss/rike-tiku/pull/9)，合并提交 `ffdc7a553cfaf284e03196cf1e9ef75f657c9bb0`；原远程功能分支 `feat/admin-student-import-ui` 已删除。
 
 ### 本轮变更
 
@@ -15,6 +15,8 @@
 - 使用 `write-excel-file@4.1.1` 取代存在High风险的`xlsx@0.18.5`，只用于前端账号发放表；`package-lock.json` 已同步。该库只写出受控确认响应，绝不读取或解析用户上传Excel。
 - 为使浏览器能调用已有的班级 `PUT/PATCH` 接口，`SecurityConfig` 的 CORS 方法白名单补充 `PUT`、`PATCH`；没有新增业务接口。
 - 认证集成测试将 JWT 篡改位置移至签名段首字符，修复最后一位 Base64URL 非有效位改变时仍可验签的测试偶发问题。
+- 当前轮新增管理员教师账号/档案、固定TEACHER角色绑定、只读科目选择和三元任课关系接口及`/admin/teachers`页面；不新增V7，不做教师Excel导入。
+- 本轮实际验证：后端30/30与打包 PASS；前端35/35、类型检查、构建与审计（0 vulnerabilities）PASS。随机临时库浏览器联调已覆盖管理员登录、教师创建、初始密码一次性提示、三元关系创建、重复拒绝、结束状态及历史显示；临时数据库、进程和`.env.local`均已清理。
 
 ### 已完成验证
 
