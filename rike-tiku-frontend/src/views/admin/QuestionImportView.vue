@@ -35,10 +35,11 @@ function validateFile(file:UploadRawFile) {
 }
 
 function onFileChange(file:{ raw?:UploadRawFile }) {
-  if (!file.raw || !validateFile(file.raw)) { uploadRef.value?.clearFiles(); return }
-  selectedFile.value = file.raw
+  selectedFile.value = null
   preview.value = null
   result.value = null
+  if (!file.raw || !validateFile(file.raw)) { uploadRef.value?.clearFiles(); return }
+  selectedFile.value = file.raw
 }
 
 function clear() {
@@ -51,12 +52,15 @@ function clear() {
 
 async function runPreview() {
   if (!selectedFile.value) return
+  preview.value = null
+  result.value = null
   previewing.value = true
   try {
     preview.value = await previewQuestionImport(selectedFile.value)
     result.value = null
     ElMessage.success('题库预检查完成。')
   } catch (error) {
+    preview.value = null
     ElMessage.error(readableError(error, '预检查失败，请检查 Excel 与附件对象。'))
   } finally {
     previewing.value = false
@@ -93,7 +97,7 @@ async function confirmImport() {
       <div v-if="selectedFile" class="selected-file"><div><strong>{{ selectedFile.name }}</strong><span>{{ (selectedFile.size / 1024 / 1024).toFixed(2) }} MB</span></div><el-button link type="danger" @click="clear">移除文件</el-button></div>
       <div class="stage-actions"><el-button type="primary" :disabled="!selectedFile" :loading="previewing" @click="runPreview">上传并预检查</el-button></div>
     </section>
-    <section v-if="preview" class="import-stage"><div class="section-title-row"><div><h2>2. 逐行预检查</h2><p>学科：{{ preview.subjectCode }}；文件哈希：{{ preview.fileHash.slice(0, 12) }}…</p></div><el-button :loading="previewing" @click="runPreview">重新预检查</el-button></div>
+    <section v-if="preview" class="import-stage"><div class="section-title-row"><div><h2>2. 逐行预检查</h2><p>学科：{{ preview.subjectCode || '未确认' }}；文件哈希：{{ preview.fileHash.slice(0, 12) }}…</p></div><el-button :loading="previewing" @click="runPreview">重新预检查</el-button></div>
       <div class="preview-summary"><div><span>总行数</span><strong>{{ preview.totalCount }}</strong></div><div class="success"><span>有效行</span><strong>{{ preview.validCount }}</strong></div><div :class="{ danger: preview.invalidCount > 0 }"><span>无效行</span><strong>{{ preview.invalidCount }}</strong></div><div :class="{ danger: preview.duplicateCount > 0 }"><span>重复行</span><strong>{{ preview.duplicateCount }}</strong></div></div>
       <el-alert v-if="preview.alreadyImported" title="该文件哈希已成功导入，确认按钮已禁用。" type="warning" :closable="false" show-icon />
       <el-alert v-else-if="preview.invalidCount > 0" title="当前有无效行，确认导入已禁用。修正原文件或附件后请重新选择并预检查。" type="warning" :closable="false" show-icon />

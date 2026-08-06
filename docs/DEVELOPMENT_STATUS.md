@@ -6,8 +6,8 @@
 
 - 当前分支：`feat/admin-question-import`（基于 `main@76fdfe4`，尚未合并）。
 - PR [#9](https://github.com/Fiesty-Abyss/rike-tiku/pull/9) 已普通 merge 合并；合并提交：`ffdc7a553cfaf284e03196cf1e9ef75f657c9bb0`。原远程功能分支 `feat/admin-student-import-ui` 已删除。
-- 任务：管理员班级管理与学生 Excel 导入前端业务闭环。
-- 当前分支：`main`。PR [#10](https://github.com/Fiesty-Abyss/rike-tiku/pull/10) 已普通 merge 合并，合并提交为`9495ecced52291c82ee67c9f6229b141754e4998`；原远程功能分支已删除。
+- 当前任务：Draft PR #12 的管理员 MVP30 题库导入审查修正；不开发练习、判分、错题或 AI。
+- PR [#10](https://github.com/Fiesty-Abyss/rike-tiku/pull/10) 已普通 merge 合并，合并提交为`9495ecced52291c82ee67c9f6229b141754e4998`；原远程功能分支已删除。
 - PR [#11](https://github.com/Fiesty-Abyss/rike-tiku/pull/11) 已普通 merge 合并，合并提交为`dda66d4c7b530b9af44c692aa4d03027718a5e65`；远程 `feat/admin-question-review` 已删除。
 - Flyway：V1–V6，18 张业务表；本轮未修改迁移或新增表。
 
@@ -53,8 +53,10 @@
 - 接口：`POST /api/v1/admin/question-import/preview` 与 `POST /api/v1/admin/question-import/confirm`，均使用 multipart 字段 `file`；确认请求还必须携带预检查返回的文件哈希。
 - 预检查不写业务表；确认时服务端重新解析原文件、复验全部规则，并在一个事务内写入既有批次、题目、选项、解析、知识点、附件、来源与审核记录表。
 - 严格附件规则按正文对象标识及文件名精确匹配；没有唯一匹配或文件缺失即逐行无效，整批确认禁用，绝不按目录数量或模糊名称猜测。
-- 临时库浏览器实测：物理 10/10 导入；化学 2/10 有效、8 行因附件缺失或多候选而拒绝；生物 6/10 有效、4 行因附件缺失而拒绝。后两份不满足整批原子导入条件，未写入。
+- 当前严格预检查基线：物理 2/10 有效、化学 1/10 有效、生物 6/10 有效；其余行因声明图片数与正文 IMAGE 对象不一致、对象缺失或多候选被阻断。该结果取代了把图片计数仅作为警告时的旧统计；任何含无效行文件均不确认入库。
 - 原始三份 Excel、Flyway V1–V6 和正式 `rike_tiku` 均未修改。
+- 当前分支自动化回归：后端 `mvn clean test` 53/53、`mvn clean package` 通过；前端 `npm test` 56/56、`npm run type-check`、`npm run build` 通过，`npm audit` 为 0 vulnerabilities。
+- 本轮真实浏览器临时库联调：`NOT_RUN`。自动执行环境拒绝后台启动本地服务；已创建并删除随机临时数据库，未启动持久化服务、未写入正式 `rike_tiku`，也未绕过该限制。
 ## 题库审核发布（已合并至 `main`）
 
 - PR #11 已普通 merge 至 `main`，合并提交：`dda66d4c7b530b9af44c692aa4d03027718a5e65`；未修改 Flyway V1–V6，继续使用既有题目、来源、解析、审核轨迹和附件表。

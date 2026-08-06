@@ -1,8 +1,8 @@
 import http from '../http'
 
 export interface QuestionImportError { field:string; code:string; message:string }
-export interface QuestionImportRow { rowNumber:number; subjectCode:string; questionType:string; usageMode:string; stemSummary:string; knowledgePointPaths:string[]; attachmentCount:number; contentHash:string; status:'VALID'|'INVALID'; errors:QuestionImportError[]; warnings:string[] }
-export interface QuestionImportPreview { fileName:string; fileHash:string; subjectCode:string; totalCount:number; validCount:number; invalidCount:number; duplicateCount:number; alreadyImported:boolean; rows:QuestionImportRow[] }
+export interface QuestionImportRow { rowNumber:number; subjectCode:string|null; questionType:string|null; usageMode:string|null; stemSummary:string; knowledgePointPaths:string[]; attachmentCount:number; contentHash:string; status:'VALID'|'INVALID'; errors:QuestionImportError[]; warnings:string[] }
+export interface QuestionImportPreview { fileName:string; fileHash:string; subjectCode:string|null; totalCount:number; validCount:number; invalidCount:number; duplicateCount:number; alreadyImported:boolean; rows:QuestionImportRow[] }
 export interface QuestionImportConfirm { batchCode:string; totalCount:number; importedCount:number }
 
 function form(file:File, previewFileHash?:string) {
