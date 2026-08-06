@@ -3,11 +3,11 @@
 更新时间：2026-08-04  
 设计基线：V3.0  
 数据库：MySQL 8.4 / `rike_tiku`  
-状态：DONE_VERIFIED
+状态：V1–V7，学生练习闭环当前分支实现、尚未合并
 
 ## 1. 设计边界
 
-本版只覆盖科目、知识点、题目、选项、标准解析、附件、来源、审核轨迹和导入批次。没有创建用户、角色、练习、错题、AI、Redis、MinIO等表，也没有新增前端或业务接口。
+V1–V6覆盖题库、账号和教学组织；V7新增学生练习会话、冻结题目、正式答题事实、最终结果和错题聚合。没有 AI、Redis、MinIO、WebSocket、教师任务或主观题评分表。
 
 用户给出的允许清单实际包含10张业务表，本版名称全部保持不变。除此之外，Flyway会自动创建系统表`flyway_schema_history`，它不是业务表。
 
@@ -29,6 +29,14 @@ erDiagram
     TI_MU_JIE_XI ||--o{ TI_MU_FU_JIAN : "解析附件"
     TI_MU ||--o{ TI_MU_LAI_YUAN : "分项追溯"
     TI_MU ||--o{ TI_MU_SHEN_HE_JI_LU : "审核轨迹"
+    XUE_SHENG_DANG_AN ||--o{ LIAN_XI_HUI_HUA : "创建"
+    KE_MU ||--o{ LIAN_XI_HUI_HUA : "练习科目"
+    LIAN_XI_HUI_HUA ||--o{ LIAN_XI_TI_MU : "冻结题集"
+    TI_MU ||--o{ LIAN_XI_TI_MU : "原题引用"
+    LIAN_XI_TI_MU ||--|| XUE_SHENG_DA_TI : "正式答题"
+    LIAN_XI_HUI_HUA ||--|| XUE_XI_JIE_GUO : "最终结果"
+    XUE_SHENG_DANG_AN ||--o{ CUO_TI_JI_LU : "聚合"
+    TI_MU ||--o{ CUO_TI_JI_LU : "错题"
 ```
 
 关系要点：
@@ -300,7 +308,19 @@ erDiagram
 
 只写入3题、12个选项、3条标准解析、3条知识点关联、1条真实附件引用、9条分项来源和3条审核记录。完整30题没有导入。
 
-## 7. Flyway版本
+## 7. 学生练习 V7
+
+`V7__create_student_practice_and_wrong_question_tables.sql`创建五张表：
+
+- `lian_xi_hui_hua`：学生、科目、`CREATED/SUBMITTED` 状态和题量；
+- `lian_xi_ti_mu`：题目顺序、分值、题干/选项/答案/解析/知识点冻结快照；
+- `xue_sheng_da_ti`：同一会话题目唯一的一条正式原始答题事实、正误、得分和用时；
+- `xue_xi_jie_guo`：会话唯一最终结果；
+- `cuo_ti_ji_lu`：学生—题目唯一聚合，保留错误次数、连续正确次数、状态和最近答题。
+
+全部外键使用 `ON DELETE RESTRICT`，学习事实不物理删除。提交服务在同一事务中锁定会话、写答题事实、更新错题、写最终结果并切换会话状态；任一失败整体回滚。
+
+## 8. Flyway版本
 
 | 版本 | 作用 |
 |---|---|
@@ -308,5 +328,8 @@ erDiagram
 | `V2__create_question_core_tables.sql` | 创建题库核心8张表和约束、索引 |
 | `V3__insert_three_subject_question_samples.sql` | 写入三科各1道真实待审核样本 |
 | `V4__allow_subjective_topic_learning.sql` | 与V3.0对齐：允许主观母题，但强制专题学习且禁止自动判分 |
+| `V5__create_user_role_and_profile_tables.sql` | 用户、角色、学生/教师档案 |
+| `V6__create_class_and_teaching_relationship_tables.sql` | 班级、班级学生历史和三元任课关系 |
+| `V7__create_student_practice_and_wrong_question_tables.sql` | 学生练习、答题事实、结果与错题聚合 |
 
 所有建表和结构变更均由Flyway执行，没有手工创建业务表。

@@ -40,6 +40,13 @@ const router = createRouter({
       name: 'student-home',
       component: () => import('../views/StudentHomeView.vue'),
       meta: { requiresAuth: true, roles: ['STUDENT'] },
+      children: [
+        { path: 'practice', name: 'student-practice', component: () => import('../views/student/PracticeNewView.vue') },
+        { path: 'practice/new', name: 'student-practice-new', component: () => import('../views/student/PracticeNewView.vue') },
+        { path: 'practice/:id', name: 'student-practice-session', component: () => import('../views/student/PracticeSessionView.vue') },
+        { path: 'practice/:id/result', name: 'student-practice-result', component: () => import('../views/student/PracticeResultView.vue') },
+        { path: 'wrong-questions', name: 'student-wrong-questions', component: () => import('../views/student/WrongQuestionsView.vue') },
+      ],
     },
     {
       path: '/teacher',
