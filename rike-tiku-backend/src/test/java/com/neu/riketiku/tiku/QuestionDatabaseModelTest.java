@@ -26,7 +26,8 @@ class QuestionDatabaseModelTest {
         "ti_mu_jie_xi", "ti_mu_zhi_shi_dian", "ti_mu_fu_jian", "ti_mu_lai_yuan",
         "ti_mu_shen_he_ji_lu", "yong_hu", "jiao_se", "yong_hu_jiao_se",
         "xue_sheng_dang_an", "jiao_shi_dang_an", "ban_ji", "ban_ji_xue_sheng",
-        "ren_ke_guan_xi"
+        "ren_ke_guan_xi", "lian_xi_hui_hua", "lian_xi_ti_mu", "xue_sheng_da_ti",
+        "xue_xi_jie_guo", "cuo_ti_ji_lu"
     );
 
     @Autowired
@@ -51,7 +52,7 @@ class QuestionDatabaseModelTest {
         assertThat(Set.copyOf(tables)).isEqualTo(BUSINESS_TABLES);
         Integer migrations = jdbcTemplate.queryForObject(
             "SELECT COUNT(*) FROM flyway_schema_history WHERE success = 1", Integer.class);
-        assertThat(migrations).isEqualTo(6);
+        assertThat(migrations).isEqualTo(7);
     }
 
     @Test

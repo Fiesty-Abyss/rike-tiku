@@ -1,6 +1,6 @@
 # 跨AI项目上下文
 
-更新时间：2026-08-04
+更新时间：2026-08-06
 
 ## 1. 项目身份
 
@@ -48,15 +48,15 @@
 
 ## 5. 当前实现状态
 
-- 状态：题库核心数据库与账号/教学组织数据库模型均为 `DONE_VERIFIED`。
-- 当前分支：`feat/admin-question-import`（基于已合并 PR #11 的 `main@76fdfe4`）；Draft PR #12 正在处理管理员 MVP30 题库导入审查修正，最终 HEAD 以 `git log -1` 为准。
-- 当前Flyway：V1–V6。
-- 当前业务表：题库核心10表，加 `yong_hu`、`jiao_se`、`yong_hu_jiao_se`、`xue_sheng_dang_an`、`jiao_shi_dang_an`、`ban_ji`、`ban_ji_xue_sheng`、`ren_ke_guan_xi`，共18表。
+- 状态：题库、账号、教学组织模型已合并；学生练习闭环正在当前分支实现。
+- 当前分支：`feat/student-practice-loop`，基于 `main@4f10f64`；Draft PR #13 已创建、当前尚未合并。
+- 当前Flyway：V1–V7。
+- 当前业务表：既有18表，加练习会话、冻结题目、学生答题、结果、错题聚合，共23表。
 - 当前样本：物理、化学、生物各1题，共3题，均为 `PENDING`；权利状态为 `COPYRIGHT_UNKNOWN`。
-- 当前分支验证：后端 54/54 测试、`mvn clean package` 通过；前端 56/56、类型检查和生产构建通过，`npm audit` 为 0 vulnerabilities。MVP30 纯 V1–V6 预检查为物理 0/10、化学 1/10、生物 1/10；测试事务预置 Excel 所需知识点后的附件专项结果为 2/10、1/10、6/10。预检查不写导入批次、题目或任何题目子表。
+- 当前分支验证：后端 68/68 测试与打包通过；前端 68/68、类型检查和生产构建通过；`npm audit` 为 0 vulnerabilities。真实 HTTP 验证为 `PASS`，学生页面回查为 `NOT_RUN`，综合结论为 `PASS_WITH_ENV_LIMITATION`。
 - 远程仓库：`https://github.com/Fiesty-Abyss/rike-tiku`，公开仓库，默认分支 `main`。
 
-学生导入、教师管理、三元任课关系和题库审核发布均已进入 `main`。PR #12 尚未合并；在其合并前不得启动练习判分、错题、AI Provider或其他新业务模块。
+学生导入、教师管理、三元任课关系、题库审核发布及 MVP30 导入均已进入 `main`。当前轮只开发学生练习、自动判分与错题闭环；PR #13 合并后的下一模块候选为最小 AI 错题答疑闭环，但 AI Provider、AI 答疑、掌握度和推荐当前仍未实现。
 
 ## 6. AI接管规则
 

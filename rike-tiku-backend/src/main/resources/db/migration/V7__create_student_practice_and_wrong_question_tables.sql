@@ -1,0 +1,102 @@
+CREATE TABLE lian_xi_hui_hua (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    xue_sheng_id BIGINT NOT NULL,
+    ke_mu_id BIGINT NOT NULL,
+    zhuang_tai VARCHAR(16) NOT NULL DEFAULT 'CREATED',
+    ti_mu_shu INT NOT NULL,
+    chuang_jian_shi_jian DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    ti_jiao_shi_jian DATETIME(3) NULL,
+    geng_xin_shi_jian DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+    PRIMARY KEY (id),
+    KEY idx_lian_xi_hui_hua_xue_sheng_zhuang_tai (xue_sheng_id, zhuang_tai, chuang_jian_shi_jian),
+    KEY idx_lian_xi_hui_hua_ke_mu (ke_mu_id),
+    CONSTRAINT fk_lian_xi_hui_hua_xue_sheng FOREIGN KEY (xue_sheng_id) REFERENCES xue_sheng_dang_an (id) ON DELETE RESTRICT,
+    CONSTRAINT fk_lian_xi_hui_hua_ke_mu FOREIGN KEY (ke_mu_id) REFERENCES ke_mu (id) ON DELETE RESTRICT,
+    CONSTRAINT ck_lian_xi_hui_hua_zhuang_tai CHECK (zhuang_tai IN ('CREATED', 'SUBMITTED')),
+    CONSTRAINT ck_lian_xi_hui_hua_ti_mu_shu CHECK (ti_mu_shu >= 1)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='学生自主练习会话';
+
+CREATE TABLE lian_xi_ti_mu (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    lian_xi_hui_hua_id BIGINT NOT NULL,
+    ti_mu_id BIGINT NOT NULL,
+    ti_mu_shun_xu INT NOT NULL,
+    fen_zhi DECIMAL(8,2) NOT NULL DEFAULT 1.00,
+    ti_mu_lei_xing VARCHAR(32) NOT NULL,
+    nan_du_kuai_zhao TINYINT NOT NULL,
+    ti_gan_kuai_zhao LONGTEXT NOT NULL,
+    xuan_xiang_kuai_zhao JSON NULL,
+    zheng_que_da_an_kuai_zhao JSON NOT NULL,
+    biao_zhun_jie_xi_kuai_zhao LONGTEXT NOT NULL,
+    zhi_shi_dian_kuai_zhao JSON NOT NULL,
+    chuang_jian_shi_jian DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    PRIMARY KEY (id),
+    UNIQUE KEY uk_lian_xi_ti_mu_hui_hua_shun_xu (lian_xi_hui_hua_id, ti_mu_shun_xu),
+    UNIQUE KEY uk_lian_xi_ti_mu_hui_hua_ti_mu (lian_xi_hui_hua_id, ti_mu_id),
+    KEY idx_lian_xi_ti_mu_ti_mu (ti_mu_id),
+    CONSTRAINT fk_lian_xi_ti_mu_hui_hua FOREIGN KEY (lian_xi_hui_hua_id) REFERENCES lian_xi_hui_hua (id) ON DELETE RESTRICT,
+    CONSTRAINT fk_lian_xi_ti_mu_ti_mu FOREIGN KEY (ti_mu_id) REFERENCES ti_mu (id) ON DELETE RESTRICT,
+    CONSTRAINT ck_lian_xi_ti_mu_shun_xu CHECK (ti_mu_shun_xu >= 1),
+    CONSTRAINT ck_lian_xi_ti_mu_fen_zhi CHECK (fen_zhi > 0),
+    CONSTRAINT ck_lian_xi_ti_mu_lei_xing CHECK (ti_mu_lei_xing IN ('SINGLE_CHOICE', 'MULTIPLE_CHOICE', 'FILL_BLANK')),
+    CONSTRAINT ck_lian_xi_ti_mu_nan_du CHECK (nan_du_kuai_zhao IN (1, 2, 3)),
+    CONSTRAINT ck_lian_xi_ti_mu_xuan_xiang_json CHECK (xuan_xiang_kuai_zhao IS NULL OR JSON_TYPE(xuan_xiang_kuai_zhao) = 'ARRAY'),
+    CONSTRAINT ck_lian_xi_ti_mu_da_an_json CHECK (JSON_TYPE(zheng_que_da_an_kuai_zhao) = 'OBJECT'),
+    CONSTRAINT ck_lian_xi_ti_mu_zhi_shi_dian_json CHECK (JSON_TYPE(zhi_shi_dian_kuai_zhao) = 'ARRAY')
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='练习题目冻结快照';
+
+CREATE TABLE xue_sheng_da_ti (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    lian_xi_ti_mu_id BIGINT NOT NULL,
+    xue_sheng_id BIGINT NOT NULL,
+    xue_sheng_da_an JSON NOT NULL,
+    shi_fou_zheng_que TINYINT(1) NOT NULL,
+    de_fen DECIMAL(8,2) NOT NULL,
+    yong_shi_miao_shu INT NULL,
+    ti_jiao_shi_jian DATETIME(3) NOT NULL,
+    chuang_jian_shi_jian DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    PRIMARY KEY (id),
+    UNIQUE KEY uk_xue_sheng_da_ti_lian_xi_ti_mu (lian_xi_ti_mu_id),
+    KEY idx_xue_sheng_da_ti_xue_sheng (xue_sheng_id, ti_jiao_shi_jian),
+    CONSTRAINT fk_xue_sheng_da_ti_lian_xi_ti_mu FOREIGN KEY (lian_xi_ti_mu_id) REFERENCES lian_xi_ti_mu (id) ON DELETE RESTRICT,
+    CONSTRAINT fk_xue_sheng_da_ti_xue_sheng FOREIGN KEY (xue_sheng_id) REFERENCES xue_sheng_dang_an (id) ON DELETE RESTRICT,
+    CONSTRAINT ck_xue_sheng_da_ti_zheng_que CHECK (shi_fou_zheng_que IN (0, 1)),
+    CONSTRAINT ck_xue_sheng_da_ti_de_fen CHECK (de_fen >= 0),
+    CONSTRAINT ck_xue_sheng_da_ti_yong_shi CHECK (yong_shi_miao_shu IS NULL OR yong_shi_miao_shu >= 0)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='学生正式答题事实';
+
+CREATE TABLE xue_xi_jie_guo (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    lian_xi_hui_hua_id BIGINT NOT NULL,
+    zong_ti_shu INT NOT NULL,
+    zheng_que_shu INT NOT NULL,
+    zong_de_fen DECIMAL(10,2) NOT NULL,
+    ti_jiao_shi_jian DATETIME(3) NOT NULL,
+    chuang_jian_shi_jian DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    PRIMARY KEY (id),
+    UNIQUE KEY uk_xue_xi_jie_guo_hui_hua (lian_xi_hui_hua_id),
+    CONSTRAINT fk_xue_xi_jie_guo_hui_hua FOREIGN KEY (lian_xi_hui_hua_id) REFERENCES lian_xi_hui_hua (id) ON DELETE RESTRICT,
+    CONSTRAINT ck_xue_xi_jie_guo_ji_shu CHECK (zong_ti_shu >= 1 AND zheng_que_shu BETWEEN 0 AND zong_ti_shu),
+    CONSTRAINT ck_xue_xi_jie_guo_de_fen CHECK (zong_de_fen >= 0)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='练习最终结果';
+
+CREATE TABLE cuo_ti_ji_lu (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    xue_sheng_id BIGINT NOT NULL,
+    ti_mu_id BIGINT NOT NULL,
+    cuo_wu_ci_shu INT NOT NULL DEFAULT 1,
+    lian_xu_zheng_que_ci_shu INT NOT NULL DEFAULT 0,
+    zhuang_tai VARCHAR(16) NOT NULL DEFAULT 'NEW',
+    zui_jin_da_ti_id BIGINT NOT NULL,
+    zui_jin_cuo_wu_shi_jian DATETIME(3) NOT NULL,
+    chuang_jian_shi_jian DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    geng_xin_shi_jian DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+    PRIMARY KEY (id),
+    UNIQUE KEY uk_cuo_ti_ji_lu_xue_sheng_ti_mu (xue_sheng_id, ti_mu_id),
+    KEY idx_cuo_ti_ji_lu_xue_sheng_zhuang_tai (xue_sheng_id, zhuang_tai, zui_jin_cuo_wu_shi_jian),
+    CONSTRAINT fk_cuo_ti_ji_lu_xue_sheng FOREIGN KEY (xue_sheng_id) REFERENCES xue_sheng_dang_an (id) ON DELETE RESTRICT,
+    CONSTRAINT fk_cuo_ti_ji_lu_ti_mu FOREIGN KEY (ti_mu_id) REFERENCES ti_mu (id) ON DELETE RESTRICT,
+    CONSTRAINT fk_cuo_ti_ji_lu_zui_jin_da_ti FOREIGN KEY (zui_jin_da_ti_id) REFERENCES xue_sheng_da_ti (id) ON DELETE RESTRICT,
+    CONSTRAINT ck_cuo_ti_ji_lu_ci_shu CHECK (cuo_wu_ci_shu >= 1 AND lian_xu_zheng_que_ci_shu >= 0),
+    CONSTRAINT ck_cuo_ti_ji_lu_zhuang_tai CHECK (zhuang_tai IN ('NEW', 'REVIEWING', 'MASTERED'))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='学生错题聚合';
