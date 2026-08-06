@@ -77,7 +77,7 @@ Flyway 是数据库结构的唯一建表和升级入口。已经执行的迁移�
 
 使用 IDEA 直接启动时必须在运行配置增加 `RIKE_TIKU_DB_NAME=rike_tiku_demo`；否则后端默认连接正式开发库 `rike_tiku`，其中不存在演示账号。默认端口方案的前端 API 地址为 `http://localhost:8081/api/v1`。脚本演示端口方案可在服务启动后执行 `.\scripts\demo-environment.ps1 smoke` 验证健康状态和三角色登录。
 
-当前分支自动化验证为后端 74/74、前端 68/68，后端打包、前端类型检查与构建均通过，`npm audit` 为 0 vulnerabilities；真实脚本链及三角色 HTTP smoke 已通过，最终演示库处于已 seed、学习记录为 0 的待验收状态。
+当前分支自动化验证基线为后端 74/74、前端 68/68，后端打包、前端类型检查与构建均通过，`npm audit` 为 0 vulnerabilities；真实脚本链及三角色 HTTP smoke 已通过。MA-001 登录问题已完成复验并关闭；MA-002 至 MA-009 为用户登记的待规划反馈，尚未实现。
 
 ## 本地启动
 
@@ -162,4 +162,4 @@ npm run build
 
 ## 下一阶段
 
-PR #13 已普通 merge，学生练习闭环已进入 `main`。当前 `feat/demo-data-manual-acceptance` 分支只建设独立演示数据与人工验收环境，尚未合并；下一步是用户按清单完成三角色人工验收，并在同一 PR 记录和修正发现的问题。AI 暂缓，DeepSeek 与 GLM 均尚未接入；MVP30 尚未正式入库，教师正式业务工作台尚未实现。
+PR #13 已普通 merge，学生练习闭环已进入 `main`。当前 `feat/demo-data-manual-acceptance` 分支只建设独立演示数据与人工验收环境，尚未合并。后续顺序为：UI、认证和学生三科工作台；管理员学生手动管理；高频考点和受三元任课关系约束的师生私信；最后才接入 DeepSeek 与 GLM。这些规划均未实现。MVP30 尚未正式入库，教师正式业务工作台尚未实现。
