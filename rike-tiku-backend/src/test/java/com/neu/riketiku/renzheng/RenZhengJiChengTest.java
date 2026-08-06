@@ -125,6 +125,21 @@ class RenZhengJiChengTest {
     }
 
     @Test
+    void adminQuestionImportEndpointsRequireAuthenticatedNonInitialAdminRole() throws Exception {
+        String adminToken = token(login("question_import_admin", "AdminPass1", "ADMIN", false));
+        String studentToken = token(login("question_import_student", "StudentPass1", "STUDENT", false));
+        String teacherToken = token(login("question_import_teacher", "TeacherPass1", "TEACHER", false));
+        String initialAdminToken = token(login("question_import_initial_admin", "AdminPass1", "ADMIN", true));
+        byte[] invalidWorkbook = "not-a-workbook".getBytes(StandardCharsets.UTF_8);
+
+        assertError(uploadPath("/api/v1/admin/question-import/preview", invalidWorkbook, "questions.xlsx", null), 401, "UNAUTHENTICATED");
+        assertError(uploadPath("/api/v1/admin/question-import/preview", invalidWorkbook, "questions.xlsx", studentToken), 403, "ACCESS_DENIED");
+        assertError(uploadPath("/api/v1/admin/question-import/preview", invalidWorkbook, "questions.xlsx", teacherToken), 403, "ACCESS_DENIED");
+        assertError(uploadPath("/api/v1/admin/question-import/preview", invalidWorkbook, "questions.xlsx", initialAdminToken), 403, "MUST_CHANGE_PASSWORD");
+        assertError(uploadPath("/api/v1/admin/question-import/preview", invalidWorkbook, "questions.xlsx", adminToken), 400, "WORKBOOK_INVALID");
+    }
+
+    @Test
     void invalidCredentialsAndUnavailableAccountsShouldBeRejected() throws Exception {
         insertUser("valid", "ValidPass1", false, "ENABLED", "STUDENT");
         insertUser("disabled", "DisabledPass1", false, "DISABLED", "STUDENT");

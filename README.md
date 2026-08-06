@@ -48,6 +48,7 @@ Flyway 是数据库结构的唯一建表和升级入口。已经执行的迁移�
 - 管理员班级管理与学生Excel导入前端：管理员布局、班级分页筛选/创建/编辑/状态切换，以及模板下载、预检查、确认入库、账号发放结果与Excel下载。
 - 管理员教师账号与档案、教师—班级—科目三元任课关系：管理员分页筛选、创建、修改、一次性初始密码、任课关系创建与状态结束/停用。
 - 管理员题库审核发布：题目分页与筛选、草稿创建/编辑、完整详情、版权复核和 `DRAFT → PENDING → PUBLISHED → DISABLED → PUBLISHED` 状态流；已通过普通 merge 合并到 `main`（PR #11）。
+- 管理员 MVP30 题库导入（当前 `feat/admin-question-import`，尚未合并）：单文件 Excel 预检查、逐行错误、知识点精确匹配、附件对象精确映射与全批次确认入库；成功题目和 STANDARD 解析统一为 `PENDING`。
 
 已完成前端认证基础：三角色登录入口、Pinia认证状态、Bearer Token注入、会话恢复、首次改密、路由守卫和管理员业务页。尚未完成：学生普通管理、练习判分、错题、AI Provider和学生/教师正式工作台。题库30题候选数据尚未正式发布。
 
@@ -119,6 +120,8 @@ npm run build
 - [管理员教师与任课关系前端](docs/ADMIN_TEACHER_ASSIGNMENT_FRONTEND.md)
 - [管理员题库审核发布接口](docs/ADMIN_QUESTION_REVIEW_API.md)
 - [管理员题库审核发布前端](docs/ADMIN_QUESTION_REVIEW_FRONTEND.md)
+- [管理员题库导入接口](docs/ADMIN_QUESTION_IMPORT_API.md)
+- [管理员题库导入前端](docs/ADMIN_QUESTION_IMPORT_FRONTEND.md)
 - V3.0总体设计公开脱敏版（位于 `docs/`）
 
 ## 题库资料和权利说明
