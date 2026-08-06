@@ -8,6 +8,7 @@ import com.neu.riketiku.renzheng.RenZhengYeWuYiChang;
 import com.neu.riketiku.tiku.admin.AdminQuestionIntegrationTestSupport;
 import java.util.List;
 import java.util.UUID;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -107,10 +108,153 @@ class StudentPracticeIntegrationTest extends AdminQuestionIntegrationTestSupport
                 .isInstanceOf(RenZhengYeWuYiChang.class).hasMessageContaining("只支持");
     }
 
+    @Test
+    @Transactional
+    void skipsUnfreezableCandidatesAndUsesLaterCompleteQuestions() {
+        long userId = student("pool");
+        long validOne = question("SINGLE_CHOICE", "PUBLISHED", 1, "A");
+        long validTwo = question("SINGLE_CHOICE", "PUBLISHED", 1, "A");
+        long missingAnalysis = question("SINGLE_CHOICE", "PUBLISHED", 1, "A");
+        long disabledKnowledgePoint = question("SINGLE_CHOICE", "PUBLISHED", 1, "A");
+        long attached = question("SINGLE_CHOICE", "PUBLISHED", 1, "A");
+        long marker = question("SINGLE_CHOICE", "PUBLISHED", 1, "A");
+        long uniquePoint = uniqueKnowledgePoint();
+        for (long questionId : List.of(validOne, validTwo, missingAnalysis, disabledKnowledgePoint, attached, marker)) {
+            jdbc.update("DELETE FROM ti_mu_zhi_shi_dian WHERE ti_mu_id=?", questionId);
+            jdbc.update("INSERT INTO ti_mu_zhi_shi_dian(ti_mu_id,zhi_shi_dian_id,shi_fou_zhu_yao,pai_xu) VALUES (?,?,1,1)", questionId, uniquePoint);
+        }
+        jdbc.update("UPDATE ti_mu_jie_xi SET zhuang_tai='DRAFT' WHERE ti_mu_id=?", missingAnalysis);
+        jdbc.update("UPDATE ti_mu_zhi_shi_dian SET yi_shan_chu=1 WHERE ti_mu_id=?", disabledKnowledgePoint);
+        jdbc.update("""
+                INSERT INTO ti_mu_fu_jian(ti_mu_id,guan_lian_wei_zhi,fu_jian_lei_xing,yuan_shi_wen_jian_ming,xiang_dui_lu_jing,
+                    nei_rong_ha_xi,pai_xu,zhuang_tai)
+                VALUES (?,'QUESTION','IMAGE','anonymous.png','sources/anonymous.png',?,1,'ACTIVE')
+                """, attached, "a".repeat(64));
+        jdbc.update("UPDATE ti_mu SET ti_gan=? WHERE id=?", "含〔图片对象 I001〕标记", marker);
+
+        var session = service.create(userId, new StudentPracticeDtos.CreateRequest(1L, List.of(uniquePoint), List.of("SINGLE_CHOICE"), 1, 2));
+
+        assertThat(session.questions()).extracting(question -> jdbc.queryForObject(
+                "SELECT ti_mu_id FROM lian_xi_ti_mu WHERE id=?", Long.class, question.practiceQuestionId()))
+                .containsExactly(validTwo, validOne);
+        assertThatThrownBy(() -> service.create(userId, new StudentPracticeDtos.CreateRequest(1L, List.of(uniquePoint),
+                List.of("SINGLE_CHOICE"), 1, 3))).isInstanceOf(RenZhengYeWuYiChang.class)
+                .hasMessageContaining("已发布题目不足");
+    }
+
+    @Test
+    @Transactional
+    void protectsUnsubmittedResultsAndCrossStudentWrongQuestionDetails() {
+        long owner = student("detail_owner");
+        long other = student("detail_other");
+        long questionId = question("SINGLE_CHOICE", "PUBLISHED", 1, "A");
+        var session = service.create(owner, new StudentPracticeDtos.CreateRequest(1L, null, List.of("SINGLE_CHOICE"), null, 1));
+
+        assertThatThrownBy(() -> service.result(owner, session.id())).isInstanceOf(RenZhengYeWuYiChang.class)
+                .hasMessageContaining("尚未提交");
+        service.submit(owner, session.id(), new StudentPracticeDtos.SubmitRequest(List.of(
+                new StudentPracticeDtos.Answer(session.questions().getFirst().practiceQuestionId(), JsonNodeFactory.instance.textNode(" B "), 13))));
+        assertThatThrownBy(() -> service.result(other, session.id())).isInstanceOf(RenZhengYeWuYiChang.class)
+                .hasMessageContaining("不属于当前学生");
+        assertThatThrownBy(() -> service.wrongQuestion(other, questionId)).isInstanceOf(RenZhengYeWuYiChang.class)
+                .hasMessageContaining("错题不存在");
+    }
+
+    @Test
+    void rollsBackAnswerFactsAndWrongQuestionWhenResultInsertFails() {
+        long userId = student("result_rollback");
+        long questionId = question("SINGLE_CHOICE", "PUBLISHED", 1, "A");
+        var session = service.create(userId, new StudentPracticeDtos.CreateRequest(1L, null, List.of("SINGLE_CHOICE"), null, 1));
+        try {
+            jdbc.update("INSERT INTO xue_xi_jie_guo(lian_xi_hui_hua_id,zong_ti_shu,zheng_que_shu,zong_de_fen,ti_jiao_shi_jian) VALUES (?,1,0,0,NOW(3))", session.id());
+            assertThatThrownBy(() -> service.submit(userId, session.id(), new StudentPracticeDtos.SubmitRequest(List.of(
+                    new StudentPracticeDtos.Answer(session.questions().getFirst().practiceQuestionId(), JsonNodeFactory.instance.textNode("B"), 1)))))
+                    .isInstanceOf(DataIntegrityViolationException.class);
+            assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM xue_sheng_da_ti da JOIN lian_xi_ti_mu lt ON lt.id=da.lian_xi_ti_mu_id WHERE lt.lian_xi_hui_hua_id=?", Integer.class, session.id())).isZero();
+            assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM cuo_ti_ji_lu WHERE zui_jin_da_ti_id IN (SELECT da.id FROM xue_sheng_da_ti da JOIN lian_xi_ti_mu lt ON lt.id=da.lian_xi_ti_mu_id WHERE lt.lian_xi_hui_hua_id=?)", Integer.class, session.id())).isZero();
+            assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM xue_xi_jie_guo WHERE lian_xi_hui_hua_id=?", Integer.class, session.id())).isEqualTo(1);
+            assertThat(jdbc.queryForObject("SELECT zhuang_tai FROM lian_xi_hui_hua WHERE id=?", String.class, session.id())).isEqualTo("CREATED");
+        } finally {
+            jdbc.update("DELETE FROM xue_xi_jie_guo WHERE lian_xi_hui_hua_id=?", session.id());
+            jdbc.update("DELETE FROM lian_xi_ti_mu WHERE lian_xi_hui_hua_id=?", session.id());
+            jdbc.update("DELETE FROM lian_xi_hui_hua WHERE id=?", session.id());
+            jdbc.update("DELETE FROM ti_mu_zhi_shi_dian WHERE ti_mu_id=?", questionId);
+            jdbc.update("DELETE FROM ti_mu_jie_xi WHERE ti_mu_id=?", questionId);
+            jdbc.update("DELETE FROM ti_mu_xuan_xiang WHERE ti_mu_id=?", questionId);
+            jdbc.update("DELETE FROM ti_mu WHERE id=?", questionId);
+            jdbc.update("DELETE FROM xue_sheng_dang_an WHERE yong_hu_id=?", userId);
+            jdbc.update("DELETE FROM yong_hu WHERE id=?", userId);
+        }
+    }
+
+    @Test
+    @Transactional
+    void enforcesAnswerNormalizationAndElapsedTimeBoundary() {
+        long userId = student("answer_rules");
+        question("SINGLE_CHOICE", "PUBLISHED", 1, "A");
+        question("MULTIPLE_CHOICE", "PUBLISHED", 1, "AB");
+        question("FILL_BLANK", "PUBLISHED", 1, "填空答案");
+        var session = service.create(userId, new StudentPracticeDtos.CreateRequest(1L, null,
+                List.of("SINGLE_CHOICE", "MULTIPLE_CHOICE", "FILL_BLANK"), null, 3));
+        var answers = session.questions().stream().map(item -> switch (item.questionType()) {
+            case "SINGLE_CHOICE" -> new StudentPracticeDtos.Answer(item.practiceQuestionId(), JsonNodeFactory.instance.textNode(" a "), 2);
+            case "MULTIPLE_CHOICE" -> new StudentPracticeDtos.Answer(item.practiceQuestionId(), JsonNodeFactory.instance.arrayNode().add(" b ").add("A").add("A"), 3);
+            default -> new StudentPracticeDtos.Answer(item.practiceQuestionId(), JsonNodeFactory.instance.arrayNode().add("填空答案"), 4);
+        }).toList();
+        assertThat(service.submit(userId, session.id(), new StudentPracticeDtos.SubmitRequest(answers)).correctCount()).isEqualTo(3);
+
+        var overLimit = service.create(userId, new StudentPracticeDtos.CreateRequest(1L, null, List.of("SINGLE_CHOICE"), null, 1));
+        assertThatThrownBy(() -> service.submit(userId, overLimit.id(), new StudentPracticeDtos.SubmitRequest(List.of(
+                new StudentPracticeDtos.Answer(overLimit.questions().getFirst().practiceQuestionId(), JsonNodeFactory.instance.textNode("A"), 86401)))))
+                .isInstanceOf(RenZhengYeWuYiChang.class).hasMessageContaining("86400");
+    }
+
+    @Test
+    @Transactional
+    void gradesMultiBlankCaseSensitiveAndFullWidthAnswersWithoutChangingBlankOrder() {
+        long userId = student("blank_rules");
+        long questionId = question("FILL_BLANK", "PUBLISHED", 1, "填空答案");
+        jdbc.update("UPDATE ti_mu SET zheng_que_da_an=? WHERE id=?", """
+                {"schemaVersion":1,"type":"FILL_BLANK","blanks":[
+                  {"index":1,"acceptedAnswers":["Ａ，Ｂ","A,B"]},
+                  {"index":2,"acceptedAnswers":["Case"],"caseSensitive":true}
+                ]}
+                """, questionId);
+        var session = service.create(userId, new StudentPracticeDtos.CreateRequest(1L, null, List.of("FILL_BLANK"), null, 1));
+        var valid = new StudentPracticeDtos.Answer(session.questions().getFirst().practiceQuestionId(),
+                JsonNodeFactory.instance.arrayNode().add("A，B").add("Case"), 5);
+        assertThat(service.submit(userId, session.id(), new StudentPracticeDtos.SubmitRequest(List.of(valid))).correctCount()).isEqualTo(1);
+
+        var wrongCase = service.create(userId, new StudentPracticeDtos.CreateRequest(1L, null, List.of("FILL_BLANK"), null, 1));
+        var wrong = new StudentPracticeDtos.Answer(wrongCase.questions().getFirst().practiceQuestionId(),
+                JsonNodeFactory.instance.arrayNode().add("A,B").add("case"), 5);
+        assertThat(service.submit(userId, wrongCase.id(), new StudentPracticeDtos.SubmitRequest(List.of(wrong))).correctCount()).isZero();
+    }
+
+    @Test
+    @Transactional
+    void rejectsUserWithoutActiveStudentProfile() {
+        String suffix = UUID.randomUUID().toString().replace("-", "").substring(0, 12);
+        jdbc.update("INSERT INTO yong_hu(yong_hu_ming,mi_ma_zhai_yao,shi_fou_shou_ci_deng_lu) VALUES (?,?,0)",
+                "no_profile_" + suffix, "x".repeat(60));
+        long userId = jdbc.queryForObject("SELECT LAST_INSERT_ID()", Long.class);
+        assertThatThrownBy(() -> service.options(userId, null)).isInstanceOf(RenZhengYeWuYiChang.class)
+                .hasMessageContaining("没有有效学生档案");
+    }
+
     private void submitSingle(long userId, String label) {
         var session = service.create(userId, new StudentPracticeDtos.CreateRequest(1L, null, List.of("SINGLE_CHOICE"), null, 1));
         var answer = new StudentPracticeDtos.Answer(session.questions().getFirst().practiceQuestionId(), JsonNodeFactory.instance.textNode(label), 1);
         service.submit(userId, session.id(), new StudentPracticeDtos.SubmitRequest(List.of(answer)));
+    }
+
+    private long uniqueKnowledgePoint() {
+        String suffix = UUID.randomUUID().toString().replace("-", "").substring(0, 12);
+        jdbc.update("""
+                INSERT INTO zhi_shi_dian(ke_mu_id,zhi_shi_dian_ming_cheng,wan_zheng_lu_jing,ceng_ji,pai_xu,zhuang_tai)
+                VALUES (1,?,?,1,999,'ACTIVE')
+                """, "练习过滤" + suffix, "匿名练习>" + suffix);
+        return jdbc.queryForObject("SELECT LAST_INSERT_ID()", Long.class);
     }
 
     private com.fasterxml.jackson.databind.JsonNode answerFor(String type) {
