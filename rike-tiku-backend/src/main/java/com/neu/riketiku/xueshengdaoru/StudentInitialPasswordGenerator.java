@@ -11,7 +11,7 @@ public class StudentInitialPasswordGenerator {
     private static final char[] ALL = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789".toCharArray();
     private final SecureRandom random = new SecureRandom();
 
-    String generate() {
+    public String generate() {
         char[] password = new char[12];
         password[0] = pick(UPPER);
         password[1] = pick(LOWER);
