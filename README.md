@@ -75,7 +75,9 @@ Flyway 是数据库结构的唯一建表和升级入口。已经执行的迁移�
 
 详细安全边界与操作说明见 [演示环境说明](docs/DEMO_ENVIRONMENT.md)，人工检查步骤见 [人工验收清单](docs/MANUAL_ACCEPTANCE_CHECKLIST.md)。
 
-当前分支自动化验证为后端 72/72、前端 68/68，后端打包、前端类型检查与构建均通过，`npm audit` 为 0 vulnerabilities；真实脚本链已完成一次清理与重建，最终演示库处于已 seed、学习记录为 0 的待验收状态。
+使用 IDEA 直接启动时必须在运行配置增加 `RIKE_TIKU_DB_NAME=rike_tiku_demo`；否则后端默认连接正式开发库 `rike_tiku`，其中不存在演示账号。默认端口方案的前端 API 地址为 `http://localhost:8081/api/v1`。脚本演示端口方案可在服务启动后执行 `.\scripts\demo-environment.ps1 smoke` 验证健康状态和三角色登录。
+
+当前分支自动化验证为后端 74/74、前端 68/68，后端打包、前端类型检查与构建均通过，`npm audit` 为 0 vulnerabilities；真实脚本链及三角色 HTTP smoke 已通过，最终演示库处于已 seed、学习记录为 0 的待验收状态。
 
 ## 本地启动
 

@@ -23,7 +23,47 @@ $env:RIKE_TIKU_DB_PASSWORD = "你的本机MySQL密码"
 - `validate`：只读检查结构、账号、关系、题库和学习记录。
 - `clean`：只删除带受控演示标识的数据，保留 Flyway 基础科目和样例。
 
-启动服务时分别打开两个 PowerShell：
+## 启动方案 A：IDE 默认端口
+
+> **重要：直接点击未配置数据库名的 IDEA 默认运行配置会连接 `rike_tiku`，无法使用 demo 账号。**
+
+在 IDEA 的 `Run → Edit Configurations → RikeTikuBackendApplication → Environment variables` 保留原有数据库密码和 JWT 配置，并增加：
+
+```text
+RIKE_TIKU_DB_NAME=rike_tiku_demo
+RIKE_TIKU_DB_PASSWORD=你的本机MySQL密码
+RIKE_TIKU_JWT_SECRET=你原有的本机JWT密钥
+```
+
+不设置端口变量时，后端地址是 `http://localhost:8081`。WebStorm 前端使用默认 `http://localhost:8080`，其 `.env.local` 应为：
+
+```text
+VITE_API_BASE_URL=http://localhost:8081/api/v1
+```
+
+API 地址必须包含 `/api/v1`。然后在 WebStorm 执行 `npm run dev`。
+
+## 启动方案 B：演示端口
+
+IDEA 环境变量：
+
+```text
+RIKE_TIKU_DB_NAME=rike_tiku_demo
+RIKE_TIKU_BACKEND_PORT=18081
+RIKE_TIKU_CORS_ALLOWED_ORIGINS=http://localhost:18080
+RIKE_TIKU_DB_PASSWORD=你的本机MySQL密码
+RIKE_TIKU_JWT_SECRET=你原有的本机JWT密钥
+```
+
+WebStorm 环境变量：
+
+```text
+VITE_API_BASE_URL=http://localhost:18081/api/v1
+```
+
+Vite 启动参数为 `--host localhost --port 18080`。
+
+也可以分别打开两个 PowerShell，让脚本自动设置上述演示端口变量：
 
 ```powershell
 .\scripts\demo-environment.ps1 backend
@@ -31,6 +71,14 @@ $env:RIKE_TIKU_DB_PASSWORD = "你的本机MySQL密码"
 ```
 
 前端地址为 `http://localhost:18080`，后端地址为 `http://localhost:18081`，CORS 只允许此前端地址。
+
+服务启动后，在第三个 PowerShell 执行真实 HTTP 烟雾检查：
+
+```powershell
+.\scripts\demo-environment.ps1 smoke
+```
+
+该操作检查后端健康接口、实际演示数据库、三个角色登录和错误角色入口。它不会输出 JWT、数据库密码或 JWT 密钥。
 
 ## 固定账号
 
@@ -41,6 +89,14 @@ $env:RIKE_TIKU_DB_PASSWORD = "你的本机MySQL密码"
 | STUDENT | demo_student | a1234567 |
 
 三个账号均启用且不触发首次改密。数据库中只保存 BCrypt 摘要；密码仅为本地演示固定凭据，禁止用于任何正式环境。
+
+登录入口：
+
+- 管理员：`http://localhost:8080/login/admin`
+- 教师：`http://localhost:8080/login/teacher`
+- 学生：`http://localhost:8080/login/student`
+
+演示端口方案中将前端端口替换为 `18080`。账号必须使用对应角色入口，否则返回 `ROLE_MISMATCH`。
 
 ## 固定数据
 

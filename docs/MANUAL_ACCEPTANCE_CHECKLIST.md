@@ -2,6 +2,13 @@
 
 先按 [演示环境说明](DEMO_ENVIRONMENT.md) 完成 `reset`、`seed`、`validate` 并启动前后端。每项只在亲自验证后勾选；发现问题登记到 [问题记录](MANUAL_ACCEPTANCE_FINDINGS.md)。
 
+启动前置核对：
+
+- [ ] IDEA 后端明确设置 `RIKE_TIKU_DB_NAME=rike_tiku_demo`。
+- [ ] 前端 `VITE_API_BASE_URL` 包含 `/api/v1`。
+- [ ] 使用演示端口脚本时，`smoke` 显示健康接口与三角色登录全部 PASS。
+- [ ] 复验 MA-001：三个 demo 账号在各自入口均不再返回 `INVALID_CREDENTIALS`。
+
 ## ADMIN（demo_admin）
 
 - [ ] 1. 登录成功，进入管理员首页且菜单与角色一致。

@@ -4,5 +4,6 @@
 
 | 编号 | 角色 | 页面/接口 | 操作 | 预期 | 实际 | 严重级别 | 截图/说明 | 状态 |
 |---|---|---|---|---|---|---|---|---|
+| MA-001 | 全部 | 登录 | 使用 IDEA 和 WebStorm 默认运行配置启动后登录 demo 账号 | 对应角色登录成功 | 返回 `INVALID_CREDENTIALS` | BLOCKER | 后端默认连接 `rike_tiku` 而非 `rike_tiku_demo`；演示启动脚本另有端口、CORS 和 API 基础地址变量错误 | 修复中 |
 
 严重级别：`BLOCKER`、`HIGH`、`MEDIUM`、`LOW`、`UX`。
