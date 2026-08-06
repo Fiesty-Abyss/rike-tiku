@@ -250,8 +250,16 @@ public class QuestionImportService {
         for (AttachmentDraft attachment : row.attachments()) {
             Long optionId = "OPTION".equals(attachment.position()) ? optionIds.get(attachment.optionIndex() + 1) : null;
             Long relatedAnalysisId = "STANDARD_ANALYSIS".equals(attachment.position()) ? analysisId : null;
+            int characterPosition = attachment.characterPosition();
+            if ("ANSWER".equals(attachment.position())) {
+                characterPosition = jdbc.queryForObject("SELECT LOCATE(?, CAST(zheng_que_da_an AS CHAR)) FROM ti_mu WHERE id=?", Integer.class,
+                        attachment.marker(), questionId);
+                if (characterPosition <= 0) {
+                    throw new IllegalStateException("持久化后的正确答案未包含附件对象标记：" + attachment.marker());
+                }
+            }
             jdbc.update("INSERT INTO ti_mu_fu_jian(ti_mu_id,ti_mu_xuan_xiang_id,ti_mu_jie_xi_id,guan_lian_wei_zhi,fu_jian_lei_xing,yuan_shi_wen_jian_ming,xiang_dui_lu_jing,nei_rong_ha_xi,dui_xiang_biao_shi,zheng_wen_zi_fu_wei_zhi,pai_xu,zhuang_tai) VALUES (?,?,?,?,?,?,?,?,?,?,?, 'ACTIVE')",
-                    questionId, optionId, relatedAnalysisId, attachment.position(), attachment.type(), attachment.fileName(), attachment.relativePath(), attachment.hash(), attachment.marker(), attachment.characterPosition(), attachment.order());
+                    questionId, optionId, relatedAnalysisId, attachment.position(), attachment.type(), attachment.fileName(), attachment.relativePath(), attachment.hash(), attachment.marker(), characterPosition, attachment.order());
         }
         jdbc.update("INSERT INTO ti_mu_shen_he_ji_lu(ti_mu_id,shen_he_dong_zuo,yuan_zhuang_tai,mu_biao_zhuang_tai,shen_he_ren_id,shen_he_yi_jian) VALUES (?,'SUBMITTED','DRAFT','PENDING',?,?)",
                 questionId, reviewerId, "管理员导入，等待人工审核");

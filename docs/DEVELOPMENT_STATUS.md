@@ -53,9 +53,10 @@
 - 接口：`POST /api/v1/admin/question-import/preview` 与 `POST /api/v1/admin/question-import/confirm`，均使用 multipart 字段 `file`；确认请求还必须携带预检查返回的文件哈希。
 - 预检查不写业务表；确认时服务端重新解析原文件、复验全部规则，并在一个事务内写入既有批次、题目、选项、解析、知识点、附件、来源与审核记录表。
 - 严格附件规则按正文对象标识及文件名精确匹配；没有唯一匹配或文件缺失即逐行无效，整批确认禁用，绝不按目录数量或模糊名称猜测。
-- 当前严格预检查基线：物理 2/10 有效、化学 1/10 有效、生物 6/10 有效；其余行因声明图片数与正文 IMAGE 对象不一致、对象缺失或多候选被阻断。该结果取代了把图片计数仅作为警告时的旧统计；任何含无效行文件均不确认入库。
+- 纯 V1–V6 真实基线（不预置 Excel 知识点）：物理 0/10 有效、化学 1/10 有效、生物 1/10 有效；错误同时覆盖 `KNOWLEDGE_POINT_NOT_FOUND` 与附件完整性错误。预检查前后导入批次、题目及全部题目子表行数不变。
+- 附件专项基线（仅在测试事务预置 Excel 所需知识点后）：物理 2/10 有效、化学 1/10 有效、生物 6/10 有效。其余行因声明图片数与正文 IMAGE 对象不一致、对象缺失或多候选被阻断；此数据只用于隔离附件问题，不能表示 V1–V6 数据库天然可导入数量。
 - 原始三份 Excel、Flyway V1–V6 和正式 `rike_tiku` 均未修改。
-- 当前分支自动化回归：后端 `mvn clean test` 53/53、`mvn clean package` 通过；前端 `npm test` 56/56、`npm run type-check`、`npm run build` 通过，`npm audit` 为 0 vulnerabilities。
+- 当前分支自动化回归：后端 `mvn clean test` 54/54、`mvn clean package` 通过；前端 `npm test` 56/56、`npm run type-check`、`npm run build` 通过，`npm audit` 为 0 vulnerabilities。
 - 本轮真实浏览器临时库联调：`NOT_RUN`。自动执行环境拒绝后台启动本地服务；已创建并删除随机临时数据库，未启动持久化服务、未写入正式 `rike_tiku`，也未绕过该限制。
 ## 题库审核发布（已合并至 `main`）
 
