@@ -26,6 +26,7 @@ async function logout() {
       <el-menu class="admin-menu" router :default-active="$route.path">
         <el-menu-item index="/admin"><span>工作台</span></el-menu-item>
         <el-menu-item index="/admin/classes"><span>班级管理</span></el-menu-item>
+        <el-menu-item index="/admin/teachers"><span>教师与任课关系</span></el-menu-item>
         <el-menu-item index="/admin/students/import"><span>学生 Excel 导入</span></el-menu-item>
       </el-menu>
     </el-aside>
