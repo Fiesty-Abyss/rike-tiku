@@ -16,3 +16,5 @@
 来源文件必须拆分为“试题文件”和“答案解析文件”，且均为 `sourceRoot` 内真实普通文件。QUESTION 使用试题来源，ANSWER 与 STANDARD_ANALYSIS 使用答案解析来源。上传 Excel 未持久化时，批次只保存原文件名和 SHA-256，`yuan_shi_wen_jian_lu_jing` 保持 `NULL`，不伪造路径。
 
 确认在一个事务内写入既有 `dao_ru_pi_ci`、`ti_mu`、选项、STANDARD 解析、知识点、附件、三类来源和审核记录。所有题目与 STANDARD 解析均为 `PENDING`，审核动作为 `SUBMITTED`，来源权利状态为 `COPYRIGHT_UNKNOWN`。主观题答案保留为包含 `referenceAnswer` 的版本化 JSON；填空题每个空位保存稳定 `index` 和非空 `acceptedAnswers`。
+
+预检查不会自动创建知识点。MVP30 工作簿的纯 V1–V6 基线与“测试事务预置工作簿所需知识点后”的附件专项统计必须分开记录；后者仅用于隔离附件完整性问题，不能作为当前数据库可导入数量。浏览器临时库联调仍为 `NOT_RUN`，不得写为通过。

@@ -151,7 +151,7 @@ class QuestionImportIntegrationTest extends AdminQuestionIntegrationTestSupport 
         var response = service.confirm(upload, preview.fileHash(), reviewer());
         String answer = jdbc.queryForObject("SELECT CAST(q.zheng_que_da_an AS CHAR) FROM ti_mu q JOIN dao_ru_pi_ci b ON b.id=q.dao_ru_pi_ci_id WHERE b.pi_ci_bian_hao=?", String.class, response.batchCode());
         assertThat(answer).contains("SUBJECTIVE", "referenceAnswer", "原始参考答案");
-        assertThat(count("SELECT COUNT(*) FROM ti_mu_fu_jian a JOIN ti_mu q ON q.id=a.ti_mu_id JOIN dao_ru_pi_ci b ON b.id=q.dao_ru_pi_ci_id WHERE b.pi_ci_bian_hao=? AND a.guan_lian_wei_zhi='ANSWER' AND a.zheng_wen_zi_fu_wei_zhi > 0", response.batchCode())).isOne();
+        assertThat(count("SELECT COUNT(*) FROM ti_mu_fu_jian a JOIN ti_mu q ON q.id=a.ti_mu_id JOIN dao_ru_pi_ci b ON b.id=q.dao_ru_pi_ci_id WHERE b.pi_ci_bian_hao=? AND a.guan_lian_wei_zhi='ANSWER' AND a.zheng_wen_zi_fu_wei_zhi=LOCATE(a.dui_xiang_biao_shi,CAST(q.zheng_que_da_an AS CHAR)) AND LOCATE(a.dui_xiang_biao_shi,CAST(q.zheng_que_da_an AS CHAR))>0", response.batchCode())).isOne();
 
         var fillUpload = file("fill.xlsx", workbook(row("18", "实验填空题", "填空题", "", "①. 原答案一 ②. 原答案二", "解析", "hard")));
         var fill = service.preview(fillUpload);
