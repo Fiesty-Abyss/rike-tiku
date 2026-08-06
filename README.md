@@ -126,4 +126,4 @@ npm run build
 
 ## 下一阶段
 
-管理员班级管理与学生Excel导入闭环已通过普通 merge 合并至`main`：PR [#9](https://github.com/Fiesty-Abyss/rike-tiku/pull/9)，合并提交为`ffdc7a5`，原远程功能分支已删除。本轮合并后实际回归包括前端31/31、类型检查、构建、`npm audit`（0 vulnerabilities）及后端26/26测试和打包。账号发放表采用只写出受控确认响应的`write-excel-file@4.1.1`，不解析用户上传Excel。下一阶段仅建议教师管理或任课关系管理，不能提前开发题库、练习或AI。
+管理员教师账号、档案与三元任课关系已通过普通 merge 合并至`main`：PR [#10](https://github.com/Fiesty-Abyss/rike-tiku/pull/10)，合并提交为`9495ecc`，原远程功能分支已删除。合并后实际回归包括前端35/35、类型检查、构建、`npm audit`（0 vulnerabilities）及后端30/30测试和打包。下一阶段进入管理员题库审核、发布与停用闭环；不提前开发练习、判分或AI。

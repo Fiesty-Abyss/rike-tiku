@@ -7,7 +7,7 @@
 - 当前分支：`main`。
 - PR [#9](https://github.com/Fiesty-Abyss/rike-tiku/pull/9) 已普通 merge 合并；合并提交：`ffdc7a553cfaf284e03196cf1e9ef75f657c9bb0`。原远程功能分支 `feat/admin-student-import-ui` 已删除。
 - 任务：管理员班级管理与学生 Excel 导入前端业务闭环。
-- 当前功能分支：`feat/admin-teacher-assignment`，实现管理员教师账号/档案与教师—班级—科目三元任课关系；不新增Flyway迁移。
+- 当前分支：`main`。PR [#10](https://github.com/Fiesty-Abyss/rike-tiku/pull/10) 已普通 merge 合并，合并提交为`9495ecced52291c82ee67c9f6229b141754e4998`；原远程功能分支已删除。
 - Flyway：V1–V6，18 张业务表；本轮未修改迁移或新增表。
 
 ## 已实现并验证
@@ -41,6 +41,7 @@
 - JDK 25 下 Mockito/Byte Buddy 动态 Agent 警告仍存在，测试实际通过。
 - 三元关系受既有唯一键限制：结束或停用的同一三元组合不重新插入，也不重新启用，以保留单条历史记录的结束状态。
 - 本轮验证：后端`mvn clean test`30/30 PASS、`mvn clean package` PASS；前端`npm test`35/35 PASS、类型检查与构建 PASS、`npm audit`为0 vulnerabilities。随机临时库从V1–V6迁移后，已在真实浏览器完成管理员登录、教师创建、一次性密码显示、任课创建、重复拒绝、结束和历史查询；临时库与进程已清理。
+- PR #10 合并后在`main@9495ecc`回归：后端30/30与打包 PASS；前端35/35、类型检查、构建、审计0漏洞 PASS。
 
 ## 下一轮建议
 
