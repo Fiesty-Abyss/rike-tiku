@@ -48,7 +48,7 @@ Flyway 是数据库结构的唯一建表和升级入口。已经执行的迁移�
 - 管理员班级管理与学生Excel导入前端：管理员布局、班级分页筛选/创建/编辑/状态切换，以及模板下载、预检查、确认入库、账号发放结果与Excel下载。
 - 管理员教师账号与档案、教师—班级—科目三元任课关系：管理员分页筛选、创建、修改、一次性初始密码、任课关系创建与状态结束/停用。
 - 管理员题库审核发布：题目分页与筛选、草稿创建/编辑、完整详情、版权复核和 `DRAFT → PENDING → PUBLISHED → DISABLED → PUBLISHED` 状态流；已通过普通 merge 合并到 `main`（PR #11）。
-- 管理员 MVP30 题库导入（当前 `feat/admin-question-import`，尚未合并）：单文件 Excel 预检查、逐行错误、知识点精确匹配、附件对象精确映射与全批次确认入库；成功题目和 STANDARD 解析统一为 `PENDING`。
+- 管理员 MVP30 题库导入（当前 Draft PR #12，尚未合并）：单文件 Excel 预检查、逐行错误、知识点精确匹配、来源文件追溯、附件对象精确映射与全批次确认入库；成功题目和 STANDARD 解析统一为 `PENDING`。
 
 已完成前端认证基础：三角色登录入口、Pinia认证状态、Bearer Token注入、会话恢复、首次改密、路由守卫和管理员业务页。尚未完成：学生普通管理、练习判分、错题、AI Provider和学生/教师正式工作台。题库30题候选数据尚未正式发布。
 
@@ -132,4 +132,4 @@ npm run build
 
 ## 下一阶段
 
-管理员教师账号、档案与三元任课关系已通过普通 merge 合并至`main`：PR [#10](https://github.com/Fiesty-Abyss/rike-tiku/pull/10)，合并提交为`9495ecc`。管理员题库审核发布已通过普通 merge 合并至`main`：PR [#11](https://github.com/Fiesty-Abyss/rike-tiku/pull/11)，合并提交为`dda66d4c7b530b9af44c692aa4d03027718a5e65`，远程功能分支已删除。MVP30 Excel 仍仅完成只读兼容核对，尚未实现或执行批量入库；下一轮唯一任务为 MVP30 题库预检查与确认入库。
+管理员教师账号、档案与三元任课关系已通过普通 merge 合并至`main`：PR [#10](https://github.com/Fiesty-Abyss/rike-tiku/pull/10)，合并提交为`9495ecc`。管理员题库审核发布已通过普通 merge 合并至`main`：PR [#11](https://github.com/Fiesty-Abyss/rike-tiku/pull/11)，合并提交为`dda66d4c7b530b9af44c692aa4d03027718a5e65`。PR #12 正在严格复核 MVP30 导入：原始 Excel 未修改、未写入正式库；按附件完整性阻断规则，三份工作簿的可导入统计以当前分支验证记录为准。仅在 PR #12 合并后才可启动下一业务模块。
