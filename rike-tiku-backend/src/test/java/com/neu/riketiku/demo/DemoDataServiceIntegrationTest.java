@@ -49,7 +49,7 @@ class DemoDataServiceIntegrationTest extends AdminQuestionIntegrationTestSupport
         demo.seed();
         demo.validateSeed();
 
-        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM yong_hu WHERE yong_hu_ming LIKE 'demo_%'", Integer.class)).isEqualTo(3);
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM yong_hu WHERE yong_hu_ming LIKE 'demo_%'", Integer.class)).isEqualTo(14);
         String digest = jdbc.queryForObject("SELECT mi_ma_zhai_yao FROM yong_hu WHERE yong_hu_ming='demo_student'", String.class);
         assertThat(digest).doesNotContain(DemoDataService.DEMO_PASSWORD);
         assertThat(passwordEncoder.matches(DemoDataService.DEMO_PASSWORD, digest)).isTrue();
@@ -57,6 +57,10 @@ class DemoDataServiceIntegrationTest extends AdminQuestionIntegrationTestSupport
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM ti_mu WHERE ti_gan LIKE '【演示】%'", Integer.class)).isEqualTo(90);
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM ti_mu_lai_yuan s JOIN ti_mu q ON q.id=s.ti_mu_id WHERE q.ti_gan LIKE '【演示】%' AND s.quan_li_zhuang_tai='USER_PROVIDED' AND s.lai_yuan_ming_cheng='本科毕业设计自编演示题'", Integer.class)).isEqualTo(270);
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM ti_mu_shen_he_ji_lu r JOIN ti_mu q ON q.id=r.ti_mu_id WHERE q.ti_gan LIKE '【演示】%'", Integer.class)).isEqualTo(180);
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM ban_ji WHERE ban_ji_bian_ma LIKE 'DEMO_CLASS_%'", Integer.class)).isEqualTo(3);
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM jiao_shi_dang_an WHERE gong_hao LIKE 'DEMO_T%'", Integer.class)).isEqualTo(4);
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM xue_sheng_dang_an WHERE xue_hao LIKE 'DEMO_%'", Integer.class)).isEqualTo(9);
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM ren_ke_guan_xi r JOIN jiao_shi_dang_an t ON t.id=r.jiao_shi_id WHERE t.gong_hao LIKE 'DEMO_T%' AND r.zhuang_tai='ACTIVE'", Integer.class)).isEqualTo(9);
         assertThat(jdbc.queryForList("""
                 SELECT a.jie_xi_nei_rong FROM ti_mu_jie_xi a JOIN ti_mu q ON q.id=a.ti_mu_id
                 WHERE q.ti_gan LIKE '【演示】%' AND a.jie_xi_lei_xing='STANDARD'

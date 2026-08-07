@@ -6,6 +6,7 @@
     </div>
     <div class="admin-welcome-actions">
       <el-button type="primary" @click="$router.push('/admin/classes')">管理班级</el-button>
+      <el-button @click="$router.push('/admin/students')">管理学生</el-button>
       <el-button @click="$router.push('/admin/students/import')">导入学生</el-button>
     </div>
   </section>

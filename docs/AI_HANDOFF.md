@@ -1,22 +1,22 @@
 # AI 开发交接
 
-> 当前接续分支：`main`。PR #16 已普通 merge，merge commit 为 `588db6ee5b2a6c466c618249f072591af47609a1`。独立 `rike_tiku_demo` 的 Demo90 已进入 `main`；Flyway 保持 V1–V7（23 张业务表），PR #16 未修改既有迁移或新增迁移。
+> 当前接续分支：`feat/admin-student-management`，基于 `main@21a6f3c2f40a5bf86b28ecec044425bdd595ec2b`。PR #17 尚未合并；Flyway 保持 V1–V7（23 张业务表），本轮无迁移。
 
 更新时间：2026-08-07
 
 ## 当前状态
 
-当前分支为 `main`。PR #10 至 PR #16 均已普通 merge；PR #16 merge commit 为 `588db6ee5b2a6c466c618249f072591af47609a1`。
+PR #10 至 PR #16 均已普通 merge；PR #16 merge commit 为 `588db6ee5b2a6c466c618249f072591af47609a1`。当前 PR #17 分支已实现管理员单学生完整管理，等待独立审查。
 
 V7 的学生练习、正式答题、结果和错题聚合模型已进入 `main`。当前 Flyway 为 V1–V7，共 23 张业务表；既有迁移和 MVP30 原始 Excel 未改动。历史 PR #13 自动化为后端 68/68、前端 68/68；PR #15 合并后自动化为后端 79/79、前端 72/72，打包、类型检查、构建、依赖审计与完整浏览器验收均已通过。
 
-`main` 中的 `rike_tiku_demo` 显式重建工具包含三角色账号、教学组织、九个演示知识点和 90 道无附件原创演示题。每科 30 道，每科三题型、三档难度、三个演示知识点各 10 道；化学式、电荷和科学计数法使用稳定 Unicode，STANDARD 解析只保留学科说明。它不使用 Flyway 承载演示数据，不公开 seed 接口，也不在正常启动时执行。
+当前分支的 `rike_tiku_demo` 显式重建工具保留原 smoke 数据，并形成 199/200 双班级场景：14 账号、3 班级、4 教师、9 学生、9 条 ACTIVE 三元任课关系及 Demo90。它不使用 Flyway 承载演示数据，不公开 seed 接口，也不在正常启动时执行。
 
-Demo90 是“本科毕业设计自编演示题”，不等于 MVP30 正式真实题库；MVP30 仍未正式入库，网络候选题没有因此变为 `PUBLISHED`。本轮后续业务候选仍只有“管理员学生完整管理与账号恢复”（`PLANNED`）。
+Demo90 是“本科毕业设计自编演示题”，不等于 MVP30 正式真实题库；MVP30 仍未正式入库，网络候选题没有因此变为 `PUBLISHED`。PR #17 只等待独立审查，不启动下一模块。
 
 历史 PR #14 合并后验证：后端 74/74、打包 PASS；前端 68/68、类型检查与构建 PASS；依赖审计 0 vulnerabilities。完整脚本链及三角色真实 HTTP smoke PASS，正式库未出现演示账号、演示题或学习记录。
 
-人工验收问题 MA-001 的根因不是账号或 BCrypt：IDEA 默认连接 `rike_tiku`，而演示账号只在 `rike_tiku_demo`。PR #14 已修复脚本使用的 `RIKE_TIKU_BACKEND_PORT`、`RIKE_TIKU_CORS_ALLOWED_ORIGINS` 和带 `/api/v1` 的前端 API 地址，并补充 IDE 配置与真实 HTTP smoke。MA-001 至 MA-005、MA-010、MA-011 已关闭；MA-006 至 MA-009 尚未完成。MA-006 仅剩个人资料、个人简介和头像，主动修改密码已实现。
+PR #17 自动化为后端 86/86、前端 80/80，package、type-check、build、audit、Demo 脚本和浏览器主链均通过。MA-001 至 MA-005、MA-007、MA-010 至 MA-012 已关闭；MA-006、MA-008、MA-009 尚未完成。
 
 ## 继续时必须保持
 
@@ -35,7 +35,9 @@ Demo90 是“本科毕业设计自编演示题”，不等于 MVP30 正式真实
 - [学生练习前端](STUDENT_PRACTICE_FRONTEND.md)
 - [数据库模型](QUESTION_DATABASE_MODEL_V1.md)
 - [开发状态](DEVELOPMENT_STATUS.md)
+- [管理员学生管理 API](ADMIN_STUDENT_MANAGEMENT_API.md)
+- [管理员学生管理前端](ADMIN_STUDENT_MANAGEMENT_FRONTEND.md)
 
 ## 当前下一步
 
-唯一下一步候选为“管理员学生完整管理与账号恢复”，状态为 `PLANNED`。不得启动或把高频考点、私信、DeepSeek、GLM、AI、教师正式业务工作台写成已完成。
+唯一下一步是 PR #17 独立审查。不得启动下一模块，也不得把高频考点、私信、掌握度、推荐、DeepSeek、GLM、AI 或教师正式业务工作台写成已完成。
