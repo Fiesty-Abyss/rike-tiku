@@ -105,9 +105,11 @@ Vite 启动参数为 `--host localhost --port 18080`。
 - 班级：`DEMO_CLASS_01`，高三理综演示班。
 - 任课：演示教师对该班的物理、化学、生物三条 ACTIVE 三元任课关系。
 - 知识点：每科 3 个，共 9 个。
-- 题库：每科 6 道，共 18 道；每科单选、多选、填空各 2 道，难度覆盖 1、2、3。
+- 题库：Demo90 共 90 道，物理、化学、生物各 30 道；每科单选、多选、填空各 10 道，难度 1、2、3 各 10 道，三个演示知识点各 10 道。
 
-所有演示题均为自行编写的无附件 `PUBLISHED + ONLINE_PRACTICE` 自动判分题，STANDARD 解析为 `PUBLISHED`。QUESTION、ANSWER、STANDARD_ANALYSIS 三项来源均为 `TEACHER_CREATED + USER_PROVIDED`，并有 SUBMITTED、APPROVED 审核轨迹。
+所有 Demo90 题均为项目原创的“本科毕业设计自编演示题”，不复制网络题原文，也不读取 MVP30。题目均为无附件 `PUBLISHED + ONLINE_PRACTICE` 自动判分题，STANDARD 解析为 `PUBLISHED`。QUESTION、ANSWER、STANDARD_ANALYSIS 三项来源均为 `TEACHER_CREATED + USER_PROVIDED`，并有 SUBMITTED、APPROVED 审核轨迹。
+
+Demo90 只服务独立演示环境，不等于 MVP30 正式真实题库。MVP30 仍未正式入库，仓库中的网络候选题也未因本轮扩充而变为 `PUBLISHED`。
 
 ## 清理与重建
 
@@ -118,6 +120,6 @@ Vite 启动参数为 `--host localhost --port 18080`。
 ```
 
 `clean` 后演示账号、组织、题目和学习记录均被删除；`reset` 是库级重建，只允许对通过安全检查的演示库名执行。MVP30 原始 Excel 和正式 `rike_tiku` 不参与上述流程。
-# 当前分支补充（未合并）
+# Demo90 分支补充（未合并）
 
-演示库仍为 `rike_tiku_demo`，三账号与统一密码不变。登录 smoke 现在应先请求滑块挑战，再调用登录；脚本不绕过滑块。当前分支不向正式 `rike_tiku` 写入演示数据。
+当前分支为 `feat/demo-question-bank-expansion`。演示库仍为 `rike_tiku_demo`，三账号与统一密码不变。登录 smoke 先请求滑块挑战，再调用登录；脚本不绕过滑块。`reset`、`seed`、`validate`、`clean` 继续受数据库名保护，当前分支不向正式 `rike_tiku` 写入演示数据。
