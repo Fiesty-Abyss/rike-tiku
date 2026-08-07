@@ -69,7 +69,7 @@ onMounted(() => void load())
         </el-button>
       </article>
       <article>
-        <h2>本科错题</h2>
+        <h2>本学科错题</h2>
         <p>当前可用知识点 {{ pointCount }} 个；错题状态和历史会保留。</p>
         <el-button @click="router.push({ path: '/student/wrong-questions', query: { subjectId: subject.id } })">
           查看{{ subject.name }}错题
