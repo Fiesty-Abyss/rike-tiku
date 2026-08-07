@@ -31,6 +31,7 @@ async function logout() {
         <el-menu-item index="/admin/teachers"><span>教师与任课关系</span></el-menu-item>
         <el-menu-item index="/admin/questions"><span>题库审核发布</span></el-menu-item>
         <el-menu-item index="/admin/questions/import"><span>MVP30 题库导入</span></el-menu-item>
+        <el-menu-item index="/admin/students"><span>学生管理</span></el-menu-item>
         <el-menu-item index="/admin/students/import"><span>学生 Excel 导入</span></el-menu-item>
       </el-menu>
     </el-aside>
