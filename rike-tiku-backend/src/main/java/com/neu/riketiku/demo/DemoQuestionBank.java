@@ -33,7 +33,7 @@ final class DemoQuestionBank {
                 List.of("支持力大于重力", "人的合力方向向上", "支持力等于重力", "人的加速度方向向下"), Set.of("A", "B"), "加速度向上时合力向上，因此支持力大于重力"));
         items.add(fill("PHYSICS-F4", "PHYSICS", "质量为5 kg的物体受到10 N合力，其加速度为____m/s²。", newton, 1, "2"));
 
-        items.add(choice("PHYSICS-S5", "PHYSICS", "SINGLE_CHOICE", "电荷量为0.000002 C的正电荷在某点受电场力0.04 N，该点电场强度为多少？", electric, 3,
+        items.add(choice("PHYSICS-S5", "PHYSICS", "SINGLE_CHOICE", "电荷量为2×10⁻⁶ C的正电荷在某点受电场力0.04 N，该点电场强度为多少？", electric, 3,
                 List.of("20000 N/C", "80000 N/C", "0.00008 N/C", "0.002 N/C"), Set.of("A"), "由E=F/q可得电场强度为20000 N/C"));
         items.add(choice("PHYSICS-M5", "PHYSICS", "MULTIPLE_CHOICE", "关于电场强度，下列说法正确的是哪些？", electric, 1,
                 List.of("电场强度描述电场的强弱和方向", "正电荷受力方向与该点电场方向相同", "电场强度由检验电荷大小决定", "没有检验电荷时电场一定不存在"), Set.of("A", "B"), "电场强度是电场本身的性质，正电荷受力方向规定为电场方向"));
@@ -73,31 +73,31 @@ final class DemoQuestionBank {
 
         items.add(choice("CHEMISTRY-S3", "CHEMISTRY", "SINGLE_CHOICE", "NaCl的摩尔质量约为多少？", mole, 1,
                 List.of("58.5 g/mol", "23 g/mol", "35.5 g/mol", "18 g/mol"), Set.of("A"), "Na和Cl的相对原子质量之和约为58.5"));
-        items.add(choice("CHEMISTRY-M3", "CHEMISTRY", "MULTIPLE_CHOICE", "0.5 mol CO2中所含各元素原子的物质的量，下列说法正确的是哪些？", mole, 2,
-                List.of("C原子为0.5 mol", "O原子为1 mol", "C原子为1 mol", "O原子为0.5 mol"), Set.of("A", "B"), "每个CO2分子含1个C和2个O"));
+        items.add(choice("CHEMISTRY-M3", "CHEMISTRY", "MULTIPLE_CHOICE", "0.5 mol CO₂中所含各元素原子的物质的量，下列说法正确的是哪些？", mole, 2,
+                List.of("C原子为0.5 mol", "O原子为1 mol", "C原子为1 mol", "O原子为0.5 mol"), Set.of("A", "B"), "每个CO₂分子含1个C和2个O"));
         items.add(fill("CHEMISTRY-F3", "CHEMISTRY", "标准状况下11.2 L理想气体约为____mol。", mole, 3, "0.5"));
-        items.add(choice("CHEMISTRY-S4", "CHEMISTRY", "SINGLE_CHOICE", "18 g H2O的物质的量约为多少？", mole, 2,
-                List.of("1 mol", "2 mol", "0.5 mol", "18 mol"), Set.of("A"), "H2O摩尔质量为18 g/mol，因此18 g为1 mol"));
+        items.add(choice("CHEMISTRY-S4", "CHEMISTRY", "SINGLE_CHOICE", "18 g H₂O的物质的量约为多少？", mole, 2,
+                List.of("1 mol", "2 mol", "0.5 mol", "18 mol"), Set.of("A"), "H₂O摩尔质量为18 g/mol，因此18 g为1 mol"));
         items.add(choice("CHEMISTRY-M4", "CHEMISTRY", "MULTIPLE_CHOICE", "500 mL、0.1 mol/L的NaCl溶液中，忽略体积变化，下列说法正确的是哪些？", mole, 3,
-                List.of("NaCl为0.05 mol", "Na+约为0.05 mol", "Cl-约为0.05 mol", "NaCl为0.5 mol"), Set.of("A", "B", "C"), "由n=cV可得NaCl为0.05 mol，完全电离后两种离子各0.05 mol"));
-        items.add(fill("CHEMISTRY-F4", "CHEMISTRY", "2 mol CO2含有____mol氧原子。", mole, 1, "4"));
-        items.add(choice("CHEMISTRY-S5", "CHEMISTRY", "SINGLE_CHOICE", "约含3.01×10^23个分子的物质，其物质的量约为多少？", mole, 3,
-                List.of("0.5 mol", "1 mol", "2 mol", "3 mol"), Set.of("A"), "3.01×10^23约为阿伏加德罗常数的一半"));
+                List.of("NaCl为0.05 mol", "Na⁺约为0.05 mol", "Cl⁻约为0.05 mol", "NaCl为0.5 mol"), Set.of("A", "B", "C"), "由n=cV可得NaCl为0.05 mol，完全电离后Na⁺和Cl⁻各0.05 mol"));
+        items.add(fill("CHEMISTRY-F4", "CHEMISTRY", "2 mol CO₂含有____mol氧原子。", mole, 1, "4"));
+        items.add(choice("CHEMISTRY-S5", "CHEMISTRY", "SINGLE_CHOICE", "约含3.01×10²³个分子的物质，其物质的量约为多少？", mole, 3,
+                List.of("0.5 mol", "1 mol", "2 mol", "3 mol"), Set.of("A"), "3.01×10²³约为阿伏加德罗常数的一半"));
 
         items.add(choice("CHEMISTRY-M5", "CHEMISTRY", "MULTIPLE_CHOICE", "关于氧化和还原，下列说法正确的是哪些？", redox, 1,
                 List.of("失去电子的过程是氧化", "得到电子的过程是还原", "氧化反应一定得到电子", "还原反应一定失去电子"), Set.of("A", "B"), "失电子对应氧化，得电子对应还原"));
-        items.add(fill("CHEMISTRY-F5", "CHEMISTRY", "Fe3+转化为Fe2+时，每个Fe3+得到____个电子。", redox, 2, "1"));
-        items.add(choice("CHEMISTRY-S6", "CHEMISTRY", "SINGLE_CHOICE", "反应Zn + CuSO4 = ZnSO4 + Cu中，还原剂是哪种物质？", redox, 1,
-                List.of("Zn", "CuSO4", "ZnSO4", "Cu"), Set.of("A"), "Zn失去电子被氧化，因此Zn是还原剂"));
-        items.add(choice("CHEMISTRY-M6", "CHEMISTRY", "MULTIPLE_CHOICE", "反应CuO + H2 = Cu + H2O中，下列判断正确的是哪些？", redox, 2,
-                List.of("H2是还原剂", "CuO是氧化剂", "Cu元素被氧化", "H元素被还原"), Set.of("A", "B"), "H2被氧化为水，CuO中的Cu被还原为单质"));
-        items.add(fill("CHEMISTRY-F6", "CHEMISTRY", "KMnO4中Mn元素的化合价为正____价。", redox, 3, "7"));
-        items.add(choice("CHEMISTRY-S7", "CHEMISTRY", "SINGLE_CHOICE", "反应Cl2 + 2KI = 2KCl + I2中，被氧化的粒子是哪个？", redox, 2,
-                List.of("I-", "K+", "Cl2", "Cl-"), Set.of("A"), "I-失去电子生成I2，发生氧化"));
+        items.add(fill("CHEMISTRY-F5", "CHEMISTRY", "Fe³⁺转化为Fe²⁺时，每个Fe³⁺得到____个电子。", redox, 2, "1"));
+        items.add(choice("CHEMISTRY-S6", "CHEMISTRY", "SINGLE_CHOICE", "反应Zn + CuSO₄ = ZnSO₄ + Cu中，还原剂是哪种物质？", redox, 1,
+                List.of("Zn", "CuSO₄", "ZnSO₄", "Cu"), Set.of("A"), "Zn失去电子被氧化，因此Zn是还原剂"));
+        items.add(choice("CHEMISTRY-M6", "CHEMISTRY", "MULTIPLE_CHOICE", "反应CuO + H₂ = Cu + H₂O中，下列判断正确的是哪些？", redox, 2,
+                List.of("H₂是还原剂", "CuO是氧化剂", "Cu元素被氧化", "H元素被还原"), Set.of("A", "B"), "H₂被氧化为H₂O，CuO中的Cu被还原为单质"));
+        items.add(fill("CHEMISTRY-F6", "CHEMISTRY", "KMnO₄中Mn元素的化合价为正____价。", redox, 3, "7"));
+        items.add(choice("CHEMISTRY-S7", "CHEMISTRY", "SINGLE_CHOICE", "反应Cl₂ + 2KI = 2KCl + I₂中，被氧化的粒子是哪个？", redox, 2,
+                List.of("I⁻", "K⁺", "Cl₂", "Cl⁻"), Set.of("A"), "I⁻失去电子生成I₂，发生氧化"));
         items.add(choice("CHEMISTRY-M7", "CHEMISTRY", "MULTIPLE_CHOICE", "关于歧化反应，下列说法正确的是哪些？", redox, 3,
                 List.of("同一元素同时发生氧化和还原", "同一物质可同时作氧化剂和还原剂", "反应中一定没有电子转移", "所有元素化合价都不变"), Set.of("A", "B"), "歧化反应中同一元素的化合价一部分升高、一部分降低"));
-        items.add(fill("CHEMISTRY-F7", "CHEMISTRY", "H2O中O元素的化合价为负____价。", redox, 1, "2"));
-        items.add(choice("CHEMISTRY-S8", "CHEMISTRY", "SINGLE_CHOICE", "Fe2+转化为Fe3+的过程中，每个Fe2+发生什么变化？", redox, 3,
+        items.add(fill("CHEMISTRY-F7", "CHEMISTRY", "H₂O中O元素的化合价为负____价。", redox, 1, "2"));
+        items.add(choice("CHEMISTRY-S8", "CHEMISTRY", "SINGLE_CHOICE", "Fe²⁺转化为Fe³⁺的过程中，每个Fe²⁺发生什么变化？", redox, 3,
                 List.of("失去1个电子", "得到1个电子", "失去2个电子", "化合价不变"), Set.of("A"), "Fe元素化合价由+2升至+3，失去1个电子"));
 
         items.add(choice("CHEMISTRY-M8", "CHEMISTRY", "MULTIPLE_CHOICE", "可逆反应达到化学平衡时，下列说法正确的是哪些？", equilibrium, 1,
@@ -107,7 +107,7 @@ final class DemoQuestionBank {
                 List.of("消耗反应物的方向", "生成反应物的方向", "一定不移动", "反应停止"), Set.of("A"), "平衡会向减弱反应物浓度增大影响的方向移动"));
         items.add(choice("CHEMISTRY-M9", "CHEMISTRY", "MULTIPLE_CHOICE", "某正反应为放热反应。下列判断正确的是哪些？", equilibrium, 2,
                 List.of("升高温度有利于逆反应", "降低温度有利于正反应", "升高温度一定使平衡正向移动", "温度不影响平衡"), Set.of("A", "B"), "温度变化使平衡向吸热方向移动"));
-        items.add(fill("CHEMISTRY-F9", "CHEMISTRY", "反应N2 + 3H2 ⇌ 2NH3达到平衡后，增大压强时平衡向____移动。", equilibrium, 3, "右"));
+        items.add(fill("CHEMISTRY-F9", "CHEMISTRY", "反应N₂ + 3H₂ ⇌ 2NH₃达到平衡后，增大压强时平衡向____移动。", equilibrium, 3, "右"));
         items.add(choice("CHEMISTRY-S10", "CHEMISTRY", "SINGLE_CHOICE", "加入合适催化剂后，化学平衡如何变化？", equilibrium, 2,
                 List.of("平衡位置不变，只加快达到平衡", "一定正向移动", "一定逆向移动", "平衡常数增大"), Set.of("A"), "催化剂同等程度加快正逆反应，不改变平衡位置和平衡常数"));
         items.add(choice("CHEMISTRY-M10", "CHEMISTRY", "MULTIPLE_CHOICE", "对于反应前后气体总物质的量相等的可逆反应，下列说法正确的是哪些？", equilibrium, 3,
