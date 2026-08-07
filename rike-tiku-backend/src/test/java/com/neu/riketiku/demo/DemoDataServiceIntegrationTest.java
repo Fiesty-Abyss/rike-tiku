@@ -54,9 +54,45 @@ class DemoDataServiceIntegrationTest extends AdminQuestionIntegrationTestSupport
         assertThat(digest).doesNotContain(DemoDataService.DEMO_PASSWORD);
         assertThat(passwordEncoder.matches(DemoDataService.DEMO_PASSWORD, digest)).isTrue();
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM ren_ke_guan_xi r JOIN jiao_shi_dang_an t ON t.id=r.jiao_shi_id WHERE t.gong_hao='DEMO_T001'", Integer.class)).isEqualTo(3);
-        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM ti_mu WHERE ti_gan LIKE '【演示】%'", Integer.class)).isEqualTo(18);
-        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM ti_mu_lai_yuan s JOIN ti_mu q ON q.id=s.ti_mu_id WHERE q.ti_gan LIKE '【演示】%' AND s.quan_li_zhuang_tai='USER_PROVIDED'", Integer.class)).isEqualTo(54);
-        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM ti_mu_shen_he_ji_lu r JOIN ti_mu q ON q.id=r.ti_mu_id WHERE q.ti_gan LIKE '【演示】%'", Integer.class)).isEqualTo(36);
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM ti_mu WHERE ti_gan LIKE '【演示】%'", Integer.class)).isEqualTo(90);
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM ti_mu_lai_yuan s JOIN ti_mu q ON q.id=s.ti_mu_id WHERE q.ti_gan LIKE '【演示】%' AND s.quan_li_zhuang_tai='USER_PROVIDED' AND s.lai_yuan_ming_cheng='本科毕业设计自编演示题'", Integer.class)).isEqualTo(270);
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM ti_mu_shen_he_ji_lu r JOIN ti_mu q ON q.id=r.ti_mu_id WHERE q.ti_gan LIKE '【演示】%'", Integer.class)).isEqualTo(180);
+        assertThat(jdbc.queryForList("""
+                SELECT a.jie_xi_nei_rong FROM ti_mu_jie_xi a JOIN ti_mu q ON q.id=a.ti_mu_id
+                WHERE q.ti_gan LIKE '【演示】%' AND a.jie_xi_lei_xing='STANDARD'
+                """, String.class)).allSatisfy(analysis -> assertThat(analysis)
+                        .doesNotContain("演示时可用其他选项构造错题", "正确答案为由"));
+    }
+
+    @Test
+    @Transactional
+    void demo90CoversSubjectsTypesDifficultiesAndKnowledgePoints() {
+        demo.seed();
+
+        for (String subject : List.of("PHYSICS", "CHEMISTRY", "BIOLOGY")) {
+            assertThat(jdbc.queryForObject("""
+                    SELECT COUNT(*) FROM ti_mu q JOIN ke_mu s ON s.id=q.ke_mu_id
+                    WHERE q.ti_gan LIKE '【演示】%' AND s.ke_mu_dai_ma=?
+                    """, Integer.class, subject)).isEqualTo(30);
+            assertThat(jdbc.queryForList("""
+                    SELECT COUNT(*) FROM ti_mu q JOIN ke_mu s ON s.id=q.ke_mu_id
+                    WHERE q.ti_gan LIKE '【演示】%' AND s.ke_mu_dai_ma=?
+                    GROUP BY q.ti_mu_lei_xing ORDER BY q.ti_mu_lei_xing
+                    """, Integer.class, subject)).containsExactly(10, 10, 10);
+            assertThat(jdbc.queryForList("""
+                    SELECT COUNT(*) FROM ti_mu q JOIN ke_mu s ON s.id=q.ke_mu_id
+                    WHERE q.ti_gan LIKE '【演示】%' AND s.ke_mu_dai_ma=?
+                    GROUP BY q.nan_du ORDER BY q.nan_du
+                    """, Integer.class, subject)).containsExactly(10, 10, 10);
+            assertThat(jdbc.queryForList("""
+                    SELECT COUNT(DISTINCT q.id) FROM ti_mu q
+                    JOIN ke_mu s ON s.id=q.ke_mu_id
+                    JOIN ti_mu_zhi_shi_dian qk ON qk.ti_mu_id=q.id AND qk.yi_shan_chu=0
+                    JOIN zhi_shi_dian k ON k.id=qk.zhi_shi_dian_id AND k.yi_shan_chu=0
+                    WHERE q.ti_gan LIKE '【演示】%' AND s.ke_mu_dai_ma=?
+                    GROUP BY k.id ORDER BY k.id
+                    """, Integer.class, subject)).containsExactly(10, 10, 10);
+        }
     }
 
     @Test

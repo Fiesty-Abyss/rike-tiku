@@ -1,16 +1,18 @@
 # AI 开发交接
 
-> 当前接续分支：`main`。PR #15 已普通 merge（`12d636fde4afa198edc78eb0c295f5b88c8e3456`）。统一登录的服务端短时一次性滑块验证、主动修改密码、学生三科工作台、教师任教范围与中文显示层已进入 `main`。2026-08-07 已完成 `rike_tiku_demo` 真实浏览器验收，MA-001 至 MA-005、MA-010、MA-011 已关闭；MA-006 至 MA-009 尚未完成。Flyway 保持 V1–V7（23 张业务表），不得修改既有迁移或新增迁移。
+> 当前接续分支：`feat/demo-question-bank-expansion`（未合并），基线 `main@b40bc79eeb04c40bdf2eb05ef975193e4444eb31`。PR #15 已普通 merge。当前分支只把独立 `rike_tiku_demo` 扩充为 Demo90，不开发新业务模块；Flyway 保持 V1–V7（23 张业务表），不修改既有迁移或新增迁移。
 
 更新时间：2026-08-07
 
 ## 当前状态
 
-当前分支为 `main`。PR #10 至 PR #15 均已普通 merge；PR #15 merge commit 为 `12d636fde4afa198edc78eb0c295f5b88c8e3456`。
+当前分支为 `feat/demo-question-bank-expansion`，尚未合并。PR #10 至 PR #15 均已普通 merge；PR #15 merge commit 为 `12d636fde4afa198edc78eb0c295f5b88c8e3456`。
 
 V7 的学生练习、正式答题、结果和错题聚合模型已进入 `main`。当前 Flyway 为 V1–V7，共 23 张业务表；既有迁移和 MVP30 原始 Excel 未改动。历史 PR #13 自动化为后端 68/68、前端 68/68；PR #15 合并后自动化为后端 79/79、前端 72/72，打包、类型检查、构建、依赖审计与完整浏览器验收均已通过。
 
-`main` 已包含独立 `rike_tiku_demo` 的显式重建工具、三角色账号、教学组织、九个知识点和 18 道无附件演示题。它不使用 Flyway 承载演示数据，不公开 seed 接口，也不在正常启动时执行。人工验收步骤与真实反馈分别记录在 `MANUAL_ACCEPTANCE_CHECKLIST.md` 和 `MANUAL_ACCEPTANCE_FINDINGS.md`。
+当前分支的 `rike_tiku_demo` 显式重建工具包含三角色账号、教学组织、九个演示知识点和 90 道无附件原创演示题。每科 30 道，每科三题型、三档难度、三个演示知识点各 10 道。它不使用 Flyway 承载演示数据，不公开 seed 接口，也不在正常启动时执行。
+
+Demo90 是“本科毕业设计自编演示题”，不等于 MVP30 正式真实题库；MVP30 仍未正式入库，网络候选题没有因此变为 `PUBLISHED`。本轮后续业务候选仍只有“管理员学生完整管理与账号恢复”（`PLANNED`）。
 
 历史 PR #14 合并后验证：后端 74/74、打包 PASS；前端 68/68、类型检查与构建 PASS；依赖审计 0 vulnerabilities。完整脚本链及三角色真实 HTTP smoke PASS，正式库未出现演示账号、演示题或学习记录。
 
