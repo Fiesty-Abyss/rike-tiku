@@ -45,6 +45,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/test/teacher").hasRole("TEACHER")
                         .requestMatchers("/api/v1/test/admin").hasRole("ADMIN")
                         .requestMatchers("/api/v1/admin/classes/**").hasRole("ADMIN")
+                        .requestMatchers("/api/v1/admin/students/**").hasRole("ADMIN")
                         .requestMatchers("/api/v1/admin/student-import/**").hasRole("ADMIN")
                         .requestMatchers("/api/v1/admin/question-import/**").hasRole("ADMIN")
                         .requestMatchers("/api/v1/admin/teachers/**", "/api/v1/admin/teaching-assignments/**", "/api/v1/admin/subjects").hasRole("ADMIN")

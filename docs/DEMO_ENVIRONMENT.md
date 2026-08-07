@@ -82,28 +82,21 @@ Vite 启动参数为 `--host localhost --port 18080`。
 
 ## 固定账号
 
-| 角色 | 用户名 | 本地演示密码 |
-|---|---|---|
-| ADMIN | demo_admin | a1234567 |
-| TEACHER | demo_teacher | a1234567 |
-| STUDENT | demo_student | a1234567 |
+统一登录入口为 `http://localhost:8080/login`，演示端口方案为 `http://localhost:18080/login`。所有固定账号密码均为 `a1234567`，数据库只保存 BCrypt 摘要，且均不触发首次改密。
 
-三个账号均启用且不触发首次改密。数据库中只保存 BCrypt 摘要；密码仅为本地演示固定凭据，禁止用于任何正式环境。
+- 原 smoke 账号：`demo_admin`、`demo_teacher`、`demo_student`。
+- 场景教师：`demo_physics_admin`（ADMIN + TEACHER）、`demo_biology_teacher`、`demo_chemistry_teacher`。
+- 199 班学生：`demo_199_01` 至 `demo_199_05`。
+- 200 班学生：`demo_200_01` 至 `demo_200_03`。
 
-登录入口：
-
-- 管理员：`http://localhost:8080/login/admin`
-- 教师：`http://localhost:8080/login/teacher`
-- 学生：`http://localhost:8080/login/student`
-
-演示端口方案中将前端端口替换为 `18080`。账号必须使用对应角色入口，否则返回 `ROLE_MISMATCH`。
+公开 seed 使用匿名教师和学生姓名，姓名不参与权限或唯一性判断。多角色账号认证后选择本次角色，服务端仍依据数据库角色和 `jiao_shi_id + ban_ji_id + ke_mu_id` 授权。
 
 ## 固定数据
 
-- 教师：`DEMO_T001`，演示教师。
-- 学生：`DEMO_S001`，演示学生，高三。
-- 班级：`DEMO_CLASS_01`，高三理综演示班。
-- 任课：演示教师对该班的物理、化学、生物三条 ACTIVE 三元任课关系。
+- 班级：保留 `DEMO_CLASS_01`，新增 ACTIVE 的 `DEMO_CLASS_199 / 199班` 和 `DEMO_CLASS_200 / 200班`。
+- 教师：保留 `DEMO_T001`；新增物理管理员、生物、化学三位场景教师。
+- 学生：保留 `DEMO_S001`；199 班固定 5 名、200 班固定 3 名，每人只有 STUDENT 和一个 ACTIVE 主班级。
+- 任课：保留原三条；新增物理、生物、化学教师各自对 199/200 的两条 ACTIVE 三元关系，共 9 条 ACTIVE。
 - 知识点：每科 3 个，共 9 个。
 - 题库：Demo90 共 90 道，物理、化学、生物各 30 道；每科单选、多选、填空各 10 道，难度 1、2、3 各 10 道，三个演示知识点各 10 道。
 
@@ -120,6 +113,6 @@ Demo90 只服务独立演示环境，不等于 MVP30 正式真实题库。MVP30 
 ```
 
 `clean` 后演示账号、组织、题目和学习记录均被删除；`reset` 是库级重建，只允许对通过安全检查的演示库名执行。MVP30 原始 Excel 和正式 `rike_tiku` 不参与上述流程。
-# Demo90 分支补充（未合并）
+## PR #17 分支状态
 
-当前分支为 `feat/demo-question-bank-expansion`。演示库仍为 `rike_tiku_demo`，三账号与统一密码不变。登录 smoke 先请求滑块挑战，再调用登录；脚本不绕过滑块。`reset`、`seed`、`validate`、`clean` 继续受数据库名保护，当前分支不向正式 `rike_tiku` 写入演示数据。
+当前分支为 `feat/admin-student-management`，PR #17 尚未合并。`reset`、`seed`、`validate`、`clean` 继续受数据库名保护；`seed` 可重复执行并会清理临时验收学生，固定场景数据保持稳定。正式 `rike_tiku` 不参与任何演示操作。

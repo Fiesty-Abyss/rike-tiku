@@ -23,7 +23,11 @@ public class DemoDataService {
     private static final Set<String> FORBIDDEN_DATABASES = Set.of(
             "rike_tiku", "mysql", "information_schema", "performance_schema", "sys");
     private static final String DEMO_STEM_PREFIX = "【演示】";
-    private static final List<String> DEMO_USERS = List.of("demo_admin", "demo_teacher", "demo_student");
+    private static final List<String> DEMO_USERS = List.of(
+            "demo_admin", "demo_teacher", "demo_student",
+            "demo_physics_admin", "demo_biology_teacher", "demo_chemistry_teacher",
+            "demo_199_01", "demo_199_02", "demo_199_03", "demo_199_04", "demo_199_05",
+            "demo_200_01", "demo_200_02", "demo_200_03");
 
     private final JdbcTemplate jdbc;
     private final PasswordEncoder passwordEncoder;
@@ -49,10 +53,24 @@ public class DemoDataService {
         validateSchema();
         cleanInternal();
         Map<String, Long> users = seedUsers();
-        long teacherId = seedTeacher(users.get("demo_teacher"));
-        long studentId = seedStudent(users.get("demo_student"));
-        long classId = seedClass();
+        long teacherId = seedTeacher(users.get("demo_teacher"), "DEMO_T001", "演示教师", "理综演示教师");
+        long studentId = seedStudent(users.get("demo_student"), "DEMO_S001", "演示学生");
+        long classId = seedClass("DEMO_CLASS_01", "高三理综演示班");
         jdbc.update("INSERT INTO ban_ji_xue_sheng (ban_ji_id,xue_sheng_id,shi_fou_zhu_ban_ji,zhuang_tai) VALUES (?,?,1,'ACTIVE')", classId, studentId);
+
+        long class199 = seedClass("DEMO_CLASS_199", "199班");
+        long class200 = seedClass("DEMO_CLASS_200", "200班");
+        long physicsTeacher = seedTeacher(users.get("demo_physics_admin"), "DEMO_T_PHYSICS", "物理管理员教师", "物理教师");
+        long biologyTeacher = seedTeacher(users.get("demo_biology_teacher"), "DEMO_T_BIOLOGY", "生物教师", "生物教师");
+        long chemistryTeacher = seedTeacher(users.get("demo_chemistry_teacher"), "DEMO_T_CHEMISTRY", "化学教师", "化学教师");
+        for (int index = 1; index <= 5; index++) {
+            long fixedStudent = seedStudent(users.get("demo_199_0" + index), "DEMO_199_0" + index, "199班学生0" + index);
+            jdbc.update("INSERT INTO ban_ji_xue_sheng (ban_ji_id,xue_sheng_id,shi_fou_zhu_ban_ji,zhuang_tai) VALUES (?,?,1,'ACTIVE')", class199, fixedStudent);
+        }
+        for (int index = 1; index <= 3; index++) {
+            long fixedStudent = seedStudent(users.get("demo_200_0" + index), "DEMO_200_0" + index, "200班学生0" + index);
+            jdbc.update("INSERT INTO ban_ji_xue_sheng (ban_ji_id,xue_sheng_id,shi_fou_zhu_ban_ji,zhuang_tai) VALUES (?,?,1,'ACTIVE')", class200, fixedStudent);
+        }
 
         Map<String, Long> subjects = jdbc.query("SELECT ke_mu_dai_ma,id FROM ke_mu WHERE yi_shan_chu=0", rs -> {
             var result = new java.util.HashMap<String, Long>();
@@ -63,10 +81,16 @@ public class DemoDataService {
             jdbc.update("INSERT INTO ren_ke_guan_xi (jiao_shi_id,ban_ji_id,ke_mu_id,shi_fou_zhu_ren_ke,zhuang_tai,kai_shi_shi_jian) VALUES (?,?,?,1,'ACTIVE',CURRENT_TIMESTAMP(3))",
                     teacherId, classId, required(subjects, code));
         }
+        seedTeachingScope(physicsTeacher, class199, required(subjects, "PHYSICS"));
+        seedTeachingScope(physicsTeacher, class200, required(subjects, "PHYSICS"));
+        seedTeachingScope(biologyTeacher, class199, required(subjects, "BIOLOGY"));
+        seedTeachingScope(biologyTeacher, class200, required(subjects, "BIOLOGY"));
+        seedTeachingScope(chemistryTeacher, class199, required(subjects, "CHEMISTRY"));
+        seedTeachingScope(chemistryTeacher, class200, required(subjects, "CHEMISTRY"));
         Map<String, Long> points = seedKnowledgePoints(subjects);
         for (Question question : questions()) seedQuestion(question, required(subjects, question.subject()), required(points, question.knowledgePath()), users.get("demo_admin"));
         validateSeed();
-        System.out.println("演示数据写入完成。账号: demo_admin / demo_teacher / demo_student；固定密码: " + DEMO_PASSWORD + "（仅限本地演示库）");
+        System.out.println("演示数据写入完成。14个固定演示账号、3个班级、4位教师、9名学生；固定密码: " + DEMO_PASSWORD + "（仅限本地演示库）");
     }
 
     @Transactional
@@ -84,11 +108,44 @@ public class DemoDataService {
             String digest = jdbc.queryForObject("SELECT mi_ma_zhai_yao FROM yong_hu WHERE yong_hu_ming=?", String.class, username);
             if (digest == null || digest.contains(DEMO_PASSWORD) || !passwordEncoder.matches(DEMO_PASSWORD, digest)) throw new IllegalStateException(username + " 的BCrypt密码校验失败");
         }
+        expect("固定演示账号", 14, count("SELECT COUNT(*) FROM yong_hu WHERE yong_hu_ming IN ('demo_admin','demo_teacher','demo_student','demo_physics_admin','demo_biology_teacher','demo_chemistry_teacher','demo_199_01','demo_199_02','demo_199_03','demo_199_04','demo_199_05','demo_200_01','demo_200_02','demo_200_03') AND yi_shan_chu=0"));
+        expect("物理管理员双角色", 2, count("SELECT COUNT(*) FROM yong_hu u JOIN yong_hu_jiao_se ur ON ur.yong_hu_id=u.id AND ur.zhuang_tai='ACTIVE' JOIN jiao_se r ON r.id=ur.jiao_se_id AND r.zhuang_tai='ACTIVE' WHERE u.yong_hu_ming='demo_physics_admin' AND r.jiao_se_dai_ma IN ('ADMIN','TEACHER')"));
+        expect("单角色场景教师", 2, count("""
+                SELECT COUNT(*) FROM (
+                    SELECT u.id FROM yong_hu u JOIN yong_hu_jiao_se ur ON ur.yong_hu_id=u.id AND ur.zhuang_tai='ACTIVE'
+                    JOIN jiao_se r ON r.id=ur.jiao_se_id AND r.zhuang_tai='ACTIVE'
+                    WHERE u.yong_hu_ming IN ('demo_biology_teacher','demo_chemistry_teacher')
+                    GROUP BY u.id HAVING COUNT(*)=1 AND MAX(r.jiao_se_dai_ma)='TEACHER'
+                ) scenario_teachers
+                """));
+        expect("场景学生单角色", 8, count("""
+                SELECT COUNT(*) FROM (
+                    SELECT u.id FROM yong_hu u JOIN yong_hu_jiao_se ur ON ur.yong_hu_id=u.id AND ur.zhuang_tai='ACTIVE'
+                    JOIN jiao_se r ON r.id=ur.jiao_se_id AND r.zhuang_tai='ACTIVE'
+                    WHERE u.yong_hu_ming LIKE 'demo_199_%' OR u.yong_hu_ming LIKE 'demo_200_%'
+                    GROUP BY u.id HAVING COUNT(*)=1 AND MAX(r.jiao_se_dai_ma)='STUDENT'
+                ) scenario_students
+                """));
         expect("教师档案", 1, count("SELECT COUNT(*) FROM jiao_shi_dang_an WHERE gong_hao='DEMO_T001' AND zhuang_tai='ACTIVE' AND yi_shan_chu=0"));
         expect("学生档案", 1, count("SELECT COUNT(*) FROM xue_sheng_dang_an WHERE xue_hao='DEMO_S001' AND zhuang_tai='ACTIVE' AND yi_shan_chu=0"));
         expect("演示班级", 1, count("SELECT COUNT(*) FROM ban_ji WHERE ban_ji_bian_ma='DEMO_CLASS_01' AND zhuang_tai='ACTIVE' AND yi_shan_chu=0"));
+        expect("三个固定演示班级", 3, count("SELECT COUNT(*) FROM ban_ji WHERE ban_ji_bian_ma IN ('DEMO_CLASS_01','DEMO_CLASS_199','DEMO_CLASS_200') AND zhuang_tai='ACTIVE' AND yi_shan_chu=0"));
+        expect("四位演示教师", 4, count("SELECT COUNT(*) FROM jiao_shi_dang_an WHERE gong_hao IN ('DEMO_T001','DEMO_T_PHYSICS','DEMO_T_BIOLOGY','DEMO_T_CHEMISTRY') AND zhuang_tai='ACTIVE' AND yi_shan_chu=0"));
+        expect("九名演示学生", 9, count("SELECT COUNT(*) FROM xue_sheng_dang_an WHERE (xue_hao='DEMO_S001' OR xue_hao LIKE 'DEMO_199_%' OR xue_hao LIKE 'DEMO_200_%') AND zhuang_tai='ACTIVE' AND yi_shan_chu=0"));
+        expect("199班五名学生", 5, count("SELECT COUNT(*) FROM ban_ji_xue_sheng bx JOIN ban_ji b ON b.id=bx.ban_ji_id WHERE b.ban_ji_bian_ma='DEMO_CLASS_199' AND bx.zhuang_tai='ACTIVE' AND bx.shi_fou_zhu_ban_ji=1"));
+        expect("200班三名学生", 3, count("SELECT COUNT(*) FROM ban_ji_xue_sheng bx JOIN ban_ji b ON b.id=bx.ban_ji_id WHERE b.ban_ji_bian_ma='DEMO_CLASS_200' AND bx.zhuang_tai='ACTIVE' AND bx.shi_fou_zhu_ban_ji=1"));
+        expect("每名学生一个主班级", 9, count("""
+                SELECT COUNT(*) FROM (
+                    SELECT s.id FROM xue_sheng_dang_an s JOIN ban_ji_xue_sheng bx ON bx.xue_sheng_id=s.id
+                    WHERE (s.xue_hao='DEMO_S001' OR s.xue_hao LIKE 'DEMO_199_%' OR s.xue_hao LIKE 'DEMO_200_%')
+                      AND bx.shi_fou_zhu_ban_ji=1 AND bx.zhuang_tai='ACTIVE' AND bx.tui_chu_shi_jian IS NULL
+                    GROUP BY s.id HAVING COUNT(*)=1
+                ) fixed_students
+                """));
         expect("主班级关系", 1, count("SELECT COUNT(*) FROM ban_ji_xue_sheng bx JOIN ban_ji b ON b.id=bx.ban_ji_id WHERE b.ban_ji_bian_ma='DEMO_CLASS_01' AND bx.zhuang_tai='ACTIVE' AND bx.shi_fou_zhu_ban_ji=1"));
         expect("三元任课关系", 3, count("SELECT COUNT(*) FROM ren_ke_guan_xi r JOIN ban_ji b ON b.id=r.ban_ji_id JOIN jiao_shi_dang_an t ON t.id=r.jiao_shi_id WHERE b.ban_ji_bian_ma='DEMO_CLASS_01' AND t.gong_hao='DEMO_T001' AND r.zhuang_tai='ACTIVE'"));
+        expect("六条场景任课关系", 6, count("SELECT COUNT(*) FROM ren_ke_guan_xi r JOIN ban_ji b ON b.id=r.ban_ji_id JOIN jiao_shi_dang_an t ON t.id=r.jiao_shi_id WHERE b.ban_ji_bian_ma IN ('DEMO_CLASS_199','DEMO_CLASS_200') AND t.gong_hao IN ('DEMO_T_PHYSICS','DEMO_T_BIOLOGY','DEMO_T_CHEMISTRY') AND r.zhuang_tai='ACTIVE'"));
+        expect("九条ACTIVE任课关系", 9, count("SELECT COUNT(*) FROM ren_ke_guan_xi r JOIN jiao_shi_dang_an t ON t.id=r.jiao_shi_id WHERE t.gong_hao LIKE 'DEMO_T%' AND r.zhuang_tai='ACTIVE'"));
         expect("演示知识点", 9, count("SELECT COUNT(*) FROM zhi_shi_dian WHERE wan_zheng_lu_jing IN ('力学>运动和力>牛顿运动定律','电磁学>电场>电场强度','热学>分子动理论>温度和内能','化学基本概念>物质的量>摩尔计算','无机化学>元素化合物>氧化还原反应','化学反应原理>化学平衡>平衡移动','分子与细胞>细胞结构>细胞膜','遗传与进化>遗传规律>分离定律','稳态与调节>生命活动调节>激素调节')") );
         expect("演示题总数", 90, demoQuestionCount());
         for (String subject : List.of("PHYSICS", "CHEMISTRY", "BIOLOGY")) {
@@ -170,7 +227,7 @@ public class DemoDataService {
                 """));
         expect("审核轨迹", 180, count("SELECT COUNT(*) FROM ti_mu_shen_he_ji_lu r JOIN ti_mu q ON q.id=r.ti_mu_id WHERE q.ti_gan LIKE '【演示】%' AND r.shen_he_dong_zuo IN ('SUBMITTED','APPROVED')"));
         for (String table : List.of("lian_xi_hui_hua", "lian_xi_ti_mu", "xue_sheng_da_ti", "xue_xi_jie_guo", "cuo_ti_ji_lu")) expect(table + "初始记录", 0, count("SELECT COUNT(*) FROM " + table));
-        System.out.println("演示数据校验通过: 3账号、1班级、3任课关系、9知识点、90题、学习记录为0");
+        System.out.println("演示数据校验通过: 14账号、3班级、4教师、9学生、9任课关系、9知识点、90题、学习记录为0");
     }
 
     public static void guardDatabaseName(String database) {
@@ -184,23 +241,35 @@ public class DemoDataService {
         for (String username : DEMO_USERS) {
             long id = insert("INSERT INTO yong_hu (yong_hu_ming,mi_ma_zhai_yao,zhang_hao_zhuang_tai,shi_fou_shou_ci_deng_lu,mi_ma_xiu_gai_shi_jian) VALUES (?,?,'ENABLED',0,CURRENT_TIMESTAMP(3))",
                     username, passwordEncoder.encode(DEMO_PASSWORD));
-            String role = username.substring("demo_".length()).toUpperCase();
-            jdbc.update("INSERT INTO yong_hu_jiao_se (yong_hu_id,jiao_se_id,zhuang_tai) SELECT ?,id,'ACTIVE' FROM jiao_se WHERE jiao_se_dai_ma=? AND yi_shan_chu=0", id, role);
+            List<String> roles = switch (username) {
+                case "demo_admin" -> List.of("ADMIN");
+                case "demo_teacher", "demo_biology_teacher", "demo_chemistry_teacher" -> List.of("TEACHER");
+                case "demo_physics_admin" -> List.of("ADMIN", "TEACHER");
+                default -> List.of("STUDENT");
+            };
+            for (String role : roles) {
+                jdbc.update("INSERT INTO yong_hu_jiao_se (yong_hu_id,jiao_se_id,zhuang_tai) SELECT ?,id,'ACTIVE' FROM jiao_se WHERE jiao_se_dai_ma=? AND yi_shan_chu=0", id, role);
+            }
             result.put(username, id);
         }
         return result;
     }
 
-    private long seedTeacher(long userId) {
-        return insert("INSERT INTO jiao_shi_dang_an (yong_hu_id,gong_hao,xing_ming,xian_shi_zhi_wu,zhuang_tai) VALUES (?,'DEMO_T001','演示教师','理综演示教师','ACTIVE')", userId);
+    private long seedTeacher(long userId, String employeeNumber, String name, String position) {
+        return insert("INSERT INTO jiao_shi_dang_an (yong_hu_id,gong_hao,xing_ming,xian_shi_zhi_wu,zhuang_tai) VALUES (?,?,?,?,'ACTIVE')", userId, employeeNumber, name, position);
     }
 
-    private long seedStudent(long userId) {
-        return insert("INSERT INTO xue_sheng_dang_an (yong_hu_id,xue_hao,xing_ming,nian_ji,zhuang_tai) VALUES (?,'DEMO_S001','演示学生','高三','ACTIVE')", userId);
+    private long seedStudent(long userId, String studentNumber, String name) {
+        return insert("INSERT INTO xue_sheng_dang_an (yong_hu_id,xue_hao,xing_ming,nian_ji,zhuang_tai) VALUES (?,?,?,'高三','ACTIVE')", userId, studentNumber, name);
     }
 
-    private long seedClass() {
-        return insert("INSERT INTO ban_ji (ban_ji_bian_ma,ban_ji_ming_cheng,nian_ji,ru_xue_nian_fen,zhuang_tai) VALUES ('DEMO_CLASS_01','高三理综演示班','高三',?,'ACTIVE')", Math.max(2000, Year.now().getValue() - 3));
+    private long seedClass(String code, String name) {
+        return insert("INSERT INTO ban_ji (ban_ji_bian_ma,ban_ji_ming_cheng,nian_ji,ru_xue_nian_fen,zhuang_tai) VALUES (?,?,'高三',?,'ACTIVE')", code, name, Math.max(2000, Year.now().getValue() - 3));
+    }
+
+    private void seedTeachingScope(long teacherId, long classId, long subjectId) {
+        jdbc.update("INSERT INTO ren_ke_guan_xi (jiao_shi_id,ban_ji_id,ke_mu_id,shi_fou_zhu_ren_ke,zhuang_tai,kai_shi_shi_jian) VALUES (?,?,?,1,'ACTIVE',CURRENT_TIMESTAMP(3))",
+                teacherId, classId, subjectId);
     }
 
     private Map<String, Long> seedKnowledgePoints(Map<String, Long> subjects) {
@@ -244,20 +313,20 @@ public class DemoDataService {
 
     private void cleanInternal() {
         guardDatabaseName(currentDatabase());
-        jdbc.update("DELETE w FROM cuo_ti_ji_lu w LEFT JOIN xue_sheng_dang_an s ON s.id=w.xue_sheng_id LEFT JOIN ti_mu q ON q.id=w.ti_mu_id WHERE s.xue_hao='DEMO_S001' OR q.ti_gan LIKE '【演示】%'");
-        jdbc.update("DELETE r FROM xue_xi_jie_guo r JOIN lian_xi_hui_hua h ON h.id=r.lian_xi_hui_hua_id JOIN xue_sheng_dang_an s ON s.id=h.xue_sheng_id WHERE s.xue_hao='DEMO_S001'");
-        jdbc.update("DELETE a FROM xue_sheng_da_ti a JOIN lian_xi_ti_mu pq ON pq.id=a.lian_xi_ti_mu_id JOIN lian_xi_hui_hua h ON h.id=pq.lian_xi_hui_hua_id JOIN xue_sheng_dang_an s ON s.id=h.xue_sheng_id WHERE s.xue_hao='DEMO_S001'");
-        jdbc.update("DELETE pq FROM lian_xi_ti_mu pq JOIN lian_xi_hui_hua h ON h.id=pq.lian_xi_hui_hua_id JOIN xue_sheng_dang_an s ON s.id=h.xue_sheng_id WHERE s.xue_hao='DEMO_S001'");
-        jdbc.update("DELETE h FROM lian_xi_hui_hua h JOIN xue_sheng_dang_an s ON s.id=h.xue_sheng_id WHERE s.xue_hao='DEMO_S001'");
+        jdbc.update("DELETE w FROM cuo_ti_ji_lu w LEFT JOIN xue_sheng_dang_an s ON s.id=w.xue_sheng_id LEFT JOIN ti_mu q ON q.id=w.ti_mu_id WHERE s.xue_hao LIKE 'DEMO_%' OR q.ti_gan LIKE '【演示】%'");
+        jdbc.update("DELETE r FROM xue_xi_jie_guo r JOIN lian_xi_hui_hua h ON h.id=r.lian_xi_hui_hua_id JOIN xue_sheng_dang_an s ON s.id=h.xue_sheng_id WHERE s.xue_hao LIKE 'DEMO_%'");
+        jdbc.update("DELETE a FROM xue_sheng_da_ti a JOIN lian_xi_ti_mu pq ON pq.id=a.lian_xi_ti_mu_id JOIN lian_xi_hui_hua h ON h.id=pq.lian_xi_hui_hua_id JOIN xue_sheng_dang_an s ON s.id=h.xue_sheng_id WHERE s.xue_hao LIKE 'DEMO_%'");
+        jdbc.update("DELETE pq FROM lian_xi_ti_mu pq JOIN lian_xi_hui_hua h ON h.id=pq.lian_xi_hui_hua_id JOIN xue_sheng_dang_an s ON s.id=h.xue_sheng_id WHERE s.xue_hao LIKE 'DEMO_%'");
+        jdbc.update("DELETE h FROM lian_xi_hui_hua h JOIN xue_sheng_dang_an s ON s.id=h.xue_sheng_id WHERE s.xue_hao LIKE 'DEMO_%'");
         for (String table : List.of("ti_mu_fu_jian", "ti_mu_shen_he_ji_lu", "ti_mu_lai_yuan", "ti_mu_zhi_shi_dian", "ti_mu_jie_xi", "ti_mu_xuan_xiang")) jdbc.update("DELETE child FROM " + table + " child JOIN ti_mu q ON q.id=child.ti_mu_id WHERE q.ti_gan LIKE '【演示】%'");
         jdbc.update("DELETE FROM ti_mu WHERE ti_gan LIKE '【演示】%'");
-        jdbc.update("DELETE r FROM ren_ke_guan_xi r JOIN ban_ji b ON b.id=r.ban_ji_id WHERE b.ban_ji_bian_ma='DEMO_CLASS_01'");
-        jdbc.update("DELETE bx FROM ban_ji_xue_sheng bx JOIN ban_ji b ON b.id=bx.ban_ji_id WHERE b.ban_ji_bian_ma='DEMO_CLASS_01'");
-        jdbc.update("DELETE FROM ban_ji WHERE ban_ji_bian_ma='DEMO_CLASS_01'");
-        jdbc.update("DELETE FROM jiao_shi_dang_an WHERE gong_hao='DEMO_T001'");
-        jdbc.update("DELETE FROM xue_sheng_dang_an WHERE xue_hao='DEMO_S001'");
-        jdbc.update("DELETE ur FROM yong_hu_jiao_se ur JOIN yong_hu u ON u.id=ur.yong_hu_id WHERE u.yong_hu_ming IN ('demo_admin','demo_teacher','demo_student')");
-        jdbc.update("DELETE FROM yong_hu WHERE yong_hu_ming IN ('demo_admin','demo_teacher','demo_student')");
+        jdbc.update("DELETE r FROM ren_ke_guan_xi r JOIN ban_ji b ON b.id=r.ban_ji_id WHERE b.ban_ji_bian_ma LIKE 'DEMO_CLASS_%'");
+        jdbc.update("DELETE bx FROM ban_ji_xue_sheng bx JOIN ban_ji b ON b.id=bx.ban_ji_id WHERE b.ban_ji_bian_ma LIKE 'DEMO_CLASS_%'");
+        jdbc.update("DELETE FROM ban_ji WHERE ban_ji_bian_ma LIKE 'DEMO_CLASS_%'");
+        jdbc.update("DELETE FROM jiao_shi_dang_an WHERE gong_hao LIKE 'DEMO_T%'");
+        jdbc.update("DELETE FROM xue_sheng_dang_an WHERE xue_hao LIKE 'DEMO_%'");
+        jdbc.update("DELETE ur FROM yong_hu_jiao_se ur JOIN yong_hu u ON u.id=ur.yong_hu_id WHERE u.yong_hu_ming LIKE 'demo_%'");
+        jdbc.update("DELETE FROM yong_hu WHERE yong_hu_ming LIKE 'demo_%'");
         jdbc.update("DELETE FROM zhi_shi_dian WHERE wan_zheng_lu_jing IN ('力学>运动和力>牛顿运动定律','电磁学>电场>电场强度','热学>分子动理论>温度和内能','化学基本概念>物质的量>摩尔计算','无机化学>元素化合物>氧化还原反应','化学反应原理>化学平衡>平衡移动','分子与细胞>细胞结构>细胞膜','遗传与进化>遗传规律>分离定律','稳态与调节>生命活动调节>激素调节') AND fu_zhi_shi_dian_id IS NULL");
     }
 
