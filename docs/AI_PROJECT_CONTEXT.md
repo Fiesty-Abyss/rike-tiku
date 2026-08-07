@@ -1,8 +1,8 @@
 # 跨AI项目上下文
 
-> 当前工作分支为 `feat/ui-auth-student-dashboard`（未合并），基线 `main@dc5c89798b48561fec8225228bd79047a01aba08`；PR #14 已进入 main。当前分支实现 UI、统一认证和学生三科工作台，不修改 Flyway V1–V7、不新增迁移。2026-08-07 `rike_tiku_demo` 真实浏览器验收已关闭 MA-002 至 MA-005，MA-006 至 MA-009 仍未实现。
+> 当前工作分支为 `feat/ui-auth-student-dashboard`，PR #15 未合并，基线 `main@dc5c89798b48561fec8225228bd79047a01aba08`。当前分支完成 UI、统一认证和学生三科工作台；Flyway 保持 V1–V7（23 张业务表），本轮无迁移。2026-08-07 `rike_tiku_demo` 真实浏览器验收已关闭 MA-001 至 MA-005、MA-010、MA-011，MA-006 至 MA-009 尚未完成。
 
-更新时间：2026-08-06
+更新时间：2026-08-07
 
 ## 1. 项目身份
 
@@ -51,14 +51,13 @@
 ## 5. 当前实现状态
 
 - 状态：题库、账号、教学组织和学生练习闭环均已进入 `main`。
-- 当前分支：`feat/demo-data-manual-acceptance`，基于 `main@2161080427fd432634325bea3c3d1ebd7e0f519a`；PR #13 已普通 merge。
-- 当前Flyway：V1–V7。
-- 当前业务表：既有18表，加练习会话、冻结题目、学生答题、结果、错题聚合，共23表。
-- 当前样本：物理、化学、生物各1题，共3题，均为 `PENDING`；权利状态为 `COPYRIGHT_UNKNOWN`。
-- 合并后验证：后端 68/68 测试与打包通过；前端 68/68、类型检查和生产构建通过；`npm audit` 为 0 vulnerabilities。真实 HTTP 验证为 `PASS`，学生页面回查为 `NOT_RUN`，综合结论为 `PASS_WITH_ENV_LIMITATION`。
+- 当前分支：`feat/ui-auth-student-dashboard`，PR #15 未合并，基于 `main@dc5c89798b48561fec8225228bd79047a01aba08`。
+- 当前 Flyway：V1–V7，共 23 张业务表；本轮不修改既有迁移、不新增迁移。
+- 演示样本位于独立 `rike_tiku_demo`；MVP30 原始 Excel 尚未正式入库且未改动。
+- 历史 PR #13 自动化为后端 68/68、前端 68/68；历史 PR #14 自动化为后端 74/74、前端 68/68。PR #15 当前自动化为后端 79/79、前端 72/72，打包、类型检查、构建和依赖审计均通过。
 - 远程仓库：`https://github.com/Fiesty-Abyss/rike-tiku`，公开仓库，默认分支 `main`。
 
-学生导入、教师管理、三元任课关系、题库审核发布、MVP30 导入及学生练习闭环均已进入 `main`。当前分支只建立独立演示库和人工验收资料；下一步是三角色人工验收与问题修正。MVP30 尚未正式入库，教师正式业务工作台、AI Provider、DeepSeek、GLM、AI 答疑、掌握度和推荐均未实现。
+学生导入、教师管理、三元任课关系、题库审核发布、MVP30 导入及学生练习闭环均已进入 `main`。当前分支的 UI、统一认证和学生三科工作台已完成并验收；MVP30 尚未正式入库，教师正式业务工作台、AI Provider、DeepSeek、GLM、AI 答疑、掌握度和推荐均未实现。唯一下一步候选为“管理员学生完整管理与账号恢复”（`PLANNED`）。
 
 ## 6. AI接管规则
 

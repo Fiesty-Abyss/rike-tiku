@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -59,7 +60,9 @@ public class StudentPracticeService {
             fail("PRACTICE_QUESTION_INSUFFICIENT", "符合条件的已发布题目不足，还差" + (request.count() - pool.size()) + "题", HttpStatus.BAD_REQUEST);
         }
 
-        List<QuestionPoolItem> selected = pool.subList(0, request.count());
+        List<QuestionPoolItem> shuffledPool = new ArrayList<>(pool);
+        Collections.shuffle(shuffledPool);
+        List<QuestionPoolItem> selected = shuffledPool.subList(0, request.count());
         jdbc.update("INSERT INTO lian_xi_hui_hua(xue_sheng_id,ke_mu_id,zhuang_tai,ti_mu_shu) VALUES (?,?,'CREATED',?)",
                 studentId, request.subjectId(), selected.size());
         Long sessionId = requiredLastInsertId();
