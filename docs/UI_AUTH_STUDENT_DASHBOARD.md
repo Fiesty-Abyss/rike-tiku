@@ -1,6 +1,6 @@
 # UI、统一登录与学生三科工作台
 
-本说明对应未合并分支 `feat/ui-auth-student-dashboard`，基线为 `main@dc5c89798b48561fec8225228bd79047a01aba08`。PR #14 已进入 main。本分支不修改 Flyway V1–V7，也不新增迁移。
+本模块已通过 PR #15 普通 merge 进入 `main`，merge commit 为 `12d636fde4afa198edc78eb0c295f5b88c8e3456`。PR #15 不修改 Flyway V1–V7，也不新增迁移。
 
 统一登录为 `/login`；历史三条角色登录路径重定向到该入口。`GET /api/v1/auth/slider-challenge` 提供服务端短时一次性滑块验证，登录提交 `challengeId` 和 `sliderOffset`；挑战成功、失败或取用后即失效。`expectedRole` 可选以兼容旧调用；单角色直达工作台，多角色在认证后选择真实拥有的角色。`activeRole` 仅保存在 sessionStorage，后端授权始终依据 JWT 与数据库角色。
 

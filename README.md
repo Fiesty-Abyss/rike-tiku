@@ -77,7 +77,7 @@ Flyway 是数据库结构的唯一建表和升级入口。已经执行的迁移�
 
 使用 IDEA 直接启动时必须在运行配置增加 `RIKE_TIKU_DB_NAME=rike_tiku_demo`；否则后端默认连接正式开发库 `rike_tiku`，其中不存在演示账号。默认端口方案的前端 API 地址为 `http://localhost:8081/api/v1`。脚本演示端口方案可在服务启动后执行 `.\scripts\demo-environment.ps1 smoke` 验证健康状态和三角色登录。
 
-历史 PR #14 自动化验证为后端 74/74、前端 68/68，后端打包、前端类型检查与构建均通过，`npm audit` 为 0 vulnerabilities；真实脚本链及三角色 HTTP smoke 已通过。当前 `feat/ui-auth-student-dashboard` 的 PR #15 尚未合并：统一登录使用服务端短时一次性滑块验证，新增中文化、学生三科工作台、教师任教范围和主动改密；本轮自动化结果为后端 79/79、前端 72/72，且不新增迁移。2026-08-07 已在 `rike_tiku_demo` 完成真实浏览器验收，MA-001 至 MA-005、MA-010、MA-011 均已关闭，MA-006 至 MA-009 尚未完成。
+历史 PR #14 自动化验证为后端 74/74、前端 68/68，后端打包、前端类型检查与构建均通过，`npm audit` 为 0 vulnerabilities；真实脚本链及三角色 HTTP smoke 已通过。PR #15 已普通 merge 进入 `main`（merge commit `12d636fde4afa198edc78eb0c295f5b88c8e3456`）：统一登录使用服务端短时一次性滑块验证，并提供中文化、学生三科工作台、教师任教范围和主动改密。合并后回归为后端 79/79、前端 72/72，打包、类型检查、构建和 `npm audit --omit=dev` 均通过，且不新增迁移。2026-08-07 已在 `rike_tiku_demo` 完成真实浏览器验收，MA-001 至 MA-005、MA-010、MA-011 均已关闭，MA-006 至 MA-009 尚未完成。
 
 ## 本地启动
 
@@ -162,4 +162,4 @@ npm run build
 
 ## 下一阶段
 
-PR #13 和 PR #14 均已普通 merge，学生练习闭环、独立演示数据与人工验收环境已进入 `main`。当前 `feat/ui-auth-student-dashboard` 的 PR #15 尚未合并；UI、统一认证和学生三科工作台已在本分支完成并验收。唯一下一步候选为“管理员学生完整管理与账号恢复”（`PLANNED`）。MVP30 尚未正式入库，教师正式业务工作台、高频考点、私信、DeepSeek、GLM 和 AI 能力均未实现。
+PR #13、PR #14 和 PR #15 均已普通 merge；学生练习闭环、独立演示数据与人工验收环境、UI、统一认证和学生三科工作台已进入 `main`。唯一下一步候选为“管理员学生完整管理与账号恢复”（`PLANNED`）。MVP30 尚未正式入库，教师正式业务工作台、高频考点、私信、DeepSeek、GLM 和 AI 能力均未实现。
