@@ -8,9 +8,12 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @RestControllerAdvice
 public class RenZhengQuanJuYiChangChuLiQi {
+    private static final Logger LOGGER = LoggerFactory.getLogger(RenZhengQuanJuYiChangChuLiQi.class);
 
     @ExceptionHandler(RenZhengYeWuYiChang.class)
     ResponseEntity<CuoWuXiangYing> handleBusinessException(RenZhengYeWuYiChang exception) {
@@ -32,7 +35,8 @@ public class RenZhengQuanJuYiChangChuLiQi {
     }
 
     @ExceptionHandler(Exception.class)
-    ResponseEntity<CuoWuXiangYing> handleUnexpectedException() {
+    ResponseEntity<CuoWuXiangYing> handleUnexpectedException(Exception exception) {
+        LOGGER.error("Unhandled request failure", exception);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(error("INTERNAL_ERROR", "服务器处理请求失败"));
     }

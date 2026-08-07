@@ -1,4 +1,4 @@
-param(
+﻿param(
     [Parameter(Position = 0)]
     [ValidateSet('create', 'reset', 'seed', 'validate', 'clean', 'backend', 'frontend', 'smoke', 'login-check')]
     [string]$Action = 'validate',
@@ -54,8 +54,9 @@ function Invoke-DemoTool([string]$ToolAction) {
     }
 }
 
-function Invoke-LoginSmoke([string]$Username, [string]$Role) {
-    $payload = @{ username = $Username; password = 'a1234567'; expectedRole = $Role } | ConvertTo-Json -Compress
+    function Invoke-LoginSmoke([string]$Username, [string]$Role) {
+        $challenge = Invoke-RestMethod -Method Get -Uri "$apiBaseUrl/auth/slider-challenge"
+        $payload = @{ username = $Username; password = 'a1234567'; expectedRole = $Role; challengeId = $challenge.challengeId; sliderOffset = $challenge.targetDisplayOffset } | ConvertTo-Json -Compress
     $response = Invoke-RestMethod -Method Post -Uri "$apiBaseUrl/auth/login" -ContentType 'application/json' -Body $payload
     if (-not $response.accessToken -or $response.user.username -ne $Username -or $response.user.roles -notcontains $Role) {
         throw "$Role 演示账号登录响应不符合预期"
@@ -91,7 +92,8 @@ function Invoke-SmokeCheck {
     Invoke-LoginSmoke 'demo_teacher' 'TEACHER'
     Invoke-LoginSmoke 'demo_student' 'STUDENT'
 
-    $mismatchPayload = @{ username = 'demo_admin'; password = 'a1234567'; expectedRole = 'STUDENT' } | ConvertTo-Json -Compress
+      $mismatchChallenge = Invoke-RestMethod -Method Get -Uri "$apiBaseUrl/auth/slider-challenge"
+      $mismatchPayload = @{ username = 'demo_admin'; password = 'a1234567'; expectedRole = 'STUDENT'; challengeId = $mismatchChallenge.challengeId; sliderOffset = $mismatchChallenge.targetDisplayOffset } | ConvertTo-Json -Compress
     try {
         Invoke-RestMethod -Method Post -Uri "$apiBaseUrl/auth/login" -ContentType 'application/json' -Body $mismatchPayload | Out-Null
         throw '错误角色入口未被拒绝'

@@ -1,6 +1,7 @@
 const ACCESS_TOKEN_KEY = 'rike-tiku.access-token'
 const TOKEN_TYPE_KEY = 'rike-tiku.token-type'
 const EXPIRES_IN_KEY = 'rike-tiku.expires-in'
+const ACTIVE_ROLE_KEY = 'rike-tiku.active-role'
 
 export interface StoredSession {
   accessToken: string
@@ -33,4 +34,8 @@ export function clearStoredSession() {
   localStorage.removeItem(ACCESS_TOKEN_KEY)
   localStorage.removeItem(TOKEN_TYPE_KEY)
   localStorage.removeItem(EXPIRES_IN_KEY)
+  sessionStorage.removeItem(ACTIVE_ROLE_KEY)
 }
+
+export const readActiveRole = () => sessionStorage.getItem(ACTIVE_ROLE_KEY)
+export const saveActiveRole = (role: string) => sessionStorage.setItem(ACTIVE_ROLE_KEY, role)

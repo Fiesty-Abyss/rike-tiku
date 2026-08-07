@@ -2,6 +2,7 @@ import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import ElementPlus from 'element-plus'
 import { ElMessage } from 'element-plus'
+import zhCn from 'element-plus/es/locale/lang/zh-cn'
 import 'element-plus/dist/index.css'
 
 import App from './App.vue'
@@ -21,7 +22,7 @@ setAuthenticationErrorHandler((error) => {
   }
   if (error.status === 401 || error.code === 'TOKEN_EXPIRED' || error.code === 'TOKEN_INVALID') {
     authStore.logout()
-    void router.replace('/login/student')
+    void router.replace('/login')
     return
   }
   if (error.code === 'ACCESS_DENIED') {
@@ -29,4 +30,4 @@ setAuthenticationErrorHandler((error) => {
   }
 })
 
-app.use(pinia).use(router).use(ElementPlus).mount('#app')
+app.use(pinia).use(router).use(ElementPlus, { locale: zhCn }).mount('#app')

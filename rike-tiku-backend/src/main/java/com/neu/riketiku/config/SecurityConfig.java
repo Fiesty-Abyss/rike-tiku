@@ -40,7 +40,7 @@ public class SecurityConfig {
                         .authenticationEntryPoint(authenticationEntryPoint)
                         .accessDeniedHandler(accessDeniedHandler))
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/api/v1/health", "/api/v1/auth/login", "/v3/api-docs/**").permitAll()
+                        .requestMatchers("/api/v1/health", "/api/v1/auth/login", "/api/v1/auth/slider-challenge", "/v3/api-docs/**").permitAll()
                         .requestMatchers("/api/v1/test/student").hasRole("STUDENT")
                         .requestMatchers("/api/v1/test/teacher").hasRole("TEACHER")
                         .requestMatchers("/api/v1/test/admin").hasRole("ADMIN")
@@ -50,6 +50,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/admin/teachers/**", "/api/v1/admin/teaching-assignments/**", "/api/v1/admin/subjects").hasRole("ADMIN")
                         .requestMatchers("/api/v1/admin/questions/**", "/api/v1/admin/knowledge-points").hasRole("ADMIN")
                         .requestMatchers("/api/v1/student/practice-options", "/api/v1/student/practice-sessions/**", "/api/v1/student/wrong-questions/**").hasRole("STUDENT")
+                        .requestMatchers("/api/v1/teacher/**").hasRole("TEACHER")
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterAfter(initialPasswordGateFilter, JwtRenZhengGuoLvQi.class);

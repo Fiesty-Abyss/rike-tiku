@@ -125,3 +125,8 @@ Authorization: Bearer <accessToken>
 - `PASSWORD_POLICY_VIOLATION`
 - `PASSWORD_UNCHANGED`
 
+# 当前分支补充（未合并）
+
+`feat/ui-auth-student-dashboard` 增加 `GET /api/v1/auth/slider-challenge`。登录请求除用户名、密码和可选 `expectedRole` 外必须提交 `challengeId` 与 `sliderOffset`。挑战有效两分钟、一次性消费，错误码为 `SLIDER_CHALLENGE_REQUIRED`、`SLIDER_CHALLENGE_EXPIRED`、`SLIDER_CHALLENGE_INVALID`、`SLIDER_CHALLENGE_REUSED`。
+
+新增认证后 `POST /api/v1/auth/change-password`，请求为 `oldPassword`、`newPassword`、`confirmPassword`。复用 8–64 位、字母数字、非空白、不可与旧密码相同的策略，使用 BCrypt 保存并重新签发 Token；首次改密门禁保持不变。
