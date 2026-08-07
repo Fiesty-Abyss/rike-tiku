@@ -1,13 +1,14 @@
 # 开发状态
 
-更新时间：2026-08-06
+> 当前实施分支：`feat/ui-auth-student-dashboard`，PR #15 未合并，基线 `main@dc5c89798b48561fec8225228bd79047a01aba08`。Flyway 保持 V1–V7（23 张业务表），本轮不新增迁移。2026-08-07 已在独立 `rike_tiku_demo` 完成真实浏览器验收；MA-001 至 MA-005、MA-010、MA-011 已关闭，MA-006 至 MA-009 尚未完成。
+
+更新时间：2026-08-07
 
 ## 当前主线状态
 
-- 本轮开始基线：`main@2161080427fd432634325bea3c3d1ebd7e0f519a`。
-- 当前分支：`main`。PR #14 已普通 merge，合并提交为 `4ffbcbda66f26e7390192985ce179f30d3a6b664`。
+- 当前分支：`feat/ui-auth-student-dashboard`，PR #15 未合并；PR #14 已普通 merge，合并提交为 `4ffbcbda66f26e7390192985ce179f30d3a6b664`。
 - 学生自主练习、自动判分、结果与错题闭环已进入 `main`；AI、掌握度、推荐、教师任务、组卷考试和主观题评分仍未实现。
-- Flyway：V1–V7，共 23 张业务表；V1–V6 未修改。
+- Flyway：V1–V7，共 23 张业务表；本轮未修改 V1–V7，未新增迁移。
 
 ## 已进入 main
 
@@ -20,10 +21,11 @@
 
 ## 当前验证
 
-- 合并后后端：`mvn clean test` 74/74 PASS；`mvn clean package` PASS。
-- 合并后前端：`npm test` 68/68 PASS；`npm run type-check`、`npm run build` PASS。构建仅有既有大 chunk 提示。
-- `npm audit`：0 vulnerabilities；最终敏感信息扫描通过。
-- 真实 HTTP：`PASS`，已覆盖会话创建、未提交响应防泄露、权限和结果访问。学生页面回查：`NOT_RUN`，受控后台服务无法启动。综合结论：`PASS_WITH_ENV_LIMITATION`。
+- PR #15 当前后端：`mvn clean test` 79/79 PASS；`mvn clean package` PASS。
+- PR #15 当前前端：`npm test` 72/72 PASS；`npm run type-check`、`npm run build` PASS。构建仅有既有大 chunk 提示。
+- PR #15 `npm audit --omit=dev`：0 vulnerabilities；最终敏感信息扫描通过。
+- PR #15 `rike_tiku_demo` 三角色真实浏览器验收：PASS；MA-001 至 MA-005、MA-010、MA-011 已关闭。
+- 历史 PR #13 结果：真实 HTTP 为 `PASS`，学生页面回查为 `NOT_RUN`，阶段综合结论为 `PASS_WITH_ENV_LIMITATION`。该结论不代表 PR #15 当前状态。
 
 ## 已进入 main 的演示验收环境
 
@@ -31,10 +33,10 @@
 - 固定三角色演示账号、学生/教师档案、演示班级、三科三元任课关系和九个知识点。
 - 18 道自行编写、无附件、可自动判分的 `PUBLISHED` 演示题；每科 6 道，单选/多选/填空各 2 道，来源权利状态为 `USER_PROVIDED`，审核轨迹完整。
 - 本轮不修改 V1–V7，不写正式 `rike_tiku`，不修改 MVP30 原始 Excel。
-- PR #14 合并后回归：后端 74/74、`mvn clean package` PASS；前端 68/68、类型检查和构建 PASS；`npm audit` 为 0 vulnerabilities。
+- 历史 PR #14 合并后回归：后端 74/74、`mvn clean package` PASS；前端 68/68、类型检查和构建 PASS；`npm audit` 为 0 vulnerabilities。
 - 真实脚本链 `reset → seed → validate → clean → reset → seed` PASS，末次 seed 后演示库保持待人工验收状态；正式库演示账号、演示题和 V7 五张学习表均为 0。
 - 人工验收问题 MA-001 已关闭：后端 18081、前端 18080、`/api/v1` 基址和 `rike_tiku_demo` 连接均正确；demo_admin 登录、demo_teacher 真实 HTTP 登录和 demo_student 浏览器登录均已复验，原 `INVALID_CREDENTIALS` 不再复现。
-- 用户已登记 MA-002 至 MA-009，覆盖学生三科学科入口与首页体验、登录角色识别、中文展示、个人中心、管理员单个学生管理、高频考点和受三元任课关系约束的师生私信。这些均为待规划事项，尚未实现。
+- MA-002 至 MA-005 已通过真实浏览器复验并关闭；MA-010、MA-011 也已关闭。MA-006 至 MA-009 尚未完成，其中 MA-006 仅剩个人资料、个人简介和头像能力，主动修改密码已实现。
 
 ## 已合并基线
 
@@ -46,11 +48,25 @@
 
 ## 下一步
 
-后续按以下顺序规划，不代表已经实现：
+唯一候选：管理员学生完整管理与账号恢复（`PLANNED`）。
 
-1. UI、认证和学生三科工作台；
-2. 管理员学生手动管理；
-3. 高频考点和受三元任课关系约束的师生私信；
-4. 最后再接入 DeepSeek 与 GLM。
+## 非 AI 工程基础完成门槛
 
-AI、教师任务、统计等正式工作台仍未实现。
+只有以下各项全部完成并验证后，非 AI 工程基础才允许标记为 100%；任一项未满足时不得标记 100%：
+
+- 基础工程与认证；
+- 班级、教师和三元任课；
+- 学生 Excel 导入与单学生完整管理；
+- 基础个人资料、简介、头像；
+- 管理员题库 CRUD、导入、审核、发布；
+- MVP30 正式可用演示题库；
+- 学生三科练习、随机练习、判分、结果、错题；
+- 教师基础正式工作台；
+- 高频考点；
+- 师生私信；
+- 非 AI 的基础掌握度与规则推荐；
+- 三角色完整浏览器验收；
+- 全量自动化与构建通过；
+- Git、Flyway、文档和代码状态完全一致。
+
+DeepSeek、GLM、AI Provider、AI 错题分析、AI 对话和 AI 生成题不属于该 100% 门槛。

@@ -5,6 +5,8 @@ import com.neu.riketiku.renzheng.dto.DangQianYongHuXiangYing;
 import com.neu.riketiku.renzheng.dto.DengLuQingQiu;
 import com.neu.riketiku.renzheng.dto.DengLuXiangYing;
 import com.neu.riketiku.renzheng.dto.YongHuZhaiYaoXiangYing;
+import com.neu.riketiku.renzheng.dto.HuaKuaiTiaoZhanXiangYing;
+import com.neu.riketiku.renzheng.dto.ZhuDongMiMaXiuGaiQingQiu;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.http.HttpStatus;
@@ -17,18 +19,26 @@ public class RenZhengFuWu {
     private final RenZhengShuJuCangKu repository;
     private final PasswordEncoder passwordEncoder;
     private final JwtLingPaiFuWu jwtService;
+    private final HuaKuaiTiaoZhanFuWu sliderService;
 
     public RenZhengFuWu(
             RenZhengShuJuCangKu repository,
             PasswordEncoder passwordEncoder,
-            JwtLingPaiFuWu jwtService) {
+            JwtLingPaiFuWu jwtService,
+            HuaKuaiTiaoZhanFuWu sliderService) {
         this.repository = repository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
+        this.sliderService = sliderService;
+    }
+
+    public HuaKuaiTiaoZhanXiangYing huaKuaiTiaoZhan() {
+        return sliderService.create();
     }
 
     @Transactional
     public DengLuXiangYing dengLu(DengLuQingQiu request) {
+        sliderService.verify(request.challengeId(), request.sliderOffset());
         YongHuRenZhengShuJu user = repository.anYongHuMingChaZhao(request.username().trim())
                 .orElseThrow(this::invalidCredentials);
         validateAccountStatus(user);
@@ -41,7 +51,7 @@ public class RenZhengFuWu {
             throw new RenZhengYeWuYiChang(
                     "ACCOUNT_HAS_NO_ROLE", "账号没有有效角色", HttpStatus.FORBIDDEN);
         }
-        if (!roles.contains(request.expectedRole().name())) {
+        if (request.expectedRole() != null && !roles.contains(request.expectedRole().name())) {
             throw new RenZhengYeWuYiChang(
                     "ROLE_MISMATCH", "账号与当前登录入口不匹配", HttpStatus.FORBIDDEN);
         }
@@ -103,6 +113,27 @@ public class RenZhengFuWu {
         return createLoginResponse(user, roles, false);
     }
 
+    @Transactional
+    public DengLuXiangYing zhuDongXiuGaiMiMa(
+            RenZhengYongHu principal, ZhuDongMiMaXiuGaiQingQiu request) {
+        YongHuRenZhengShuJu user = repository.anIdChaZhao(principal.id())
+                .orElseThrow(() -> new RenZhengYeWuYiChang(
+                        "ACCOUNT_UNAVAILABLE", "当前账号不可用", HttpStatus.UNAUTHORIZED));
+        validateAccountStatus(user);
+        if (!passwordEncoder.matches(request.oldPassword(), user.miMaZhaiYao())) {
+            throw new RenZhengYeWuYiChang(
+                    "OLD_PASSWORD_INCORRECT", "旧密码不正确", HttpStatus.BAD_REQUEST);
+        }
+        validateNewPassword(request.newPassword(), request.confirmPassword(), user.miMaZhaiYao());
+        LocalDateTime now = LocalDateTime.now();
+        if (repository.gengXinChuShiMiMa(user.id(), passwordEncoder.encode(request.newPassword()), now) != 1) {
+            throw new RenZhengYeWuYiChang(
+                    "PASSWORD_UPDATE_FAILED", "密码修改失败", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        List<String> roles = repository.chaZhaoYouXiaoJiaoSe(user.id());
+        return createLoginResponse(user, roles, false);
+    }
+
     private void validateAccountStatus(YongHuRenZhengShuJu user) {
         if ("DISABLED".equals(user.zhangHaoZhuangTai())) {
             throw new RenZhengYeWuYiChang(
@@ -119,8 +150,11 @@ public class RenZhengFuWu {
     }
 
     private void validateNewPassword(ChuShiMiMaXiuGaiQingQiu request, String currentHash) {
-        String newPassword = request.newPassword();
-        if (!newPassword.equals(request.confirmPassword())) {
+        validateNewPassword(request.newPassword(), request.confirmPassword(), currentHash);
+    }
+
+    private void validateNewPassword(String newPassword, String confirmPassword, String currentHash) {
+        if (!newPassword.equals(confirmPassword)) {
             throw new RenZhengYeWuYiChang(
                     "PASSWORD_CONFIRMATION_MISMATCH", "两次输入的新密码不一致", HttpStatus.BAD_REQUEST);
         }

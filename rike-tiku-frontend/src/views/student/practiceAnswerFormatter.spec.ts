@@ -5,6 +5,8 @@ describe('学生练习答案展示', () => {
   it('以题型格式化单选和多选答案', () => {
     expect(formatPracticeAnswer('SINGLE_CHOICE', 'A')).toBe('A')
     expect(formatPracticeAnswer('MULTIPLE_CHOICE', ['A', 'C'])).toBe('A、C')
+    expect(formatPracticeAnswer('SINGLE_CHOICE', { optionLabels: ['A'] })).toBe('A')
+    expect(formatPracticeAnswer('MULTIPLE_CHOICE', { optionLabels: ['A', 'B'] })).toBe('A、B')
   })
 
   it('以空位和可接受答案格式化填空答案', () => {

@@ -4,6 +4,8 @@ import com.neu.riketiku.renzheng.dto.ChuShiMiMaXiuGaiQingQiu;
 import com.neu.riketiku.renzheng.dto.DangQianYongHuXiangYing;
 import com.neu.riketiku.renzheng.dto.DengLuQingQiu;
 import com.neu.riketiku.renzheng.dto.DengLuXiangYing;
+import com.neu.riketiku.renzheng.dto.HuaKuaiTiaoZhanXiangYing;
+import com.neu.riketiku.renzheng.dto.ZhuDongMiMaXiuGaiQingQiu;
 import jakarta.validation.Valid;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,6 +28,11 @@ public class RenZhengController {
         return service.dengLu(request);
     }
 
+    @GetMapping("/slider-challenge")
+    HuaKuaiTiaoZhanXiangYing sliderChallenge() {
+        return service.huaKuaiTiaoZhan();
+    }
+
     @GetMapping("/me")
     DangQianYongHuXiangYing me(@AuthenticationPrincipal RenZhengYongHu principal) {
         return service.dangQianYongHu(principal);
@@ -36,5 +43,12 @@ public class RenZhengController {
             @AuthenticationPrincipal RenZhengYongHu principal,
             @Valid @RequestBody ChuShiMiMaXiuGaiQingQiu request) {
         return service.xiuGaiChuShiMiMa(principal, request);
+    }
+
+    @PostMapping("/change-password")
+    DengLuXiangYing changePassword(
+            @AuthenticationPrincipal RenZhengYongHu principal,
+            @Valid @RequestBody ZhuDongMiMaXiuGaiQingQiu request) {
+        return service.zhuDongXiuGaiMiMa(principal, request);
     }
 }
