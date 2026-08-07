@@ -1,6 +1,6 @@
 # 跨AI项目上下文
 
-> 当前工作分支为 `main`。PR #15 已普通 merge，merge commit 与合并后 `main` 基线均为 `12d636fde4afa198edc78eb0c295f5b88c8e3456`。UI、统一认证和学生三科工作台已进入 `main`；Flyway 保持 V1–V7（23 张业务表），本轮无迁移。2026-08-07 `rike_tiku_demo` 真实浏览器验收已关闭 MA-001 至 MA-005、MA-010、MA-011，MA-006 至 MA-009 尚未完成。
+> 当前工作分支为 `feat/demo-question-bank-expansion`（未合并），基线 `main@b40bc79eeb04c40bdf2eb05ef975193e4444eb31`。PR #15 已普通 merge。当前分支只扩充独立 `rike_tiku_demo` 的原创演示题；Flyway 保持 V1–V7（23 张业务表），本轮无迁移，不写正式 `rike_tiku`，不修改 MVP30 原始 Excel。
 
 更新时间：2026-08-07
 
@@ -51,13 +51,13 @@
 ## 5. 当前实现状态
 
 - 状态：题库、账号、教学组织和学生练习闭环均已进入 `main`。
-- 当前分支：`main`；PR #15 已普通 merge，merge commit 为 `12d636fde4afa198edc78eb0c295f5b88c8e3456`。
+- 当前分支：`feat/demo-question-bank-expansion`，基于 `main@b40bc79eeb04c40bdf2eb05ef975193e4444eb31`；PR #15 已普通 merge。
 - 当前 Flyway：V1–V7，共 23 张业务表；本轮不修改既有迁移、不新增迁移。
-- 演示样本位于独立 `rike_tiku_demo`；MVP30 原始 Excel 尚未正式入库且未改动。
+- 当前分支的 Demo90 位于独立 `rike_tiku_demo`：物理、化学、生物各 30 道项目原创演示题，每科三题型、三档难度、三个演示知识点各 10 道。MVP30 原始 Excel 尚未正式入库且未改动。
 - 历史 PR #13 自动化为后端 68/68、前端 68/68；历史 PR #14 自动化为后端 74/74、前端 68/68。PR #15 合并后自动化为后端 79/79、前端 72/72，打包、类型检查、构建和依赖审计均通过。
 - 远程仓库：`https://github.com/Fiesty-Abyss/rike-tiku`，公开仓库，默认分支 `main`。
 
-学生导入、教师管理、三元任课关系、题库审核发布、MVP30 导入、学生练习闭环、UI、统一认证和学生三科工作台均已进入 `main`。MVP30 尚未正式入库，教师正式业务工作台、AI Provider、DeepSeek、GLM、AI 答疑、掌握度和推荐均未实现。唯一下一步候选为“管理员学生完整管理与账号恢复”（`PLANNED`）。
+学生导入、教师管理、三元任课关系、题库审核发布、MVP30 导入、学生练习闭环、UI、统一认证和学生三科工作台均已进入 `main`。Demo90 不等于 MVP30 正式真实题库；MVP30 尚未正式入库，网络候选题没有因此变为 `PUBLISHED`。教师正式业务工作台、AI Provider、DeepSeek、GLM、AI 答疑、掌握度和推荐均未实现。唯一下一步候选仍为“管理员学生完整管理与账号恢复”（`PLANNED`）。
 
 ## 6. AI接管规则
 

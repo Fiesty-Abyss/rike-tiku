@@ -90,16 +90,28 @@ public class DemoDataService {
         expect("主班级关系", 1, count("SELECT COUNT(*) FROM ban_ji_xue_sheng bx JOIN ban_ji b ON b.id=bx.ban_ji_id WHERE b.ban_ji_bian_ma='DEMO_CLASS_01' AND bx.zhuang_tai='ACTIVE' AND bx.shi_fou_zhu_ban_ji=1"));
         expect("三元任课关系", 3, count("SELECT COUNT(*) FROM ren_ke_guan_xi r JOIN ban_ji b ON b.id=r.ban_ji_id JOIN jiao_shi_dang_an t ON t.id=r.jiao_shi_id WHERE b.ban_ji_bian_ma='DEMO_CLASS_01' AND t.gong_hao='DEMO_T001' AND r.zhuang_tai='ACTIVE'"));
         expect("演示知识点", 9, count("SELECT COUNT(*) FROM zhi_shi_dian WHERE wan_zheng_lu_jing IN ('力学>运动和力>牛顿运动定律','电磁学>电场>电场强度','热学>分子动理论>温度和内能','化学基本概念>物质的量>摩尔计算','无机化学>元素化合物>氧化还原反应','化学反应原理>化学平衡>平衡移动','分子与细胞>细胞结构>细胞膜','遗传与进化>遗传规律>分离定律','稳态与调节>生命活动调节>激素调节')") );
-        expect("演示题总数", 18, demoQuestionCount());
+        expect("演示题总数", 90, demoQuestionCount());
         for (String subject : List.of("PHYSICS", "CHEMISTRY", "BIOLOGY")) {
-            expect(subject + "题目", 6, count("SELECT COUNT(*) FROM ti_mu q JOIN ke_mu s ON s.id=q.ke_mu_id WHERE q.ti_gan LIKE '【演示】%' AND s.ke_mu_dai_ma=?", subject));
+            expect(subject + "题目", 30, count("SELECT COUNT(*) FROM ti_mu q JOIN ke_mu s ON s.id=q.ke_mu_id WHERE q.ti_gan LIKE '【演示】%' AND s.ke_mu_dai_ma=?", subject));
             expect(subject + "难度覆盖", 3, count("SELECT COUNT(DISTINCT q.nan_du) FROM ti_mu q JOIN ke_mu s ON s.id=q.ke_mu_id WHERE q.ti_gan LIKE '【演示】%' AND s.ke_mu_dai_ma=?", subject));
             for (String type : List.of("SINGLE_CHOICE", "MULTIPLE_CHOICE", "FILL_BLANK")) {
-                expect(subject + type, 2, count("SELECT COUNT(*) FROM ti_mu q JOIN ke_mu s ON s.id=q.ke_mu_id WHERE q.ti_gan LIKE '【演示】%' AND s.ke_mu_dai_ma=? AND q.ti_mu_lei_xing=?", subject, type));
+                expect(subject + type, 10, count("SELECT COUNT(*) FROM ti_mu q JOIN ke_mu s ON s.id=q.ke_mu_id WHERE q.ti_gan LIKE '【演示】%' AND s.ke_mu_dai_ma=? AND q.ti_mu_lei_xing=?", subject, type));
+            }
+            for (int difficulty : List.of(1, 2, 3)) {
+                expect(subject + "难度" + difficulty, 10, count("SELECT COUNT(*) FROM ti_mu q JOIN ke_mu s ON s.id=q.ke_mu_id WHERE q.ti_gan LIKE '【演示】%' AND s.ke_mu_dai_ma=? AND q.nan_du=?", subject, difficulty));
             }
         }
-        expect("可练习题", 18, count("SELECT COUNT(*) FROM ti_mu q WHERE q.ti_gan LIKE '【演示】%' AND q.zhuang_tai='PUBLISHED' AND q.shi_yong_mo_shi='ONLINE_PRACTICE' AND q.shi_fou_ke_zi_dong_pan_fen=1 AND q.yi_shan_chu=0"));
-        expect("完整可冻结题", 18, count("""
+        expect("每知识点10题", 9, count("""
+                SELECT COUNT(*) FROM (
+                    SELECT k.id FROM zhi_shi_dian k
+                    JOIN ti_mu_zhi_shi_dian qk ON qk.zhi_shi_dian_id=k.id AND qk.yi_shan_chu=0
+                    JOIN ti_mu q ON q.id=qk.ti_mu_id AND q.yi_shan_chu=0
+                    WHERE q.ti_gan LIKE '【演示】%' AND k.zhuang_tai='ACTIVE' AND k.yi_shan_chu=0
+                    GROUP BY k.id HAVING COUNT(DISTINCT q.id)=10
+                ) covered_points
+                """));
+        expect("可练习题", 90, count("SELECT COUNT(*) FROM ti_mu q WHERE q.ti_gan LIKE '【演示】%' AND q.zhuang_tai='PUBLISHED' AND q.shi_yong_mo_shi='ONLINE_PRACTICE' AND q.shi_fou_ke_zi_dong_pan_fen=1 AND q.yi_shan_chu=0"));
+        expect("完整可冻结题", 90, count("""
                 SELECT COUNT(*) FROM ti_mu q
                 WHERE q.ti_gan LIKE '【演示】%' AND q.zhuang_tai='PUBLISHED'
                   AND q.shi_yong_mo_shi='ONLINE_PRACTICE' AND q.shi_fou_ke_zi_dong_pan_fen=1 AND q.yi_shan_chu=0
@@ -111,7 +123,28 @@ public class DemoDataService {
                       AND (SELECT COUNT(*) FROM ti_mu_xuan_xiang o WHERE o.ti_mu_id=q.id AND o.yi_shan_chu=0)>=2
                       AND JSON_LENGTH(JSON_EXTRACT(q.zheng_que_da_an,'$.optionLabels'))>=1))
                 """));
-        expect("PUBLISHED标准解析", 18, count("SELECT COUNT(*) FROM ti_mu_jie_xi a JOIN ti_mu q ON q.id=a.ti_mu_id WHERE q.ti_gan LIKE '【演示】%' AND a.jie_xi_lei_xing='STANDARD' AND a.ban_ben_hao=1 AND a.zhuang_tai='PUBLISHED' AND a.yi_shan_chu=0"));
+        expect("单选答案结构", 0, count("""
+                SELECT COUNT(*) FROM ti_mu q
+                WHERE q.ti_gan LIKE '【演示】%' AND q.ti_mu_lei_xing='SINGLE_CHOICE'
+                  AND (JSON_UNQUOTE(JSON_EXTRACT(q.zheng_que_da_an,'$.type'))<>'SINGLE_CHOICE'
+                    OR JSON_LENGTH(JSON_EXTRACT(q.zheng_que_da_an,'$.optionLabels'))<>1
+                    OR (SELECT COUNT(*) FROM ti_mu_xuan_xiang o WHERE o.ti_mu_id=q.id AND o.shi_fou_zheng_que=1 AND o.yi_shan_chu=0)<>1)
+                """));
+        expect("多选答案结构", 0, count("""
+                SELECT COUNT(*) FROM ti_mu q
+                WHERE q.ti_gan LIKE '【演示】%' AND q.ti_mu_lei_xing='MULTIPLE_CHOICE'
+                  AND (JSON_UNQUOTE(JSON_EXTRACT(q.zheng_que_da_an,'$.type'))<>'MULTIPLE_CHOICE'
+                    OR JSON_LENGTH(JSON_EXTRACT(q.zheng_que_da_an,'$.optionLabels'))<2
+                    OR (SELECT COUNT(*) FROM ti_mu_xuan_xiang o WHERE o.ti_mu_id=q.id AND o.shi_fou_zheng_que=1 AND o.yi_shan_chu=0)<2)
+                """));
+        expect("填空答案结构", 0, count("""
+                SELECT COUNT(*) FROM ti_mu q
+                WHERE q.ti_gan LIKE '【演示】%' AND q.ti_mu_lei_xing='FILL_BLANK'
+                  AND (JSON_UNQUOTE(JSON_EXTRACT(q.zheng_que_da_an,'$.type'))<>'FILL_BLANK'
+                    OR JSON_LENGTH(JSON_EXTRACT(q.zheng_que_da_an,'$.blanks'))<1
+                    OR JSON_LENGTH(JSON_EXTRACT(q.zheng_que_da_an,'$.blanks[0].acceptedAnswers'))<1)
+                """));
+        expect("PUBLISHED标准解析", 90, count("SELECT COUNT(*) FROM ti_mu_jie_xi a JOIN ti_mu q ON q.id=a.ti_mu_id WHERE q.ti_gan LIKE '【演示】%' AND a.jie_xi_lei_xing='STANDARD' AND a.ban_ben_hao=1 AND a.zhuang_tai='PUBLISHED' AND a.yi_shan_chu=0"));
         expect("活动附件", 0, count("SELECT COUNT(*) FROM ti_mu_fu_jian f JOIN ti_mu q ON q.id=f.ti_mu_id WHERE q.ti_gan LIKE '【演示】%' AND f.zhuang_tai='ACTIVE' AND f.yi_shan_chu=0"));
         expect("对象标记", 0, count("""
                 SELECT COUNT(*) FROM ti_mu q
@@ -121,10 +154,17 @@ public class DemoDataService {
                     OR EXISTS (SELECT 1 FROM ti_mu_xuan_xiang o WHERE o.ti_mu_id=q.id AND (o.xuan_xiang_nei_rong LIKE '%[[I%' OR o.xuan_xiang_nei_rong LIKE '%[[F%'))
                     OR EXISTS (SELECT 1 FROM ti_mu_jie_xi a WHERE a.ti_mu_id=q.id AND (a.jie_xi_nei_rong LIKE '%[[I%' OR a.jie_xi_nei_rong LIKE '%[[F%')))
                 """));
-        expect("三项来源", 54, count("SELECT COUNT(*) FROM ti_mu_lai_yuan s JOIN ti_mu q ON q.id=s.ti_mu_id WHERE q.ti_gan LIKE '【演示】%' AND s.lai_yuan_lei_xing='TEACHER_CREATED' AND s.quan_li_zhuang_tai='USER_PROVIDED' AND s.yi_shan_chu=0"));
-        expect("审核轨迹", 36, count("SELECT COUNT(*) FROM ti_mu_shen_he_ji_lu r JOIN ti_mu q ON q.id=r.ti_mu_id WHERE q.ti_gan LIKE '【演示】%' AND r.shen_he_dong_zuo IN ('SUBMITTED','APPROVED')"));
+        expect("重复内容哈希", 0, count("SELECT COUNT(*)-COUNT(DISTINCT q.nei_rong_ha_xi) FROM ti_mu q WHERE q.ti_gan LIKE '【演示】%' AND q.yi_shan_chu=0"));
+        expect("三项来源", 270, count("""
+                SELECT COUNT(*) FROM ti_mu_lai_yuan s JOIN ti_mu q ON q.id=s.ti_mu_id
+                WHERE q.ti_gan LIKE '【演示】%' AND s.lai_yuan_lei_xing='TEACHER_CREATED'
+                  AND s.lai_yuan_ming_cheng='本科毕业设计自编演示题'
+                  AND s.quan_li_zhuang_tai='USER_PROVIDED' AND s.quan_li_yi_ju IS NOT NULL
+                  AND TRIM(s.quan_li_yi_ju)<>'' AND s.yi_shan_chu=0
+                """));
+        expect("审核轨迹", 180, count("SELECT COUNT(*) FROM ti_mu_shen_he_ji_lu r JOIN ti_mu q ON q.id=r.ti_mu_id WHERE q.ti_gan LIKE '【演示】%' AND r.shen_he_dong_zuo IN ('SUBMITTED','APPROVED')"));
         for (String table : List.of("lian_xi_hui_hua", "lian_xi_ti_mu", "xue_sheng_da_ti", "xue_xi_jie_guo", "cuo_ti_ji_lu")) expect(table + "初始记录", 0, count("SELECT COUNT(*) FROM " + table));
-        System.out.println("演示数据校验通过: 3账号、1班级、3任课关系、9知识点、18题、学习记录为0");
+        System.out.println("演示数据校验通过: 3账号、1班级、3任课关系、9知识点、90题、学习记录为0");
     }
 
     public static void guardDatabaseName(String database) {
@@ -190,7 +230,7 @@ public class DemoDataService {
         jdbc.update("INSERT INTO ti_mu_zhi_shi_dian (ti_mu_id,zhi_shi_dian_id,shi_fou_zhu_yao,pai_xu) VALUES (?,?,1,1)", questionId, pointId);
         for (String contentType : List.of("QUESTION", "ANSWER", "STANDARD_ANALYSIS")) jdbc.update("""
                 INSERT INTO ti_mu_lai_yuan (ti_mu_id,nei_rong_lei_xing,lai_yuan_lei_xing,lai_yuan_ming_cheng,lai_yuan_di_zhi,quan_li_zhuang_tai,quan_li_yi_ju)
-                VALUES (?,?,'TEACHER_CREATED','本科毕业设计本地演示数据',NULL,'USER_PROVIDED',?)
+                VALUES (?,?,'TEACHER_CREATED','本科毕业设计自编演示题',NULL,'USER_PROVIDED',?)
                 """, questionId, contentType, RIGHTS_BASIS);
         jdbc.update("INSERT INTO ti_mu_shen_he_ji_lu (ti_mu_id,shen_he_dong_zuo,yuan_zhuang_tai,mu_biao_zhuang_tai,shen_he_ren_id,shen_he_yi_jian) VALUES (?,'SUBMITTED','DRAFT','PENDING',?,'演示题提交审核')", questionId, adminId);
         jdbc.update("INSERT INTO ti_mu_shen_he_ji_lu (ti_mu_id,shen_he_dong_zuo,yuan_zhuang_tai,mu_biao_zhuang_tai,shen_he_ren_id,shen_he_yi_jian) VALUES (?,'APPROVED','PENDING','PUBLISHED',?,'演示题审核通过')", questionId, adminId);
@@ -290,10 +330,11 @@ public class DemoDataService {
                 List.of("微量高效", "通过体液运输", "只在分泌部位起作用", "作用时间都极短"), Set.of("A", "B"), "激素通常微量高效，并随体液运输到靶细胞"));
         items.add(fill("BIOLOGY-F1", "BIOLOGY", "细胞膜控制物质进出体现了膜的____功能。", "分子与细胞>细胞结构>细胞膜", 2, "选择透过"));
         items.add(fill("BIOLOGY-F2", "BIOLOGY", "成对遗传因子在形成配子时彼此____。", "遗传与进化>遗传规律>分离定律", 3, "分离"));
+        items.addAll(DemoQuestionBank.additionalQuestions());
         return items;
     }
 
-    private static Question choice(String key, String subject, String type, String stem, String point, int difficulty,
+    static Question choice(String key, String subject, String type, String stem, String point, int difficulty,
             List<String> contents, Set<String> correct, String explanation) {
         List<Option> options = new ArrayList<>();
         List<String> labels = List.of("A", "B", "C", "D");
@@ -302,13 +343,13 @@ public class DemoDataService {
         return new Question(key, subject, type, stem, point, difficulty, answer, options, "依据题干条件可判断正确答案为" + explanation + "。演示时可用其他选项构造错题。" );
     }
 
-    private static Question fill(String key, String subject, String stem, String point, int difficulty, String accepted) {
+    static Question fill(String key, String subject, String stem, String point, int difficulty, String accepted) {
         String answer = "{\"schemaVersion\":1,\"type\":\"FILL_BLANK\",\"blanks\":[{\"index\":1,\"acceptedAnswers\":[\"" + accepted + "\"],\"caseSensitive\":false}]}";
         return new Question(key, subject, "FILL_BLANK", stem, point, difficulty, answer, List.of(), "根据相关基本概念或计算，空格应填写“" + accepted + "”。");
     }
 
-    private record Question(String key, String subject, String type, String stem, String knowledgePath,
-                            int difficulty, String answer, List<Option> options, String analysis) {
+    record Question(String key, String subject, String type, String stem, String knowledgePath,
+                    int difficulty, String answer, List<Option> options, String analysis) {
     }
 
     private record Option(String label, String content, boolean correct) {
