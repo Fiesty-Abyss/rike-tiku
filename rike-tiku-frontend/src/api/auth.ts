@@ -5,8 +5,12 @@ export type RoleCode = 'STUDENT' | 'TEACHER' | 'ADMIN'
 export interface LoginRequest {
   username: string
   password: string
-  expectedRole: RoleCode
+  expectedRole?: RoleCode
+  challengeId: string
+  sliderOffset: number
 }
+
+export interface SliderChallenge { challengeId:string; canvasWidth:number; targetWidth:number; targetDisplayOffset:number; expiresAt:string }
 
 export interface LoginUser {
   id: number
@@ -34,11 +38,14 @@ export interface ChangeInitialPasswordRequest {
   newPassword: string
   confirmPassword: string
 }
+export type ChangePasswordRequest = ChangeInitialPasswordRequest
 
 export async function login(request: LoginRequest): Promise<LoginResponse> {
   const response = await http.post<LoginResponse>('/auth/login', request)
   return response.data
 }
+
+export const fetchSliderChallenge = () => http.get<SliderChallenge>('/auth/slider-challenge').then(response => response.data)
 
 export async function fetchCurrentUser(): Promise<CurrentUser> {
   const response = await http.get<CurrentUser>('/auth/me')
@@ -51,3 +58,5 @@ export async function changeInitialPassword(
   const response = await http.post<LoginResponse>('/auth/change-initial-password', request)
   return response.data
 }
+
+export const changePassword = (request: ChangePasswordRequest) => http.post<LoginResponse>('/auth/change-password', request).then(response => response.data)

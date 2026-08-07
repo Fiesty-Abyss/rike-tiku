@@ -3,7 +3,7 @@ package com.neu.riketiku.xueshenglianxi;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import tools.jackson.databind.node.JsonNodeFactory;
 import com.neu.riketiku.renzheng.RenZhengYeWuYiChang;
 import com.neu.riketiku.tiku.admin.AdminQuestionIntegrationTestSupport;
 import java.util.List;
@@ -257,7 +257,7 @@ class StudentPracticeIntegrationTest extends AdminQuestionIntegrationTestSupport
         return jdbc.queryForObject("SELECT LAST_INSERT_ID()", Long.class);
     }
 
-    private com.fasterxml.jackson.databind.JsonNode answerFor(String type) {
+    private tools.jackson.databind.JsonNode answerFor(String type) {
         return switch (type) {
             case "SINGLE_CHOICE" -> JsonNodeFactory.instance.textNode("B");
             case "MULTIPLE_CHOICE" -> JsonNodeFactory.instance.arrayNode().add("B").add("A");

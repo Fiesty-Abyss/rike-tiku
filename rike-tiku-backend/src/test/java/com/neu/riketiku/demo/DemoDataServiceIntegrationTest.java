@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import com.neu.riketiku.tiku.admin.AdminQuestionIntegrationTestSupport;
 import com.neu.riketiku.xueshenglianxi.StudentPracticeDtos;
 import com.neu.riketiku.xueshenglianxi.StudentPracticeService;
+import com.jayway.jsonpath.JsonPath;
 import java.util.List;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -108,7 +109,11 @@ class DemoDataServiceIntegrationTest extends AdminQuestionIntegrationTestSupport
     }
 
     private void assertHttpLogin(String username, String role, int status, String expectedBody) throws Exception {
-        String body = "{\"username\":\"" + username + "\",\"password\":\"a1234567\",\"expectedRole\":\"" + role + "\"}";
+        HttpResponse<String> challenge = HttpClient.newHttpClient().send(HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:" + port + "/api/v1/auth/slider-challenge")).GET().build(), HttpResponse.BodyHandlers.ofString());
+        String body = "{\"username\":\"" + username + "\",\"password\":\"a1234567\",\"expectedRole\":\"" + role
+                + "\",\"challengeId\":\"" + JsonPath.read(challenge.body(), "$.challengeId") + "\",\"sliderOffset\":"
+                + ((Number) JsonPath.read(challenge.body(), "$.targetDisplayOffset")).intValue() + "}";
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create("http://localhost:" + port + "/api/v1/auth/login"))
                 .header("Content-Type", "application/json")

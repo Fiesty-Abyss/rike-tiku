@@ -1,8 +1,8 @@
 package com.neu.riketiku.tiku.admin;
 
 import com.neu.riketiku.renzheng.RenZhengYeWuYiChang;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.time.LocalDateTime;

@@ -12,23 +12,18 @@ declare module 'vue-router' {
   }
 }
 
-function loginPathFor(route: RouteLocationNormalized) {
-  const role = route.meta.roles?.[0]
-  if (role === 'TEACHER') return '/login/teacher'
-  if (role === 'ADMIN') return '/login/admin'
-  return '/login/student'
-}
+function loginPathFor(_route: RouteLocationNormalized) { return '/login' }
 
 const router = createRouter({
   history: createWebHistory(),
   routes: [
-    { path: '/', redirect: '/login/student' },
+    { path: '/', redirect: '/login' },
+    { path: '/login', name: 'login', component: () => import('../views/auth/LoginView.vue'), meta: { guestOnly: true } },
     {
       path: '/login/:role(student|teacher|admin)',
-      name: 'login',
-      component: () => import('../views/auth/LoginView.vue'),
-      meta: { guestOnly: true },
+      redirect: '/login',
     },
+    { path: '/select-role', name: 'select-role', component: () => import('../views/auth/RoleSelectionView.vue'), meta: { requiresAuth: true } },
     {
       path: '/change-initial-password',
       name: 'change-initial-password',
@@ -41,6 +36,7 @@ const router = createRouter({
       component: () => import('../views/StudentHomeView.vue'),
       meta: { requiresAuth: true, roles: ['STUDENT'] },
       children: [
+        { path: 'subjects/:subjectCode(physics|chemistry|biology)', name: 'student-subject-dashboard', component: () => import('../views/student/SubjectDashboardView.vue') },
         { path: 'practice', name: 'student-practice', component: () => import('../views/student/PracticeNewView.vue') },
         { path: 'practice/new', name: 'student-practice-new', component: () => import('../views/student/PracticeNewView.vue') },
         { path: 'practice/:id', name: 'student-practice-session', component: () => import('../views/student/PracticeSessionView.vue') },
@@ -67,7 +63,7 @@ const router = createRouter({
         { path: 'students/import', name: 'admin-student-import', component: () => import('../views/admin/StudentImportView.vue') },
       ],
     },
-    { path: '/:pathMatch(.*)*', redirect: '/login/student' },
+    { path: '/:pathMatch(.*)*', redirect: '/login' },
   ],
 })
 
