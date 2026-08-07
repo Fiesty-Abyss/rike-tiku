@@ -1,6 +1,6 @@
 # 跨AI项目上下文
 
-> 当前工作分支为 `feat/demo-question-bank-expansion`（未合并），基线 `main@b40bc79eeb04c40bdf2eb05ef975193e4444eb31`。PR #15 已普通 merge。当前分支只扩充独立 `rike_tiku_demo` 的原创演示题；Flyway 保持 V1–V7（23 张业务表），本轮无迁移，不写正式 `rike_tiku`，不修改 MVP30 原始 Excel。
+> 当前工作分支为 `main`。PR #16 已普通 merge，merge commit 为 `588db6ee5b2a6c466c618249f072591af47609a1`。独立 `rike_tiku_demo` 的原创 Demo90 已进入 `main`；Flyway 保持 V1–V7（23 张业务表），PR #16 无迁移、未写正式 `rike_tiku`、未修改 MVP30 原始 Excel。
 
 更新时间：2026-08-07
 
@@ -51,9 +51,9 @@
 ## 5. 当前实现状态
 
 - 状态：题库、账号、教学组织和学生练习闭环均已进入 `main`。
-- 当前分支：`feat/demo-question-bank-expansion`，基于 `main@b40bc79eeb04c40bdf2eb05ef975193e4444eb31`；PR #15 已普通 merge。
+- 当前分支：`main`；PR #16 已普通 merge，merge commit 为 `588db6ee5b2a6c466c618249f072591af47609a1`。
 - 当前 Flyway：V1–V7，共 23 张业务表；本轮不修改既有迁移、不新增迁移。
-- 当前分支的 Demo90 位于独立 `rike_tiku_demo`：物理、化学、生物各 30 道项目原创演示题，每科三题型、三档难度、三个演示知识点各 10 道。MVP30 原始 Excel 尚未正式入库且未改动。
+- Demo90 位于独立 `rike_tiku_demo`：物理、化学、生物各 30 道项目原创演示题，每科三题型、三档难度、三个演示知识点各 10 道；可见化学符号与科学计数法使用稳定 Unicode，STANDARD 解析不含演示操作说明。MVP30 原始 Excel 尚未正式入库且未改动。
 - 历史 PR #13 自动化为后端 68/68、前端 68/68；历史 PR #14 自动化为后端 74/74、前端 68/68。PR #15 合并后自动化为后端 79/79、前端 72/72，打包、类型检查、构建和依赖审计均通过。
 - 远程仓库：`https://github.com/Fiesty-Abyss/rike-tiku`，公开仓库，默认分支 `main`。
 
