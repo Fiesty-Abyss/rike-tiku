@@ -1,11 +1,13 @@
 # 开发状态
 
+> 当前实施分支：`feat/ui-auth-student-dashboard`（未合并），基线 `main@dc5c89798b48561fec8225228bd79047a01aba08`。本分支不修改 V1–V7、不新增迁移。2026-08-07 已在独立 `rike_tiku_demo` 完成真实浏览器验收；MA-002 至 MA-005 已关闭。MA-006 至 MA-009、DeepSeek、GLM、AI、MVP30 正式入库和教师正式业务工作台仍未实现。
+
 更新时间：2026-08-06
 
 ## 当前主线状态
 
 - 本轮开始基线：`main@2161080427fd432634325bea3c3d1ebd7e0f519a`。
-- 当前分支：`main`。PR #14 已普通 merge，合并提交为 `4ffbcbda66f26e7390192985ce179f30d3a6b664`。
+- 当前分支：`feat/ui-auth-student-dashboard`。PR #14 已普通 merge，合并提交为 `4ffbcbda66f26e7390192985ce179f30d3a6b664`；本 PR 尚未合并。
 - 学生自主练习、自动判分、结果与错题闭环已进入 `main`；AI、掌握度、推荐、教师任务、组卷考试和主观题评分仍未实现。
 - Flyway：V1–V7，共 23 张业务表；V1–V6 未修改。
 

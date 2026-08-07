@@ -1,18 +1,20 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessageBox } from 'element-plus'
+import ChangePasswordDialog from '../components/auth/ChangePasswordDialog.vue'
 
 import { useAuthStore } from '../stores/auth'
 
 const router = useRouter()
 const authStore = useAuthStore()
 const userName = computed(() => authStore.currentUser?.displayName || authStore.currentUser?.username || '管理员')
+const passwordVisible = ref(false)
 
 async function logout() {
   await ElMessageBox.confirm('退出后需要重新登录才能继续管理。', '确认退出登录', { type: 'warning', confirmButtonText: '退出登录', cancelButtonText: '取消' })
   authStore.logout()
-  await router.replace('/login/admin')
+  await router.replace('/login')
 }
 </script>
 
@@ -37,10 +39,10 @@ async function logout() {
         <div><strong>教学组织管理</strong><span>管理员专用</span></div>
         <el-dropdown trigger="click">
           <el-button text>{{ userName }} · 管理员</el-button>
-          <template #dropdown><el-dropdown-menu><el-dropdown-item @click="logout">退出登录</el-dropdown-item></el-dropdown-menu></template>
+          <template #dropdown><el-dropdown-menu><el-dropdown-item @click="passwordVisible=true">修改密码</el-dropdown-item><el-dropdown-item divided @click="logout">退出登录</el-dropdown-item></el-dropdown-menu></template>
         </el-dropdown>
       </el-header>
-      <el-main class="admin-main"><RouterView /></el-main>
+      <el-main class="admin-main"><RouterView /></el-main><ChangePasswordDialog v-model="passwordVisible" />
     </el-container>
   </el-container>
 </template>

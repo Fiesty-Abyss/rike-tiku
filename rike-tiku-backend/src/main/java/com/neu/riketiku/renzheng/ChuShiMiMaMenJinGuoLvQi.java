@@ -16,7 +16,8 @@ public class ChuShiMiMaMenJinGuoLvQi extends OncePerRequestFilter {
     private static final Set<String> ALLOWED_PATHS = Set.of(
             "/api/v1/health",
             "/api/v1/auth/me",
-            "/api/v1/auth/change-initial-password");
+            "/api/v1/auth/change-initial-password",
+            "/api/v1/auth/change-password");
 
     @Override
     protected void doFilterInternal(

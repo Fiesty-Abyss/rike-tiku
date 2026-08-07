@@ -26,3 +26,6 @@
 - `mvn clean test`：PASS，23/23
 
 随机临时库`rike_tiku_manual_auth_8f2dff39442a4851a6dfd8d7e7ddd13e`已完成V1-V6迁移并注入匿名账号。用户人工浏览器联调验证学生/教师/管理员登录、首次改密、刷新恢复、角色越权、多角色、退出、CORS和控制台，结果均为DONE_VERIFIED。验证后前后端进程、临时`.env.local`与临时数据库均已清理；正式库`yong_hu`仍为0行。
+# 当前分支补充（未合并）
+
+登录统一为 `/login`，历史角色路径仅兼容重定向。单角色登录直达，多角色进入 `/select-role`；前端只允许选择 API 返回的真实角色并将 `activeRole` 放入 sessionStorage，不能影响后端授权。滑块挑战信息仅在组件内存中保存；密码、Token 和挑战答案不会写入 localStorage 或控制台。
