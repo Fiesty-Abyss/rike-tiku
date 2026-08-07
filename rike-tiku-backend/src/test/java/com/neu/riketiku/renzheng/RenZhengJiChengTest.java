@@ -178,6 +178,28 @@ class RenZhengJiChengTest {
     }
 
     @Test
+    void studentPracticeSubmitEndpointDeserializesAnswersAndReturnsResult() throws Exception {
+        long userId = insertUser("practice_submit_http", "StudentPass1", false, "ENABLED", "STUDENT");
+        insertStudentProfile(userId, "练习提交学生");
+        insertPublishedPracticeQuestion();
+        String accessToken = token(login("practice_submit_http", "StudentPass1", "STUDENT"));
+
+        TestResponse created = post("/api/v1/student/practice-sessions", """
+                {"subjectId":1,"questionTypes":["SINGLE_CHOICE"],"count":1}
+                """, accessToken);
+        Number sessionId = JsonPath.read(created.body(), "$.id");
+        Number practiceQuestionId = JsonPath.read(created.body(), "$.questions[0].practiceQuestionId");
+
+        TestResponse submitted = post("/api/v1/student/practice-sessions/" + sessionId.longValue() + "/submit", """
+                {"answers":[{"practiceQuestionId":%d,"answer":"A","elapsedSeconds":1}]}
+                """.formatted(practiceQuestionId.longValue()), accessToken);
+
+        assertThat(submitted.status()).isEqualTo(200);
+        assertThat(submitted.body()).contains("correctAnswer", "standardAnalysis");
+        assertThat(get("/api/v1/student/practice-sessions/" + sessionId.longValue() + "/result", accessToken).status()).isEqualTo(200);
+    }
+
+    @Test
     void invalidCredentialsAndUnavailableAccountsShouldBeRejected() throws Exception {
         insertUser("valid", "ValidPass1", false, "ENABLED", "STUDENT");
         insertUser("disabled", "DisabledPass1", false, "DISABLED", "STUDENT");
@@ -493,6 +515,54 @@ class RenZhengJiChengTest {
         assertThat(uploadPath("/api/v1/admin/student-import/confirm", workbook, "confirm.xlsx", adminToken).status()).isEqualTo(400);
     }
 
+    @Test
+    void sliderChallengeShouldRequireCorrectOffsetAndAllowUnifiedMultiRoleLogin() throws Exception {
+        long userId = insertUser("slider_multi", "SliderPass1", false, "ENABLED", "STUDENT");
+        addRole(userId, "TEACHER", "ACTIVE");
+        assertError(post("/api/v1/auth/login", "{\"username\":\"slider_multi\",\"password\":\"SliderPass1\"}", null), 400, "SLIDER_CHALLENGE_REQUIRED");
+        TestResponse challenge = get("/api/v1/auth/slider-challenge", null);
+        String id = JsonPath.read(challenge.body(), "$.challengeId");
+        Number target = JsonPath.read(challenge.body(), "$.targetDisplayOffset");
+        assertError(post("/api/v1/auth/login", """
+                {"username":"slider_multi","password":"SliderPass1","challengeId":"%s","sliderOffset":0}
+                """.formatted(id), null), 400, "SLIDER_CHALLENGE_INVALID");
+        assertError(post("/api/v1/auth/login", """
+                {"username":"slider_multi","password":"SliderPass1","challengeId":"%s","sliderOffset":%d}
+                """.formatted(id, target.intValue()), null), 400, "SLIDER_CHALLENGE_REUSED");
+        TestResponse unified = loginWithoutExpectedRole("slider_multi", "SliderPass1");
+        assertThat(unified.status()).isEqualTo(200);
+        assertThat(asStrings(JsonPath.read(unified.body(), "$.user.roles"))).containsExactly("STUDENT", "TEACHER");
+    }
+
+    @Test
+    void ordinaryPasswordChangeShouldReplacePasswordAndRejectOldOne() throws Exception {
+        insertUser("regular_password", "OldPass1", false, "ENABLED", "STUDENT");
+        String token = token(login("regular_password", "OldPass1", "STUDENT"));
+        TestResponse changed = post("/api/v1/auth/change-password", """
+                {"oldPassword":"OldPass1","newPassword":"NewPass2","confirmPassword":"NewPass2"}
+                """, token);
+        assertThat(changed.status()).isEqualTo(200);
+        assertError(login("regular_password", "OldPass1", "STUDENT"), 401, "INVALID_CREDENTIALS");
+        assertThat(login("regular_password", "NewPass2", "STUDENT").status()).isEqualTo(200);
+    }
+
+    @Test
+    void teacherTeachingScopesShouldOnlyReturnCurrentTeacherTriples() throws Exception {
+        long teacherUser = insertUser("scope_teacher", "TeacherPass1", false, "ENABLED", "TEACHER");
+        long otherUser = insertUser("scope_other", "TeacherPass1", false, "ENABLED", "TEACHER");
+        long classId = createClass("SCOPE-1", "范围班", "高二", "ACTIVE");
+        jdbcTemplate.update("INSERT INTO jiao_shi_dang_an(yong_hu_id,gong_hao,xing_ming) VALUES (?,?,?)", teacherUser, "SCOPE-T1", "范围教师");
+        jdbcTemplate.update("INSERT INTO jiao_shi_dang_an(yong_hu_id,gong_hao,xing_ming) VALUES (?,?,?)", otherUser, "SCOPE-T2", "其他教师");
+        long teacherId = jdbcTemplate.queryForObject("SELECT id FROM jiao_shi_dang_an WHERE yong_hu_id=?", Long.class, teacherUser);
+        long otherId = jdbcTemplate.queryForObject("SELECT id FROM jiao_shi_dang_an WHERE yong_hu_id=?", Long.class, otherUser);
+        jdbcTemplate.update("INSERT INTO ren_ke_guan_xi(jiao_shi_id,ban_ji_id,ke_mu_id,shi_fou_zhu_ren_ke,zhuang_tai,kai_shi_shi_jian) VALUES (?,?,1,1,'ACTIVE',NOW())", teacherId, classId);
+        jdbcTemplate.update("INSERT INTO ren_ke_guan_xi(jiao_shi_id,ban_ji_id,ke_mu_id,shi_fou_zhu_ren_ke,zhuang_tai,kai_shi_shi_jian) VALUES (?,?,2,0,'ACTIVE',NOW())", otherId, classId);
+        String teacherToken = token(login("scope_teacher", "TeacherPass1", "TEACHER"));
+        assertThat(get("/api/v1/teacher/teaching-scopes", teacherToken).body()).contains("范围班", "PHYSICS").doesNotContain("CHEMISTRY");
+        String studentToken = token(login("scope_student", "StudentPass1", "STUDENT", false));
+        assertError(get("/api/v1/teacher/teaching-scopes", studentToken), 403, "ACCESS_DENIED");
+    }
+
     private long createClass(String code, String name, String grade, String status) {
         jdbcTemplate.update("INSERT INTO ban_ji(ban_ji_bian_ma,ban_ji_ming_cheng,nian_ji,ru_xue_nian_fen,zhuang_tai) VALUES (?,?,?,?,?)",
                 code, name, grade, 2025, status);
@@ -572,9 +642,20 @@ class RenZhengJiChengTest {
     }
 
     private TestResponse login(String username, String password, String expectedRole) throws Exception {
+        TestResponse challenge = get("/api/v1/auth/slider-challenge", null);
+        String challengeId = JsonPath.read(challenge.body(), "$.challengeId");
+        Number offset = JsonPath.read(challenge.body(), "$.targetDisplayOffset");
         return post("/api/v1/auth/login", """
-                {"username":"%s","password":"%s","expectedRole":"%s"}
-                """.formatted(username, password, expectedRole), null);
+                {"username":"%s","password":"%s","expectedRole":"%s","challengeId":"%s","sliderOffset":%d}
+                """.formatted(username, password, expectedRole, challengeId, offset.intValue()), null);
+    }
+
+    private TestResponse loginWithoutExpectedRole(String username, String password) throws Exception {
+        TestResponse challenge = get("/api/v1/auth/slider-challenge", null);
+        return post("/api/v1/auth/login", """
+                {"username":"%s","password":"%s","challengeId":"%s","sliderOffset":%d}
+                """.formatted(username, password, JsonPath.read(challenge.body(), "$.challengeId"),
+                ((Number) JsonPath.read(challenge.body(), "$.targetDisplayOffset")).intValue()), null);
     }
 
     private TestResponse changePassword(

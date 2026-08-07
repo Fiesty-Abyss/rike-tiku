@@ -3,10 +3,12 @@ package com.neu.riketiku.xueshenglianxi;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import tools.jackson.databind.node.JsonNodeFactory;
 import com.neu.riketiku.renzheng.RenZhengYeWuYiChang;
 import com.neu.riketiku.tiku.admin.AdminQuestionIntegrationTestSupport;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.junit.jupiter.api.Test;
@@ -32,6 +34,29 @@ class StudentPracticeIntegrationTest extends AdminQuestionIntegrationTestSupport
         assertThat(session.questions().getFirst().options()).hasSize(2);
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM lian_xi_ti_mu WHERE lian_xi_hui_hua_id=?", Integer.class, session.id())).isEqualTo(1);
         assertThat(session.questions().getFirst().toString()).doesNotContain("correctAnswer", "标准解析");
+    }
+
+    @Test
+    @Transactional
+    void shufflesEligiblePoolBeforeSelectingPracticeQuestions() {
+        long userId = student("random_pool");
+        for (int index = 0; index < 8; index++) {
+            question("SINGLE_CHOICE", "PUBLISHED", 1, "A");
+        }
+
+        Set<Set<Long>> selections = new HashSet<>();
+        for (int attempt = 0; attempt < 8; attempt++) {
+            var session = service.create(userId, new StudentPracticeDtos.CreateRequest(
+                    1L, null, List.of("SINGLE_CHOICE"), 1, 5));
+            List<Long> questionIds = jdbc.queryForList("""
+                    SELECT ti_mu_id FROM lian_xi_ti_mu
+                    WHERE lian_xi_hui_hua_id=? ORDER BY ti_mu_shun_xu
+                    """, Long.class, session.id());
+            assertThat(questionIds).hasSize(5).doesNotHaveDuplicates();
+            selections.add(Set.copyOf(questionIds));
+        }
+
+        assertThat(selections).hasSizeGreaterThan(1);
     }
 
     @Test
@@ -257,7 +282,7 @@ class StudentPracticeIntegrationTest extends AdminQuestionIntegrationTestSupport
         return jdbc.queryForObject("SELECT LAST_INSERT_ID()", Long.class);
     }
 
-    private com.fasterxml.jackson.databind.JsonNode answerFor(String type) {
+    private tools.jackson.databind.JsonNode answerFor(String type) {
         return switch (type) {
             case "SINGLE_CHOICE" -> JsonNodeFactory.instance.textNode("B");
             case "MULTIPLE_CHOICE" -> JsonNodeFactory.instance.arrayNode().add("B").add("A");
