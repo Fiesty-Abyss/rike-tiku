@@ -86,7 +86,7 @@ async function logout() {
                 link
                 @click="router.push({ path: '/student/wrong-questions', query: { subjectId: subject.id } })"
               >
-                查看本科错题
+                查看本学科错题
               </el-button>
             </div>
           </article>
