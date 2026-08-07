@@ -1,5 +1,7 @@
 # 跨AI项目上下文
 
+> 当前工作分支为 `feat/ui-auth-student-dashboard`（未合并），基线 `main@dc5c89798b48561fec8225228bd79047a01aba08`；PR #14 已进入 main。当前分支实现 UI、统一认证和学生三科工作台，不修改 Flyway V1–V7、不新增迁移。2026-08-07 `rike_tiku_demo` 真实浏览器验收已关闭 MA-002 至 MA-005，MA-006 至 MA-009 仍未实现。
+
 更新时间：2026-08-06
 
 ## 1. 项目身份

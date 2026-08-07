@@ -102,7 +102,7 @@ describe('路由守卫', () => {
     store.isInitialized = true
   }
 
-  it('未登录访问工作台跳转对应入口', async () => { await router.push('/teacher'); expect(router.currentRoute.value.path).toBe('/login/teacher') })
+  it('未登录访问工作台跳转统一登录页', async () => { await router.push('/teacher'); expect(router.currentRoute.value.path).toBe('/login') })
   it('学生不能访问教师工作台', async () => { authenticated(['STUDENT']); await router.push('/teacher'); expect(router.currentRoute.value.path).toBe('/student') })
   it('学生不能访问管理员工作台', async () => { authenticated(['STUDENT']); await router.push('/admin'); expect(router.currentRoute.value.path).toBe('/student') })
   it('教师不能访问管理员工作台', async () => { authenticated(['TEACHER']); await router.push('/admin'); expect(router.currentRoute.value.path).toBe('/teacher') })
