@@ -23,8 +23,9 @@
 
 - PR #15 当前后端：`mvn clean test` 79/79 PASS；`mvn clean package` PASS。
 - PR #15 当前前端：`npm test` 72/72 PASS；`npm run type-check`、`npm run build` PASS。构建仅有既有大 chunk 提示。
-- `npm audit`：0 vulnerabilities；最终敏感信息扫描通过。
-- 真实 HTTP：`PASS`，已覆盖会话创建、未提交响应防泄露、权限和结果访问。学生页面回查：`NOT_RUN`，受控后台服务无法启动。综合结论：`PASS_WITH_ENV_LIMITATION`。
+- PR #15 `npm audit --omit=dev`：0 vulnerabilities；最终敏感信息扫描通过。
+- PR #15 `rike_tiku_demo` 三角色真实浏览器验收：PASS；MA-001 至 MA-005、MA-010、MA-011 已关闭。
+- 历史 PR #13 结果：真实 HTTP 为 `PASS`，学生页面回查为 `NOT_RUN`，阶段综合结论为 `PASS_WITH_ENV_LIMITATION`。该结论不代表 PR #15 当前状态。
 
 ## 已进入 main 的演示验收环境
 
@@ -48,3 +49,24 @@
 ## 下一步
 
 唯一候选：管理员学生完整管理与账号恢复（`PLANNED`）。
+
+## 非 AI 工程基础完成门槛
+
+只有以下各项全部完成并验证后，非 AI 工程基础才允许标记为 100%；任一项未满足时不得标记 100%：
+
+- 基础工程与认证；
+- 班级、教师和三元任课；
+- 学生 Excel 导入与单学生完整管理；
+- 基础个人资料、简介、头像；
+- 管理员题库 CRUD、导入、审核、发布；
+- MVP30 正式可用演示题库；
+- 学生三科练习、随机练习、判分、结果、错题；
+- 教师基础正式工作台；
+- 高频考点；
+- 师生私信；
+- 非 AI 的基础掌握度与规则推荐；
+- 三角色完整浏览器验收；
+- 全量自动化与构建通过；
+- Git、Flyway、文档和代码状态完全一致。
+
+DeepSeek、GLM、AI Provider、AI 错题分析、AI 对话和 AI 生成题不属于该 100% 门槛。
