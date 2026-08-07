@@ -1,12 +1,12 @@
 # 开发状态
 
-> 当前实施分支：`feat/ui-auth-student-dashboard`，PR #15 未合并，基线 `main@dc5c89798b48561fec8225228bd79047a01aba08`。Flyway 保持 V1–V7（23 张业务表），本轮不新增迁移。2026-08-07 已在独立 `rike_tiku_demo` 完成真实浏览器验收；MA-001 至 MA-005、MA-010、MA-011 已关闭，MA-006 至 MA-009 尚未完成。
+> 当前分支：`main`。PR #15 已普通 merge，merge commit 与合并后 `main` 基线均为 `12d636fde4afa198edc78eb0c295f5b88c8e3456`。Flyway 保持 V1–V7（23 张业务表），本轮不新增迁移。2026-08-07 已在独立 `rike_tiku_demo` 完成真实浏览器验收；MA-001 至 MA-005、MA-010、MA-011 已关闭，MA-006 至 MA-009 尚未完成。
 
 更新时间：2026-08-07
 
 ## 当前主线状态
 
-- 当前分支：`feat/ui-auth-student-dashboard`，PR #15 未合并；PR #14 已普通 merge，合并提交为 `4ffbcbda66f26e7390192985ce179f30d3a6b664`。
+- 当前分支：`main`；PR #15 已普通 merge，merge commit 为 `12d636fde4afa198edc78eb0c295f5b88c8e3456`。
 - 学生自主练习、自动判分、结果与错题闭环已进入 `main`；AI、掌握度、推荐、教师任务、组卷考试和主观题评分仍未实现。
 - Flyway：V1–V7，共 23 张业务表；本轮未修改 V1–V7，未新增迁移。
 
@@ -21,10 +21,11 @@
 
 ## 当前验证
 
-- PR #15 当前后端：`mvn clean test` 79/79 PASS；`mvn clean package` PASS。
-- PR #15 当前前端：`npm test` 72/72 PASS；`npm run type-check`、`npm run build` PASS。构建仅有既有大 chunk 提示。
-- PR #15 `npm audit --omit=dev`：0 vulnerabilities；最终敏感信息扫描通过。
+- PR #15 合并后后端：`mvn clean test` 79/79 PASS；`mvn clean package` PASS。
+- PR #15 合并后前端：`npm test` 72/72 PASS；`npm run type-check`、`npm run build` PASS。构建仅有既有大 chunk 提示。
+- PR #15 合并后 `npm audit --omit=dev`：0 vulnerabilities；最终敏感信息扫描通过。
 - PR #15 `rike_tiku_demo` 三角色真实浏览器验收：PASS；MA-001 至 MA-005、MA-010、MA-011 已关闭。
+- 合并后首次回归发现旧测试仍假定随机题集按 ID 固定排序；已将断言修正为合格题集顺序无关，并重新完成上述 79/79 全量回归。
 - 历史 PR #13 结果：真实 HTTP 为 `PASS`，学生页面回查为 `NOT_RUN`，阶段综合结论为 `PASS_WITH_ENV_LIMITATION`。该结论不代表 PR #15 当前状态。
 
 ## 已进入 main 的演示验收环境
@@ -45,6 +46,7 @@
 - PR #12：管理员 MVP30 题库导入，普通 merge `f499f0c`；MVP30 原始 Excel 仍未确认入库。
 - PR #13：学生练习、自动判分、结果与错题闭环，普通 merge `db04fbc`。
 - PR #14：本地演示数据与人工验收环境，普通 merge `4ffbcbd`。
+- PR #15：UI、统一认证、学生三科工作台与教师任教范围，普通 merge `12d636f`。
 
 ## 下一步
 
