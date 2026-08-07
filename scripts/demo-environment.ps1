@@ -92,14 +92,19 @@ function Invoke-SmokeCheck {
     Invoke-LoginSmoke 'demo_teacher' 'TEACHER'
     Invoke-LoginSmoke 'demo_student' 'STUDENT'
 
-      $mismatchChallenge = Invoke-RestMethod -Method Get -Uri "$apiBaseUrl/auth/slider-challenge"
-      $mismatchPayload = @{ username = 'demo_admin'; password = 'a1234567'; expectedRole = 'STUDENT'; challengeId = $mismatchChallenge.challengeId; sliderOffset = $mismatchChallenge.targetDisplayOffset } | ConvertTo-Json -Compress
+    $mismatchChallenge = Invoke-RestMethod -Method Get -Uri "$apiBaseUrl/auth/slider-challenge"
+    $mismatchPayload = @{ username = 'demo_admin'; password = 'a1234567'; expectedRole = 'STUDENT'; challengeId = $mismatchChallenge.challengeId; sliderOffset = $mismatchChallenge.targetDisplayOffset } | ConvertTo-Json -Compress
+    Add-Type -AssemblyName System.Net.Http
+    $httpClient = [System.Net.Http.HttpClient]::new()
     try {
-        Invoke-RestMethod -Method Post -Uri "$apiBaseUrl/auth/login" -ContentType 'application/json' -Body $mismatchPayload | Out-Null
-        throw '错误角色入口未被拒绝'
-    } catch {
-        $errorBody = $_.ErrorDetails.Message
-        if (-not $errorBody -or $errorBody -notmatch 'ROLE_MISMATCH') { throw }
+        $httpContent = [System.Net.Http.StringContent]::new($mismatchPayload, [System.Text.Encoding]::UTF8, 'application/json')
+        $mismatchResponse = $httpClient.PostAsync("$apiBaseUrl/auth/login", $httpContent).GetAwaiter().GetResult()
+        $mismatchBody = $mismatchResponse.Content.ReadAsStringAsync().GetAwaiter().GetResult()
+        if ([int]$mismatchResponse.StatusCode -ne 403 -or $mismatchBody -notmatch 'ROLE_MISMATCH') {
+            throw '错误角色入口未按预期返回403 ROLE_MISMATCH'
+        }
+    } finally {
+        $httpClient.Dispose()
     }
     Write-Host '错误角色入口: PASS (ROLE_MISMATCH)' -ForegroundColor Green
     Write-Host '演示环境smoke/login-check全部通过；JWT未输出。' -ForegroundColor Green
