@@ -145,6 +145,12 @@ public class DemoDataService {
                     OR JSON_LENGTH(JSON_EXTRACT(q.zheng_que_da_an,'$.blanks[0].acceptedAnswers'))<1)
                 """));
         expect("PUBLISHED标准解析", 90, count("SELECT COUNT(*) FROM ti_mu_jie_xi a JOIN ti_mu q ON q.id=a.ti_mu_id WHERE q.ti_gan LIKE '【演示】%' AND a.jie_xi_lei_xing='STANDARD' AND a.ban_ben_hao=1 AND a.zhuang_tai='PUBLISHED' AND a.yi_shan_chu=0"));
+        expect("STANDARD解析无演示说明", 0, count("""
+                SELECT COUNT(*) FROM ti_mu_jie_xi a JOIN ti_mu q ON q.id=a.ti_mu_id
+                WHERE q.ti_gan LIKE '【演示】%' AND a.jie_xi_lei_xing='STANDARD'
+                  AND (a.jie_xi_nei_rong LIKE '%演示时可用其他选项构造错题%'
+                       OR a.jie_xi_nei_rong LIKE '%正确答案为由%')
+                """));
         expect("活动附件", 0, count("SELECT COUNT(*) FROM ti_mu_fu_jian f JOIN ti_mu q ON q.id=f.ti_mu_id WHERE q.ti_gan LIKE '【演示】%' AND f.zhuang_tai='ACTIVE' AND f.yi_shan_chu=0"));
         expect("对象标记", 0, count("""
                 SELECT COUNT(*) FROM ti_mu q
@@ -310,7 +316,7 @@ public class DemoDataService {
         items.add(fill("PHYSICS-F2", "PHYSICS", "理想情况下，物体不受外力时将保持静止或做____运动。", "力学>运动和力>牛顿运动定律", 3, "匀速直线"));
 
         items.add(choice("CHEMISTRY-S1", "CHEMISTRY", "SINGLE_CHOICE", "1 mol任意微粒所含微粒数约为多少？", "化学基本概念>物质的量>摩尔计算", 1,
-                List.of("6.02×10^23", "3.01×10^23", "1.00×10^23", "6.02×10^22"), Set.of("A"), "1 mol微粒所含粒子数约为阿伏加德罗常数"));
+                List.of("6.02×10²³", "3.01×10²³", "1.00×10²³", "6.02×10²²"), Set.of("A"), "1 mol微粒所含粒子数约为阿伏加德罗常数"));
         items.add(choice("CHEMISTRY-S2", "CHEMISTRY", "SINGLE_CHOICE", "氧化还原反应中，还原剂发生什么变化？", "无机化学>元素化合物>氧化还原反应", 2,
                 List.of("失去电子并被氧化", "得到电子并被还原", "只发生物理变化", "化合价一定降低"), Set.of("A"), "还原剂提供电子，自身发生氧化反应"));
         items.add(choice("CHEMISTRY-M1", "CHEMISTRY", "MULTIPLE_CHOICE", "关于物质的量和摩尔质量，下列说法正确的是哪些？", "化学基本概念>物质的量>摩尔计算", 3,
@@ -340,7 +346,7 @@ public class DemoDataService {
         List<String> labels = List.of("A", "B", "C", "D");
         for (int index = 0; index < labels.size(); index++) options.add(new Option(labels.get(index), contents.get(index), correct.contains(labels.get(index))));
         String answer = "{\"schemaVersion\":1,\"type\":\"" + type + "\",\"optionLabels\":[" + correct.stream().sorted().map(label -> "\"" + label + "\"").reduce((a, b) -> a + "," + b).orElse("") + "]}";
-        return new Question(key, subject, type, stem, point, difficulty, answer, options, "依据题干条件可判断正确答案为" + explanation + "。演示时可用其他选项构造错题。" );
+        return new Question(key, subject, type, stem, point, difficulty, answer, options, explanation + "。");
     }
 
     static Question fill(String key, String subject, String stem, String point, int difficulty, String accepted) {
