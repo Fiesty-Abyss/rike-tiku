@@ -1,12 +1,12 @@
 # 开发状态
 
-> 当前分支为 `feat/admin-student-management`，基于 `main@21a6f3c2f40a5bf86b28ecec044425bdd595ec2b`。PR #16 已普通 merge；PR #17 尚未合并。Flyway 保持 V1–V7（23 张业务表），本轮无迁移、未写正式 `rike_tiku`、未修改 MVP30 原始 Excel。
+> 当前分支为 `main`。PR #17 已普通 merge，merge commit 与合并基线 main HEAD 为 `3e5454de8257075d1ccdf11d5f6d3a35b464adc1`。Flyway 保持 V1–V7（23 张业务表），本轮无迁移、未写正式 `rike_tiku`、未修改 MVP30 原始 Excel。
 
 更新时间：2026-08-07
 
 ## 当前主线状态
 
-- 当前分支：`feat/admin-student-management`；PR #17 尚未合并。
+- 当前分支：`main`；PR #17 已普通 merge，远程功能分支已删除。
 - 管理员单学生管理已实现分页筛选、详情与班级历史、事务新增、编辑与启停、事务调班和一次性密码重置；Excel 批量导入入口继续独立保留。
 - 学生自主练习、自动判分、结果与错题闭环已进入 `main`；AI、掌握度、推荐、教师任务、组卷考试和主观题评分仍未实现。
 - Flyway：V1–V7，共 23 张业务表；本轮未修改 V1–V7，未新增迁移。
@@ -22,9 +22,10 @@
 
 ## 当前验证
 
-- PR #17 后端：管理员学生、Demo 和认证专项 PASS；`mvn clean test` 86/86 PASS，`mvn clean package` PASS。
-- PR #17 前端：学生管理专项 PASS；`npm test` 80/80 PASS，`npm run type-check`、`npm run build` PASS，`npm audit --omit=dev` 为 0。
-- `rike_tiku_demo` 的 `seed → validate → smoke` PASS；固定状态为 14 账号、3 班级、4 教师、9 学生、9 条 ACTIVE 任课关系和 Demo90。
+- PR #17 合并后后端：`mvn clean test` 86/86 PASS，`mvn clean package` 86/86 PASS 并成功生成可执行 JAR。
+- PR #17 合并后前端：`npm test` 80/80 PASS，`npm run type-check`、`npm run build` PASS，`npm audit --omit=dev` 为 0；构建仅有既有大 chunk 提示。
+- PR #17 合并后 `rike_tiku_demo` 的 `reset → seed → validate → smoke` PASS；固定状态为 14 账号、3 班级、4 教师、9 学生、9 条 ACTIVE 任课关系和 Demo90。
+- 正式 `rike_tiku` 只读污染检查：Demo90 0、场景账号 0、场景班级 0。
 - 真实浏览器主链 PASS：管理员查看八名场景学生、新增、编辑、调班历史、重置密码；临时学生首次改密；三位场景教师仅见本人双班单学科范围；199/200 学生均创建五题练习；未提交不泄露答案；新页面控制台 0 error。临时学生已由 seed 清理。
 - MA-001 至 MA-005、MA-007、MA-010 至 MA-012 已关闭；MA-006、MA-008、MA-009 尚未完成。
 - 历史结果：PR #13 为后端 68/68、前端 68/68；PR #14 为后端 74/74、前端 68/68；PR #15 为后端 79/79、前端 72/72；PR #16 为后端 80/80、前端 72/72。
@@ -51,10 +52,11 @@
 - PR #14：本地演示数据与人工验收环境，普通 merge `4ffbcbd`。
 - PR #15：UI、统一认证、学生三科工作台与教师任教范围，普通 merge `12d636f`。
 - PR #16：Demo90 原创演示题库，普通 merge `588db6e`。
+- PR #17：管理员单学生完整管理与 199/200 双班级演示场景，普通 merge `3e5454d`。
 
 ## 下一步
 
-完成 PR #17 独立审查；PR 合并前不启动下一模块。
+等待下一轮明确指令；暂不创建下一分支。
 
 ## 非 AI 工程基础完成门槛
 
