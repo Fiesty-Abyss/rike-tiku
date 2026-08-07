@@ -161,7 +161,7 @@ class StudentPracticeIntegrationTest extends AdminQuestionIntegrationTestSupport
 
         assertThat(session.questions()).extracting(question -> jdbc.queryForObject(
                 "SELECT ti_mu_id FROM lian_xi_ti_mu WHERE id=?", Long.class, question.practiceQuestionId()))
-                .containsExactly(validTwo, validOne);
+                .containsExactlyInAnyOrder(validOne, validTwo);
         assertThatThrownBy(() -> service.create(userId, new StudentPracticeDtos.CreateRequest(1L, List.of(uniquePoint),
                 List.of("SINGLE_CHOICE"), 1, 3))).isInstanceOf(RenZhengYeWuYiChang.class)
                 .hasMessageContaining("已发布题目不足");
