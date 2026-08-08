@@ -1,6 +1,6 @@
 # AI 开发交接
 
-> 当前接续分支：`main`。PR #19 已普通 merge，merge commit 与合并基线 main HEAD 为 `0a12943e901e844520e3801264fa4a43590ff28e`；当前 Flyway V1–V8、24 张业务表。
+> 当前接续分支：`feat/teacher-student-messaging`。PR #20 尚未合并，base 为 `aacb092a1ac5cc242a60e024f536f5fdd536f7dd`；当前 Flyway V1–V9、26 张业务表。
 
 更新时间：2026-08-08
 
@@ -18,9 +18,13 @@ Demo90 是“本科毕业设计自编演示题”，不等于 MVP30 正式真实
 
 历史 PR #14 合并后验证：后端 74/74、打包 PASS；前端 68/68、类型检查与构建 PASS；依赖审计 0 vulnerabilities。完整脚本链及三角色真实 HTTP smoke PASS，正式库未出现演示账号、演示题或学习记录。
 
-PR #18 合并后后端 87/87、前端 83/83，package、type-check、build、audit 和 Demo `reset → seed → validate → smoke` 均通过；真实浏览器工作台/高频考点隔离验收保持通过。正式库只读检查 Demo90、场景账号、场景班级和高频考点均为 0。MA-001 至 MA-005、MA-007、MA-008、MA-010 至 MA-012 已关闭；MA-006 仅剩个人资料、简介和头像，MA-009 尚未完成。
+历史 PR #18 合并后后端 87/87、前端 83/83，package、type-check、build、audit 和 Demo `reset → seed → validate → smoke` 均通过；当时真实浏览器工作台/高频考点隔离验收通过，MA-009 尚未完成。
 
 PR #19 合并后回归为后端 90/90、前端 91/91，package、type-check、build PASS，生产依赖 audit 为 0。Demo `reset → seed → validate → smoke` PASS；smoke 只在显式 `RIKE_TIKU_CAPTCHA_EXPOSE_TEST_CODE=true` 的本地演示后端读取测试值，正式默认关闭且没有免验证码登录入口。真实浏览器验收保持通过；正式库只读复查 Demo90、场景账号、场景班级和高频考点仍均为 0。
+
+PR #20 新增 V9 两张私信表，V1–V8 未修改。师生私信由 ACTIVE 三元任课关系和学生当前主班级共同约束；发送人取自 JWT，关系停用或调班后保留历史但禁止继续发送。当前后端 92/92、前端 100/100，type-check、build、audit 0 和 Demo 脚本链通过；199 学生↔物理教师、200 学生↔化学教师双向浏览器验收及伪造会话隔离通过，MA-009 已关闭。
+
+首次全量测试暴露旧 Spring 测试上下文会使用默认正式数据源，Flyway 因而在 `rike_tiku` 执行了 V9 并留下两张空表；未写入任何演示或私信业务数据。全部相关测试现已改用随机临时库并增加库名断言，修复后全量测试未再次改变正式库 V9 安装时间。没有用户授权时不得擅自回滚或删除正式库空表；详见 MA-013。
 
 ## 继续时必须保持
 
@@ -42,7 +46,9 @@ PR #19 合并后回归为后端 90/90、前端 91/91，package、type-check、bu
 - [开发状态](DEVELOPMENT_STATUS.md)
 - [管理员学生管理 API](ADMIN_STUDENT_MANAGEMENT_API.md)
 - [管理员学生管理前端](ADMIN_STUDENT_MANAGEMENT_FRONTEND.md)
+- [师生私信 API](TEACHER_STUDENT_MESSAGING_API.md)
+- [师生私信前端](TEACHER_STUDENT_MESSAGING_FRONTEND.md)
 
 ## 当前下一步
 
-PR #19 已完成普通 merge。当前停止并等待下一轮明确指令，不创建下一分支；不得把私信、掌握度、推荐、DeepSeek、GLM 或 AI 写成已完成。
+完成 PR #20 Draft 后停止等待独立审查，不创建 PR #21；不得开始掌握度、推荐、DeepSeek、GLM 或 AI。
