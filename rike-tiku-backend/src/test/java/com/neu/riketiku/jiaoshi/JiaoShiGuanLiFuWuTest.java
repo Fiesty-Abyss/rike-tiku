@@ -3,6 +3,7 @@ package com.neu.riketiku.jiaoshi;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import com.neu.riketiku.tiku.admin.AdminQuestionIntegrationTestSupport;
 import com.neu.riketiku.jiaoshi.dto.JiaoShiChuangJianQingQiu;
 import com.neu.riketiku.jiaoshi.dto.JiaoShiChuangJianXiangYing;
 import com.neu.riketiku.jiaoshi.dto.JiaoShiXiuGaiQingQiu;
@@ -19,7 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
-class JiaoShiGuanLiFuWuTest {
+class JiaoShiGuanLiFuWuTest extends AdminQuestionIntegrationTestSupport {
     @Autowired private JiaoShiGuanLiFuWu service;
     @Autowired private JdbcTemplate jdbc;
     @Autowired private PasswordEncoder passwordEncoder;

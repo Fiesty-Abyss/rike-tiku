@@ -3,6 +3,7 @@ package com.neu.riketiku.zhanghao;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import com.neu.riketiku.tiku.admin.AdminQuestionIntegrationTestSupport;
 import com.neu.riketiku.zhanghao.entity.YongHu;
 import com.neu.riketiku.zhanghao.mapper.YongHuMapper;
 import java.sql.Connection;
@@ -25,14 +26,14 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 
 @SpringBootTest
-class UserTeachingDatabaseModelTest {
+class UserTeachingDatabaseModelTest extends AdminQuestionIntegrationTestSupport {
     private static final Set<String> BUSINESS_TABLES = Set.of(
         "ke_mu", "zhi_shi_dian", "dao_ru_pi_ci", "ti_mu", "ti_mu_xuan_xiang",
         "ti_mu_jie_xi", "ti_mu_zhi_shi_dian", "ti_mu_fu_jian", "ti_mu_lai_yuan",
         "ti_mu_shen_he_ji_lu", "yong_hu", "jiao_se", "yong_hu_jiao_se",
         "xue_sheng_dang_an", "jiao_shi_dang_an", "ban_ji", "ban_ji_xue_sheng",
         "ren_ke_guan_xi", "lian_xi_hui_hua", "lian_xi_ti_mu", "xue_sheng_da_ti",
-        "xue_xi_jie_guo", "cuo_ti_ji_lu", "gao_pin_kao_dian"
+        "xue_xi_jie_guo", "cuo_ti_ji_lu", "gao_pin_kao_dian", "si_xin_hui_hua", "si_xin_xiao_xi"
     );
 
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(4);
@@ -59,13 +60,13 @@ class UserTeachingDatabaseModelTest {
 
         Integer latestVersion = jdbcTemplate.queryForObject(
             "SELECT MAX(CAST(version AS UNSIGNED)) FROM flyway_schema_history WHERE success=1", Integer.class);
-        Integer questionCount = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM ti_mu", Integer.class);
+        Integer questionCount = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM ti_mu WHERE dao_ru_pi_ci_id=1", Integer.class);
         Integer pendingCount = jdbcTemplate.queryForObject(
-            "SELECT COUNT(*) FROM ti_mu WHERE zhuang_tai='PENDING'", Integer.class);
+            "SELECT COUNT(*) FROM ti_mu WHERE dao_ru_pi_ci_id=1 AND zhuang_tai='PENDING'", Integer.class);
         Integer roleCount = jdbcTemplate.queryForObject(
             "SELECT COUNT(*) FROM jiao_se WHERE jiao_se_dai_ma IN ('STUDENT','TEACHER','ADMIN')", Integer.class);
 
-        assertThat(latestVersion).isEqualTo(8);
+        assertThat(latestVersion).isEqualTo(9);
         assertThat(questionCount).isEqualTo(3);
         assertThat(pendingCount).isEqualTo(3);
         assertThat(roleCount).isEqualTo(3);
@@ -233,7 +234,7 @@ class UserTeachingDatabaseModelTest {
     }
 
     @Test
-    void emptyDatabaseShouldMigrateFromV1ToV8() throws Exception {
+    void emptyDatabaseShouldMigrateFromV1ToV9() throws Exception {
         String configuredUrl = environment.getRequiredProperty("spring.datasource.url");
         String username = environment.getRequiredProperty("spring.datasource.username");
         String password = environment.getRequiredProperty("spring.datasource.password");
@@ -257,18 +258,22 @@ class UserTeachingDatabaseModelTest {
                 .locations("classpath:db/migration")
                 .cleanDisabled(true)
                 .load();
-            assertThat(flyway.migrate().migrationsExecuted).isEqualTo(8);
+            assertThat(flyway.migrate().migrationsExecuted).isEqualTo(9);
 
             try (Connection connection = DriverManager.getConnection(testUrl, username, password);
                  Statement statement = connection.createStatement()) {
                 assertThat(singleInt(statement,
                     "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='" + schema
                         + "' AND table_name <> 'flyway_schema_history'"))
-                    .isEqualTo(24);
+                    .isEqualTo(26);
                 assertThat(singleInt(statement, "SELECT COUNT(*) FROM ti_mu")).isEqualTo(3);
                 assertThat(singleInt(statement,
-                    "SELECT COUNT(*) FROM flyway_schema_history WHERE success=1")).isEqualTo(8);
+                    "SELECT COUNT(*) FROM flyway_schema_history WHERE success=1")).isEqualTo(9);
                 assertThat(singleInt(statement, "SELECT COUNT(*) FROM information_schema.columns WHERE table_schema='" + schema + "' AND table_name='gao_pin_kao_dian' AND column_name='ren_ke_guan_xi_id'")).isEqualTo(1);
+                assertThat(singleInt(statement, "SELECT COUNT(*) FROM information_schema.columns WHERE table_schema='" + schema + "' AND table_name='si_xin_hui_hua'")).isEqualTo(8);
+                assertThat(singleInt(statement, "SELECT COUNT(*) FROM information_schema.columns WHERE table_schema='" + schema + "' AND table_name='si_xin_xiao_xi'")).isEqualTo(8);
+                assertThat(singleInt(statement, "SELECT COUNT(*) FROM information_schema.referential_constraints WHERE constraint_schema='" + schema + "' AND table_name IN ('si_xin_hui_hua','si_xin_xiao_xi')")).isEqualTo(4);
+                assertThat(singleInt(statement, "SELECT COUNT(*) FROM information_schema.statistics WHERE table_schema='" + schema + "' AND table_name='si_xin_hui_hua' AND index_name='uk_si_xin_hui_hua_scope_student' AND non_unique=0")).isEqualTo(2);
             }
         } finally {
             try (Connection admin = DriverManager.getConnection(adminUrl, username, password);

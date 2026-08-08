@@ -17,8 +17,8 @@ $env:RIKE_TIKU_DB_PASSWORD = "你的本机MySQL密码"
 .\scripts\demo-environment.ps1 validate
 ```
 
-- `create`：保留现有演示库，仅在不存在时创建并执行 V1–V8。
-- `reset`：删除并重建指定演示库，再执行 V1–V8；会清除该演示库的全部已有内容。
+- `create`：保留现有演示库，仅在不存在时创建并执行 V1–V9。
+- `reset`：删除并重建指定演示库，再执行 V1–V9；会清除该演示库的全部已有内容。
 - `seed`：清理旧演示数据后重建固定数据，重复执行结果稳定。
 - `validate`：只读检查结构、账号、关系、题库和学习记录。
 - `clean`：只删除带受控演示标识的数据，保留 Flyway 基础科目和样例。
@@ -100,6 +100,7 @@ Vite 启动参数为 `--host localhost --port 18080`。
 - 知识点：每科 3 个，共 9 个。
 - 题库：Demo90 共 90 道，物理、化学、生物各 30 道；每科单选、多选、填空各 10 道，难度 1、2、3 各 10 道，三个演示知识点各 10 道。
 - 高频考点：V8 的 `gao_pin_kao_dian` 仅绑定真实 `ren_ke_guan_xi_id`；199/200 班物理、化学、生物六条场景任课关系各预置 2 条，共 12 条 ACTIVE 自编纯文本考点。
+- 私信：V9 的两张表不预置聊天内容；浏览器验收消息可由 `reset` 清理，固定账号和组织关系保持可重复 seed。
 
 所有 Demo90 题均为项目原创的“本科毕业设计自编演示题”，不复制网络题原文，也不读取 MVP30。题目均为无附件 `PUBLISHED + ONLINE_PRACTICE` 自动判分题，STANDARD 解析为 `PUBLISHED`。QUESTION、ANSWER、STANDARD_ANALYSIS 三项来源均为 `TEACHER_CREATED + USER_PROVIDED`，并有 SUBMITTED、APPROVED 审核轨迹。
 
@@ -114,6 +115,6 @@ Demo90 只服务独立演示环境，不等于 MVP30 正式真实题库。MVP30 
 ```
 
 `clean` 后演示账号、组织、题目和学习记录均被删除；`reset` 是库级重建，只允许对通过安全检查的演示库名执行。MVP30 原始 Excel 和正式 `rike_tiku` 不参与上述流程。
-## PR #19 分支状态
+## PR #20 分支状态
 
-当前分支为 `feat/login-image-captcha`，PR #19 尚未合并。Flyway 保持 V1–V8、24 张业务表；验证码完全在内存中运行。`reset`、`seed`、`validate`、`clean` 继续受数据库名保护；`seed` 可重复执行并清理临时验收数据，固定场景数据保持稳定。正式 `rike_tiku` 和 MVP30 原始 Excel 不参与任何演示操作。
+当前分支为 `feat/teacher-student-messaging`，PR #20 尚未合并。Flyway 为 V1–V9、26 张业务表；`reset`、`seed`、`validate`、`clean` 继续受数据库名保护，固定 seed 不含聊天记录。正式 `rike_tiku` 因 MA-013 已存在 V9 两张空表，但 Demo90、场景账号、场景班级、高频考点、会话和消息六项业务计数均为 0；MVP30 原始 Excel 未参与任何演示操作。
