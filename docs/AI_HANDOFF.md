@@ -1,14 +1,14 @@
 # AI 开发交接
 
-> 当前接续分支：`feat/login-image-captcha`，base 为 PR #18 合并后的最新 `main@dfe77c681f18cc5b24662fd6286c14a1514bdf6e`；当前 Flyway V1–V8、24 张业务表，PR #19 尚未合并。
+> 当前接续分支：`main`。PR #19 已普通 merge，merge commit 与合并基线 main HEAD 为 `0a12943e901e844520e3801264fa4a43590ff28e`；当前 Flyway V1–V8、24 张业务表。
 
 更新时间：2026-08-08
 
 ## 当前状态
 
-PR #10 至 PR #18 均已普通 merge；PR #18 merge commit 为 `b615bc1a78d842d61928abc8f89b839f52c88b7f`，远程 `feat/teacher-workspace-high-frequency` 已删除。
+PR #10 至 PR #19 均已普通 merge；PR #19 merge commit 为 `0a12943e901e844520e3801264fa4a43590ff28e`，远程 `feat/login-image-captcha` 已删除。
 
-PR #19 当前分支已用 JDK 原生生成的 4 位随机 PNG 图形验证码替换 PR #15 历史滑块。登录页默认不显示验证码；首次点击/Enter 只展开，第二次才提交。challenge 在内存保存两分钟并一次性消费，不新增 Redis、第三方依赖、数据库表或 Flyway。
+PR #19 已用 JDK 原生生成的 4 位随机 PNG 图形验证码替换 PR #15 历史滑块并进入 `main`。登录页默认不显示验证码；首次点击/Enter 只展开，第二次才提交。challenge 在内存保存两分钟并一次性消费，不新增 Redis、第三方依赖、数据库表或 Flyway。
 
 V7 的学生练习、正式答题、结果和错题聚合模型已进入 `main`。PR #18 新增 V8 高频考点表，当前 Flyway 为 V1–V8，共 24 张业务表；V1–V7 和 MVP30 原始 Excel 未改动。历史 PR #13 自动化为后端 68/68、前端 68/68；PR #15 合并后自动化为后端 79/79、前端 72/72，打包、类型检查、构建、依赖审计与完整浏览器验收均已通过。
 
@@ -20,7 +20,7 @@ Demo90 是“本科毕业设计自编演示题”，不等于 MVP30 正式真实
 
 PR #18 合并后后端 87/87、前端 83/83，package、type-check、build、audit 和 Demo `reset → seed → validate → smoke` 均通过；真实浏览器工作台/高频考点隔离验收保持通过。正式库只读检查 Demo90、场景账号、场景班级和高频考点均为 0。MA-001 至 MA-005、MA-007、MA-008、MA-010 至 MA-012 已关闭；MA-006 仅剩个人资料、简介和头像，MA-009 尚未完成。
 
-PR #19 当前自动化为后端 90/90、前端 91/91，package、type-check、build PASS，生产依赖 audit 为 0。Demo `reset → seed → validate → smoke` PASS；smoke 只在显式 `RIKE_TIKU_CAPTCHA_EXPOSE_TEST_CODE=true` 的本地演示后端读取测试值，正式默认关闭且没有免验证码登录入口。真实浏览器已覆盖三个单角色账号、多角色账号、错误刷新、手动刷新和退出重登，控制台 0 error。正式库只读复查 Demo90、场景账号、场景班级和高频考点仍均为 0。
+PR #19 合并后回归为后端 90/90、前端 91/91，package、type-check、build PASS，生产依赖 audit 为 0。Demo `reset → seed → validate → smoke` PASS；smoke 只在显式 `RIKE_TIKU_CAPTCHA_EXPOSE_TEST_CODE=true` 的本地演示后端读取测试值，正式默认关闭且没有免验证码登录入口。真实浏览器验收保持通过；正式库只读复查 Demo90、场景账号、场景班级和高频考点仍均为 0。
 
 ## 继续时必须保持
 
@@ -45,4 +45,4 @@ PR #19 当前自动化为后端 90/90、前端 91/91，package、type-check、bu
 
 ## 当前下一步
 
-PR #19 当前只等待 Draft PR 独立审查；不得 merge 或创建下一分支，不得把私信、掌握度、推荐、DeepSeek、GLM 或 AI 写成已完成。
+PR #19 已完成普通 merge。当前停止并等待下一轮明确指令，不创建下一分支；不得把私信、掌握度、推荐、DeepSeek、GLM 或 AI 写成已完成。
