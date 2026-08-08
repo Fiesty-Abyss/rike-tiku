@@ -42,10 +42,10 @@ public class DemoDataService {
         guardDatabaseName(database);
         int version = jdbc.queryForObject("SELECT MAX(CAST(version AS UNSIGNED)) FROM flyway_schema_history WHERE success=1", Integer.class);
         int tableCount = jdbc.queryForObject("SELECT COUNT(*) FROM information_schema.tables WHERE table_schema=DATABASE() AND table_name<>'flyway_schema_history'", Integer.class);
-        if (version != 9 || tableCount != 26) {
-            throw new IllegalStateException("演示库必须完整执行V1-V9且包含26张业务表，当前V" + version + "，" + tableCount + "张");
+        if (version != 10 || tableCount != 26) {
+            throw new IllegalStateException("演示库必须完整执行V1-V10且包含26张业务表，当前V" + version + "，" + tableCount + "张");
         }
-        System.out.println("演示数据库结构校验通过: " + database + "，V1-V9，26张业务表");
+        System.out.println("演示数据库结构校验通过: " + database + "，V1-V10，26张业务表");
     }
 
     @Transactional

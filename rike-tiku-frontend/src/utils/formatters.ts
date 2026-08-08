@@ -7,6 +7,7 @@ export const enumText: Record<string, string> = {
   NEW:'新错题', REVIEWING:'复习中', MASTERED:'已掌握',
   USER_PROVIDED:'用户提供', TEACHER_CREATED:'教师创建', AUTHORIZED:'已授权', OPEN_LICENSE:'开放许可',
   PUBLIC_OFFICIAL:'公开官方来源', COPYRIGHT_UNKNOWN:'版权待确认', RESTRICTED:'受限使用', ACTIVE:'有效', ENDED:'已结束',
+  ENABLED:'启用', LOCKED:'已锁定',
 }
 export const formatEnum = (value: string | null | undefined) => value ? enumText[value] ?? value : '—'
 export const roleHome = (role: string) => ({ STUDENT:'/student', TEACHER:'/teacher', ADMIN:'/admin' }[role] ?? '/login')
