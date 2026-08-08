@@ -13,6 +13,8 @@ Flyway 迁移是数据库结构的唯一事实来源。本文和 `database/schem
 
 高频考点表只绑定真实 `ren_ke_guan_xi_id` 和同科 `zhi_shi_dian_id`；教师与学生 API 的数据权限仍由当前用户和三元任课关系推导。
 
+PR #21 不增加数据库结构。知识点掌握度是由 `lian_xi_hui_hua`、`lian_xi_ti_mu.zhi_shi_dian_kuai_zhao`、`xue_sheng_da_ti`、`xue_xi_jie_guo` 和 `cuo_ti_ji_lu` 实时派生的查询结果，不维护冗余统计表；因此 Flyway 仍为 V1–V9、26 张业务表。
+
 ## 2. 总体关系
 
 - `yong_hu` 与 `jiao_se` 通过 `yong_hu_jiao_se` 构成多对多，同一账号可拥有多个角色。
