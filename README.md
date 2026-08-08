@@ -91,7 +91,7 @@ PR #20 已普通 merge（merge commit `1055dee567b7afa153750792670fb0bafed1151c`
 
 PR #21 已普通 merge（merge commit `c0d655324fec0a36772c2d095b6025e5f708fc4c`）进入 `main`。它基于 V7 已提交答题、冻结知识点快照、学习结果和错题状态实时计算掌握度，不新增迁移、缓存或统计表。掌握度覆盖当前学科全部 ACTIVE 知识点；5 题规则推荐单独复用真实练习题池资格。学生三科学科页展示知识点掌握与最多 3 项固定规则推荐，教师只在本人 ACTIVE 三元任课范围内查看班内学生当前学科汇总。合并后回归为后端 98/98、前端 29 文件 106/106，package、type-check、build、audit 0 及 Demo `reset → seed → validate → smoke` 均通过；MA-014、MA-015 已关闭。该功能是确定性规则统计，不属于 AI。
 
-PR #22 当前分支 `feat/personal-center` 已实现三角色共用的 `/profile`：本人账号、真实角色、学生/教师档案只读展示，500 字个人简介，PNG/JPEG 小头像上传、持久化和删除，以及现有主动改密入口。V10 只为 `yong_hu` 增加简介与头像字段，不增加业务表、不修改 V1–V9；当前仍为 26 张业务表。头像以最大 2 MB 的原始二进制保存在 MySQL，接口按实际 MIME 返回 Base64 data URL，不引入对象存储或第三方头像服务。该分支等待 PR #22 独立审查，尚未合并。
+PR #22 已普通 merge（merge commit `67b7bd7239e2ac1de3ad8c71b82b6d0a79162d3b`）进入 `main`，提供三角色共用的 `/profile`：本人账号、真实角色、学生/教师档案只读展示，500 字个人简介，PNG/JPEG 小头像上传、持久化和删除，以及现有主动改密入口。V10 只为 `yong_hu` 增加简介与头像字段，不增加业务表、不修改 V1–V9；当前仍为 26 张业务表。首次登录用户必须先完成初始密码修改，不能提前访问或修改个人中心。合并后回归为后端 102/102、前端 31 文件 117/117，package、type-check、build、audit 0 和 Demo `reset → seed → validate → smoke` 均通过；MA-006 已关闭。
 
 ## 本地启动
 
@@ -183,4 +183,4 @@ npm run build
 
 ## 下一阶段
 
-PR #13 至 PR #21 均已普通 merge；PR #22 当前位于 `feat/personal-center`，尚未合并。该分支新增 V10（只 ALTER `yong_hu`），业务表仍为 26 张，并已完成三角色个人中心真实浏览器验收、关闭 MA-006。MVP30 尚未正式入库，DeepSeek、GLM 和 AI 能力仍未实现，非 AI 工程基础不得标记为 100%。
+PR #13 至 PR #22 均已普通 merge；PR #22 merge commit 为 `67b7bd7239e2ac1de3ad8c71b82b6d0a79162d3b`。V10 只 ALTER `yong_hu`，业务表仍为 26 张；三角色个人中心真实浏览器验收通过，MA-006 已关闭。MVP30 尚未正式入库，DeepSeek、GLM 和 AI 能力仍未实现，非 AI 工程基础不得标记为 100%。当前停止，不创建 PR #23。
