@@ -36,6 +36,22 @@ public class StudentPracticeService {
     }
 
     @Transactional(readOnly = true)
+    public Set<Long> recommendationEligibleKnowledgePointIds(long subjectId, int questionCount) {
+        Map<Long, Integer> availableCounts = new HashMap<>();
+        StudentPracticeDtos.CreateRequest request = new StudentPracticeDtos.CreateRequest(
+                subjectId, null, null, null, questionCount);
+        for (QuestionPoolItem question : findEligibleQuestions(request)) {
+            for (StudentPracticeDtos.KnowledgePoint point : question.knowledgePoints()) {
+                availableCounts.merge(point.id(), 1, Integer::sum);
+            }
+        }
+        return availableCounts.entrySet().stream()
+                .filter(entry -> entry.getValue() >= questionCount)
+                .map(Map.Entry::getKey)
+                .collect(java.util.stream.Collectors.toUnmodifiableSet());
+    }
+
+    @Transactional(readOnly = true)
     public StudentPracticeDtos.Options options(Long userId, Long subjectId) {
         requireStudent(userId);
         List<StudentPracticeDtos.Subject> subjects = jdbc.query("""

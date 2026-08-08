@@ -1,6 +1,6 @@
 # 跨AI项目上下文
 
-> 当前工作分支为 `feat/mastery-rule-recommendation`，Base 为 PR #20 合并后的 `main@1055dee567b7afa153750792670fb0bafed1151c`；Draft PR #21 已创建。Flyway V1–V9、26 张业务表，V1–V9 与 MVP30 原始 Excel 均未修改。
+> 当前工作分支为 `feat/mastery-rule-recommendation`，最初基于 PR #20 merge commit `1055dee567b7afa153750792670fb0bafed1151c` 创建；GitHub PR base branch 为 `main`，当前 base tip 已包含 PR #20 合并状态文档提交 `4fd8d5d97e5a6abd77c199481c26eb2c6f40e9f4`。Draft PR #21 已创建，未 rebase、未 force push。Flyway V1–V9、26 张业务表，V1–V9 与 MVP30 原始 Excel 均未修改。
 
 更新时间：2026-08-08
 
@@ -59,7 +59,7 @@
 - PR #18 合并后后端 87/87、前端 83/83，package、type-check、build、audit、Demo 脚本链均通过；真实浏览器高频考点权限验收保持通过。正式库污染检查包含 Demo90、场景账号、场景班级和高频考点，均为 0。
 - PR #19 已将 PR #15 历史滑块替换为默认隐藏的 4 位随机图形验证码并进入 `main`；后端使用 JDK 原生图片 API、两分钟内存 challenge 和一次性消费，前端首次操作只展开、第二次才登录。合并后后端 90/90、前端 91/91，package、type-check、build、audit 与 Demo 脚本链均通过，正式库四项污染检查均为 0。
 - PR #20 使用 REST polling 实现受 ACTIVE 三元任课关系和学生当前主班级约束的纯文本私信、未读和历史保留，已普通 merge。合并后后端 92/92、前端 100/100，package、type-check、build、audit 0、Demo 脚本链通过；双班级双向浏览器验收及 conversationId 越权隔离保持通过，MA-009 已关闭。
-- PR #21 当前分支基于 V7 已提交自动判分答题、冻结知识点快照和错题状态实时计算掌握度；推荐采用公开固定优先级并最多返回 3 项，教师学情查询继续受本人 ACTIVE 三元任课关系约束。当前后端 96/96、前端 106/106，浏览器真实练习和教师范围验收通过；无 V10。
+- PR #21 当前分支基于 V7 已提交自动判分答题、冻结知识点快照和错题状态实时计算掌握度；当前学科全部 ACTIVE 知识点参与掌握度和总体统计，5 题推荐资格则独立复用真实学生练习题池规则。题量不足不会隐藏历史掌握事实，也不会生成无法创建的推荐。推荐采用公开固定优先级并最多返回 3 项，教师学情查询继续受本人 ACTIVE 三元任课关系约束；无 V10。独立审查修正后后端 98/98、前端 106/106，完整构建、Demo 链和轻量浏览器抽查通过。
 - MA-013 已关闭：全新临时库与正式库的 V9 script、checksum `1192958817` 和 success 完全一致。PR #20 进入 main 后，正式库提前执行的 V9 已成为正式基线的一部分，两张结构表不属于业务数据污染；六项演示/私信数据仍均为 0。
 - 历史 PR #13 自动化为后端 68/68、前端 68/68；历史 PR #14 自动化为后端 74/74、前端 68/68。PR #15 合并后自动化为后端 79/79、前端 72/72，打包、类型检查、构建和依赖审计均通过。
 - 远程仓库：`https://github.com/Fiesty-Abyss/rike-tiku`，公开仓库，默认分支 `main`。
