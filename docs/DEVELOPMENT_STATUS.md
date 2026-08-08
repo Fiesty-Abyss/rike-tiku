@@ -1,12 +1,12 @@
 # 开发状态
 
-> 当前分支为 `feat/teacher-workspace-high-frequency`，Draft PR #18 尚未合并，基线为 `main@abdc23c77ce37d7e35c0dcf33bdaf38ae55d10fb`。PR #17 merge commit 为 `3e5454de8257075d1ccdf11d5f6d3a35b464adc1`。本轮新增 V8（不修改 V1–V7），当前为 24 张业务表；未写正式 `rike_tiku`，未修改 MVP30 原始 Excel。
+> 当前分支为 `main`。PR #18 已普通 merge，merge commit 与合并基线 main HEAD 为 `b615bc1a78d842d61928abc8f89b839f52c88b7f`。Flyway 为 V1–V8，共 24 张业务表；V1–V7 未修改，未写正式 `rike_tiku` 演示数据，未修改 MVP30 原始 Excel。
 
-更新时间：2026-08-07
+更新时间：2026-08-08
 
 ## 当前主线状态
 
-- 当前分支：`feat/teacher-workspace-high-frequency`；Draft PR #18 尚未合并，PR #17 已普通 merge。
+- 当前分支：`main`；PR #18 已普通 merge，远程 `feat/teacher-workspace-high-frequency` 已删除。
 - 管理员单学生管理已实现分页筛选、详情与班级历史、事务新增、编辑与启停、事务调班和一次性密码重置；Excel 批量导入入口继续独立保留。
 - 学生自主练习、自动判分、结果与错题闭环已进入 `main`；AI、掌握度、推荐、教师任务、组卷考试和主观题评分仍未实现。
 - Flyway：V1–V8，共 24 张业务表；V1–V7 未修改，V8 新增 `gao_pin_kao_dian` 高频考点表。
@@ -23,8 +23,8 @@
 
 ## 当前验证
 
-- PR #18 后端：`mvn clean test` 87/87 PASS；`mvn clean package` 87/87 PASS，并成功生成可执行 JAR。高频考点专项 `JiaoShiGaoPinKaoDianIntegrationTest` PASS。
-- PR #18 前端：`npm test` 83/83 PASS；`npm run type-check` PASS；`npm run build` PASS（保留既有大 chunk 提示）；`npm audit --omit=dev` 为 0 vulnerabilities。
+- PR #18 合并后后端：`mvn clean test` 87/87 PASS；`mvn clean package` 87/87 PASS，并成功生成可执行 JAR。
+- PR #18 合并后前端：`npm test` 83/83 PASS；`npm run type-check` PASS；`npm run build` PASS（保留既有大 chunk 提示）；`npm audit --omit=dev` 为 0 vulnerabilities。
 - `rike_tiku_demo`：`reset → seed → validate → smoke` PASS；V1–V8、24 张业务表，固定状态为 14 账号、3 班级、4 教师、9 学生、9 条 ACTIVE 任课关系、Demo90 和 12 条 ACTIVE 高频考点。
 - 正式 `rike_tiku` 只读污染检查：Demo90 0、场景账号 0、场景班级 0、高频考点 0；正式库 Flyway 版本为 8。
 - PR #18 真实浏览器 PASS（仅 `rike_tiku_demo`）：物理教师进入 199/200 工作台，查看 5/3 名学生，新增、编辑、停用、启用高频考点；生物教师仅见 199/200 生物，化学教师仅见 199/200 化学；199/200 学生分别只读取本班物理 ACTIVE 考点；控制台 error 日志为空。临时验收考点已由 reset/seed 清理。
@@ -55,11 +55,11 @@
 - PR #15：UI、统一认证、学生三科工作台与教师任教范围，普通 merge `12d636f`。
 - PR #16：Demo90 原创演示题库，普通 merge `588db6e`。
 - PR #17：管理员单学生完整管理与 199/200 双班级演示场景，普通 merge `3e5454d`。
-- PR #18：教师班级学科工作台与高频考点，当前 Draft，分支 `feat/teacher-workspace-high-frequency`，基于 `abdc23c`。
+- PR #18：教师班级学科工作台与高频考点，普通 merge `b615bc1`。
 
 ## 下一步
 
-PR #18 完成后等待独立审查；不创建下一分支。下一业务模块唯一候选为“管理员学生完整管理与账号恢复”，状态为 PLANNED。
+PR #18 已完成普通 merge；当前停止并等待下一轮明确指令，不创建下一分支。
 
 ## 非 AI 工程基础完成门槛
 
