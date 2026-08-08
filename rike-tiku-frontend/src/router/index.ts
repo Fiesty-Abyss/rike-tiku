@@ -51,6 +51,12 @@ const router = createRouter({
       meta: { requiresAuth: true, roles: ['TEACHER'] },
     },
     {
+      path: '/teacher/scopes/:scopeId(\\d+)',
+      name: 'teacher-scope-workspace',
+      component: () => import('../views/teacher/TeacherScopeWorkspaceView.vue'),
+      meta: { requiresAuth: true, roles: ['TEACHER'] },
+    },
+    {
       path: '/admin',
       component: () => import('../layouts/AdminLayout.vue'),
       meta: { requiresAuth: true, roles: ['ADMIN'] },

@@ -42,10 +42,10 @@ public class DemoDataService {
         guardDatabaseName(database);
         int version = jdbc.queryForObject("SELECT MAX(CAST(version AS UNSIGNED)) FROM flyway_schema_history WHERE success=1", Integer.class);
         int tableCount = jdbc.queryForObject("SELECT COUNT(*) FROM information_schema.tables WHERE table_schema=DATABASE() AND table_name<>'flyway_schema_history'", Integer.class);
-        if (version != 7 || tableCount != 23) {
-            throw new IllegalStateException("演示库必须完整执行V1-V7且包含23张业务表，当前V" + version + "，" + tableCount + "张");
+        if (version != 8 || tableCount != 24) {
+            throw new IllegalStateException("演示库必须完整执行V1-V8且包含24张业务表，当前V" + version + "，" + tableCount + "张");
         }
-        System.out.println("演示数据库结构校验通过: " + database + "，V1-V7，23张业务表");
+        System.out.println("演示数据库结构校验通过: " + database + "，V1-V8，24张业务表");
     }
 
     @Transactional
@@ -81,14 +81,16 @@ public class DemoDataService {
             jdbc.update("INSERT INTO ren_ke_guan_xi (jiao_shi_id,ban_ji_id,ke_mu_id,shi_fou_zhu_ren_ke,zhuang_tai,kai_shi_shi_jian) VALUES (?,?,?,1,'ACTIVE',CURRENT_TIMESTAMP(3))",
                     teacherId, classId, required(subjects, code));
         }
-        seedTeachingScope(physicsTeacher, class199, required(subjects, "PHYSICS"));
-        seedTeachingScope(physicsTeacher, class200, required(subjects, "PHYSICS"));
-        seedTeachingScope(biologyTeacher, class199, required(subjects, "BIOLOGY"));
-        seedTeachingScope(biologyTeacher, class200, required(subjects, "BIOLOGY"));
-        seedTeachingScope(chemistryTeacher, class199, required(subjects, "CHEMISTRY"));
-        seedTeachingScope(chemistryTeacher, class200, required(subjects, "CHEMISTRY"));
+        Map<String, Long> scopes = new java.util.HashMap<>();
+        scopes.put("PHYSICS_199", seedTeachingScope(physicsTeacher, class199, required(subjects, "PHYSICS")));
+        scopes.put("PHYSICS_200", seedTeachingScope(physicsTeacher, class200, required(subjects, "PHYSICS")));
+        scopes.put("BIOLOGY_199", seedTeachingScope(biologyTeacher, class199, required(subjects, "BIOLOGY")));
+        scopes.put("BIOLOGY_200", seedTeachingScope(biologyTeacher, class200, required(subjects, "BIOLOGY")));
+        scopes.put("CHEMISTRY_199", seedTeachingScope(chemistryTeacher, class199, required(subjects, "CHEMISTRY")));
+        scopes.put("CHEMISTRY_200", seedTeachingScope(chemistryTeacher, class200, required(subjects, "CHEMISTRY")));
         Map<String, Long> points = seedKnowledgePoints(subjects);
         for (Question question : questions()) seedQuestion(question, required(subjects, question.subject()), required(points, question.knowledgePath()), users.get("demo_admin"));
+        seedHighFrequencyPoints(scopes, points);
         validateSeed();
         System.out.println("演示数据写入完成。14个固定演示账号、3个班级、4位教师、9名学生；固定密码: " + DEMO_PASSWORD + "（仅限本地演示库）");
     }
@@ -146,6 +148,21 @@ public class DemoDataService {
         expect("三元任课关系", 3, count("SELECT COUNT(*) FROM ren_ke_guan_xi r JOIN ban_ji b ON b.id=r.ban_ji_id JOIN jiao_shi_dang_an t ON t.id=r.jiao_shi_id WHERE b.ban_ji_bian_ma='DEMO_CLASS_01' AND t.gong_hao='DEMO_T001' AND r.zhuang_tai='ACTIVE'"));
         expect("六条场景任课关系", 6, count("SELECT COUNT(*) FROM ren_ke_guan_xi r JOIN ban_ji b ON b.id=r.ban_ji_id JOIN jiao_shi_dang_an t ON t.id=r.jiao_shi_id WHERE b.ban_ji_bian_ma IN ('DEMO_CLASS_199','DEMO_CLASS_200') AND t.gong_hao IN ('DEMO_T_PHYSICS','DEMO_T_BIOLOGY','DEMO_T_CHEMISTRY') AND r.zhuang_tai='ACTIVE'"));
         expect("九条ACTIVE任课关系", 9, count("SELECT COUNT(*) FROM ren_ke_guan_xi r JOIN jiao_shi_dang_an t ON t.id=r.jiao_shi_id WHERE t.gong_hao LIKE 'DEMO_T%' AND r.zhuang_tai='ACTIVE'"));
+        expect("十二条高频考点", 12, count("SELECT COUNT(*) FROM gao_pin_kao_dian h JOIN ren_ke_guan_xi r ON r.id=h.ren_ke_guan_xi_id JOIN ban_ji b ON b.id=r.ban_ji_id WHERE b.ban_ji_bian_ma IN ('DEMO_CLASS_199','DEMO_CLASS_200') AND h.zhuang_tai='ACTIVE' AND h.yi_shan_chu=0"));
+        expect("每条场景任课关系两个高频考点", 6, count("""
+                SELECT COUNT(*) FROM (
+                    SELECT r.id FROM ren_ke_guan_xi r JOIN ban_ji b ON b.id=r.ban_ji_id
+                    LEFT JOIN gao_pin_kao_dian h ON h.ren_ke_guan_xi_id=r.id AND h.zhuang_tai='ACTIVE' AND h.yi_shan_chu=0
+                    WHERE b.ban_ji_bian_ma IN ('DEMO_CLASS_199','DEMO_CLASS_200') AND r.zhuang_tai='ACTIVE'
+                    GROUP BY r.id HAVING COUNT(h.id)=2
+                ) scopes_with_points
+                """));
+        expect("高频考点知识点同科", 0, count("""
+                SELECT COUNT(*) FROM gao_pin_kao_dian h
+                JOIN ren_ke_guan_xi r ON r.id=h.ren_ke_guan_xi_id
+                JOIN zhi_shi_dian k ON k.id=h.zhi_shi_dian_id
+                WHERE k.ke_mu_id<>r.ke_mu_id OR k.yi_shan_chu=1
+                """));
         expect("演示知识点", 9, count("SELECT COUNT(*) FROM zhi_shi_dian WHERE wan_zheng_lu_jing IN ('力学>运动和力>牛顿运动定律','电磁学>电场>电场强度','热学>分子动理论>温度和内能','化学基本概念>物质的量>摩尔计算','无机化学>元素化合物>氧化还原反应','化学反应原理>化学平衡>平衡移动','分子与细胞>细胞结构>细胞膜','遗传与进化>遗传规律>分离定律','稳态与调节>生命活动调节>激素调节')") );
         expect("演示题总数", 90, demoQuestionCount());
         for (String subject : List.of("PHYSICS", "CHEMISTRY", "BIOLOGY")) {
@@ -227,7 +244,7 @@ public class DemoDataService {
                 """));
         expect("审核轨迹", 180, count("SELECT COUNT(*) FROM ti_mu_shen_he_ji_lu r JOIN ti_mu q ON q.id=r.ti_mu_id WHERE q.ti_gan LIKE '【演示】%' AND r.shen_he_dong_zuo IN ('SUBMITTED','APPROVED')"));
         for (String table : List.of("lian_xi_hui_hua", "lian_xi_ti_mu", "xue_sheng_da_ti", "xue_xi_jie_guo", "cuo_ti_ji_lu")) expect(table + "初始记录", 0, count("SELECT COUNT(*) FROM " + table));
-        System.out.println("演示数据校验通过: 14账号、3班级、4教师、9学生、9任课关系、9知识点、90题、学习记录为0");
+        System.out.println("演示数据校验通过: 14账号、3班级、4教师、9学生、9任课关系、12高频考点、9知识点、90题、学习记录为0");
     }
 
     public static void guardDatabaseName(String database) {
@@ -267,9 +284,44 @@ public class DemoDataService {
         return insert("INSERT INTO ban_ji (ban_ji_bian_ma,ban_ji_ming_cheng,nian_ji,ru_xue_nian_fen,zhuang_tai) VALUES (?,?,'高三',?,'ACTIVE')", code, name, Math.max(2000, Year.now().getValue() - 3));
     }
 
-    private void seedTeachingScope(long teacherId, long classId, long subjectId) {
-        jdbc.update("INSERT INTO ren_ke_guan_xi (jiao_shi_id,ban_ji_id,ke_mu_id,shi_fou_zhu_ren_ke,zhuang_tai,kai_shi_shi_jian) VALUES (?,?,?,1,'ACTIVE',CURRENT_TIMESTAMP(3))",
+    private long seedTeachingScope(long teacherId, long classId, long subjectId) {
+        return insert("INSERT INTO ren_ke_guan_xi (jiao_shi_id,ban_ji_id,ke_mu_id,shi_fou_zhu_ren_ke,zhuang_tai,kai_shi_shi_jian) VALUES (?,?,?,1,'ACTIVE',CURRENT_TIMESTAMP(3))",
                 teacherId, classId, subjectId);
+    }
+
+    private void seedHighFrequencyPoints(Map<String, Long> scopes, Map<String, Long> points) {
+        seedHighFrequencyPoint(required(scopes, "PHYSICS_199"), required(points, "力学>运动和力>牛顿运动定律"),
+                "牛顿第二定律受力分析", "先画出研究对象受到的力，再沿选定方向列出合力与加速度的关系。", "合力方向决定加速度方向", "把某个单独的力误当成合力。", 1);
+        seedHighFrequencyPoint(required(scopes, "PHYSICS_199"), required(points, "电磁学>电场>电场强度"),
+                "电场强度方向判断", "正试探电荷所受电场力方向就是电场方向，负试探电荷受力方向与电场方向相反。", "正电荷顺场，负电荷逆场", "用负试探电荷受力方向直接代替电场方向。", 2);
+        seedHighFrequencyPoint(required(scopes, "PHYSICS_200"), required(points, "力学>运动和力>牛顿运动定律"),
+                "牛顿第二定律的单位检查", "使用F=ma时，质量用kg、加速度用m/s²，合力单位自然得到N。", "先统一单位再代入", "把g或质量写成带有其他单位的数值。", 1);
+        seedHighFrequencyPoint(required(scopes, "PHYSICS_200"), required(points, "电磁学>电场>电场强度"),
+                "电场线疏密与场强", "同一幅电场线图中，电场线越密的区域表示电场强度越大。", "线密场强大", "把电场线条数当成带电粒子运动轨迹。", 2);
+        seedHighFrequencyPoint(required(scopes, "CHEMISTRY_199"), required(points, "化学基本概念>物质的量>摩尔计算"),
+                "摩尔计算单位换算", "n=m/M，计算物质的量时质量m用g、摩尔质量M用g/mol，结果单位为mol。", "质量除以摩尔质量", "质量和摩尔质量单位没有统一。", 1);
+        seedHighFrequencyPoint(required(scopes, "CHEMISTRY_199"), required(points, "无机化学>元素化合物>氧化还原反应"),
+                "氧化还原电子变化", "失电子的物质被氧化，是还原剂；得电子的物质被还原，是氧化剂。", "失氧化、得还原", "把氧化剂和还原剂的名称对调。", 2);
+        seedHighFrequencyPoint(required(scopes, "CHEMISTRY_200"), required(points, "化学基本概念>物质的量>摩尔计算"),
+                "阿伏加德罗常数使用", "1 mol微粒约含6.02×10²³个微粒，换算时先确认题目统计的是原子、分子还是离子。", "一摩尔对应NA", "忽略化学式中的下标导致微粒数计算错误。", 1);
+        seedHighFrequencyPoint(required(scopes, "CHEMISTRY_200"), required(points, "无机化学>元素化合物>氧化还原反应"),
+                "化合价升降判断", "同一元素化合价升高表示失电子、被氧化；化合价降低表示得电子、被还原。", "升失氧、降得还", "只看反应物或生成物一侧，不比较化合价变化。", 2);
+        seedHighFrequencyPoint(required(scopes, "BIOLOGY_199"), required(points, "分子与细胞>细胞结构>细胞膜"),
+                "细胞膜运输方式", "小分子顺浓度梯度通过膜可属于自由扩散；借助载体但不消耗能量属于协助扩散。", "顺梯度不耗能", "把所有需要载体的运输都判断为主动运输。", 1);
+        seedHighFrequencyPoint(required(scopes, "BIOLOGY_199"), required(points, "遗传与进化>遗传规律>分离定律"),
+                "分离定律比例判断", "杂合子自交时，等位基因在形成配子时分离，理想完全显性条件下后代表型常见3∶1。", "配子分离再组合", "不说明显性关系就直接套用3∶1。", 2);
+        seedHighFrequencyPoint(required(scopes, "BIOLOGY_200"), required(points, "分子与细胞>细胞结构>细胞膜"),
+                "膜的选择透过性", "细胞膜允许水和部分小分子通过，同时限制其他物质，体现了选择透过性。", "选择性进出", "把选择透过性误写成完全不透过。", 1);
+        seedHighFrequencyPoint(required(scopes, "BIOLOGY_200"), required(points, "遗传与进化>遗传规律>分离定律"),
+                "等位基因分离时机", "等位基因随同源染色体在减数分裂形成配子时彼此分离，每个配子通常只含其中一个。", "减数分裂形成配子", "把等位基因分离误认为受精时发生。", 2);
+    }
+
+    private void seedHighFrequencyPoint(long scopeId, long knowledgePointId, String title, String content,
+            String memoryTrick, String commonMistake, int sortOrder) {
+        jdbc.update("""
+                INSERT INTO gao_pin_kao_dian(ren_ke_guan_xi_id,zhi_shi_dian_id,biao_ti,nei_rong,ji_yi_kou_jue,chang_jian_wu_qu,pai_xu,zhuang_tai)
+                VALUES (?,?,?,?,?,?,?,'ACTIVE')
+                """, scopeId, knowledgePointId, title, content, memoryTrick, commonMistake, sortOrder);
     }
 
     private Map<String, Long> seedKnowledgePoints(Map<String, Long> subjects) {
@@ -320,6 +372,7 @@ public class DemoDataService {
         jdbc.update("DELETE h FROM lian_xi_hui_hua h JOIN xue_sheng_dang_an s ON s.id=h.xue_sheng_id WHERE s.xue_hao LIKE 'DEMO_%'");
         for (String table : List.of("ti_mu_fu_jian", "ti_mu_shen_he_ji_lu", "ti_mu_lai_yuan", "ti_mu_zhi_shi_dian", "ti_mu_jie_xi", "ti_mu_xuan_xiang")) jdbc.update("DELETE child FROM " + table + " child JOIN ti_mu q ON q.id=child.ti_mu_id WHERE q.ti_gan LIKE '【演示】%'");
         jdbc.update("DELETE FROM ti_mu WHERE ti_gan LIKE '【演示】%'");
+        jdbc.update("DELETE h FROM gao_pin_kao_dian h JOIN ren_ke_guan_xi r ON r.id=h.ren_ke_guan_xi_id JOIN ban_ji b ON b.id=r.ban_ji_id WHERE b.ban_ji_bian_ma LIKE 'DEMO_CLASS_%'");
         jdbc.update("DELETE r FROM ren_ke_guan_xi r JOIN ban_ji b ON b.id=r.ban_ji_id WHERE b.ban_ji_bian_ma LIKE 'DEMO_CLASS_%'");
         jdbc.update("DELETE bx FROM ban_ji_xue_sheng bx JOIN ban_ji b ON b.id=bx.ban_ji_id WHERE b.ban_ji_bian_ma LIKE 'DEMO_CLASS_%'");
         jdbc.update("DELETE FROM ban_ji WHERE ban_ji_bian_ma LIKE 'DEMO_CLASS_%'");
