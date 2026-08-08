@@ -1,6 +1,6 @@
 # 后端认证接口说明
 
-更新时间：2026-08-04
+更新时间：2026-08-08
 
 ## 1. 范围
 
@@ -12,6 +12,7 @@
 |---|---|---|---|
 | `RIKE_TIKU_JWT_SECRET` | 是 | 无 | HS256密钥，至少32个UTF-8字节 |
 | `RIKE_TIKU_JWT_EXPIRATION_SECONDS` | 否 | `7200` | 访问Token有效期，单位秒 |
+| `RIKE_TIKU_CAPTCHA_EXPOSE_TEST_CODE` | 否 | `false` | 仅本地自动化/Demo smoke 使用；正式运行必须保持关闭 |
 
 本机可执行 `rike-tiku-backend/scripts/setup-idea-local-env.ps1` 自动生成随机JWT密钥。真实密钥不得提交到Git。
 
@@ -21,6 +22,7 @@
 |---|---|---:|---|
 | GET | `/api/v1/health` | 是 | 真实数据库健康检查 |
 | POST | `/api/v1/auth/login` | 是 | 统一登录；`expectedRole`只校验入口 |
+| GET | `/api/v1/auth/captcha-challenge` | 是 | 获取两分钟有效的一次性 4 位图形验证码 |
 | GET | `/api/v1/auth/me` | 否 | 当前真实用户、有效角色和可选档案显示信息 |
 | POST | `/api/v1/auth/change-initial-password` | 否 | 仅修改当前登录用户的初始密码 |
 | GET | `/api/v1/test/student` | 否 | 技术验证接口，需要 `ROLE_STUDENT` |
@@ -38,7 +40,9 @@
 {
   "username": "test-user",
   "password": "test-password",
-  "expectedRole": "STUDENT"
+  "expectedRole": "STUDENT",
+  "challengeId": "一次性挑战ID",
+  "captchaCode": "AB7K"
 }
 ```
 
@@ -60,7 +64,15 @@
 
 角色只从 `yong_hu_jiao_se` 与有效 `jiao_se` 查询。客户端提交 `ADMIN` 不能创建或授予管理员角色。登录成功会在同一事务中更新 `zui_hou_deng_lu_shi_jian`；更新失败则不签发Token。
 
-### 3.2 当前用户
+### 3.2 图形验证码
+
+`GET /api/v1/auth/captcha-challenge` 返回 `challengeId`、Base64 PNG data URL `image` 和 `expiresAt`。可选查询参数 `previousChallengeId` 用于刷新时立即废弃旧 challenge。验证码使用不含 `0/O/1/I/L` 的字符集，大小写不敏感；challenge 只在进程内存中保存正确值和到期时间，不保存账号、密码或 JWT。
+
+验证码错误、过期或校验成功都会消费 challenge，重放会被拒绝。错误码为 `CAPTCHA_CHALLENGE_REQUIRED`、`CAPTCHA_INCORRECT`、`CAPTCHA_CHALLENGE_EXPIRED`、`CAPTCHA_CHALLENGE_REUSED`。
+
+自动化测试与 `rike_tiku_demo` smoke 可显式设置 `RIKE_TIKU_CAPTCHA_EXPOSE_TEST_CODE=true`，响应才额外包含 `testCode`。该字段只用于无 OCR 的本地自动化，默认值为 `false`，正式运行不存在无条件免验证码登录入口。
+
+### 3.3 当前用户
 
 请求头：
 
@@ -70,7 +82,7 @@ Authorization: Bearer <accessToken>
 
 响应包含用户ID、用户名、当前数据库有效角色、首次改密标志，以及可选学生姓名/学号或教师姓名/工号。档案不存在不影响角色判断。
 
-### 3.3 修改初始密码
+### 3.4 修改初始密码
 
 请求：
 
@@ -127,6 +139,6 @@ Authorization: Bearer <accessToken>
 
 # 当前分支补充（未合并）
 
-`feat/ui-auth-student-dashboard` 增加 `GET /api/v1/auth/slider-challenge`。登录请求除用户名、密码和可选 `expectedRole` 外必须提交 `challengeId` 与 `sliderOffset`。挑战有效两分钟、一次性消费，错误码为 `SLIDER_CHALLENGE_REQUIRED`、`SLIDER_CHALLENGE_EXPIRED`、`SLIDER_CHALLENGE_INVALID`、`SLIDER_CHALLENGE_REUSED`。
+当前分支 `feat/login-image-captcha` 删除历史 `GET /api/v1/auth/slider-challenge`，登录请求中的 `sliderOffset` 替换为 `captchaCode`。PR #15 滑块仅保留为历史说明，当前认证主链只使用随机图形验证码。
 
 新增认证后 `POST /api/v1/auth/change-password`，请求为 `oldPassword`、`newPassword`、`confirmPassword`。复用 8–64 位、字母数字、非空白、不可与旧密码相同的策略，使用 BCrypt 保存并重新签发 Token；首次改密门禁保持不变。

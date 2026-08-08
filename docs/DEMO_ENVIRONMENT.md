@@ -78,7 +78,7 @@ Vite 启动参数为 `--host localhost --port 18080`。
 .\scripts\demo-environment.ps1 smoke
 ```
 
-该操作检查后端健康接口、实际演示数据库、三个角色登录和错误角色入口。它不会输出 JWT、数据库密码或 JWT 密钥。
+该操作检查后端健康接口、实际演示数据库、三个角色登录和错误角色入口。图形验证码不使用 OCR；脚本的 `backend` 动作只为本地 Demo smoke 设置 `RIKE_TIKU_CAPTCHA_EXPOSE_TEST_CODE=true`，使 challenge 响应额外返回 `testCode`。正常/正式启动默认关闭该字段，浏览器登录始终必须提交图形验证码。smoke 不输出 JWT、数据库密码或 JWT 密钥。
 
 ## 固定账号
 
@@ -114,6 +114,6 @@ Demo90 只服务独立演示环境，不等于 MVP30 正式真实题库。MVP30 
 ```
 
 `clean` 后演示账号、组织、题目和学习记录均被删除；`reset` 是库级重建，只允许对通过安全检查的演示库名执行。MVP30 原始 Excel 和正式 `rike_tiku` 不参与上述流程。
-## PR #18 分支状态
+## PR #19 分支状态
 
-当前分支为 `feat/teacher-workspace-high-frequency`，Draft PR #18 尚未合并。Flyway 为 V1–V8、24 张业务表；V8 只新增高频考点表，演示题和高频考点仍由显式 `seed` 写入 `rike_tiku_demo`。`reset`、`seed`、`validate`、`clean` 继续受数据库名保护；`seed` 可重复执行并清理临时验收数据，固定场景数据保持稳定。正式 `rike_tiku` 和 MVP30 原始 Excel 不参与任何演示操作。
+当前分支为 `feat/login-image-captcha`，PR #19 尚未合并。Flyway 保持 V1–V8、24 张业务表；验证码完全在内存中运行。`reset`、`seed`、`validate`、`clean` 继续受数据库名保护；`seed` 可重复执行并清理临时验收数据，固定场景数据保持稳定。正式 `rike_tiku` 和 MVP30 原始 Excel 不参与任何演示操作。

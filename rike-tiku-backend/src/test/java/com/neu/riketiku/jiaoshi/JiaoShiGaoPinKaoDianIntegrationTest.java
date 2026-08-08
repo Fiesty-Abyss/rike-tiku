@@ -67,12 +67,12 @@ class JiaoShiGaoPinKaoDianIntegrationTest extends AdminQuestionIntegrationTestSu
     }
 
     private String login(String username, String role) throws Exception {
-        HttpResponse<String> challenge = get("/api/v1/auth/slider-challenge", null);
+        HttpResponse<String> challenge = get("/api/v1/auth/captcha-challenge", null);
         String challengeId = JsonPath.read(challenge.body(), "$.challengeId");
-        Number offset = JsonPath.read(challenge.body(), "$.targetDisplayOffset");
+        String captchaCode = JsonPath.read(challenge.body(), "$.testCode");
         HttpResponse<String> response = post("/api/v1/auth/login", null, "{\"username\":\"" + username
                 + "\",\"password\":\"a1234567\",\"expectedRole\":\"" + role + "\",\"challengeId\":\""
-                + challengeId + "\",\"sliderOffset\":" + offset.intValue() + "}");
+                + challengeId + "\",\"captchaCode\":\"" + captchaCode + "\"}");
         assertThat(response.statusCode()).isEqualTo(200);
         return JsonPath.read(response.body(), "$.accessToken");
     }

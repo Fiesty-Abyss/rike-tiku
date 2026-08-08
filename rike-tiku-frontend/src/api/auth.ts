@@ -7,10 +7,14 @@ export interface LoginRequest {
   password: string
   expectedRole?: RoleCode
   challengeId: string
-  sliderOffset: number
+  captchaCode: string
 }
 
-export interface SliderChallenge { challengeId:string; canvasWidth:number; targetWidth:number; targetDisplayOffset:number; expiresAt:string }
+export interface CaptchaChallenge {
+  challengeId: string
+  image: string
+  expiresAt: string
+}
 
 export interface LoginUser {
   id: number
@@ -45,7 +49,10 @@ export async function login(request: LoginRequest): Promise<LoginResponse> {
   return response.data
 }
 
-export const fetchSliderChallenge = () => http.get<SliderChallenge>('/auth/slider-challenge').then(response => response.data)
+export const fetchCaptchaChallenge = (previousChallengeId?: string) =>
+  http.get<CaptchaChallenge>('/auth/captcha-challenge', {
+    params: previousChallengeId ? { previousChallengeId } : undefined,
+  }).then(response => response.data)
 
 export async function fetchCurrentUser(): Promise<CurrentUser> {
   const response = await http.get<CurrentUser>('/auth/me')

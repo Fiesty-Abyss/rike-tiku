@@ -2,8 +2,8 @@
 
 本模块已通过 PR #15 普通 merge 进入 `main`，merge commit 为 `12d636fde4afa198edc78eb0c295f5b88c8e3456`。PR #15 不修改 Flyway V1–V7，也不新增迁移。
 
-统一登录为 `/login`；历史三条角色登录路径重定向到该入口。`GET /api/v1/auth/slider-challenge` 提供服务端短时一次性滑块验证，登录提交 `challengeId` 和 `sliderOffset`；挑战成功、失败或取用后即失效。`expectedRole` 可选以兼容旧调用；单角色直达工作台，多角色在认证后选择真实拥有的角色。`activeRole` 仅保存在 sessionStorage，后端授权始终依据 JWT 与数据库角色。
+统一登录为 `/login`；历史三条角色登录路径重定向到该入口。PR #19 当前分支使用 `GET /api/v1/auth/captcha-challenge` 获取服务端两分钟有效的一次性图形验证码，登录提交 `challengeId` 和 `captchaCode`；挑战成功、失败、过期或取用后即失效。验证码默认隐藏，首次登录操作只展开，第二次才提交。`expectedRole` 可选以兼容旧调用；单角色直达工作台，多角色在认证后选择真实拥有的角色。`activeRole` 仅保存在 sessionStorage，后端授权始终依据 JWT 与数据库角色。
 
 Element Plus 全局为中文 locale，公共枚举由 `src/utils/formatters.ts` 集中转换。学生主页提供物理、化学、生物入口和真实可用知识点数；各学科页支持随机五题、条件练习与本学科错题预选。教师仅显示当前教师档案对应的三元任教范围；教师任务、统计、高频考点和私信仍未实现。三类用户均可主动修改密码；忘记密码仅提示联系管理员。
 
-2026-08-07 已在 `rike_tiku_demo` 完成真实浏览器验收：MA-001 至 MA-005、MA-010、MA-011 已关闭；滑块错误、过期和重放均由服务端拒绝，三单角色直达、临时多角色进入选择页。MA-006 至 MA-009、头像、个人资料与简介、管理员学生完整管理与账号恢复、高频考点、私信、DeepSeek、GLM、AI 与 MVP30 正式入库均未实现。
+2026-08-08 已在 `rike_tiku_demo` 完成 PR #19 浏览器复验：验证码默认隐藏、错误后自动刷新、图片和文字刷新均通过；三个 smoke 单角色账号直达各自工作台，`demo_physics_admin` 进入角色选择页，退出重登正常且控制台 0 error。PR #15 滑块为历史实现，当前登录不再使用。
