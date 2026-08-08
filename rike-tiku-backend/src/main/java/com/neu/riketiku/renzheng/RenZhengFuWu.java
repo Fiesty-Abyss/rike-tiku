@@ -5,7 +5,7 @@ import com.neu.riketiku.renzheng.dto.DangQianYongHuXiangYing;
 import com.neu.riketiku.renzheng.dto.DengLuQingQiu;
 import com.neu.riketiku.renzheng.dto.DengLuXiangYing;
 import com.neu.riketiku.renzheng.dto.YongHuZhaiYaoXiangYing;
-import com.neu.riketiku.renzheng.dto.HuaKuaiTiaoZhanXiangYing;
+import com.neu.riketiku.renzheng.dto.TuXingYanZhengMaTiaoZhanXiangYing;
 import com.neu.riketiku.renzheng.dto.ZhuDongMiMaXiuGaiQingQiu;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -19,26 +19,26 @@ public class RenZhengFuWu {
     private final RenZhengShuJuCangKu repository;
     private final PasswordEncoder passwordEncoder;
     private final JwtLingPaiFuWu jwtService;
-    private final HuaKuaiTiaoZhanFuWu sliderService;
+    private final TuXingYanZhengMaFuWu captchaService;
 
     public RenZhengFuWu(
             RenZhengShuJuCangKu repository,
             PasswordEncoder passwordEncoder,
             JwtLingPaiFuWu jwtService,
-            HuaKuaiTiaoZhanFuWu sliderService) {
+            TuXingYanZhengMaFuWu captchaService) {
         this.repository = repository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
-        this.sliderService = sliderService;
+        this.captchaService = captchaService;
     }
 
-    public HuaKuaiTiaoZhanXiangYing huaKuaiTiaoZhan() {
-        return sliderService.create();
+    public TuXingYanZhengMaTiaoZhanXiangYing tuXingYanZhengMaTiaoZhan(String previousChallengeId) {
+        return captchaService.create(previousChallengeId);
     }
 
     @Transactional
     public DengLuXiangYing dengLu(DengLuQingQiu request) {
-        sliderService.verify(request.challengeId(), request.sliderOffset());
+        captchaService.verify(request.challengeId(), request.captchaCode());
         YongHuRenZhengShuJu user = repository.anYongHuMingChaZhao(request.username().trim())
                 .orElseThrow(this::invalidCredentials);
         validateAccountStatus(user);

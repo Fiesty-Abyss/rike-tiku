@@ -148,12 +148,12 @@ class StudentManagementIntegrationTest extends AdminQuestionIntegrationTestSuppo
 
     private HttpResponse<String> login(String username, String password) throws Exception {
         HttpResponse<String> challenge = HttpClient.newHttpClient().send(
-                HttpRequest.newBuilder(uri("/api/v1/auth/slider-challenge")).GET().build(),
+                HttpRequest.newBuilder(uri("/api/v1/auth/captcha-challenge")).GET().build(),
                 HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
         String body = "{\"username\":\"" + username + "\",\"password\":\"" + password
                 + "\",\"expectedRole\":\"STUDENT\",\"challengeId\":\""
-                + JsonPath.read(challenge.body(), "$.challengeId") + "\",\"sliderOffset\":"
-                + ((Number) JsonPath.read(challenge.body(), "$.targetDisplayOffset")).intValue() + "}";
+                + JsonPath.read(challenge.body(), "$.challengeId") + "\",\"captchaCode\":\""
+                + JsonPath.read(challenge.body(), "$.testCode") + "\"}";
         return HttpClient.newHttpClient().send(HttpRequest.newBuilder(uri("/api/v1/auth/login"))
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(body, StandardCharsets.UTF_8)).build(),
