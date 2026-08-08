@@ -1,6 +1,6 @@
 # 跨AI项目上下文
 
-> 当前工作分支为 `main`。PR #18 已普通 merge，merge commit 与合并基线 main HEAD 为 `b615bc1a78d842d61928abc8f89b839f52c88b7f`；Flyway V1–V8、24 张业务表，未向正式 `rike_tiku` 写入演示数据，未修改 MVP30 原始 Excel。
+> 当前工作分支为 `feat/login-image-captcha`，base 为 PR #18 合并后的最新 `main@dfe77c681f18cc5b24662fd6286c14a1514bdf6e`；Flyway V1–V8、24 张业务表，PR #19 不修改迁移、正式 `rike_tiku` 或 MVP30 原始 Excel。
 
 更新时间：2026-08-08
 
@@ -47,15 +47,17 @@
 - AI候选题必须为 `PENDING`，经过人工审核后才能发布。
 - AI故障不能影响登录、题库、练习、判分、错题和标准解析。
 - 不采用微服务；Redis、MinIO、WebSocket、Docker和本地大模型不阻塞MVP。
+- 登录验证码是本科毕设演示型能力，不扩展 Redis、OCR、轨迹分析、第三方验证码或风控系统。
 
 ## 5. 当前实现状态
 
 - 状态：题库、账号、教学组织、学生练习闭环、教师班级学科工作台和高频考点均已进入 `main`。
-- 当前分支：`main`；PR #18 已普通 merge，远程功能分支已删除。
+- 当前分支：`feat/login-image-captcha`；PR #18 已普通 merge，PR #19 尚未合并。
 - 当前 Flyway：V1–V8，共 24 张业务表；V1–V7 不修改，V8 新增 `gao_pin_kao_dian`。
 - Demo90 位于独立 `rike_tiku_demo`：物理、化学、生物各 30 道项目原创演示题，每科三题型、三档难度、三个演示知识点各 10 道；可见化学符号与科学计数法使用稳定 Unicode，STANDARD 解析不含演示操作说明。MVP30 原始 Excel 尚未正式入库且未改动。
 - PR #17 已进入 `main`：新增管理员单学生分页、详情、事务新增、编辑启停、事务调班和密码重置；Demo 扩充为 14 账号、3 班级、4 教师、9 学生、9 条 ACTIVE 三元任课关系。
 - PR #18 合并后后端 87/87、前端 83/83，package、type-check、build、audit、Demo 脚本链均通过；真实浏览器高频考点权限验收保持通过。正式库污染检查包含 Demo90、场景账号、场景班级和高频考点，均为 0。
+- PR #19 将 PR #15 历史滑块替换为默认隐藏的 4 位随机图形验证码；后端使用 JDK 原生图片 API、两分钟内存 challenge 和一次性消费，前端首次操作只展开、第二次才登录。当前后端 90/90、前端 91/91，Demo smoke 与四类账号真实浏览器登录均通过。
 - 历史 PR #13 自动化为后端 68/68、前端 68/68；历史 PR #14 自动化为后端 74/74、前端 68/68。PR #15 合并后自动化为后端 79/79、前端 72/72，打包、类型检查、构建和依赖审计均通过。
 - 远程仓库：`https://github.com/Fiesty-Abyss/rike-tiku`，公开仓库，默认分支 `main`。
 

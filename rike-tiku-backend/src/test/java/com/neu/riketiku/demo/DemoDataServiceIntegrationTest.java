@@ -152,10 +152,10 @@ class DemoDataServiceIntegrationTest extends AdminQuestionIntegrationTestSupport
 
     private void assertHttpLogin(String username, String role, int status, String expectedBody) throws Exception {
         HttpResponse<String> challenge = HttpClient.newHttpClient().send(HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:" + port + "/api/v1/auth/slider-challenge")).GET().build(), HttpResponse.BodyHandlers.ofString());
+                .uri(URI.create("http://localhost:" + port + "/api/v1/auth/captcha-challenge")).GET().build(), HttpResponse.BodyHandlers.ofString());
         String body = "{\"username\":\"" + username + "\",\"password\":\"a1234567\",\"expectedRole\":\"" + role
-                + "\",\"challengeId\":\"" + JsonPath.read(challenge.body(), "$.challengeId") + "\",\"sliderOffset\":"
-                + ((Number) JsonPath.read(challenge.body(), "$.targetDisplayOffset")).intValue() + "}";
+                + "\",\"challengeId\":\"" + JsonPath.read(challenge.body(), "$.challengeId") + "\",\"captchaCode\":\""
+                + JsonPath.read(challenge.body(), "$.testCode") + "\"}";
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create("http://localhost:" + port + "/api/v1/auth/login"))
                 .header("Content-Type", "application/json")
