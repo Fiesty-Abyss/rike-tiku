@@ -1,6 +1,6 @@
 # 开发状态
 
-> 当前分支为 `feat/mastery-rule-recommendation`，Base 为 PR #20 合并后的 `main@1055dee567b7afa153750792670fb0bafed1151c`。PR #21 待创建 Draft。Flyway 保持 V1–V9，共 26 张业务表；V1–V9 和 MVP30 原始 Excel 均未修改。
+> 当前分支为 `feat/mastery-rule-recommendation`，Base 为 PR #20 合并后的 `main@1055dee567b7afa153750792670fb0bafed1151c`。Draft PR #21 已创建。Flyway 保持 V1–V9，共 26 张业务表；V1–V9 和 MVP30 原始 Excel 均未修改。
 
 更新时间：2026-08-08
 
@@ -76,7 +76,7 @@
 
 ## 下一步
 
-完成 PR #21 的 Draft 发布并停止等待独立审查；不得自行 merge，不开始 PR #22 或任何大模型功能。
+Draft PR #21 已发布；当前停止等待独立审查，不自行 merge，不开始 PR #22 或任何大模型功能。
 
 ## 非 AI 工程基础完成门槛
 

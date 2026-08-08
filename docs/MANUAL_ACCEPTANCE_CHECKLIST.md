@@ -106,4 +106,4 @@
 - [ ] 15. 浏览器控制台无 error，网络请求无未处理 500。
 # 当前分支补充（未合并）
 
-当前分支为 `feat/mastery-rule-recommendation`，PR #21 待创建 Draft。PR #15 滑块矩阵属于历史验收；当前登录仍以 PR #19 图形验证码清单为准。
+当前分支为 `feat/mastery-rule-recommendation`，Draft PR #21 已创建。PR #15 滑块矩阵属于历史验收；当前登录仍以 PR #19 图形验证码清单为准。

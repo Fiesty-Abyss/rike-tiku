@@ -1,6 +1,6 @@
 # 跨AI项目上下文
 
-> 当前工作分支为 `feat/mastery-rule-recommendation`，Base 为 PR #20 合并后的 `main@1055dee567b7afa153750792670fb0bafed1151c`；PR #21 待创建 Draft。Flyway V1–V9、26 张业务表，V1–V9 与 MVP30 原始 Excel 均未修改。
+> 当前工作分支为 `feat/mastery-rule-recommendation`，Base 为 PR #20 合并后的 `main@1055dee567b7afa153750792670fb0bafed1151c`；Draft PR #21 已创建。Flyway V1–V9、26 张业务表，V1–V9 与 MVP30 原始 Excel 均未修改。
 
 更新时间：2026-08-08
 
