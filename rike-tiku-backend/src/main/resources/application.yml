@@ -14,6 +14,10 @@ spring:
     locations: classpath:db/migration
     validate-on-migrate: true
     clean-disabled: true
+  servlet:
+    multipart:
+      max-file-size: 3MB
+      max-request-size: 3MB
 
 server:
   port: ${RIKE_TIKU_BACKEND_PORT:8081}

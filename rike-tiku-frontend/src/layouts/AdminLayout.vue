@@ -39,8 +39,8 @@ async function logout() {
       <el-header class="admin-topbar">
         <div><strong>教学组织管理</strong><span>管理员专用</span></div>
         <el-dropdown trigger="click">
-          <el-button text>{{ userName }} · 管理员</el-button>
-          <template #dropdown><el-dropdown-menu><el-dropdown-item @click="passwordVisible=true">修改密码</el-dropdown-item><el-dropdown-item divided @click="logout">退出登录</el-dropdown-item></el-dropdown-menu></template>
+          <el-button text class="user-menu-button"><el-avatar :size="28" :src="authStore.profileAvatar || undefined">{{ userName.slice(0, 1) }}</el-avatar><span>{{ userName }} · 管理员</span></el-button>
+          <template #dropdown><el-dropdown-menu><el-dropdown-item @click="router.push('/profile')">个人中心</el-dropdown-item><el-dropdown-item @click="passwordVisible=true">修改密码</el-dropdown-item><el-dropdown-item divided @click="logout">退出登录</el-dropdown-item></el-dropdown-menu></template>
         </el-dropdown>
       </el-header>
       <el-main class="admin-main"><RouterView /></el-main><ChangePasswordDialog v-model="passwordVisible" />

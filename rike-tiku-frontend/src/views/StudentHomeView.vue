@@ -47,9 +47,13 @@ async function logout() {
         <router-link to="/student/wrong-questions">错题本</router-link>
         <router-link to="/messages">消息</router-link>
         <el-dropdown>
-          <el-button text>{{ name }}</el-button>
+          <el-button text class="user-menu-button">
+            <el-avatar :size="28" :src="auth.profileAvatar || undefined">{{ name.slice(0, 1) }}</el-avatar>
+            <span>{{ name }}</span>
+          </el-button>
           <template #dropdown>
             <el-dropdown-menu>
+              <el-dropdown-item @click="router.push('/profile')">个人中心</el-dropdown-item>
               <el-dropdown-item @click="passwordVisible = true">修改密码</el-dropdown-item>
               <el-dropdown-item divided @click="logout">退出登录</el-dropdown-item>
             </el-dropdown-menu>

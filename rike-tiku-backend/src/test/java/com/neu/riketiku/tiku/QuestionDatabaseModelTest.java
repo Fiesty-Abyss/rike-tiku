@@ -53,7 +53,7 @@ class QuestionDatabaseModelTest extends AdminQuestionIntegrationTestSupport {
         assertThat(Set.copyOf(tables)).isEqualTo(BUSINESS_TABLES);
         Integer migrations = jdbcTemplate.queryForObject(
             "SELECT COUNT(*) FROM flyway_schema_history WHERE success = 1", Integer.class);
-        assertThat(migrations).isEqualTo(9);
+        assertThat(migrations).isEqualTo(10);
     }
 
     @Test
