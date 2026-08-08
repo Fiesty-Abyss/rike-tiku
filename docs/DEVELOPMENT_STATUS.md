@@ -1,12 +1,12 @@
 # 开发状态
 
-> 当前分支为 `feat/login-image-captcha`，基于 PR #18 合并后的最新 `main@dfe77c681f18cc5b24662fd6286c14a1514bdf6e`。Flyway 为 V1–V8，共 24 张业务表；本轮不修改任何迁移，不写正式 `rike_tiku` 演示数据，不修改 MVP30 原始 Excel。
+> 当前分支为 `main`。PR #19 已普通 merge，merge commit 与合并基线 main HEAD 为 `0a12943e901e844520e3801264fa4a43590ff28e`。Flyway 为 V1–V8，共 24 张业务表；PR #19 未修改迁移、正式 `rike_tiku` 或 MVP30 原始 Excel。
 
 更新时间：2026-08-08
 
 ## 当前主线状态
 
-- 当前分支：`feat/login-image-captcha`；PR #18 已普通 merge，PR #19 尚未合并。
+- 当前分支：`main`；PR #19 已普通 merge，远程 `feat/login-image-captcha` 已删除。
 - 登录页当前使用两分钟有效、内存保存、一次性消费的 4 位随机图形验证码；验证码默认隐藏，首次登录操作只展开，第二次才认证。PR #15 滑块仅为历史实现。
 - 管理员单学生管理已实现分页筛选、详情与班级历史、事务新增、编辑与启停、事务调班和一次性密码重置；Excel 批量导入入口继续独立保留。
 - 学生自主练习、自动判分、结果与错题闭环已进入 `main`；AI、掌握度、推荐、教师任务、组卷考试和主观题评分仍未实现。
@@ -24,13 +24,13 @@
 
 ## 当前验证
 
-- PR #19 当前分支后端：`mvn clean test` 90/90 PASS；认证专项 21/21 PASS；`mvn clean package` 90/90 PASS 并生成可执行 JAR。
-- PR #19 当前分支前端：`npm test` 91/91 PASS；验证码与登录导航相关专项 26/26 PASS；type-check、build PASS，`npm audit --omit=dev` 为 0 vulnerabilities。
-- PR #19 当前分支浏览器 PASS（仅 `rike_tiku_demo`）：验证码默认隐藏、错误后中文提示并自动换图、图片/文字刷新、三个单角色直达、多角色选择、退出重登均通过；控制台 0 error。
+- PR #19 合并后后端：`mvn clean test` 90/90 PASS；`mvn clean package` 90/90 PASS 并生成可执行 JAR。
+- PR #19 合并后前端：`npm test` 91/91 PASS；type-check、build PASS，`npm audit --omit=dev` 为 0 vulnerabilities。
+- PR #19 浏览器验收保持 PASS（仅 `rike_tiku_demo`）：验证码默认隐藏、错误后中文提示并自动换图、图片/文字刷新、三个单角色直达、多角色选择、退出重登均通过；控制台 0 error。
 - PR #18 合并后后端：`mvn clean test` 87/87 PASS；`mvn clean package` 87/87 PASS，并成功生成可执行 JAR。
 - PR #18 合并后前端：`npm test` 83/83 PASS；`npm run type-check` PASS；`npm run build` PASS（保留既有大 chunk 提示）；`npm audit --omit=dev` 为 0 vulnerabilities。
 - `rike_tiku_demo`：`reset → seed → validate → smoke` PASS；V1–V8、24 张业务表，固定状态为 14 账号、3 班级、4 教师、9 学生、9 条 ACTIVE 任课关系、Demo90 和 12 条 ACTIVE 高频考点。
-- PR #19 当前分支正式 `rike_tiku` 只读污染复查：Demo90 0、场景账号 0、场景班级 0、高频考点 0；正式库 Flyway 版本为 8。
+- PR #19 合并后 Demo `reset → seed → validate → smoke` PASS；正式 `rike_tiku` 只读污染复查：Demo90 0、场景账号 0、场景班级 0、高频考点 0；正式库 Flyway 版本为 8。
 - PR #18 真实浏览器 PASS（仅 `rike_tiku_demo`）：物理教师进入 199/200 工作台，查看 5/3 名学生，新增、编辑、停用、启用高频考点；生物教师仅见 199/200 生物，化学教师仅见 199/200 化学；199/200 学生分别只读取本班物理 ACTIVE 考点；控制台 error 日志为空。临时验收考点已由 reset/seed 清理。
 - MA-001 至 MA-005、MA-007、MA-008、MA-010 至 MA-012 已关闭；MA-006 仅剩个人资料、简介和头像，MA-009 私信尚未完成。
 - 历史结果：PR #13 为后端 68/68、前端 68/68；PR #14 为后端 74/74、前端 68/68；PR #15 为后端 79/79、前端 72/72；PR #16 为后端 80/80；PR #17 为后端 86/86、前端 80/80。
@@ -60,10 +60,11 @@
 - PR #16：Demo90 原创演示题库，普通 merge `588db6e`。
 - PR #17：管理员单学生完整管理与 199/200 双班级演示场景，普通 merge `3e5454d`。
 - PR #18：教师班级学科工作台与高频考点，普通 merge `b615bc1`。
+- PR #19：登录随机图形验证码与交互优化，普通 merge `0a12943`。
 
 ## 下一步
 
-PR #19 只处理登录图形验证码和交互优化；不得扩展到其他业务模块。完成验证后创建 Draft PR，等待独立审查。
+PR #19 已完成普通 merge；当前停止并等待下一轮明确指令，不创建下一分支。
 
 ## 非 AI 工程基础完成门槛
 
