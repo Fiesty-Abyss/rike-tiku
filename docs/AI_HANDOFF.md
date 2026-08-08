@@ -1,6 +1,6 @@
 # AI 开发交接
 
-> 当前接续分支：`main`。PR #21 已普通 merge，merge commit 与当前业务基线为 `c0d655324fec0a36772c2d095b6025e5f708fc4c`；本状态文档提交位于该业务基线之上。当前 Flyway V1–V9、26 张业务表，无新增迁移。
+> 当前接续分支：`feat/personal-center`，基于 `main@2e09c74f046a56645c6a503c9448726136a0e678` 开发 PR #22，尚未合并。当前 Flyway V1–V10、26 张业务表；V10 只 ALTER `yong_hu`，V1–V9 未修改。
 
 更新时间：2026-08-08
 
@@ -10,7 +10,7 @@ PR #10 至 PR #19 均已普通 merge；PR #19 merge commit 为 `0a12943e901e8445
 
 PR #19 已用 JDK 原生生成的 4 位随机 PNG 图形验证码替换 PR #15 历史滑块并进入 `main`。登录页默认不显示验证码；首次点击/Enter 只展开，第二次才提交。challenge 在内存保存两分钟并一次性消费，不新增 Redis、第三方依赖、数据库表或 Flyway。
 
-V7 的学生练习、正式答题、结果和错题聚合模型已进入 `main`。PR #18 新增 V8 高频考点表，PR #20 新增 V9 两张私信表；当前 Flyway 为 V1–V9，共 26 张业务表，已执行迁移和 MVP30 原始 Excel 未改动。历史 PR #13 自动化为后端 68/68、前端 68/68；PR #15 合并后自动化为后端 79/79、前端 72/72，打包、类型检查、构建、依赖审计与完整浏览器验收均已通过。
+V7 的学生练习、正式答题、结果和错题聚合模型已进入 `main`。PR #18 新增 V8 高频考点表，PR #20 新增 V9 两张私信表，PR #22 当前分支新增只 ALTER `yong_hu` 的 V10；当前 Flyway 为 V1–V10，共 26 张业务表，MVP30 原始 Excel未改动。历史 PR #13 自动化为后端 68/68、前端 68/68；PR #15 合并后自动化为后端 79/79、前端 72/72，打包、类型检查、构建、依赖审计与完整浏览器验收均已通过。
 
 `main` 中的 `rike_tiku_demo` 显式重建工具保留原 smoke 数据，并形成 199/200 双班级场景：14 账号、3 班级、4 教师、9 学生、9 条 ACTIVE 三元任课关系及 Demo90。PR #18 另预置 12 条 ACTIVE 高频考点。它不使用 Flyway 承载演示数据，不公开 seed 接口，也不在正常启动时执行。
 
@@ -29,6 +29,10 @@ PR #21 已普通 merge 进入 `main`，实时复用 V7 答题事实和冻结知�
 合并后学习掌握专项 6/6、后端 98/98、前端 29 文件 106/106，package、type-check、build、生产依赖 audit 0 及 Demo `reset → seed → validate → smoke` 均通过。正式 `rike_tiku` 只读检查为 Flyway V9、26 张业务表，Demo90、场景账号、场景班级、高频考点、私信会话、私信消息与 V7 学习记录均为 0。轻量浏览器复查确认学生掌握页、5 题推荐预选、教师班级学情正常，控制台 0 error；原 15 题浏览器证据继续作为历史验收记录。
 
 MA-013 的旧测试数据源问题已关闭。合并前使用全新随机临时库验证：临时库与正式库 V9 script 一致，checksum 均为 `1192958817`、success 均为 1；正式库两张表为空。PR #20 合并后，正式库提前执行的 V9 已与 main 正式迁移基线一致，两张 V9 结构表不属于业务数据污染；Demo90、场景账号、场景班级、高频考点、会话和消息仍均为 0。
+
+PR #22 当前分支新增统一 `/profile` 与 `GET/PUT /api/v1/profile`、`POST/DELETE /api/v1/profile/avatar`。学生、教师、管理员和 ADMIN+TEACHER 多角色账号均只读取本人真实资料；简介上限 500 字。头像只接受不超过 2 MB、可由 ImageIO 真实解析且 MIME/文件内容一致的 PNG/JPEG，MySQL 保存二进制，前端显示 data URL。业务档案、角色、用户名和组织关系不可在个人中心修改，主动改密继续复用现有接口。
+
+PR #22 当前验证为后端 102/102、前端 31 文件 117/117，package、type-check、build、audit 0、Demo reset/seed/validate/smoke 均 PASS。真实浏览器覆盖三角色与 `demo_physics_admin` 多角色资料、简介、头像上传/刷新持久化/删除、现有改密入口，控制台 0 error；验收数据已 reset/seed 清理，MA-006 已关闭。正式库正常升级 V10 后，26 张业务表及所有演示、私信、学习数据污染计数仍为 0。
 
 ## 继续时必须保持
 
@@ -53,7 +57,9 @@ MA-013 的旧测试数据源问题已关闭。合并前使用全新随机临时�
 - [师生私信 API](TEACHER_STUDENT_MESSAGING_API.md)
 - [师生私信前端](TEACHER_STUDENT_MESSAGING_FRONTEND.md)
 - [知识点掌握度与规则推荐](LEARNING_MASTERY_RULE_RECOMMENDATION.md)
+- [个人中心 API](PERSONAL_CENTER_API.md)
+- [个人中心前端](PERSONAL_CENTER_FRONTEND.md)
 
 ## 当前下一步
 
-PR #21 已完成普通 merge 与合并后回归；当前停留在 `main`，未创建 PR #22，等待下一轮明确指令。
+PR #22 当前只等待独立审查。不得合并、创建 PR #23、开始 MVP30 最终收尾或 AI。

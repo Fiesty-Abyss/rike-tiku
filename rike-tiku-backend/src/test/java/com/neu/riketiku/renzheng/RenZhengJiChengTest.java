@@ -294,6 +294,15 @@ class RenZhengJiChengTest {
 
         assertThat(get("/api/v1/auth/me", accessToken).status()).isEqualTo(200);
         assertError(get("/api/v1/test/student", accessToken), 403, "MUST_CHANGE_PASSWORD");
+        assertError(json("PUT", "/api/v1/profile", "{\"introduction\":\"尚未改密\"}", accessToken),
+                403, "MUST_CHANGE_PASSWORD");
+        assertError(uploadPath("/api/v1/profile/avatar", new byte[]{1, 2, 3}, "avatar.png", accessToken),
+                403, "MUST_CHANGE_PASSWORD");
+
+        TestResponse changed = changePassword(
+                accessToken, "InitialPass1", "ChangedPass2", "ChangedPass2");
+        String changedToken = token(changed);
+        assertThat(get("/api/v1/profile", changedToken).status()).isEqualTo(200);
     }
 
     @Test

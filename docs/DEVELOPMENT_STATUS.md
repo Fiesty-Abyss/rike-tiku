@@ -1,16 +1,17 @@
 # 开发状态
 
-> 当前分支为 `main`。PR #21 已普通 merge，merge commit 与当前业务基线为 `c0d655324fec0a36772c2d095b6025e5f708fc4c`；本状态文档提交位于该业务基线之上。Flyway 保持 V1–V9，共 26 张业务表；V1–V9 和 MVP30 原始 Excel 均未修改。
+> 当前分支为 `feat/personal-center`，基于 `main@2e09c74f046a56645c6a503c9448726136a0e678` 开发 PR #22，尚未合并。Flyway 为 V1–V10，共 26 张业务表；V10 只 ALTER `yong_hu`，V1–V9 和 MVP30 原始 Excel 均未修改。
 
 更新时间：2026-08-08
 
 ## 当前主线状态
 
-- 当前分支：`main`；PR #21 已普通 merge，远程功能分支已删除，未创建 PR #22。
+- 当前分支：`feat/personal-center`；PR #22 待独立审查，不开始 PR #23。
+- 三角色共用 `/profile`，本人身份从 JWT 推导；页面展示真实账号角色及学生/教师档案，只允许维护 500 字简介和本人头像，并复用现有主动修改密码流程。
 - 登录页当前使用两分钟有效、内存保存、一次性消费的 4 位随机图形验证码；验证码默认隐藏，首次登录操作只展开，第二次才认证。PR #15 滑块仅为历史实现。
 - 管理员单学生管理已实现分页筛选、详情与班级历史、事务新增、编辑与启停、事务调班和一次性密码重置；Excel 批量导入入口继续独立保留。
 - 学生自主练习、自动判分、结果、错题闭环、实时知识点掌握度、固定规则推荐和教师班级学情查看均已进入 `main`。掌握度与推荐是确定性规则统计，不属于 AI；AI、教师任务、组卷考试和主观题评分仍未实现。
-- Flyway：V1–V9，共 26 张业务表；V9 新增 `si_xin_hui_hua`、`si_xin_xiao_xi`，V1–V8 未修改。
+- Flyway：V1–V10，共 26 张业务表；V10 只向 `yong_hu` 增加简介、头像 MIME、头像二进制和头像更新时间，V1–V9 未修改。
 - 教师工作台已支持按本人 ACTIVE 三元任课关系读取班级、科目、学生名单和高频考点，并支持新增、编辑、启停及排序；学生端按本人有效主班级和学科只读取对应 ACTIVE 高频考点。
 - PR #20 已实现受 ACTIVE 三元任课关系和学生当前主班级约束的师生纯文本私信；发送身份取自 JWT，支持会话、未读、已读、7 秒轮询和失效关系历史保留，不含 WebSocket、附件、群聊或管理员审计。
 - PR #21 掌握度只统计本人已提交、已判分的单选/多选/填空答题，实时关联冻结知识点快照；当前学科全部 ACTIVE 知识点参与掌握度和总体统计，不能因当前题量不足而丢失历史事实。NEW/REVIEWING 错题阻止“已掌握”，MASTERED 错题不阻止。5 题推荐单独复用现有练习题池资格，按活动错题、低正确率、巩固中、样本不足、未练习依次排序，最多 3 项，不属于 AI。
@@ -26,6 +27,11 @@
 
 ## 当前验证
 
+- PR #22 后端：个人中心与数据库专项 23/23 PASS；`mvn clean test` 102/102 PASS；`mvn clean package` PASS。
+- PR #22 前端：`npm test` 31 文件、117/117 PASS；type-check、build PASS，`npm audit --omit=dev` 为 0 vulnerabilities；界面静态质量扫描无告警。
+- PR #22 Demo：`reset → seed → validate → smoke` PASS；三角色和多角色真实浏览器个人中心验收 PASS，头像刷新持久化、删除、简介、只读业务档案及改密入口均通过，控制台 0 error；随后再次 `reset → seed → validate` 清理验收数据。
+- 正式 `rike_tiku` 已按正常 Flyway 流程升级 V10，只读检查为 26 张业务表；Demo90、场景账号、场景班级、高频考点、私信会话、私信消息、V7 五张学习记录表和演示简介/头像均为 0。
+
 - PR #21 合并后后端：学习掌握专项 6/6 PASS（包含掌握度统计资格与 5 题推荐资格分离场景）；`mvn clean test` 98/98 PASS；`mvn clean package` PASS。
 - PR #21 合并后前端：`npm test` 29 文件、106/106 PASS；type-check、build PASS，`npm audit --omit=dev` 为 0 vulnerabilities。
 - PR #21 合并后 Demo：`reset → seed → validate → smoke` PASS；正式 `rike_tiku` 只读检查为 Flyway V9、26 张业务表，Demo90、场景账号、场景班级、高频考点、私信会话、私信消息及 V7 五张学习记录表均为 0；敏感信息扫描 PASS。
@@ -40,12 +46,12 @@
 - PR #19 浏览器验收保持 PASS（仅 `rike_tiku_demo`）：验证码默认隐藏、错误后中文提示并自动换图、图片/文字刷新、三个单角色直达、多角色选择、退出重登均通过；控制台 0 error。
 - PR #18 合并后后端：`mvn clean test` 87/87 PASS；`mvn clean package` 87/87 PASS，并成功生成可执行 JAR。
 - PR #18 合并后前端：`npm test` 83/83 PASS；`npm run type-check` PASS；`npm run build` PASS（保留既有大 chunk 提示）；`npm audit --omit=dev` 为 0 vulnerabilities。
-- `rike_tiku_demo`：`reset → seed → validate → smoke` PASS；V1–V9、26 张业务表，固定状态为 14 账号、3 班级、4 教师、9 学生、9 条 ACTIVE 任课关系、Demo90 和 12 条 ACTIVE 高频考点；固定 seed 不预置私信。
+- `rike_tiku_demo`：`reset → seed → validate → smoke` PASS；V1–V10、26 张业务表，固定状态为 14 账号、3 班级、4 教师、9 学生、9 条 ACTIVE 任课关系、Demo90 和 12 条 ACTIVE 高频考点；固定 seed 不预置私信、简介或头像。
 - PR #19 历史阶段 Demo `reset → seed → validate → smoke` PASS；当时正式 `rike_tiku` 的 Demo90、场景账号、场景班级、高频考点均为 0。当前正式库基线已为 Flyway V9。
 - PR #18 真实浏览器 PASS（仅 `rike_tiku_demo`）：物理教师进入 199/200 工作台，查看 5/3 名学生，新增、编辑、停用、启用高频考点；生物教师仅见 199/200 生物，化学教师仅见 199/200 化学；199/200 学生分别只读取本班物理 ACTIVE 考点；控制台 error 日志为空。临时验收考点已由 reset/seed 清理。
 - 合并前门禁使用全新随机临时库完整迁移 V1–V9；临时库与正式 `rike_tiku` 的 V9 script 均为 `V9__create_teacher_student_message_tables.sql`、checksum 均为 `1192958817`、success 均为 1。MA-013 导致正式库提前执行的 V9 现已与 main 正式基线一致，两张结构表不再描述为业务数据污染；测试隔离修复保持有效，MA-013 已关闭。
 - 正式 `rike_tiku` 合并后只读检查：Flyway V9、26 张业务表；Demo90、场景账号、场景班级、高频考点、私信会话、私信消息均为 0。
-- MA-001 至 MA-005、MA-007 至 MA-013 已关闭；MA-006 仅剩个人资料、简介和头像。
+- MA-001 至 MA-015 已关闭；其中 MA-006 在 PR #22 三角色与多角色真实浏览器验收后关闭。
 - 历史结果：PR #13 为后端 68/68、前端 68/68；PR #14 为后端 74/74、前端 68/68；PR #15 为后端 79/79、前端 72/72；PR #16 为后端 80/80；PR #17 为后端 86/86、前端 80/80。
 
 ## 已进入 main 的演示验收环境
@@ -57,7 +63,7 @@
 - 历史 PR #14 合并后回归：后端 74/74、`mvn clean package` PASS；前端 68/68、类型检查和构建 PASS；`npm audit` 为 0 vulnerabilities。
 - 真实脚本链 `reset → seed → validate → clean → reset → seed` PASS，末次 seed 后演示库保持待人工验收状态；正式库演示账号、演示题和 V7 五张学习表均为 0。
 - 人工验收问题 MA-001 已关闭：后端 18081、前端 18080、`/api/v1` 基址和 `rike_tiku_demo` 连接均正确；demo_admin 登录、demo_teacher 真实 HTTP 登录和 demo_student 浏览器登录均已复验，原 `INVALID_CREDENTIALS` 不再复现。
-- MA-002 至 MA-005、MA-007 至 MA-013 已通过真实浏览器或专项复验并关闭。MA-006 尚未完成，仅剩个人资料、个人简介和头像能力。
+- MA-001 至 MA-015 已通过专项与相应真实浏览器复验并关闭。PR #22 的 MA-006 证据覆盖三角色资料、简介、头像持久化/删除、多角色和改密入口。
 - PR #16 合并后回归：Demo90 专项 7/7、后端 80/80、前端 72/72，package、type-check、build 均 PASS，生产依赖审计为 0；脚本链 `reset → seed → validate` PASS。此前完成的三科筛选、随机题集变化、未提交防泄露、提交/结果/错题链路和浏览器抽查保持 PASS。
 - Demo90 不等于 MVP30 正式真实题库；MVP30 仍未正式入库，网络候选题没有因此变为 `PUBLISHED`。
 - PR #18 Demo 高频考点为 12 条项目原创自编纯文本演示内容：199/200 班物理、化学、生物每条 ACTIVE 任课关系各 2 条，均关联该科 Demo90 知识点。高频考点不使用附件、富文本或 AI 生成内容。
@@ -79,7 +85,7 @@
 
 ## 下一步
 
-PR #21 已完成普通 merge 与合并后回归；当前停止，未创建 PR #22，等待下一轮明确指令。
+PR #22 仅等待独立审查；不合并、不创建 PR #23，也不开始 MVP30 或 AI 工作。
 
 ## 非 AI 工程基础完成门槛
 
