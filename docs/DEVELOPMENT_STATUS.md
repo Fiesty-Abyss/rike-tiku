@@ -1,6 +1,6 @@
 # 开发状态
 
-> 当前分支为 `feat/mastery-rule-recommendation`，Base 为 PR #20 合并后的 `main@1055dee567b7afa153750792670fb0bafed1151c`。Draft PR #21 已创建。Flyway 保持 V1–V9，共 26 张业务表；V1–V9 和 MVP30 原始 Excel 均未修改。
+> 当前分支为 `feat/mastery-rule-recommendation`，最初基于 PR #20 merge commit `1055dee567b7afa153750792670fb0bafed1151c` 创建；GitHub PR base branch 为 `main`，当前 base tip 已包含 PR #20 合并状态文档提交 `4fd8d5d97e5a6abd77c199481c26eb2c6f40e9f4`。Draft PR #21 已创建，未 rebase、未 force push。Flyway 保持 V1–V9，共 26 张业务表；V1–V9 和 MVP30 原始 Excel 均未修改。
 
 更新时间：2026-08-08
 
@@ -13,7 +13,7 @@
 - Flyway：V1–V9，共 26 张业务表；V9 新增 `si_xin_hui_hua`、`si_xin_xiao_xi`，V1–V8 未修改。
 - 教师工作台已支持按本人 ACTIVE 三元任课关系读取班级、科目、学生名单和高频考点，并支持新增、编辑、启停及排序；学生端按本人有效主班级和学科只读取对应 ACTIVE 高频考点。
 - PR #20 已实现受 ACTIVE 三元任课关系和学生当前主班级约束的师生纯文本私信；发送身份取自 JWT，支持会话、未读、已读、7 秒轮询和失效关系历史保留，不含 WebSocket、附件、群聊或管理员审计。
-- PR #21 掌握度只统计本人已提交、已判分的单选/多选/填空答题，实时关联冻结知识点快照；NEW/REVIEWING 错题阻止“已掌握”，MASTERED 错题不阻止。推荐按活动错题、低正确率、巩固中、样本不足、未练习依次排序，最多 3 项，不属于 AI。
+- PR #21 掌握度只统计本人已提交、已判分的单选/多选/填空答题，实时关联冻结知识点快照；当前学科全部 ACTIVE 知识点参与掌握度和总体统计，不能因当前题量不足而丢失历史事实。NEW/REVIEWING 错题阻止“已掌握”，MASTERED 错题不阻止。5 题推荐单独复用现有练习题池资格，按活动错题、低正确率、巩固中、样本不足、未练习依次排序，最多 3 项，不属于 AI。
 
 ## 已进入 main
 
@@ -26,9 +26,10 @@
 
 ## 当前验证
 
-- PR #21 当前分支后端：学习掌握专项 4/4 PASS；`mvn clean test` 96/96 PASS；`mvn clean package` 96/96 PASS。
+- PR #21 当前分支后端：学习掌握专项 6/6 PASS（包含掌握度统计资格与 5 题推荐资格分离场景）；`mvn clean test` 98/98 PASS；`mvn clean package` 98/98 PASS。
 - PR #21 当前分支前端：`npm test` 29 文件、106/106 PASS；type-check、build PASS，`npm audit --omit=dev` 为 0 vulnerabilities。
 - PR #21 浏览器 PASS（仅 `rike_tiku_demo`）：199 学生从零记录真实完成 15 道物理题，形成牛顿运动定律 0% 薄弱、电场强度 60% 巩固中、温度和内能 100% 已掌握；推荐预选学科、知识点和 5 题正确。199 物理教师看到该生 15 题、53.3%、薄弱 1、已掌握 1，200 班无混入；生物/化学教师仅见本人两班对应学科；控制台 0 error。验收记录随后由 reset/seed 清理。
+- 独立审查修正后轻量浏览器抽查 PASS：学生学习掌握页正常展示全部 ACTIVE 知识点，推荐按钮仍正确预选学科、知识点和 5 题；教师班级学情正常，控制台 0 error。无需重新制造 15 题数据。
 
 - PR #20 合并后后端：`mvn clean test` 92/92 PASS；`mvn clean package` 92/92 PASS 并生成可执行 JAR；私信、权限与 V9 数据库专项 PASS。
 - PR #20 合并后前端：`npm test` 25 文件、100/100 PASS；type-check、build PASS，`npm audit --omit=dev` 为 0 vulnerabilities。

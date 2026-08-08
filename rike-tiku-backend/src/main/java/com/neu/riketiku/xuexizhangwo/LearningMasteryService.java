@@ -1,6 +1,7 @@
 package com.neu.riketiku.xuexizhangwo;
 
 import com.neu.riketiku.renzheng.RenZhengYeWuYiChang;
+import com.neu.riketiku.xueshenglianxi.StudentPracticeService;
 import com.neu.riketiku.xuexizhangwo.LearningMasteryDtos.KnowledgePointSummary;
 import com.neu.riketiku.xuexizhangwo.LearningMasteryDtos.OverallSummary;
 import com.neu.riketiku.xuexizhangwo.LearningMasteryDtos.PracticeParameters;
@@ -16,6 +17,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -24,10 +26,14 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class LearningMasteryService {
     private static final String GOOD_PERFORMANCE_MESSAGE = "当前已练习知识点整体表现良好，可以进行综合随机练习。";
+    private static final String NO_ELIGIBLE_RECOMMENDATION_MESSAGE =
+            "当前暂无题量充足的知识点可生成5题巩固练习，可以先进行综合练习。";
     private final JdbcTemplate jdbc;
+    private final StudentPracticeService studentPracticeService;
 
-    public LearningMasteryService(JdbcTemplate jdbc) {
+    public LearningMasteryService(JdbcTemplate jdbc, StudentPracticeService studentPracticeService) {
         this.jdbc = jdbc;
+        this.studentPracticeService = studentPracticeService;
     }
 
     @Transactional(readOnly = true)
@@ -79,21 +85,6 @@ public class LearningMasteryService {
                       AND lt.ti_mu_lei_xing IN ('SINGLE_CHOICE','MULTIPLE_CHOICE','FILL_BLANK')
                 ) a ON a.knowledge_point_id=k.id
                 WHERE k.ke_mu_id=? AND k.zhuang_tai='ACTIVE' AND k.yi_shan_chu=0
-                  AND 5 <= (
-                    SELECT COUNT(*)
-                    FROM ti_mu_zhi_shi_dian qkp
-                    JOIN ti_mu q ON q.id=qkp.ti_mu_id
-                    WHERE qkp.zhi_shi_dian_id=k.id AND qkp.yi_shan_chu=0
-                      AND q.ke_mu_id=k.ke_mu_id AND q.zhuang_tai='PUBLISHED'
-                      AND q.shi_yong_mo_shi='ONLINE_PRACTICE'
-                      AND q.shi_fou_ke_zi_dong_pan_fen=1 AND q.yi_shan_chu=0
-                      AND q.ti_mu_lei_xing IN ('SINGLE_CHOICE','MULTIPLE_CHOICE','FILL_BLANK')
-                      AND NOT EXISTS (
-                        SELECT 1 FROM ti_mu_fu_jian attachment
-                        WHERE attachment.ti_mu_id=q.id AND attachment.zhuang_tai='ACTIVE'
-                          AND attachment.yi_shan_chu=0
-                      )
-                  )
                 GROUP BY k.id,k.zhi_shi_dian_ming_cheng,k.wan_zheng_lu_jing,k.pai_xu
                 ORDER BY k.pai_xu,k.id
                 """, (rs, row) -> point(rs.getLong(1), rs.getString(2), rs.getString(3), rs.getInt(4),
@@ -110,8 +101,13 @@ public class LearningMasteryService {
                   AND lt.ti_mu_lei_xing IN ('SINGLE_CHOICE','MULTIPLE_CHOICE','FILL_BLANK')
                 """, (rs, row) -> new int[]{rs.getInt(1), rs.getInt(2)}, studentId, studentId, subject.id());
         OverallSummary overall = overall(points, overallCounts[0], overallCounts[1]);
-        List<Recommendation> recommendations = recommendations(subject.id(), points);
-        String message = recommendations.isEmpty() ? GOOD_PERFORMANCE_MESSAGE : null;
+        Set<Long> eligiblePointIds = studentPracticeService.recommendationEligibleKnowledgePointIds(subject.id(), 5);
+        List<Recommendation> recommendations = recommendations(subject.id(), points, eligiblePointIds);
+        boolean allMastered = !points.isEmpty()
+                && points.stream().allMatch(point -> point.masteryLevel().equals("MASTERED"));
+        String message = recommendations.isEmpty()
+                ? (allMastered ? GOOD_PERFORMANCE_MESSAGE : NO_ELIGIBLE_RECOMMENDATION_MESSAGE)
+                : null;
         return new StudentLearningSummary(subject, overall, points, recommendations, message);
     }
 
@@ -162,9 +158,13 @@ public class LearningMasteryService {
                 count(points, point -> point.masteryLevel().equals("NOT_STARTED")));
     }
 
-    private List<Recommendation> recommendations(long subjectId, List<KnowledgePointSummary> points) {
+    private List<Recommendation> recommendations(long subjectId, List<KnowledgePointSummary> points,
+            Set<Long> eligiblePointIds) {
         List<RecommendationCandidate> candidates = new ArrayList<>();
         for (KnowledgePointSummary point : points) {
+            if (!eligiblePointIds.contains(point.knowledgePointId())) {
+                continue;
+            }
             int priority;
             String reason;
             if (point.activeWrongQuestionCount() > 0) {
