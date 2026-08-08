@@ -1,17 +1,17 @@
 # 数据库模型 V2：题库、账号与教学组织
 
-更新时间：2026-08-04  
+更新时间：2026-08-08
 设计基线：V3.0  
 数据库：MySQL 8.4 / `rike_tiku`  
-迁移版本：Flyway V1–V6
+迁移版本：Flyway V1–V8
 
 ## 1. 范围和事实来源
 
-本版在题库核心V1模型上增加账号、角色、学生/教师档案、班级、班级学生历史和教师—班级—科目三元任课关系。
+本版在题库核心V1模型上增加账号、角色、学生/教师档案、班级、班级学生历史、教师—班级—科目三元任课关系和高频考点。
 
-Flyway迁移是数据库结构的唯一事实来源。本文和 `database/schema/rike_tiku_schema.sql` 是阅读快照，不得替代迁移，也不得反向手工修改已经执行的V1–V6。
+Flyway迁移是数据库结构的唯一事实来源。本文和 `database/schema/rike_tiku_schema.sql` 是阅读快照，不得替代迁移，也不得反向手工修改已经执行的V1–V8。V8 只新增高频考点表，V1–V7 保持不变。
 
-本轮没有实现登录、JWT、用户CRUD、学生Excel导入、练习、错题、AI或前端页面。
+高频考点表只绑定真实 `ren_ke_guan_xi_id` 和同科 `zhi_shi_dian_id`；教师与学生 API 的数据权限仍由当前用户和三元任课关系推导。
 
 ## 2. 总体关系
 
@@ -150,6 +150,25 @@ V3.0原建议 `UK(ban_ji_id, xue_sheng_id)` 无法同时允许“退出后保留
 | `geng_xin_shi_jian` | DATETIME(3) | 自动更新 | 更新审计 |
 
 关键约束：`UK(jiao_shi_id, ban_ji_id, ke_mu_id)`；`IDX(ban_ji_id, ke_mu_id, zhuang_tai)`。教师现实职务、姓名或前端入口均不能替代这条关系授予数据权限。
+
+### 3.9 `gao_pin_kao_dian` 高频考点（V8）
+
+| 字段 | 类型 | 空值/默认 | 说明 |
+|---|---|---|---|
+| `id` | BIGINT | PK，自增 | 高频考点主键 |
+| `ren_ke_guan_xi_id` | BIGINT | 非空，FK | 真实三元任课关系，不重复保存教师、班级、科目 |
+| `zhi_shi_dian_id` | BIGINT | 非空，FK | 必须属于该任课关系的科目 |
+| `biao_ti` | VARCHAR(200) | 非空 | 标题 |
+| `nei_rong` | TEXT | 非空 | 纯文本正文 |
+| `ji_yi_kou_jue` | VARCHAR(500) | 可空 | 记忆口诀 |
+| `chang_jian_wu_qu` | TEXT | 可空 | 常见误区 |
+| `pai_xu` | INT | 0 | 普通整数排序值 |
+| `zhuang_tai` | VARCHAR(16) | `ACTIVE` | `ACTIVE` / `DISABLED` |
+| `chuang_jian_shi_jian` | DATETIME(3) | 当前时间 | 创建审计 |
+| `geng_xin_shi_jian` | DATETIME(3) | 自动更新 | 更新审计 |
+| `yi_shan_chu` | TINYINT | 0 | 逻辑删除 |
+
+V8 表使用外键和状态检查，不引入附件、富文本、AI 或审核流。教师只能维护自己的 ACTIVE 任课关系；学生端由有效学生档案、ACTIVE 主班级和所选科目反推任课关系，只返回 ACTIVE 内容。
 
 ## 4. 删除和历史策略
 

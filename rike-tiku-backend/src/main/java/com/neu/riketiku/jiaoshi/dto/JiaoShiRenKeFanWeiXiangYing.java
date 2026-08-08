@@ -1,6 +1,7 @@
 package com.neu.riketiku.jiaoshi.dto;
 
 public record JiaoShiRenKeFanWeiXiangYing(
+        Long teachingAssignmentId,
         Long classId,
         String className,
         String grade,
