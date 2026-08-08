@@ -28,8 +28,7 @@ public class ChuShiMiMaMenJinGuoLvQi extends OncePerRequestFilter {
         if (authentication != null
                 && authentication.getPrincipal() instanceof RenZhengYongHu user
                 && user.biXuXiuGaiMiMa()
-                && !ALLOWED_PATHS.contains(request.getRequestURI())
-                && !request.getRequestURI().startsWith("/api/v1/profile")) {
+                && !ALLOWED_PATHS.contains(request.getRequestURI())) {
             AnQuanCuoWuXieRuQi.write(response, HttpServletResponse.SC_FORBIDDEN,
                     "MUST_CHANGE_PASSWORD", "必须先修改初始密码");
             return;
