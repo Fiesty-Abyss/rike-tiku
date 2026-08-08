@@ -1,6 +1,6 @@
 # AI 开发交接
 
-> 当前接续分支：`feat/mastery-rule-recommendation`。Base 为 PR #20 合并后的 `main@1055dee567b7afa153750792670fb0bafed1151c`，Draft PR #21 已创建；当前 Flyway V1–V9、26 张业务表。
+> 当前接续分支：`feat/mastery-rule-recommendation`。分支最初基于 PR #20 merge commit `1055dee567b7afa153750792670fb0bafed1151c` 创建；GitHub PR base branch 为 `main`，当前 base tip 已包含 PR #20 合并状态文档提交 `4fd8d5d97e5a6abd77c199481c26eb2c6f40e9f4`。Draft PR #21 已创建，未 rebase、未 force push；当前 Flyway V1–V9、26 张业务表。
 
 更新时间：2026-08-08
 
@@ -24,7 +24,9 @@ PR #19 合并后回归为后端 90/90、前端 91/91，package、type-check、bu
 
 PR #20 已普通 merge 并删除远程功能分支。V9 新增两张私信表，V1–V8 未修改；师生私信由 ACTIVE 三元任课关系和学生当前主班级共同约束。合并后后端 92/92、前端 100/100，package、type-check、build、audit 0 和 Demo `reset → seed → validate → smoke` 均通过；199 学生↔物理教师、200 学生↔化学教师双向浏览器验收及伪造会话隔离保持通过，MA-009 已关闭。
 
-PR #21 当前分支实时复用 V7 答题事实和冻结知识点快照计算 NOT_STARTED、INSUFFICIENT、WEAK、IMPROVING、MASTERED，并按活动错题、正确率、样本量和未练习固定规则返回最多 3 项推荐。学生端“开始巩固”复用现有练习创建；教师端只按本人 ACTIVE scope 查看班内当前学科汇总。该能力是确定性规则统计，不是 AI；未新增 V10、缓存或统计表。当前后端 96/96、前端 106/106，全量构建和 Demo 浏览器验收通过。
+PR #21 当前分支实时复用 V7 答题事实和冻结知识点快照计算 NOT_STARTED、INSUFFICIENT、WEAK、IMPROVING、MASTERED。当前学科全部 ACTIVE 知识点参与掌握度和总体统计；5 题推荐资格独立复用 StudentPracticeService 的真实题池规则，题量不足不会隐藏历史掌握事实，也不会生成无法创建的推荐。学生端“开始巩固”复用现有练习创建；教师端只按本人 ACTIVE scope 查看班内当前学科汇总。该能力是确定性规则统计，不是 AI；未新增 V10、缓存或统计表。
+
+独立审查语义修正后，学习掌握专项 6/6、后端 98/98、前端 106/106，package、type-check、build、生产依赖 audit 0 及 Demo `reset → seed → validate → smoke` 均通过。轻量浏览器复查确认学生掌握页、5 题推荐预选、教师班级学情正常，控制台 0 error；原 15 题浏览器证据继续作为历史验收记录。
 
 MA-013 的旧测试数据源问题已关闭。合并前使用全新随机临时库验证：临时库与正式库 V9 script 一致，checksum 均为 `1192958817`、success 均为 1；正式库两张表为空。PR #20 合并后，正式库提前执行的 V9 已与 main 正式迁移基线一致，两张 V9 结构表不属于业务数据污染；Demo90、场景账号、场景班级、高频考点、会话和消息仍均为 0。
 

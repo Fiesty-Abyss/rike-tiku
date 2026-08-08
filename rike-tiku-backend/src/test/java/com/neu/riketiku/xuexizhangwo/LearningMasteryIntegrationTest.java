@@ -39,7 +39,15 @@ class LearningMasteryIntegrationTest extends AdminQuestionIntegrationTestSupport
 
             String empty = get("/api/v1/student/learning-summary?subjectId=1", token).body();
             assertThat(empty).contains("\"totalAnsweredCount\":0", "\"overallAccuracy\":null", "NOT_STARTED");
-            assertThat(JsonPath.<Number>read(empty, "$.overall.totalKnowledgePointCount").intValue()).isEqualTo(3);
+            Integer activePointCount = jdbc.queryForObject("""
+                    SELECT COUNT(*)
+                    FROM zhi_shi_dian
+                    WHERE ke_mu_id = 1
+                      AND zhuang_tai = 'ACTIVE'
+                      AND yi_shan_chu = 0
+                    """, Integer.class);
+            assertThat(JsonPath.<Number>read(empty, "$.overall.totalKnowledgePointCount").intValue())
+                    .isEqualTo(activePointCount);
             assertThat(JsonPath.<List<?>>read(empty, "$.recommendations")).hasSize(3);
             assertThat(empty).contains("该知识点尚未开始练习。", "\"count\":5", "\"subjectId\":1");
             assertThat(JsonPath.<List<Number>>read(empty, "$.recommendations[*].knowledgePointId"))
@@ -172,6 +180,59 @@ class LearningMasteryIntegrationTest extends AdminQuestionIntegrationTestSupport
         }
     }
 
+    @Test
+    void activePointWithHistoryRemainsInMasteryButCannotRecommendWhenFewerThanFiveQuestions() throws Exception {
+        demo.seed();
+        try {
+            long student = student("DEMO_199_01");
+            long sourcePoint = point(1, 0);
+            long limitedPoint = createLimitedPoint(sourcePoint, 3);
+            jdbc.update("UPDATE zhi_shi_dian SET zhuang_tai='DISABLED' WHERE ke_mu_id=1 AND id<>?", limitedPoint);
+            addAnswer(student, 1, limitedPoint, question(sourcePoint, 0), true, true);
+            addAnswer(student, 1, limitedPoint, question(sourcePoint, 1), false, true);
+            addAnswer(student, 1, limitedPoint, question(sourcePoint, 2), false, true);
+
+            String token = login("demo_199_01", "STUDENT");
+            String summary = get("/api/v1/student/learning-summary?subjectId=1", token).body();
+            assertPoint(summary, limitedPoint, 3, 1, "WEAK");
+            assertThat(JsonPath.<Number>read(summary, "$.overall.totalKnowledgePointCount").intValue()).isEqualTo(1);
+            assertThat(JsonPath.<Number>read(summary, "$.overall.weakKnowledgePointCount").intValue()).isEqualTo(1);
+            assertThat(JsonPath.<List<?>>read(summary, "$.recommendations")).isEmpty();
+            assertThat(summary).contains("当前暂无题量充足的知识点可生成5题巩固练习，可以先进行综合练习。")
+                    .doesNotContain(GOOD_PERFORMANCE_MESSAGE);
+
+            long physics199 = scope("DEMO_T_PHYSICS", "DEMO_CLASS_199", 1);
+            String teacherSummary = get("/api/v1/teacher/scopes/" + physics199 + "/learning-summary",
+                    login("demo_physics_admin", "TEACHER")).body();
+            assertThat(teacherSummary).contains("199班学生01", "\"answeredCount\":3",
+                    "\"weakKnowledgePointCount\":1");
+        } finally {
+            demo.clean();
+        }
+    }
+
+    @Test
+    void allMasteredPointsKeepGoodPerformanceMessageWithoutReinforcementRecommendation() throws Exception {
+        demo.seed();
+        try {
+            long student = student("DEMO_199_02");
+            long masteredPoint = point(1, 0);
+            jdbc.update("UPDATE zhi_shi_dian SET zhuang_tai='DISABLED' WHERE ke_mu_id=1 AND id<>?", masteredPoint);
+            for (int index = 0; index < 3; index++) {
+                addAnswer(student, 1, masteredPoint, question(masteredPoint, index), true, true);
+            }
+
+            String summary = get("/api/v1/student/learning-summary?subjectId=1",
+                    login("demo_199_02", "STUDENT")).body();
+            assertPoint(summary, masteredPoint, 3, 3, "MASTERED");
+            assertThat(JsonPath.<List<?>>read(summary, "$.recommendations")).isEmpty();
+            assertThat(summary).contains(GOOD_PERFORMANCE_MESSAGE)
+                    .doesNotContain("当前暂无题量充足的知识点可生成5题巩固练习");
+        } finally {
+            demo.clean();
+        }
+    }
+
     private long addAnswer(long studentId, long subjectId, long pointId, long questionId, boolean correct, boolean submitted) {
         jdbc.update("INSERT INTO lian_xi_hui_hua(xue_sheng_id,ke_mu_id,zhuang_tai,ti_mu_shu,ti_jiao_shi_jian) VALUES (?,?,?,1,IF(?='SUBMITTED',CURRENT_TIMESTAMP(3),NULL))",
                 studentId, subjectId, submitted ? "SUBMITTED" : "CREATED", submitted ? "SUBMITTED" : "CREATED");
@@ -233,6 +294,24 @@ class LearningMasteryIntegrationTest extends AdminQuestionIntegrationTestSupport
                 WHERE qk.zhi_shi_dian_id=? AND q.ti_gan LIKE '【演示】%' ORDER BY q.id LIMIT 1 OFFSET
                 """ + " " + offset, Long.class, pointId);
     }
+
+    private long createLimitedPoint(long sourcePointId, int questionCount) {
+        jdbc.update("""
+                INSERT INTO zhi_shi_dian(ke_mu_id,zhi_shi_dian_ming_cheng,wan_zheng_lu_jing,ceng_ji,pai_xu)
+                VALUES (1,'限量练习知识点','物理>限量练习知识点',1,99)
+                """);
+        long pointId = jdbc.queryForObject("SELECT LAST_INSERT_ID()", Long.class);
+        for (int index = 0; index < questionCount; index++) {
+            jdbc.update("""
+                    INSERT INTO ti_mu_zhi_shi_dian(ti_mu_id,zhi_shi_dian_id,shi_fou_zhu_yao,pai_xu)
+                    VALUES (?,?,0,99)
+                    """, question(sourcePointId, index), pointId);
+        }
+        return pointId;
+    }
+
+    private static final String GOOD_PERFORMANCE_MESSAGE =
+            "当前已练习知识点整体表现良好，可以进行综合随机练习。";
 
     private long scope(String teacherNumber, String classCode, long subjectId) {
         return jdbc.queryForObject("""
