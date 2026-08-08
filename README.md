@@ -52,7 +52,7 @@ Flyway 是数据库结构的唯一建表和升级入口。已经执行的迁移�
 - 管理员 MVP30 题库导入：单文件 Excel 预检查、逐行错误、知识点精确匹配、来源文件追溯、附件对象精确映射与全批次确认入库；成功题目和 STANDARD 解析统一为 `PENDING`。已通过普通 merge 合并至 `main`（PR #12，合并提交 `f499f0c2e1e3b4637d22480868e94dbdacdcbaa0`）。纯 V1–V6 测试库预检查结果为物理 0/10、化学 1/10、生物 1/10；仅在测试事务预置 Excel 所需知识点后，附件专项结果为 2/10、1/10、6/10。随机临时库的真实 HTTP multipart 与浏览器回查结论为 `PASS_WITH_ENV_LIMITATION`；匿名临时题已清理，MVP30 原始 Excel 尚未确认入库。
 - 学生自主练习、自动判分与错题闭环已通过普通 merge 进入 `main`（PR #13，合并提交 `db04fbc9caeeb5e4eb003a45581e62e76dbab420`）：创建时仅冻结无活动附件、无图片/公式对象标记的题集，提交整场答案后完成单选/多选/填空自动判分、结果与错题聚合；未提交前不返回标准答案或解析。历史 PR #13 自动化结果为后端 68/68、前端 68/68；附件文件访问、图片展示和公式渲染不在首版范围内。
 
-已完成前端认证基础：三角色登录入口、Pinia认证状态、Bearer Token注入、会话恢复、首次改密、路由守卫、管理员业务页及最小学生练习工作台。尚未完成：AI Provider、AI 答疑、掌握度、推荐、教师任务与考试。题库30题候选数据尚未正式发布。
+已完成前端认证基础：三角色登录入口、Pinia认证状态、Bearer Token注入、会话恢复、首次改密、路由守卫、管理员业务页及学生三科学习工作台。PR #21 当前分支已实现基于真实答题事实的知识点掌握度、规则推荐和教师班级学情查看；它是确定性规则统计，不属于 AI。尚未完成：AI Provider、AI 答疑、教师任务与考试。题库30题候选数据尚未正式发布。
 
 准确状态请以 [开发状态](docs/DEVELOPMENT_STATUS.md) 和 [AI交接](docs/AI_HANDOFF.md) 为准。
 
@@ -88,6 +88,8 @@ PR #18 已普通 merge（merge commit `b615bc1a78d842d61928abc8f89b839f52c88b7f`
 PR #19 已普通 merge（merge commit `0a12943e901e844520e3801264fa4a43590ff28e`）进入 `main`，将登录页历史滑块替换为 JDK 生成的 4 位随机 PNG 图形验证码。验证码默认隐藏，第一次点击或 Enter 仅展开并获取 challenge，第二次才提交登录；challenge 在内存保存 2 分钟并一次性消费，不新增数据库、Redis 或第三方依赖。合并后回归为后端 90/90、前端 91/91，package、type-check、build 和生产依赖 audit（0 vulnerabilities）均通过；Demo `reset → seed → validate → smoke` PASS，正式库四项污染检查均为 0。
 
 PR #20 已普通 merge（merge commit `1055dee567b7afa153750792670fb0bafed1151c`）进入 `main`。V9 新增 `si_xin_hui_hua`、`si_xin_xiao_xi`，业务表共 26 张；师生私信受 ACTIVE 三元任课关系和学生当前主班级约束，发送身份由 JWT 决定，使用 REST polling，不包含 WebSocket、附件、群聊或管理员消息审计。合并后后端 92/92、前端 100/100，package、type-check、build、audit 0、Demo 脚本链及此前真实浏览器双向私信验收均通过，MA-009 已关闭。
+
+PR #21 当前工作分支 `feat/mastery-rule-recommendation` 基于 V7 已提交答题、冻结知识点快照、学习结果和错题状态实时计算掌握度，不新增迁移、缓存或统计表。学生三科学科页展示知识点掌握与最多 3 项固定规则推荐；教师只在本人 ACTIVE 三元任课范围内查看班内学生当前学科汇总。当前回归为后端 96/96、前端 106/106，package、type-check、build、audit 0 及 Demo 脚本链通过；`rike_tiku_demo` 浏览器已验证薄弱、巩固中、已掌握及教师班级/学科隔离。
 
 ## 本地启动
 
@@ -157,6 +159,7 @@ npm run build
 - [教师工作台与高频考点前端](docs/TEACHER_WORKSPACE_HIGH_FREQUENCY_FRONTEND.md)
 - [师生私信 API](docs/TEACHER_STUDENT_MESSAGING_API.md)
 - [师生私信前端](docs/TEACHER_STUDENT_MESSAGING_FRONTEND.md)
+- [知识点掌握度与规则推荐](docs/LEARNING_MASTERY_RULE_RECOMMENDATION.md)
 - [管理员教师与任课关系接口](docs/ADMIN_TEACHER_ASSIGNMENT_API.md)
 - [管理员教师与任课关系前端](docs/ADMIN_TEACHER_ASSIGNMENT_FRONTEND.md)
 - [管理员题库审核发布接口](docs/ADMIN_QUESTION_REVIEW_API.md)
@@ -178,4 +181,4 @@ npm run build
 
 ## 下一阶段
 
-PR #13 至 PR #20 均已普通 merge；PR #20 merge commit 与合并业务基线 main HEAD 为 `1055dee567b7afa153750792670fb0bafed1151c`。当前分支为 `main`，远程 `feat/teacher-student-messaging` 已删除；Flyway 为 V1–V9、26 张业务表。MA-013 导致正式库提前执行的 V9 已通过全新临时库 checksum `1192958817` 对照，并与当前 main 正式迁移基线完全一致；两张 V9 结构表不属于业务数据污染。MVP30 尚未正式入库，基础个人资料、头像、掌握度、推荐、DeepSeek、GLM 和 AI 能力仍未实现，非 AI 工程基础不得标记为 100%。当前停止，不创建 PR #21。
+PR #13 至 PR #20 均已普通 merge；PR #20 merge commit 与本轮 Base main HEAD 为 `1055dee567b7afa153750792670fb0bafed1151c`。当前分支为 `feat/mastery-rule-recommendation`，Draft PR #21 已创建；Flyway 保持 V1–V9、26 张业务表。MA-013 导致正式库提前执行的 V9 已与 main 正式迁移基线完全一致，两张 V9 结构表不属于业务数据污染。MVP30 尚未正式入库，基础个人资料、头像、DeepSeek、GLM 和 AI 能力仍未实现，非 AI 工程基础不得标记为 100%。

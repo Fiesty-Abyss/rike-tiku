@@ -50,7 +50,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/admin/question-import/**").hasRole("ADMIN")
                         .requestMatchers("/api/v1/admin/teachers/**", "/api/v1/admin/teaching-assignments/**", "/api/v1/admin/subjects").hasRole("ADMIN")
                         .requestMatchers("/api/v1/admin/questions/**", "/api/v1/admin/knowledge-points").hasRole("ADMIN")
-                        .requestMatchers("/api/v1/student/practice-options", "/api/v1/student/practice-sessions/**", "/api/v1/student/wrong-questions/**", "/api/v1/student/high-frequency-points").hasRole("STUDENT")
+                        .requestMatchers("/api/v1/student/practice-options", "/api/v1/student/practice-sessions/**", "/api/v1/student/wrong-questions/**", "/api/v1/student/high-frequency-points", "/api/v1/student/learning-summary").hasRole("STUDENT")
                         .requestMatchers("/api/v1/teacher/**").hasRole("TEACHER")
                         .requestMatchers("/api/v1/messages/**").hasAnyRole("STUDENT", "TEACHER")
                         .anyRequest().authenticated())
