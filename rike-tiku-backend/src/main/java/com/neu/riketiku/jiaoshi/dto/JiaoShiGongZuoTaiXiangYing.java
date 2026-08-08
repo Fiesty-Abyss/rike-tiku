@@ -17,6 +17,7 @@ public record JiaoShiGongZuoTaiXiangYing(
         List<KnowledgePointOption> knowledgePoints) {
 
     public record XueShengJiBenXiangYing(
+            Long studentId,
             String studentNumber,
             String name,
             String grade) {

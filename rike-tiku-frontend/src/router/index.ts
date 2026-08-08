@@ -57,6 +57,18 @@ const router = createRouter({
       meta: { requiresAuth: true, roles: ['TEACHER'] },
     },
     {
+      path: '/messages',
+      name: 'messages',
+      component: () => import('../views/messages/MessagesView.vue'),
+      meta: { requiresAuth: true, roles: ['STUDENT', 'TEACHER'] },
+    },
+    {
+      path: '/messages/:id(\\d+)',
+      name: 'message-conversation',
+      component: () => import('../views/messages/MessageConversationView.vue'),
+      meta: { requiresAuth: true, roles: ['STUDENT', 'TEACHER'] },
+    },
+    {
       path: '/admin',
       component: () => import('../layouts/AdminLayout.vue'),
       meta: { requiresAuth: true, roles: ['ADMIN'] },

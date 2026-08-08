@@ -3,6 +3,7 @@ import { computed, onMounted, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage, type FormInstance, type FormRules } from 'element-plus'
 import { createHighFrequencyPoint, fetchTeacherWorkspace, updateHighFrequencyPoint, updateHighFrequencyPointStatus, type HighFrequencyPoint, type TeacherWorkspace } from '../../api/teacher'
+import { createConversation, fetchConversations } from '../../api/messages'
 
 const route = useRoute()
 const router = useRouter()
@@ -12,6 +13,7 @@ const loading = ref(false)
 const saving = ref(false)
 const dialogVisible = ref(false)
 const editing = ref<HighFrequencyPoint | null>(null)
+const unreadCount = ref(0)
 const formRef = ref<FormInstance>()
 const form = reactive({ knowledgePointId: 0, title: '', content: '', memoryTrick: '', commonMistake: '', sortOrder: 1 })
 const rules: FormRules = {
@@ -35,6 +37,9 @@ async function load() {
   loading.value = true
   try {
     workspace.value = await fetchTeacherWorkspace(scopeId.value)
+    unreadCount.value = (await fetchConversations())
+      .filter((item) => item.teachingAssignmentId === scopeId.value)
+      .reduce((total, item) => total + item.unreadCount, 0)
   } catch (error) {
     ElMessage.error(message(error, '工作台加载失败。'))
   } finally {
@@ -89,6 +94,15 @@ async function back() {
   await router.push('/teacher')
 }
 
+async function messageStudent(studentId: number) {
+  try {
+    const conversation = await createConversation(scopeId.value, studentId)
+    await router.push(`/messages/${conversation.id}`)
+  } catch (error) {
+    ElMessage.error(message(error, '私信会话建立失败。'))
+  }
+}
+
 onMounted(() => void load())
 </script>
 
@@ -99,7 +113,10 @@ onMounted(() => void load())
         <h1>班级学科工作台</h1>
         <p v-if="workspace">{{ workspace.className }} · {{ workspace.subjectName }}</p>
       </div>
-      <el-button @click="back">返回任教范围</el-button>
+      <div class="scope-header-actions">
+        <el-button type="primary" plain @click="router.push('/messages')">消息<span v-if="unreadCount">（{{ unreadCount }} 条未读）</span></el-button>
+        <el-button @click="back">返回任教范围</el-button>
+      </div>
     </header>
     <section v-loading="loading" class="workspace-content teacher-scope-page">
       <template v-if="workspace">
@@ -117,6 +134,7 @@ onMounted(() => void load())
             <el-table-column prop="studentNumber" label="学号" />
             <el-table-column prop="name" label="姓名" />
             <el-table-column prop="grade" label="年级" />
+            <el-table-column label="操作" width="90"><template #default="{ row }"><el-button link type="primary" @click="messageStudent(row.studentId)">私信</el-button></template></el-table-column>
           </el-table>
         </section>
         <section class="workspace-card">
