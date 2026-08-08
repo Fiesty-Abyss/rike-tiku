@@ -1,6 +1,6 @@
 # AI 开发交接
 
-> 当前接续分支：`feat/mastery-rule-recommendation`。Base 为 PR #20 合并后的 `main@1055dee567b7afa153750792670fb0bafed1151c`，PR #21 待创建 Draft；当前 Flyway V1–V9、26 张业务表。
+> 当前接续分支：`feat/mastery-rule-recommendation`。Base 为 PR #20 合并后的 `main@1055dee567b7afa153750792670fb0bafed1151c`，Draft PR #21 已创建；当前 Flyway V1–V9、26 张业务表。
 
 更新时间：2026-08-08
 
@@ -54,4 +54,4 @@ MA-013 的旧测试数据源问题已关闭。合并前使用全新随机临时�
 
 ## 当前下一步
 
-创建 PR #21 Draft 后停止等待独立审查；不得自行 merge，不开始 PR #22、DeepSeek、GLM 或其他 AI 功能。
+Draft PR #21 已发布；当前停止等待独立审查，不自行 merge，不开始 PR #22、DeepSeek、GLM 或其他 AI 功能。

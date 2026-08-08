@@ -181,4 +181,4 @@ npm run build
 
 ## 下一阶段
 
-PR #13 至 PR #20 均已普通 merge；PR #20 merge commit 与本轮 Base main HEAD 为 `1055dee567b7afa153750792670fb0bafed1151c`。当前分支为 `feat/mastery-rule-recommendation`，PR #21 待创建 Draft；Flyway 保持 V1–V9、26 张业务表。MA-013 导致正式库提前执行的 V9 已与 main 正式迁移基线完全一致，两张 V9 结构表不属于业务数据污染。MVP30 尚未正式入库，基础个人资料、头像、DeepSeek、GLM 和 AI 能力仍未实现，非 AI 工程基础不得标记为 100%。
+PR #13 至 PR #20 均已普通 merge；PR #20 merge commit 与本轮 Base main HEAD 为 `1055dee567b7afa153750792670fb0bafed1151c`。当前分支为 `feat/mastery-rule-recommendation`，Draft PR #21 已创建；Flyway 保持 V1–V9、26 张业务表。MA-013 导致正式库提前执行的 V9 已与 main 正式迁移基线完全一致，两张 V9 结构表不属于业务数据污染。MVP30 尚未正式入库，基础个人资料、头像、DeepSeek、GLM 和 AI 能力仍未实现，非 AI 工程基础不得标记为 100%。
