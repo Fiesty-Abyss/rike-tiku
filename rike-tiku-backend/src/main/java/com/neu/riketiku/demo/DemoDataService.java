@@ -42,10 +42,10 @@ public class DemoDataService {
         guardDatabaseName(database);
         int version = jdbc.queryForObject("SELECT MAX(CAST(version AS UNSIGNED)) FROM flyway_schema_history WHERE success=1", Integer.class);
         int tableCount = jdbc.queryForObject("SELECT COUNT(*) FROM information_schema.tables WHERE table_schema=DATABASE() AND table_name<>'flyway_schema_history'", Integer.class);
-        if (version != 8 || tableCount != 24) {
-            throw new IllegalStateException("演示库必须完整执行V1-V8且包含24张业务表，当前V" + version + "，" + tableCount + "张");
+        if (version != 9 || tableCount != 26) {
+            throw new IllegalStateException("演示库必须完整执行V1-V9且包含26张业务表，当前V" + version + "，" + tableCount + "张");
         }
-        System.out.println("演示数据库结构校验通过: " + database + "，V1-V8，24张业务表");
+        System.out.println("演示数据库结构校验通过: " + database + "，V1-V9，26张业务表");
     }
 
     @Transactional
@@ -243,8 +243,8 @@ public class DemoDataService {
                   AND TRIM(s.quan_li_yi_ju)<>'' AND s.yi_shan_chu=0
                 """));
         expect("审核轨迹", 180, count("SELECT COUNT(*) FROM ti_mu_shen_he_ji_lu r JOIN ti_mu q ON q.id=r.ti_mu_id WHERE q.ti_gan LIKE '【演示】%' AND r.shen_he_dong_zuo IN ('SUBMITTED','APPROVED')"));
-        for (String table : List.of("lian_xi_hui_hua", "lian_xi_ti_mu", "xue_sheng_da_ti", "xue_xi_jie_guo", "cuo_ti_ji_lu")) expect(table + "初始记录", 0, count("SELECT COUNT(*) FROM " + table));
-        System.out.println("演示数据校验通过: 14账号、3班级、4教师、9学生、9任课关系、12高频考点、9知识点、90题、学习记录为0");
+        for (String table : List.of("lian_xi_hui_hua", "lian_xi_ti_mu", "xue_sheng_da_ti", "xue_xi_jie_guo", "cuo_ti_ji_lu", "si_xin_hui_hua", "si_xin_xiao_xi")) expect(table + "初始记录", 0, count("SELECT COUNT(*) FROM " + table));
+        System.out.println("演示数据校验通过: 14账号、3班级、4教师、9学生、9任课关系、12高频考点、9知识点、90题、学习与私信记录为0");
     }
 
     public static void guardDatabaseName(String database) {
@@ -365,6 +365,8 @@ public class DemoDataService {
 
     private void cleanInternal() {
         guardDatabaseName(currentDatabase());
+        jdbc.update("DELETE m FROM si_xin_xiao_xi m JOIN si_xin_hui_hua h ON h.id=m.hui_hua_id JOIN xue_sheng_dang_an s ON s.id=h.xue_sheng_id WHERE s.xue_hao LIKE 'DEMO_%'");
+        jdbc.update("DELETE h FROM si_xin_hui_hua h JOIN xue_sheng_dang_an s ON s.id=h.xue_sheng_id WHERE s.xue_hao LIKE 'DEMO_%'");
         jdbc.update("DELETE w FROM cuo_ti_ji_lu w LEFT JOIN xue_sheng_dang_an s ON s.id=w.xue_sheng_id LEFT JOIN ti_mu q ON q.id=w.ti_mu_id WHERE s.xue_hao LIKE 'DEMO_%' OR q.ti_gan LIKE '【演示】%'");
         jdbc.update("DELETE r FROM xue_xi_jie_guo r JOIN lian_xi_hui_hua h ON h.id=r.lian_xi_hui_hua_id JOIN xue_sheng_dang_an s ON s.id=h.xue_sheng_id WHERE s.xue_hao LIKE 'DEMO_%'");
         jdbc.update("DELETE a FROM xue_sheng_da_ti a JOIN lian_xi_ti_mu pq ON pq.id=a.lian_xi_ti_mu_id JOIN lian_xi_hui_hua h ON h.id=pq.lian_xi_hui_hua_id JOIN xue_sheng_dang_an s ON s.id=h.xue_sheng_id WHERE s.xue_hao LIKE 'DEMO_%'");

@@ -27,7 +27,7 @@ public class JiaoShiGaoPinKaoDianFuWu {
     public JiaoShiGongZuoTaiXiangYing getWorkspace(long userId, long scopeId) {
         Scope scope = requireScope(userId, scopeId);
         List<XueShengJiBenXiangYing> students = jdbc.query("""
-                SELECT p.xue_hao,p.xing_ming,p.nian_ji
+                SELECT p.id,p.xue_hao,p.xing_ming,p.nian_ji
                 FROM ban_ji_xue_sheng bx
                 JOIN xue_sheng_dang_an p ON p.id=bx.xue_sheng_id
                 JOIN yong_hu u ON u.id=p.yong_hu_id
@@ -36,7 +36,7 @@ public class JiaoShiGaoPinKaoDianFuWu {
                   AND u.zhang_hao_zhuang_tai='ENABLED' AND u.yi_shan_chu=0
                 ORDER BY p.xue_hao,p.id
                 """, (rs, row) -> new XueShengJiBenXiangYing(
-                rs.getString(1), rs.getString(2), rs.getString(3)), scope.classId);
+                rs.getLong(1), rs.getString(2), rs.getString(3), rs.getString(4)), scope.classId);
         List<GaoPinKaoDianXiangYing> points = findTeacherPoints(scopeId);
         List<KnowledgePointOption> knowledgePoints = jdbc.query("""
                 SELECT id,zhi_shi_dian_ming_cheng,wan_zheng_lu_jing

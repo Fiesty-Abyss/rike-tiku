@@ -3,13 +3,13 @@
 更新时间：2026-08-08
 设计基线：V3.0  
 数据库：MySQL 8.4 / `rike_tiku`  
-迁移版本：Flyway V1–V8
+迁移版本：Flyway V1–V9
 
 ## 1. 范围和事实来源
 
-本版在题库核心V1模型上增加账号、角色、学生/教师档案、班级、班级学生历史、教师—班级—科目三元任课关系和高频考点。
+本版在题库核心 V1 模型上增加账号、角色、学生/教师档案、班级、班级学生历史、教师—班级—科目三元任课关系、高频考点和师生私信。V9 后共 26 张业务表。
 
-Flyway迁移是数据库结构的唯一事实来源。本文和 `database/schema/rike_tiku_schema.sql` 是阅读快照，不得替代迁移，也不得反向手工修改已经执行的V1–V8。V8 只新增高频考点表，V1–V7 保持不变。
+Flyway 迁移是数据库结构的唯一事实来源。本文和 `database/schema/rike_tiku_schema.sql` 是阅读快照，不得替代迁移，也不得反向手工修改已经执行的 V1–V9。V9 只新增两张私信表，V1–V8 保持不变。
 
 高频考点表只绑定真实 `ren_ke_guan_xi_id` 和同科 `zhi_shi_dian_id`；教师与学生 API 的数据权限仍由当前用户和三元任课关系推导。
 
@@ -169,6 +169,34 @@ V3.0原建议 `UK(ban_ji_id, xue_sheng_id)` 无法同时允许“退出后保留
 | `yi_shan_chu` | TINYINT | 0 | 逻辑删除 |
 
 V8 表使用外键和状态检查，不引入附件、富文本、AI 或审核流。教师只能维护自己的 ACTIVE 任课关系；学生端由有效学生档案、ACTIVE 主班级和所选科目反推任课关系，只返回 ACTIVE 内容。
+
+### 3.10 `si_xin_hui_hua` 私信会话（V9）
+
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| `id` | BIGINT | 主键 |
+| `ren_ke_guan_xi_id` | BIGINT | 绑定真实三元任课关系的外键 |
+| `xue_sheng_id` | BIGINT | 学生档案外键 |
+| `zhuang_tai` | VARCHAR(16) | `ACTIVE` / `DISABLED` |
+| `zui_hou_xiao_xi_shi_jian` | DATETIME(3) | 最近消息时间，可空 |
+| `chuang_jian_shi_jian` / `geng_xin_shi_jian` | DATETIME(3) | 审计时间 |
+| `yi_shan_chu` | TINYINT | 逻辑删除 |
+
+有效会话唯一约束为 `ren_ke_guan_xi_id + xue_sheng_id`。任课关系停用或学生调班不删除会话，只停止新发送。
+
+### 3.11 `si_xin_xiao_xi` 私信消息（V9）
+
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| `id` | BIGINT | 主键 |
+| `hui_hua_id` | BIGINT | 会话外键 |
+| `fa_song_ren_yong_hu_id` | BIGINT | 发送人用户外键，由 JWT 决定 |
+| `nei_rong` | VARCHAR(1000) | 纯文本消息 |
+| `yi_du` / `yi_du_shi_jian` | TINYINT / DATETIME(3) | 已读状态和时间 |
+| `fa_song_shi_jian` | DATETIME(3) | 发送时间 |
+| `yi_shan_chu` | TINYINT | 逻辑删除 |
+
+V9 不引入图片、文件、群聊、撤回或管理员审计。两表外键均使用 `ON DELETE RESTRICT`，历史数据不会因教学关系失效而物理删除。
 
 ## 4. 删除和历史策略
 
