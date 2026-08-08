@@ -45,6 +45,7 @@ async function logout() {
         <router-link to="/student">三科工作台</router-link>
         <router-link to="/student/practice/new">自主练习</router-link>
         <router-link to="/student/wrong-questions">错题本</router-link>
+        <router-link to="/messages">消息</router-link>
         <el-dropdown>
           <el-button text>{{ name }}</el-button>
           <template #dropdown>

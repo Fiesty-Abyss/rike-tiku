@@ -62,6 +62,7 @@ async function logout() {
           <h2>我的任教范围</h2>
           <p>仅展示当前教师档案关联的班级、科目三元任课关系。</p>
         </div>
+        <el-button type="primary" plain @click="router.push('/messages')">消息</el-button>
       </div>
       <el-table
         v-loading="loading"
@@ -95,7 +96,7 @@ async function logout() {
         type="info"
         :closable="false"
         show-icon
-        description="本页仅展示任教范围入口；成绩统计、练习统计、任务发布、考试和师生私信尚未实现。"
+        description="本页提供班级学科工作台与师生私信；成绩统计、练习统计、任务发布和考试尚未实现。"
       />
     </section>
     <ChangePasswordDialog v-model="passwordVisible" />

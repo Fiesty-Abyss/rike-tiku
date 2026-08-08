@@ -3,6 +3,7 @@ package com.neu.riketiku.health;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.neu.riketiku.tiku.admin.AdminQuestionIntegrationTestSupport;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -13,7 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class HealthEndpointTest {
+class HealthEndpointTest extends AdminQuestionIntegrationTestSupport {
 
     @Value("${local.server.port}")
     private int port;
@@ -33,4 +34,3 @@ class HealthEndpointTest {
         assertTrue(response.body().contains("\"database\":\"UP\""));
     }
 }
-
