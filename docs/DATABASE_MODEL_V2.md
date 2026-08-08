@@ -3,17 +3,19 @@
 更新时间：2026-08-08
 设计基线：V3.0  
 数据库：MySQL 8.4 / `rike_tiku`  
-迁移版本：Flyway V1–V9
+迁移版本：Flyway V1–V10
 
 ## 1. 范围和事实来源
 
-本版在题库核心 V1 模型上增加账号、角色、学生/教师档案、班级、班级学生历史、教师—班级—科目三元任课关系、高频考点和师生私信。V9 后共 26 张业务表。
+本版在题库核心 V1 模型上增加账号、角色、学生/教师档案、班级、班级学生历史、教师—班级—科目三元任课关系、高频考点、师生私信及用户简介/头像字段。V10 后仍为 26 张业务表。
 
-Flyway 迁移是数据库结构的唯一事实来源。本文和 `database/schema/rike_tiku_schema.sql` 是阅读快照，不得替代迁移，也不得反向手工修改已经执行的 V1–V9。V9 只新增两张私信表，V1–V8 保持不变。
+Flyway 迁移是数据库结构的唯一事实来源。本文和 `database/schema/rike_tiku_schema.sql` 是阅读快照，不得替代迁移，也不得反向手工修改已经执行的 V1–V10。V10 只 ALTER `yong_hu`，V1–V9 保持不变。
 
 高频考点表只绑定真实 `ren_ke_guan_xi_id` 和同科 `zhi_shi_dian_id`；教师与学生 API 的数据权限仍由当前用户和三元任课关系推导。
 
 PR #21 不增加数据库结构。知识点掌握度是由 `lian_xi_hui_hua`、`lian_xi_ti_mu.zhi_shi_dian_kuai_zhao`、`xue_sheng_da_ti`、`xue_xi_jie_guo` 和 `cuo_ti_ji_lu` 实时派生的查询结果，不维护冗余统计表；因此 Flyway 仍为 V1–V9、26 张业务表。
+
+PR #22 的 `V10__add_user_profile_fields.sql` 只向 `yong_hu` 增加 500 字简介、头像 MIME、MEDIUMBLOB 原始图片和头像更新时间。没有新增表，业务表仍为 26 张；头像不保存文件名或 Base64 字符串。
 
 ## 2. 总体关系
 
@@ -36,6 +38,10 @@ PR #21 不增加数据库结构。知识点掌握度是由 `lian_xi_hui_hua`、`
 | `shi_fou_shou_ci_deng_lu` | TINYINT | 1 | 首次登录必须改初始密码 |
 | `mi_ma_xiu_gai_shi_jian` | DATETIME(3) | 可空 | 最近改密时间 |
 | `zui_hou_deng_lu_shi_jian` | DATETIME(3) | 可空 | 最近登录时间 |
+| `ge_ren_jian_jie` | VARCHAR(500) | 可空 | 本人可维护的个人简介 |
+| `tou_xiang_mime` | VARCHAR(64) | 可空 | 已验证头像 MIME，仅 PNG/JPEG |
+| `tou_xiang` | MEDIUMBLOB | 可空 | 最大 2 MB 的头像原始二进制 |
+| `tou_xiang_geng_xin_shi_jian` | DATETIME(3) | 可空 | 最近头像更新时间 |
 | `chuang_jian_shi_jian` | DATETIME(3) | 当前时间 | 创建审计 |
 | `geng_xin_shi_jian` | DATETIME(3) | 自动更新 | 更新审计 |
 | `yi_shan_chu` | TINYINT | 0 | MyBatis-Plus逻辑删除 |

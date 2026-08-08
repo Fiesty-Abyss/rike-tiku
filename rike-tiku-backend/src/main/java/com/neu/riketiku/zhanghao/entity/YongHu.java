@@ -18,6 +18,10 @@ public class YongHu {
     private Boolean shiFouShouCiDengLu;
     private LocalDateTime miMaXiuGaiShiJian;
     private LocalDateTime zuiHouDengLuShiJian;
+    private String geRenJianJie;
+    private String touXiangMime;
+    private byte[] touXiang;
+    private LocalDateTime touXiangGengXinShiJian;
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime chuangJianShiJian;
     @TableField(fill = FieldFill.INSERT_UPDATE)
@@ -39,6 +43,14 @@ public class YongHu {
     public void setMiMaXiuGaiShiJian(LocalDateTime value) { this.miMaXiuGaiShiJian = value; }
     public LocalDateTime getZuiHouDengLuShiJian() { return zuiHouDengLuShiJian; }
     public void setZuiHouDengLuShiJian(LocalDateTime value) { this.zuiHouDengLuShiJian = value; }
+    public String getGeRenJianJie() { return geRenJianJie; }
+    public void setGeRenJianJie(String value) { this.geRenJianJie = value; }
+    public String getTouXiangMime() { return touXiangMime; }
+    public void setTouXiangMime(String value) { this.touXiangMime = value; }
+    public byte[] getTouXiang() { return touXiang; }
+    public void setTouXiang(byte[] value) { this.touXiang = value; }
+    public LocalDateTime getTouXiangGengXinShiJian() { return touXiangGengXinShiJian; }
+    public void setTouXiangGengXinShiJian(LocalDateTime value) { this.touXiangGengXinShiJian = value; }
     public LocalDateTime getChuangJianShiJian() { return chuangJianShiJian; }
     public void setChuangJianShiJian(LocalDateTime value) { this.chuangJianShiJian = value; }
     public LocalDateTime getGengXinShiJian() { return gengXinShiJian; }
