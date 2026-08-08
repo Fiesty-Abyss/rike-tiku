@@ -66,7 +66,14 @@ class UserTeachingDatabaseModelTest extends AdminQuestionIntegrationTestSupport 
         Integer roleCount = jdbcTemplate.queryForObject(
             "SELECT COUNT(*) FROM jiao_se WHERE jiao_se_dai_ma IN ('STUDENT','TEACHER','ADMIN')", Integer.class);
 
-        assertThat(latestVersion).isEqualTo(9);
+        assertThat(latestVersion).isEqualTo(10);
+        Set<String> profileColumns = Set.copyOf(jdbcTemplate.queryForList("""
+            SELECT column_name FROM information_schema.columns
+            WHERE table_schema=DATABASE() AND table_name='yong_hu'
+              AND column_name IN ('ge_ren_jian_jie','tou_xiang_mime','tou_xiang','tou_xiang_geng_xin_shi_jian')
+            """, String.class));
+        assertThat(profileColumns).containsExactlyInAnyOrder(
+            "ge_ren_jian_jie", "tou_xiang_mime", "tou_xiang", "tou_xiang_geng_xin_shi_jian");
         assertThat(questionCount).isEqualTo(3);
         assertThat(pendingCount).isEqualTo(3);
         assertThat(roleCount).isEqualTo(3);
@@ -234,7 +241,7 @@ class UserTeachingDatabaseModelTest extends AdminQuestionIntegrationTestSupport 
     }
 
     @Test
-    void emptyDatabaseShouldMigrateFromV1ToV9() throws Exception {
+    void emptyDatabaseShouldMigrateFromV1ToV10() throws Exception {
         String configuredUrl = environment.getRequiredProperty("spring.datasource.url");
         String username = environment.getRequiredProperty("spring.datasource.username");
         String password = environment.getRequiredProperty("spring.datasource.password");
@@ -258,7 +265,7 @@ class UserTeachingDatabaseModelTest extends AdminQuestionIntegrationTestSupport 
                 .locations("classpath:db/migration")
                 .cleanDisabled(true)
                 .load();
-            assertThat(flyway.migrate().migrationsExecuted).isEqualTo(9);
+            assertThat(flyway.migrate().migrationsExecuted).isEqualTo(10);
 
             try (Connection connection = DriverManager.getConnection(testUrl, username, password);
                  Statement statement = connection.createStatement()) {
@@ -268,7 +275,7 @@ class UserTeachingDatabaseModelTest extends AdminQuestionIntegrationTestSupport 
                     .isEqualTo(26);
                 assertThat(singleInt(statement, "SELECT COUNT(*) FROM ti_mu")).isEqualTo(3);
                 assertThat(singleInt(statement,
-                    "SELECT COUNT(*) FROM flyway_schema_history WHERE success=1")).isEqualTo(9);
+                    "SELECT COUNT(*) FROM flyway_schema_history WHERE success=1")).isEqualTo(10);
                 assertThat(singleInt(statement, "SELECT COUNT(*) FROM information_schema.columns WHERE table_schema='" + schema + "' AND table_name='gao_pin_kao_dian' AND column_name='ren_ke_guan_xi_id'")).isEqualTo(1);
                 assertThat(singleInt(statement, "SELECT COUNT(*) FROM information_schema.columns WHERE table_schema='" + schema + "' AND table_name='si_xin_hui_hua'")).isEqualTo(8);
                 assertThat(singleInt(statement, "SELECT COUNT(*) FROM information_schema.columns WHERE table_schema='" + schema + "' AND table_name='si_xin_xiao_xi'")).isEqualTo(8);

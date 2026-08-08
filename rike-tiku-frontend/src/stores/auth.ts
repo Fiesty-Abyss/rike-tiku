@@ -21,6 +21,7 @@ export const useAuthStore = defineStore('auth', {
     mustChangePassword: false,
     currentUser: null as CurrentUser | null,
     activeRole: null as RoleCode | null,
+    profileAvatar: null as string | null,
     isInitialized: false,
   }),
   getters: {
@@ -68,6 +69,9 @@ export const useAuthStore = defineStore('auth', {
       this.activeRole = role
       saveActiveRole(role)
     },
+    setProfileAvatar(avatar: string | null) {
+      this.profileAvatar = avatar
+    },
     async restoreSession() {
       if (this.isInitialized) return
 
@@ -92,6 +96,7 @@ export const useAuthStore = defineStore('auth', {
       this.mustChangePassword = false
       this.currentUser = null
       this.activeRole = null
+      this.profileAvatar = null
     },
     hasAnyRole(requiredRoles: RoleCode[]) {
       return requiredRoles.some((role) => this.roles.includes(role))

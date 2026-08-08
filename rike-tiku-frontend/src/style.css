@@ -163,6 +163,34 @@ h1 {
 .admin-welcome { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 34px; background: #fff; border: 1px solid #e4eaf1; border-radius: 14px; }.admin-welcome-actions { display: flex; gap: 12px; flex-shrink: 0; }
 .import-steps { margin-bottom: 18px; padding: 16px; background: #fff; border: 1px solid #e4eaf1; border-radius: 12px; }.import-stage { margin-top: 24px; }.import-stage h2 { margin: 0; font-size: 18px; color: #263c53; }.upload-copy { display: grid; gap: 6px; color: #314b65; }.upload-copy span, .selected-file span { color: #788797; font-size: 13px; }.inline-alert { margin-top: 12px; }.selected-file { display: flex; justify-content: space-between; align-items: center; margin-top: 14px; padding: 12px 14px; background: #f6f9fc; border-radius: 8px; }.selected-file div { display: grid; gap: 3px; }.stage-actions { display: flex; gap: 12px; align-items: center; margin-top: 18px; }.confirm-area span { color: #748292; font-size: 13px; }.preview-summary { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 16px 0; }.preview-summary > div { padding: 14px 16px; border-radius: 10px; background: #f5f8fb; }.preview-summary span, .preview-summary strong { display: block; }.preview-summary span { color: #718094; font-size: 13px; }.preview-summary strong { margin-top: 4px; font-size: 24px; color: #263c53; }.preview-summary .success strong { color: #2d8a60; }.preview-summary .danger strong { color: #c64b4b; }.import-table { margin-top: 16px; }.error-list { margin: 0; padding-left: 16px; color: #be4545; font-size: 12px; line-height: 1.6; }.sensitive-result { border-color: #edc776; }.sensitive-result .section-title-row > div:last-child { display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
 .teacher-detail { display: grid; gap: 24px; }.teacher-assignment-heading { margin: 6px 0 0; }.teacher-assignment-heading h2 { margin: 0; font-size: 18px; color: #263c53; }
+.user-menu-button { display:inline-flex; align-items:center; gap:9px; }
+.profile-page { min-height:100vh; background:var(--page-bg); }
+.profile-topbar { min-height:68px; display:flex; align-items:center; justify-content:space-between; gap:20px; padding:0 clamp(20px,6vw,92px); background:#fff; border-bottom:1px solid var(--border); }
+.profile-brand { padding:0; border:0; background:transparent; color:var(--primary-deep); font:inherit; font-weight:750; letter-spacing:-.02em; cursor:pointer; }
+.profile-topbar-actions { display:flex; align-items:center; gap:8px; }
+.profile-layout { display:grid; grid-template-columns:280px minmax(0,1fr); gap:28px; width:min(1100px,calc(100% - 40px)); margin:38px auto 72px; }
+.profile-identity { align-self:start; display:grid; justify-items:center; gap:18px; padding:30px 24px; background:#fff; border:1px solid var(--border); border-radius:14px; text-align:center; }
+.profile-identity h1 { margin:0; color:var(--primary-deep); font-size:25px; }
+.profile-identity p { margin:6px 0 0; color:var(--muted); }
+.profile-identity small { color:var(--muted); line-height:1.55; }
+.profile-role-list,.avatar-actions { display:flex; justify-content:center; gap:8px; flex-wrap:wrap; }
+.profile-content { display:grid; gap:22px; }
+.profile-section { padding:28px 30px; background:#fff; border:1px solid var(--border); border-radius:14px; }
+.profile-section-heading { display:flex; align-items:flex-start; justify-content:space-between; gap:22px; margin-bottom:24px; }
+.profile-section h2 { margin:0; color:#20364e; font-size:21px; }
+.profile-section h3 { margin:28px 0 14px; color:#314a64; font-size:16px; }
+.profile-section-heading p { margin:7px 0 0; color:var(--muted); line-height:1.6; }
+.profile-facts { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:0; margin:0; border-top:1px solid var(--border); }
+.profile-facts div { padding:16px 8px; border-bottom:1px solid var(--border); }
+.profile-facts dt { color:var(--muted); font-size:13px; }
+.profile-facts dd { margin:7px 0 0; color:#263e57; font-weight:650; }
+.teaching-scope-summary { margin-top:20px; }
+.teaching-scope-summary > span { color:var(--muted); font-size:13px; }
+.teaching-scope-summary ul { display:flex; flex-wrap:wrap; gap:8px; margin:10px 0 0; padding:0; list-style:none; }
+.teaching-scope-summary li { padding:7px 11px; border-radius:8px; background:#edf5fc; color:#315e89; font-size:13px; }
+.teaching-scope-summary p { color:var(--muted); }
+.profile-save-row { display:flex; justify-content:flex-end; margin-top:16px; }
+.visually-hidden { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
 
 @media (max-width: 760px) {
   .auth-page { grid-template-columns: 1fr; }
@@ -172,6 +200,7 @@ h1 {
   .subject-line { gap: 16px; }
   .auth-panel { width: min(440px, calc(100% - 40px)); padding: 44px 0; }
   .admin-sidebar { width: 100% !important; }.admin-shell { display: block; }.admin-brand { padding: 16px 20px; }.admin-menu { display: flex; overflow-x: auto; }.admin-menu .el-menu-item { white-space: nowrap; }.admin-topbar { padding: 0 20px; }.admin-topbar span { display: none; }.admin-main { padding: 20px 16px; }.page-heading, .section-title-row, .admin-welcome { align-items: stretch; flex-direction: column; }.admin-welcome-actions { flex-wrap: wrap; }.filter-panel .el-form-item { display: flex; margin-bottom: 12px; }.filter-panel .el-form-item__content { flex: 1; }.preview-summary { grid-template-columns: 1fr; }.stage-actions { align-items: flex-start; flex-direction: column; }.sensitive-result .section-title-row > div:last-child { justify-content: flex-start; }
+  .profile-topbar { align-items:flex-start; padding:16px 20px; }.profile-topbar-actions { flex-wrap:wrap; justify-content:flex-end; }.profile-layout { grid-template-columns:1fr; width:min(100% - 28px,720px); margin-top:26px; }.profile-identity { position:static; }.profile-section { padding:22px; }.profile-section-heading { align-items:stretch; flex-direction:column; }.profile-facts { grid-template-columns:1fr; }
   .student-header,.student-page-heading,.practice-progress { align-items:stretch; flex-direction:column; }.student-header { padding:16px 20px; }.student-header nav { flex-wrap:wrap; }.student-main { width:min(100% - 28px,1020px); margin-top:28px; }.subject-cards,.subject-action-grid { grid-template-columns:1fr; }.subject-card,.subject-action-grid article,.practice-form,.practice-question,.result-question { padding:22px; }.practice-navigation { align-items:stretch; flex-wrap:wrap; }.practice-navigation > div { order:3; width:100%; }
 }
 .teacher-scope-page { display:grid; gap:24px; }
