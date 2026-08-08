@@ -1,12 +1,12 @@
 # 开发状态
 
-> 当前分支为 `feat/personal-center`，基于 `main@2e09c74f046a56645c6a503c9448726136a0e678` 开发 PR #22，尚未合并。Flyway 为 V1–V10，共 26 张业务表；V10 只 ALTER `yong_hu`，V1–V9 和 MVP30 原始 Excel 均未修改。
+> 当前分支为 `main`。PR #22 已普通 merge（merge commit `67b7bd7239e2ac1de3ad8c71b82b6d0a79162d3b`）；Flyway 为 V1–V10，共 26 张业务表。V10 只 ALTER `yong_hu`，V1–V9 和 MVP30 原始 Excel 均未修改。
 
 更新时间：2026-08-08
 
 ## 当前主线状态
 
-- 当前分支：`feat/personal-center`；PR #22 待独立审查，不开始 PR #23。
+- 当前分支：`main`；PR #22 已合并，本轮停止，不创建 PR #23。
 - 三角色共用 `/profile`，本人身份从 JWT 推导；页面展示真实账号角色及学生/教师档案，只允许维护 500 字简介和本人头像，并复用现有主动修改密码流程。
 - 登录页当前使用两分钟有效、内存保存、一次性消费的 4 位随机图形验证码；验证码默认隐藏，首次登录操作只展开，第二次才认证。PR #15 滑块仅为历史实现。
 - 管理员单学生管理已实现分页筛选、详情与班级历史、事务新增、编辑与启停、事务调班和一次性密码重置；Excel 批量导入入口继续独立保留。
@@ -27,9 +27,9 @@
 
 ## 当前验证
 
-- PR #22 后端：个人中心与数据库专项 23/23 PASS；`mvn clean test` 102/102 PASS；`mvn clean package` PASS。
-- PR #22 前端：`npm test` 31 文件、117/117 PASS；type-check、build PASS，`npm audit --omit=dev` 为 0 vulnerabilities；界面静态质量扫描无告警。
-- PR #22 Demo：`reset → seed → validate → smoke` PASS；三角色和多角色真实浏览器个人中心验收 PASS，头像刷新持久化、删除、简介、只读业务档案及改密入口均通过，控制台 0 error；随后再次 `reset → seed → validate` 清理验收数据。
+- PR #22 合并后后端：首次改密门禁与个人中心专项 25/25 PASS；`mvn clean test` 102/102 PASS；`mvn clean package` PASS。
+- PR #22 合并后前端：`npm test` 31 文件、117/117 PASS；type-check、build PASS，`npm audit --omit=dev` 为 0 vulnerabilities。
+- PR #22 合并后 Demo：`reset → seed → validate → smoke` PASS；完整三角色和多角色真实浏览器个人中心验收保持 PASS，门禁修正后轻量抽查正常、控制台 0 error。
 - 正式 `rike_tiku` 已按正常 Flyway 流程升级 V10，只读检查为 26 张业务表；Demo90、场景账号、场景班级、高频考点、私信会话、私信消息、V7 五张学习记录表和演示简介/头像均为 0。
 
 - PR #21 合并后后端：学习掌握专项 6/6 PASS（包含掌握度统计资格与 5 题推荐资格分离场景）；`mvn clean test` 98/98 PASS；`mvn clean package` PASS。
@@ -82,10 +82,11 @@
 - PR #19：登录随机图形验证码与交互优化，普通 merge `0a12943`。
 - PR #20：三元任课关系约束下的师生私信，普通 merge `1055dee`。
 - PR #21：知识点掌握度、确定性规则推荐与教师班级学情，普通 merge `c0d6553`；MA-014、MA-015 已关闭。
+- PR #22：三角色个人中心、个人简介与头像，普通 merge `67b7bd7`；MA-006 已关闭。
 
 ## 下一步
 
-PR #22 仅等待独立审查；不合并、不创建 PR #23，也不开始 MVP30 或 AI 工作。
+PR #22 已普通 merge；当前停止并等待下一项明确任务，不创建 PR #23，也不开始 MVP30 或 AI 工作。
 
 ## 非 AI 工程基础完成门槛
 
