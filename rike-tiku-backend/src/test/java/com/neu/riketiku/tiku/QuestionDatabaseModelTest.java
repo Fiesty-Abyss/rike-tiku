@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.neu.riketiku.tiku.admin.AdminQuestionIntegrationTestSupport;
 import com.neu.riketiku.tiku.entity.KeMu;
 import com.neu.riketiku.tiku.entity.TiMu;
 import com.neu.riketiku.tiku.entity.TiMuFuJian;
@@ -20,14 +21,14 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
-class QuestionDatabaseModelTest {
+class QuestionDatabaseModelTest extends AdminQuestionIntegrationTestSupport {
     private static final Set<String> BUSINESS_TABLES = Set.of(
         "ke_mu", "zhi_shi_dian", "dao_ru_pi_ci", "ti_mu", "ti_mu_xuan_xiang",
         "ti_mu_jie_xi", "ti_mu_zhi_shi_dian", "ti_mu_fu_jian", "ti_mu_lai_yuan",
         "ti_mu_shen_he_ji_lu", "yong_hu", "jiao_se", "yong_hu_jiao_se",
         "xue_sheng_dang_an", "jiao_shi_dang_an", "ban_ji", "ban_ji_xue_sheng",
         "ren_ke_guan_xi", "lian_xi_hui_hua", "lian_xi_ti_mu", "xue_sheng_da_ti",
-        "xue_xi_jie_guo", "cuo_ti_ji_lu", "gao_pin_kao_dian"
+        "xue_xi_jie_guo", "cuo_ti_ji_lu", "gao_pin_kao_dian", "si_xin_hui_hua", "si_xin_xiao_xi"
     );
 
     @Autowired
@@ -52,7 +53,7 @@ class QuestionDatabaseModelTest {
         assertThat(Set.copyOf(tables)).isEqualTo(BUSINESS_TABLES);
         Integer migrations = jdbcTemplate.queryForObject(
             "SELECT COUNT(*) FROM flyway_schema_history WHERE success = 1", Integer.class);
-        assertThat(migrations).isEqualTo(8);
+        assertThat(migrations).isEqualTo(9);
     }
 
     @Test
