@@ -170,3 +170,19 @@ h1 {
   .admin-sidebar { width: 100% !important; }.admin-shell { display: block; }.admin-brand { padding: 16px 20px; }.admin-menu { display: flex; overflow-x: auto; }.admin-menu .el-menu-item { white-space: nowrap; }.admin-topbar { padding: 0 20px; }.admin-topbar span { display: none; }.admin-main { padding: 20px 16px; }.page-heading, .section-title-row, .admin-welcome { align-items: stretch; flex-direction: column; }.admin-welcome-actions { flex-wrap: wrap; }.filter-panel .el-form-item { display: flex; margin-bottom: 12px; }.filter-panel .el-form-item__content { flex: 1; }.preview-summary { grid-template-columns: 1fr; }.stage-actions { align-items: flex-start; flex-direction: column; }.sensitive-result .section-title-row > div:last-child { justify-content: flex-start; }
   .student-header,.student-page-heading,.practice-progress { align-items:stretch; flex-direction:column; }.student-header { padding:16px 20px; }.student-header nav { flex-wrap:wrap; }.student-main { width:min(100% - 28px,1020px); margin-top:28px; }.subject-cards,.subject-action-grid { grid-template-columns:1fr; }.subject-card,.subject-action-grid article,.practice-form,.practice-question,.result-question { padding:22px; }.practice-navigation { align-items:stretch; flex-wrap:wrap; }.practice-navigation > div { order:3; width:100%; }
 }
+.teacher-scope-page { display:grid; gap:24px; }
+.scope-overview { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:14px; }
+.scope-overview > div { padding:18px; background:#fff; border:1px solid #e4eaf1; border-radius:12px; }
+.scope-overview span,.scope-overview strong { display:block; }
+.scope-overview span { color:#748196; font-size:13px; }
+.scope-overview strong { margin-top:8px; color:#263c53; }
+.workspace-card { padding:22px; background:#fff; border:1px solid #e4eaf1; border-radius:14px; }
+.workspace-card .section-title-row { margin-bottom:16px; }
+.workspace-card .el-select { width:100%; }
+.student-knowledge-section { margin-top:26px; padding:24px; background:#f7fafc; border:1px solid #e4eaf1; border-radius:14px; }
+.knowledge-point-cards { display:grid; gap:14px; }
+.knowledge-point-card { padding:20px; background:#fff; border:1px solid #e4eaf1; border-radius:12px; }
+.knowledge-point-card-heading { display:flex; align-items:flex-start; justify-content:space-between; gap:16px; }
+.knowledge-point-card h3 { margin:0; color:#263c53; }
+.knowledge-point-card p { color:#526b84; line-height:1.7; }
+.knowledge-point-card small { color:#748196; }

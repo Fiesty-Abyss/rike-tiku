@@ -17,7 +17,7 @@ public class JiaoShiGongZuoTaiFuWu {
     @Transactional(readOnly = true)
     public List<JiaoShiRenKeFanWeiXiangYing> myTeachingScopes(long userId) {
         return jdbcTemplate.query("""
-                SELECT b.id,b.ban_ji_ming_cheng,b.nian_ji,k.id,k.ke_mu_dai_ma,k.ke_mu_ming_cheng,
+                SELECT r.id,b.id,b.ban_ji_ming_cheng,b.nian_ji,k.id,k.ke_mu_dai_ma,k.ke_mu_ming_cheng,
                        r.shi_fou_zhu_ren_ke,r.zhuang_tai
                 FROM jiao_shi_dang_an j
                 JOIN ren_ke_guan_xi r ON r.jiao_shi_id=j.id
@@ -28,7 +28,7 @@ public class JiaoShiGongZuoTaiFuWu {
                 ORDER BY CASE r.zhuang_tai WHEN 'ACTIVE' THEN 0 ELSE 1 END,
                          b.nian_ji,b.ban_ji_ming_cheng,k.pai_xu,k.id
                 """, (rs, row) -> new JiaoShiRenKeFanWeiXiangYing(
-                rs.getLong(1), rs.getString(2), rs.getString(3), rs.getLong(4),
-                rs.getString(5), rs.getString(6), rs.getBoolean(7), rs.getString(8)), userId);
+                rs.getLong(1), rs.getLong(2), rs.getString(3), rs.getString(4), rs.getLong(5),
+                rs.getString(6), rs.getString(7), rs.getBoolean(8), rs.getString(9)), userId);
     }
 }

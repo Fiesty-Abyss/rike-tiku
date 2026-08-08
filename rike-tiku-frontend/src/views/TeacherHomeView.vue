@@ -78,6 +78,16 @@ async function logout() {
         <el-table-column label="状态">
           <template #default="{ row }"><el-tag>{{ formatEnum(row.teachingStatus) }}</el-tag></template>
         </el-table-column>
+        <el-table-column label="操作" width="150">
+          <template #default="{ row }">
+            <el-button
+              v-if="row.teachingStatus === 'ACTIVE'"
+              link
+              type="primary"
+              @click="router.push(`/teacher/scopes/${row.teachingAssignmentId}`)"
+            >进入工作台</el-button>
+          </template>
+        </el-table-column>
       </el-table>
       <el-alert
         class="teacher-roadmap"
@@ -85,7 +95,7 @@ async function logout() {
         type="info"
         :closable="false"
         show-icon
-        description="教师任务、学生统计、高频考点和师生私信尚未实现，本页不将其展示为已完成能力。"
+        description="本页仅展示任教范围入口；成绩统计、练习统计、任务发布、考试和师生私信尚未实现。"
       />
     </section>
     <ChangePasswordDialog v-model="passwordVisible" />
