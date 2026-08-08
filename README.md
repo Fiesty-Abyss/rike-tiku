@@ -87,7 +87,7 @@ PR #18 已普通 merge（merge commit `b615bc1a78d842d61928abc8f89b839f52c88b7f`
 
 PR #19 已普通 merge（merge commit `0a12943e901e844520e3801264fa4a43590ff28e`）进入 `main`，将登录页历史滑块替换为 JDK 生成的 4 位随机 PNG 图形验证码。验证码默认隐藏，第一次点击或 Enter 仅展开并获取 challenge，第二次才提交登录；challenge 在内存保存 2 分钟并一次性消费，不新增数据库、Redis 或第三方依赖。合并后回归为后端 90/90、前端 91/91，package、type-check、build 和生产依赖 audit（0 vulnerabilities）均通过；Demo `reset → seed → validate → smoke` PASS，正式库四项污染检查均为 0。
 
-PR #20 当前开发受 ACTIVE 三元任课关系和学生当前主班级约束的师生私信。V9 新增 `si_xin_hui_hua`、`si_xin_xiao_xi`，业务表共 26 张；教师和学生可双向发送纯文本、查看未读并保留失效教学关系的历史会话，发送身份由 JWT 决定。实现使用 REST polling，不包含 WebSocket、附件、群聊或管理员消息审计。当前后端 92/92、前端 100/100，真实 Demo 双班级双向私信和越权隔离验收通过，MA-009 已关闭。
+PR #20 已普通 merge（merge commit `1055dee567b7afa153750792670fb0bafed1151c`）进入 `main`。V9 新增 `si_xin_hui_hua`、`si_xin_xiao_xi`，业务表共 26 张；师生私信受 ACTIVE 三元任课关系和学生当前主班级约束，发送身份由 JWT 决定，使用 REST polling，不包含 WebSocket、附件、群聊或管理员消息审计。合并后后端 92/92、前端 100/100，package、type-check、build、audit 0、Demo 脚本链及此前真实浏览器双向私信验收均通过，MA-009 已关闭。
 
 ## 本地启动
 
@@ -178,4 +178,4 @@ npm run build
 
 ## 下一阶段
 
-PR #13 至 PR #19 均已普通 merge；PR #20 当前分支为 `feat/teacher-student-messaging`，base 为 `aacb092a1ac5cc242a60e024f536f5fdd536f7dd`，尚未合并。Flyway 为 V1–V9、26 张业务表。MVP30 尚未正式入库，基础个人资料、头像、掌握度、推荐、DeepSeek、GLM 和 AI 能力仍未实现，非 AI 工程基础不得标记为 100%。PR #20 创建 Draft 后停止，不创建下一分支。
+PR #13 至 PR #20 均已普通 merge；PR #20 merge commit 与合并业务基线 main HEAD 为 `1055dee567b7afa153750792670fb0bafed1151c`。当前分支为 `main`，远程 `feat/teacher-student-messaging` 已删除；Flyway 为 V1–V9、26 张业务表。MA-013 导致正式库提前执行的 V9 已通过全新临时库 checksum `1192958817` 对照，并与当前 main 正式迁移基线完全一致；两张 V9 结构表不属于业务数据污染。MVP30 尚未正式入库，基础个人资料、头像、掌握度、推荐、DeepSeek、GLM 和 AI 能力仍未实现，非 AI 工程基础不得标记为 100%。当前停止，不创建 PR #21。
