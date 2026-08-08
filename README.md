@@ -81,7 +81,9 @@ Flyway 是数据库结构的唯一建表和升级入口。已经执行的迁移�
 
 PR #16 已普通 merge（merge commit `588db6ee5b2a6c466c618249f072591af47609a1`），独立 `rike_tiku_demo` 已扩充为 Demo90：物理、化学、生物各 30 道项目原创自编演示题，每科三题型、三档难度和三个演示知识点各 10 道。Demo90 使用稳定 Unicode 表达化学式、电荷与科学计数法，STANDARD 解析为简短学科解析。它仅用于稳定演示筛选、随机练习、判分和错题链路，不等于 MVP30 正式真实题库；MVP30 仍未正式入库，网络候选题也未因此改为 `PUBLISHED`。PR #16 未新增 Flyway 迁移，未写正式 `rike_tiku`。
 
-PR #17 已普通 merge（merge commit `3e5454de8257075d1ccdf11d5f6d3a35b464adc1`）进入 `main`。它新增 `/admin/students` 单学生管理，保留 `/admin/students/import` 批量导入；支持分页筛选、详情与班级历史、事务新增、资料和状态编辑、调班、启停及管理员重置密码。`rike_tiku_demo` 同时扩充为保留原 smoke 数据的 3 班、4 教师、9 学生、9 条 ACTIVE 三元任课关系场景，其中 199 班 5 名固定学生、200 班 3 名固定学生。Flyway 仍为 V1–V7，未修改 MVP30 原始 Excel。合并后回归为后端 86/86、前端 80/80，package、type-check、build、生产依赖 audit 及 `reset → seed → validate → smoke` 均通过。
+PR #17 已普通 merge（merge commit `3e5454de8257075d1ccdf11d5f6d3a35b464adc1`）进入 `main`。它新增 `/admin/students` 单学生管理，保留 `/admin/students/import` 批量导入；支持分页筛选、详情与班级历史、事务新增、资料和状态编辑、调班、启停及管理员重置密码。`rike_tiku_demo` 同时扩充为保留原 smoke 数据的 3 班、4 教师、9 学生、9 条 ACTIVE 三元任课关系场景，其中 199 班 5 名固定学生、200 班 3 名固定学生。PR #17 合并时 Flyway 为 V1–V7；未修改 MVP30 原始 Excel。合并后回归为后端 86/86、前端 80/80，package、type-check、build、生产依赖 audit 及 `reset → seed → validate → smoke` 均通过。
+
+当前 PR #18 分支为 `feat/teacher-workspace-high-frequency`，基于 `main@abdc23c77ce37d7e35c0dcf33bdaf38ae55d10fb`，尚未合并。PR #18 新增 V8（不修改 V1–V7），将业务表扩展为 24 张：教师可在本人 ACTIVE 三元任课关系内进入班级学科工作台，查看班级学生和维护高频考点；学生端依据本人有效主班级和所选科目只读取对应 ACTIVE 高频考点。Demo 环境预置 199/200 六条场景任课关系各 2 条，共 12 条自编高频考点。浏览器验收已覆盖物理教师新增、编辑、停用、启用、双班切换，生物/化学学科隔离，以及 199/200 学生内容隔离；MA-008 已关闭。PR #18 当前验证为后端 87/87、前端 83/83、package/type-check/build/audit 和 Demo 脚本链均通过。
 
 ## 本地启动
 
@@ -145,6 +147,10 @@ npm run build
 - [管理员班级管理接口](docs/ADMIN_CLASS_MANAGEMENT_API.md)
 - [学生Excel导入预检查接口](docs/STUDENT_IMPORT_PREVIEW_API.md)
 - [管理员班级与学生导入前端](docs/ADMIN_STUDENT_IMPORT_FRONTEND.md)
+- [管理员学生管理 API](docs/ADMIN_STUDENT_MANAGEMENT_API.md)
+- [管理员学生管理前端](docs/ADMIN_STUDENT_MANAGEMENT_FRONTEND.md)
+- [教师工作台与高频考点 API](docs/TEACHER_WORKSPACE_HIGH_FREQUENCY_API.md)
+- [教师工作台与高频考点前端](docs/TEACHER_WORKSPACE_HIGH_FREQUENCY_FRONTEND.md)
 - [管理员教师与任课关系接口](docs/ADMIN_TEACHER_ASSIGNMENT_API.md)
 - [管理员教师与任课关系前端](docs/ADMIN_TEACHER_ASSIGNMENT_FRONTEND.md)
 - [管理员题库审核发布接口](docs/ADMIN_QUESTION_REVIEW_API.md)
@@ -166,4 +172,4 @@ npm run build
 
 ## 下一阶段
 
-PR #13 至 PR #17 均已普通 merge；PR #17 合并基线为 `main@3e5454de8257075d1ccdf11d5f6d3a35b464adc1`。当前停止并等待下一轮明确指令，不创建下一分支。MVP30 尚未正式入库，基础个人资料、头像、教师正式业务工作台、高频考点、私信、掌握度、推荐、DeepSeek、GLM 和 AI 能力均未实现，非 AI 工程基础不得标记为 100%。
+PR #13 至 PR #17 均已普通 merge；PR #17 合并提交为 `3e5454de8257075d1ccdf11d5f6d3a35b464adc1`。当前工作在 PR #18 分支 `feat/teacher-workspace-high-frequency`，Draft PR #18 尚未合并；本轮没有修改 MVP30 原始 Excel 或正式 `rike_tiku`。MVP30 尚未正式入库，基础个人资料、头像、私信、掌握度、推荐、DeepSeek、GLM 和 AI 能力仍未实现，非 AI 工程基础不得标记为 100%。下一业务模块仍以“管理员学生完整管理与账号恢复”为唯一候选，状态为 PLANNED。
