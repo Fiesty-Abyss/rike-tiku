@@ -1,15 +1,15 @@
 # 开发状态
 
-> 当前分支为 `feat/mastery-rule-recommendation`，最初基于 PR #20 merge commit `1055dee567b7afa153750792670fb0bafed1151c` 创建；GitHub PR base branch 为 `main`，当前 base tip 已包含 PR #20 合并状态文档提交 `4fd8d5d97e5a6abd77c199481c26eb2c6f40e9f4`。Draft PR #21 已创建，未 rebase、未 force push。Flyway 保持 V1–V9，共 26 张业务表；V1–V9 和 MVP30 原始 Excel 均未修改。
+> 当前分支为 `main`。PR #21 已普通 merge，merge commit 与当前业务基线为 `c0d655324fec0a36772c2d095b6025e5f708fc4c`；本状态文档提交位于该业务基线之上。Flyway 保持 V1–V9，共 26 张业务表；V1–V9 和 MVP30 原始 Excel 均未修改。
 
 更新时间：2026-08-08
 
 ## 当前主线状态
 
-- 当前分支：`feat/mastery-rule-recommendation`；PR #20 已普通 merge，PR #21 尚未合并。
+- 当前分支：`main`；PR #21 已普通 merge，远程功能分支已删除，未创建 PR #22。
 - 登录页当前使用两分钟有效、内存保存、一次性消费的 4 位随机图形验证码；验证码默认隐藏，首次登录操作只展开，第二次才认证。PR #15 滑块仅为历史实现。
 - 管理员单学生管理已实现分页筛选、详情与班级历史、事务新增、编辑与启停、事务调班和一次性密码重置；Excel 批量导入入口继续独立保留。
-- 学生自主练习、自动判分、结果与错题闭环已进入 `main`；PR #21 当前分支已实现实时知识点掌握度、固定规则推荐和教师班级学情查看。AI、教师任务、组卷考试和主观题评分仍未实现。
+- 学生自主练习、自动判分、结果、错题闭环、实时知识点掌握度、固定规则推荐和教师班级学情查看均已进入 `main`。掌握度与推荐是确定性规则统计，不属于 AI；AI、教师任务、组卷考试和主观题评分仍未实现。
 - Flyway：V1–V9，共 26 张业务表；V9 新增 `si_xin_hui_hua`、`si_xin_xiao_xi`，V1–V8 未修改。
 - 教师工作台已支持按本人 ACTIVE 三元任课关系读取班级、科目、学生名单和高频考点，并支持新增、编辑、启停及排序；学生端按本人有效主班级和学科只读取对应 ACTIVE 高频考点。
 - PR #20 已实现受 ACTIVE 三元任课关系和学生当前主班级约束的师生纯文本私信；发送身份取自 JWT，支持会话、未读、已读、7 秒轮询和失效关系历史保留，不含 WebSocket、附件、群聊或管理员审计。
@@ -26,8 +26,9 @@
 
 ## 当前验证
 
-- PR #21 当前分支后端：学习掌握专项 6/6 PASS（包含掌握度统计资格与 5 题推荐资格分离场景）；`mvn clean test` 98/98 PASS；`mvn clean package` 98/98 PASS。
-- PR #21 当前分支前端：`npm test` 29 文件、106/106 PASS；type-check、build PASS，`npm audit --omit=dev` 为 0 vulnerabilities。
+- PR #21 合并后后端：学习掌握专项 6/6 PASS（包含掌握度统计资格与 5 题推荐资格分离场景）；`mvn clean test` 98/98 PASS；`mvn clean package` PASS。
+- PR #21 合并后前端：`npm test` 29 文件、106/106 PASS；type-check、build PASS，`npm audit --omit=dev` 为 0 vulnerabilities。
+- PR #21 合并后 Demo：`reset → seed → validate → smoke` PASS；正式 `rike_tiku` 只读检查为 Flyway V9、26 张业务表，Demo90、场景账号、场景班级、高频考点、私信会话、私信消息及 V7 五张学习记录表均为 0；敏感信息扫描 PASS。
 - PR #21 浏览器 PASS（仅 `rike_tiku_demo`）：199 学生从零记录真实完成 15 道物理题，形成牛顿运动定律 0% 薄弱、电场强度 60% 巩固中、温度和内能 100% 已掌握；推荐预选学科、知识点和 5 题正确。199 物理教师看到该生 15 题、53.3%、薄弱 1、已掌握 1，200 班无混入；生物/化学教师仅见本人两班对应学科；控制台 0 error。验收记录随后由 reset/seed 清理。
 - 独立审查修正后轻量浏览器抽查 PASS：学生学习掌握页正常展示全部 ACTIVE 知识点，推荐按钮仍正确预选学科、知识点和 5 题；教师班级学情正常，控制台 0 error。无需重新制造 15 题数据。
 
@@ -74,10 +75,11 @@
 - PR #18：教师班级学科工作台与高频考点，普通 merge `b615bc1`。
 - PR #19：登录随机图形验证码与交互优化，普通 merge `0a12943`。
 - PR #20：三元任课关系约束下的师生私信，普通 merge `1055dee`。
+- PR #21：知识点掌握度、确定性规则推荐与教师班级学情，普通 merge `c0d6553`；MA-014、MA-015 已关闭。
 
 ## 下一步
 
-Draft PR #21 已发布；当前停止等待独立审查，不自行 merge，不开始 PR #22 或任何大模型功能。
+PR #21 已完成普通 merge 与合并后回归；当前停止，未创建 PR #22，等待下一轮明确指令。
 
 ## 非 AI 工程基础完成门槛
 
