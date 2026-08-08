@@ -4,7 +4,7 @@ import com.neu.riketiku.renzheng.dto.ChuShiMiMaXiuGaiQingQiu;
 import com.neu.riketiku.renzheng.dto.DangQianYongHuXiangYing;
 import com.neu.riketiku.renzheng.dto.DengLuQingQiu;
 import com.neu.riketiku.renzheng.dto.DengLuXiangYing;
-import com.neu.riketiku.renzheng.dto.HuaKuaiTiaoZhanXiangYing;
+import com.neu.riketiku.renzheng.dto.TuXingYanZhengMaTiaoZhanXiangYing;
 import com.neu.riketiku.renzheng.dto.ZhuDongMiMaXiuGaiQingQiu;
 import jakarta.validation.Valid;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -28,9 +29,10 @@ public class RenZhengController {
         return service.dengLu(request);
     }
 
-    @GetMapping("/slider-challenge")
-    HuaKuaiTiaoZhanXiangYing sliderChallenge() {
-        return service.huaKuaiTiaoZhan();
+    @GetMapping("/captcha-challenge")
+    TuXingYanZhengMaTiaoZhanXiangYing captchaChallenge(
+            @RequestParam(required = false) String previousChallengeId) {
+        return service.tuXingYanZhengMaTiaoZhan(previousChallengeId);
     }
 
     @GetMapping("/me")

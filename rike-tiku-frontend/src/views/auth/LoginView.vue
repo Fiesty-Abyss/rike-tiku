@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import type { ApiError } from '../../api/http'
+import { resolvePostLoginPath } from '../../auth/postLoginRoute'
 import LoginForm from '../../components/auth/LoginForm.vue'
 import { useAuthStore } from '../../stores/auth'
 
@@ -15,22 +16,31 @@ const messages: Record<string, string> = {
   INVALID_CREDENTIALS: '用户名或密码错误，请重新输入。',
   ACCOUNT_DISABLED: '账号已被停用，请联系管理员。',
   ACCOUNT_LOCKED: '账号已被锁定，请联系管理员。',
-  SLIDER_CHALLENGE_REQUIRED: '请先完成滑块验证。',
-  SLIDER_CHALLENGE_EXPIRED: '滑块已过期，请刷新后重试。',
-  SLIDER_CHALLENGE_INVALID: '滑块位置不正确，请刷新后重试。',
-  SLIDER_CHALLENGE_REUSED: '滑块已使用，请刷新后重试。',
+  CAPTCHA_CHALLENGE_REQUIRED: '请先输入验证码。',
+  CAPTCHA_CHALLENGE_EXPIRED: '验证码已过期，请重新输入。',
+  CAPTCHA_INCORRECT: '验证码不正确，请重新输入。',
+  CAPTCHA_CHALLENGE_REUSED: '验证码已经使用，请重新获取。',
 }
 
-async function handleLogin(payload: { username: string; password: string; challengeId: string; sliderOffset: number }) {
+async function handleLogin(payload: {
+  username: string
+  password: string
+  challengeId: string
+  captchaCode: string
+}) {
   loading.value = true
   errorMessage.value = ''
   try {
     await auth.login(payload)
-    await router.replace(auth.mustChangePassword ? '/change-initial-password' : auth.roles.length > 1 ? '/select-role' : auth.getDefaultHome())
+    await router.replace(resolvePostLoginPath(
+      auth.mustChangePassword,
+      auth.roles.length,
+      auth.getDefaultHome(),
+    ))
   } catch (error) {
     const api = error as ApiError
     errorMessage.value = messages[api.code || ''] || api.message || '登录失败，请稍后重试。'
-    loginForm.value?.refreshSlider()
+    loginForm.value?.refreshCaptcha()
   } finally {
     loading.value = false
   }
@@ -46,7 +56,7 @@ async function handleLogin(payload: { username: string; password: string; challe
     </section>
     <section class="auth-panel" aria-labelledby="login-title">
       <h2 id="login-title">欢迎登录</h2>
-      <p class="auth-description">输入账号和密码，完成安全验证后继续。</p>
+      <p class="auth-description">输入账号和密码后继续。</p>
       <LoginForm ref="loginForm" :loading="loading" :error-message="errorMessage" @submit="handleLogin" />
       <p class="login-note">忘记密码请联系管理员</p>
     </section>

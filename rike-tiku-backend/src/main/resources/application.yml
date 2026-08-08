@@ -24,3 +24,6 @@ app:
   jwt:
     secret: ${RIKE_TIKU_JWT_SECRET:}
     expiration-seconds: ${RIKE_TIKU_JWT_EXPIRATION_SECONDS:7200}
+  auth:
+    captcha:
+      expose-test-code: ${RIKE_TIKU_CAPTCHA_EXPOSE_TEST_CODE:false}

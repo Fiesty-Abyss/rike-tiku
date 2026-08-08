@@ -82,6 +82,9 @@ class RenZhengJiChengTest {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
+    @Autowired
+    private TuXingYanZhengMaFuWu captchaService;
+
     @Test
     void threeRolesAndMultipleRolesShouldComeOnlyFromDatabase() throws Exception {
         long student = insertUser("student", "StudentPass1", false, "ENABLED", "STUDENT");
@@ -516,22 +519,58 @@ class RenZhengJiChengTest {
     }
 
     @Test
-    void sliderChallengeShouldRequireCorrectOffsetAndAllowUnifiedMultiRoleLogin() throws Exception {
-        long userId = insertUser("slider_multi", "SliderPass1", false, "ENABLED", "STUDENT");
+    void captchaShouldRequireCorrectCodeAndAllowUnifiedMultiRoleLogin() throws Exception {
+        long userId = insertUser("captcha_multi", "CaptchaPass1", false, "ENABLED", "STUDENT");
         addRole(userId, "TEACHER", "ACTIVE");
-        assertError(post("/api/v1/auth/login", "{\"username\":\"slider_multi\",\"password\":\"SliderPass1\"}", null), 400, "SLIDER_CHALLENGE_REQUIRED");
-        TestResponse challenge = get("/api/v1/auth/slider-challenge", null);
+        assertError(post("/api/v1/auth/login", "{\"username\":\"captcha_multi\",\"password\":\"CaptchaPass1\"}", null), 400, "CAPTCHA_CHALLENGE_REQUIRED");
+        TestResponse challenge = get("/api/v1/auth/captcha-challenge", null);
         String id = JsonPath.read(challenge.body(), "$.challengeId");
-        Number target = JsonPath.read(challenge.body(), "$.targetDisplayOffset");
+        String code = JsonPath.read(challenge.body(), "$.testCode");
+        assertThat((String) JsonPath.read(challenge.body(), "$.image")).startsWith("data:image/png;base64,");
         assertError(post("/api/v1/auth/login", """
-                {"username":"slider_multi","password":"SliderPass1","challengeId":"%s","sliderOffset":0}
-                """.formatted(id), null), 400, "SLIDER_CHALLENGE_INVALID");
+                {"username":"captcha_multi","password":"CaptchaPass1","challengeId":"%s","captchaCode":"WRONG"}
+                """.formatted(id), null), 400, "CAPTCHA_INCORRECT");
         assertError(post("/api/v1/auth/login", """
-                {"username":"slider_multi","password":"SliderPass1","challengeId":"%s","sliderOffset":%d}
-                """.formatted(id, target.intValue()), null), 400, "SLIDER_CHALLENGE_REUSED");
-        TestResponse unified = loginWithoutExpectedRole("slider_multi", "SliderPass1");
+                {"username":"captcha_multi","password":"CaptchaPass1","challengeId":"%s","captchaCode":"%s"}
+                """.formatted(id, code), null), 400, "CAPTCHA_CHALLENGE_REUSED");
+        TestResponse unified = loginWithoutExpectedRole("captcha_multi", "CaptchaPass1");
         assertThat(unified.status()).isEqualTo(200);
         assertThat(asStrings(JsonPath.read(unified.body(), "$.user.roles"))).containsExactly("STUDENT", "TEACHER");
+    }
+
+    @Test
+    void captchaShouldBeCaseInsensitiveAndOneTimeAfterSuccessfulLogin() throws Exception {
+        insertUser("captcha_case", "CaptchaPass1", false, "ENABLED", "STUDENT");
+        TestResponse challenge = get("/api/v1/auth/captcha-challenge", null);
+        String id = JsonPath.read(challenge.body(), "$.challengeId");
+        String code = JsonPath.read(challenge.body(), "$.testCode");
+        TestResponse success = post("/api/v1/auth/login", """
+                {"username":"captcha_case","password":"CaptchaPass1","challengeId":"%s","captchaCode":"%s"}
+                """.formatted(id, code.toLowerCase()), null);
+        assertThat(success.status()).isEqualTo(200);
+        assertError(post("/api/v1/auth/login", """
+                {"username":"captcha_case","password":"CaptchaPass1","challengeId":"%s","captchaCode":"%s"}
+                """.formatted(id, code), null), 400, "CAPTCHA_CHALLENGE_REUSED");
+    }
+
+    @Test
+    void captchaRefreshShouldInvalidatePreviousChallengeAndExpiredChallengeShouldBeRejected() throws Exception {
+        insertUser("captcha_refresh", "CaptchaPass1", false, "ENABLED", "STUDENT");
+        TestResponse first = get("/api/v1/auth/captcha-challenge", null);
+        String firstId = JsonPath.read(first.body(), "$.challengeId");
+        String firstCode = JsonPath.read(first.body(), "$.testCode");
+        TestResponse second = get("/api/v1/auth/captcha-challenge?previousChallengeId=" + firstId, null);
+        String secondId = JsonPath.read(second.body(), "$.challengeId");
+        String secondCode = JsonPath.read(second.body(), "$.testCode");
+        assertThat(secondId).isNotEqualTo(firstId);
+        assertError(post("/api/v1/auth/login", """
+                {"username":"captcha_refresh","password":"CaptchaPass1","challengeId":"%s","captchaCode":"%s"}
+                """.formatted(firstId, firstCode), null), 400, "CAPTCHA_CHALLENGE_REUSED");
+
+        captchaService.expireForTest(secondId);
+        assertError(post("/api/v1/auth/login", """
+                {"username":"captcha_refresh","password":"CaptchaPass1","challengeId":"%s","captchaCode":"%s"}
+                """.formatted(secondId, secondCode), null), 400, "CAPTCHA_CHALLENGE_EXPIRED");
     }
 
     @Test
@@ -642,20 +681,20 @@ class RenZhengJiChengTest {
     }
 
     private TestResponse login(String username, String password, String expectedRole) throws Exception {
-        TestResponse challenge = get("/api/v1/auth/slider-challenge", null);
+        TestResponse challenge = get("/api/v1/auth/captcha-challenge", null);
         String challengeId = JsonPath.read(challenge.body(), "$.challengeId");
-        Number offset = JsonPath.read(challenge.body(), "$.targetDisplayOffset");
+        String captchaCode = JsonPath.read(challenge.body(), "$.testCode");
         return post("/api/v1/auth/login", """
-                {"username":"%s","password":"%s","expectedRole":"%s","challengeId":"%s","sliderOffset":%d}
-                """.formatted(username, password, expectedRole, challengeId, offset.intValue()), null);
+                {"username":"%s","password":"%s","expectedRole":"%s","challengeId":"%s","captchaCode":"%s"}
+                """.formatted(username, password, expectedRole, challengeId, captchaCode), null);
     }
 
     private TestResponse loginWithoutExpectedRole(String username, String password) throws Exception {
-        TestResponse challenge = get("/api/v1/auth/slider-challenge", null);
+        TestResponse challenge = get("/api/v1/auth/captcha-challenge", null);
         return post("/api/v1/auth/login", """
-                {"username":"%s","password":"%s","challengeId":"%s","sliderOffset":%d}
+                {"username":"%s","password":"%s","challengeId":"%s","captchaCode":"%s"}
                 """.formatted(username, password, JsonPath.read(challenge.body(), "$.challengeId"),
-                ((Number) JsonPath.read(challenge.body(), "$.targetDisplayOffset")).intValue()), null);
+                JsonPath.read(challenge.body(), "$.testCode")), null);
     }
 
     private TestResponse changePassword(
