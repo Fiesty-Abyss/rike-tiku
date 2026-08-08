@@ -77,13 +77,15 @@ Flyway 是数据库结构的唯一建表和升级入口。已经执行的迁移�
 
 使用 IDEA 直接启动时必须在运行配置增加 `RIKE_TIKU_DB_NAME=rike_tiku_demo`；否则后端默认连接正式开发库 `rike_tiku`，其中不存在演示账号。默认端口方案的前端 API 地址为 `http://localhost:8081/api/v1`。脚本演示端口方案可在服务启动后执行 `.\scripts\demo-environment.ps1 smoke` 验证健康状态和三角色登录。
 
-历史 PR #14 自动化验证为后端 74/74、前端 68/68，后端打包、前端类型检查与构建均通过，`npm audit` 为 0 vulnerabilities；真实脚本链及三角色 HTTP smoke 已通过。PR #15 已普通 merge 进入 `main`（merge commit `12d636fde4afa198edc78eb0c295f5b88c8e3456`）：统一登录使用服务端短时一次性滑块验证，并提供中文化、学生三科工作台、教师任教范围和主动改密。合并后回归为后端 79/79、前端 72/72，打包、类型检查、构建和 `npm audit --omit=dev` 均通过，且不新增迁移。2026-08-07 已在 `rike_tiku_demo` 完成真实浏览器验收，MA-001 至 MA-005、MA-010、MA-011 均已关闭，MA-006 至 MA-009 尚未完成。
+历史 PR #14 自动化验证为后端 74/74、前端 68/68，后端打包、前端类型检查与构建均通过，`npm audit` 为 0 vulnerabilities；真实脚本链及三角色 HTTP smoke 已通过。PR #15 已普通 merge 进入 `main`（merge commit `12d636fde4afa198edc78eb0c295f5b88c8e3456`）：当时统一登录使用服务端短时一次性滑块验证，并提供中文化、学生三科工作台、教师任教范围和主动改密。PR #15 合并后回归为后端 79/79、前端 72/72；该滑块属于历史实现，PR #19 已在当前分支将其替换为随机图形验证码。
 
 PR #16 已普通 merge（merge commit `588db6ee5b2a6c466c618249f072591af47609a1`），独立 `rike_tiku_demo` 已扩充为 Demo90：物理、化学、生物各 30 道项目原创自编演示题，每科三题型、三档难度和三个演示知识点各 10 道。Demo90 使用稳定 Unicode 表达化学式、电荷与科学计数法，STANDARD 解析为简短学科解析。它仅用于稳定演示筛选、随机练习、判分和错题链路，不等于 MVP30 正式真实题库；MVP30 仍未正式入库，网络候选题也未因此改为 `PUBLISHED`。PR #16 未新增 Flyway 迁移，未写正式 `rike_tiku`。
 
 PR #17 已普通 merge（merge commit `3e5454de8257075d1ccdf11d5f6d3a35b464adc1`）进入 `main`。它新增 `/admin/students` 单学生管理，保留 `/admin/students/import` 批量导入；支持分页筛选、详情与班级历史、事务新增、资料和状态编辑、调班、启停及管理员重置密码。`rike_tiku_demo` 同时扩充为保留原 smoke 数据的 3 班、4 教师、9 学生、9 条 ACTIVE 三元任课关系场景，其中 199 班 5 名固定学生、200 班 3 名固定学生。PR #17 合并时 Flyway 为 V1–V7；未修改 MVP30 原始 Excel。合并后回归为后端 86/86、前端 80/80，package、type-check、build、生产依赖 audit 及 `reset → seed → validate → smoke` 均通过。
 
 PR #18 已普通 merge（merge commit `b615bc1a78d842d61928abc8f89b839f52c88b7f`）进入 `main`。它新增 V8（不修改 V1–V7），将业务表扩展为 24 张：教师可在本人 ACTIVE 三元任课关系内进入班级学科工作台，查看班级学生和维护高频考点；学生端依据本人有效主班级和所选科目只读取对应 ACTIVE 高频考点。Demo 环境预置 199/200 六条场景任课关系各 2 条，共 12 条自编高频考点。浏览器验收已覆盖物理教师新增、编辑、停用、启用、双班切换，生物/化学学科隔离，以及 199/200 学生内容隔离；MA-008 已关闭。合并后验证为后端 87/87、前端 83/83、package/type-check/build/audit 和 Demo 脚本链均通过。
+
+PR #19 当前分支 `feat/login-image-captcha` 将登录页历史滑块替换为 JDK 生成的 4 位随机 PNG 图形验证码。验证码默认隐藏，第一次点击或 Enter 仅展开并获取 challenge，第二次才提交登录；challenge 在内存保存 2 分钟并一次性消费，不新增数据库、Redis 或第三方依赖。当前自动化为后端 90/90、前端 91/91，package、type-check、build 和生产依赖 audit（0 vulnerabilities）均通过；`rike_tiku_demo` 三单角色、多角色、错误刷新、退出重登及控制台均已真实浏览器复验通过。
 
 ## 本地启动
 
@@ -172,4 +174,4 @@ npm run build
 
 ## 下一阶段
 
-PR #13 至 PR #18 均已普通 merge；PR #18 merge commit 与合并基线 main HEAD 为 `b615bc1a78d842d61928abc8f89b839f52c88b7f`。当前分支为 `main`，已删除远程功能分支；本轮没有修改 MVP30 原始 Excel，正式 `rike_tiku` 只读污染检查四项均为 0。MVP30 尚未正式入库，基础个人资料、头像、私信、掌握度、推荐、DeepSeek、GLM 和 AI 能力仍未实现，非 AI 工程基础不得标记为 100%。当前停止并等待下一轮明确指令，不创建下一分支。
+PR #13 至 PR #18 均已普通 merge；PR #18 merge commit 为 `b615bc1a78d842d61928abc8f89b839f52c88b7f`，PR #19 base 为其后的最新 `main@dfe77c681f18cc5b24662fd6286c14a1514bdf6e`。当前分支为 `feat/login-image-captcha`，只替换登录验证码交互，不修改 Flyway、MVP30 原始 Excel或其他业务模块。MVP30 尚未正式入库，基础个人资料、头像、私信、掌握度、推荐、DeepSeek、GLM 和 AI 能力仍未实现，非 AI 工程基础不得标记为 100%。

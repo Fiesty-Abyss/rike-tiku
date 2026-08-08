@@ -8,5 +8,5 @@ public record DengLuQingQiu(
         @NotBlank(message = "密码不能为空") String password,
         JiaoSeDaiMa expectedRole,
         String challengeId,
-        Integer sliderOffset) {
+        String captchaCode) {
 }

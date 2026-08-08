@@ -54,9 +54,12 @@ function Invoke-DemoTool([string]$ToolAction) {
     }
 }
 
-    function Invoke-LoginSmoke([string]$Username, [string]$Role) {
-        $challenge = Invoke-RestMethod -Method Get -Uri "$apiBaseUrl/auth/slider-challenge"
-        $payload = @{ username = $Username; password = 'a1234567'; expectedRole = $Role; challengeId = $challenge.challengeId; sliderOffset = $challenge.targetDisplayOffset } | ConvertTo-Json -Compress
+function Invoke-LoginSmoke([string]$Username, [string]$Role) {
+    $challenge = Invoke-RestMethod -Method Get -Uri "$apiBaseUrl/auth/captcha-challenge"
+    if (-not $challenge.testCode) {
+        throw 'Demo smoke 需要以 RIKE_TIKU_CAPTCHA_EXPOSE_TEST_CODE=true 启动本地演示后端。'
+    }
+    $payload = @{ username = $Username; password = 'a1234567'; expectedRole = $Role; challengeId = $challenge.challengeId; captchaCode = $challenge.testCode } | ConvertTo-Json -Compress
     $response = Invoke-RestMethod -Method Post -Uri "$apiBaseUrl/auth/login" -ContentType 'application/json' -Body $payload
     if (-not $response.accessToken -or $response.user.username -ne $Username -or $response.user.roles -notcontains $Role) {
         throw "$Role 演示账号登录响应不符合预期"
@@ -92,8 +95,8 @@ function Invoke-SmokeCheck {
     Invoke-LoginSmoke 'demo_teacher' 'TEACHER'
     Invoke-LoginSmoke 'demo_student' 'STUDENT'
 
-    $mismatchChallenge = Invoke-RestMethod -Method Get -Uri "$apiBaseUrl/auth/slider-challenge"
-    $mismatchPayload = @{ username = 'demo_admin'; password = 'a1234567'; expectedRole = 'STUDENT'; challengeId = $mismatchChallenge.challengeId; sliderOffset = $mismatchChallenge.targetDisplayOffset } | ConvertTo-Json -Compress
+    $mismatchChallenge = Invoke-RestMethod -Method Get -Uri "$apiBaseUrl/auth/captcha-challenge"
+    $mismatchPayload = @{ username = 'demo_admin'; password = 'a1234567'; expectedRole = 'STUDENT'; challengeId = $mismatchChallenge.challengeId; captchaCode = $mismatchChallenge.testCode } | ConvertTo-Json -Compress
     Add-Type -AssemblyName System.Net.Http
     $httpClient = [System.Net.Http.HttpClient]::new()
     try {
@@ -126,9 +129,11 @@ switch ($Action) {
         $env:RIKE_TIKU_DB_NAME = $Database
         $env:RIKE_TIKU_BACKEND_PORT = '18081'
         $env:RIKE_TIKU_CORS_ALLOWED_ORIGINS = 'http://localhost:18080'
+        $env:RIKE_TIKU_CAPTCHA_EXPOSE_TEST_CODE = 'true'
         Write-Host "当前目标数据库: $Database"
         Write-Host "后端地址: $backendUrl"
         Write-Host "允许的前端地址: $frontendUrl"
+        Write-Host '验证码测试值仅为本地 Demo smoke 暴露；正式运行默认关闭。' -ForegroundColor Yellow
         Write-Host '演示账号: demo_admin / demo_teacher / demo_student，固定密码仅限本地demo库。' -ForegroundColor Yellow
         Push-Location $backendRoot
         try { & mvn spring-boot:run } finally { Pop-Location }
