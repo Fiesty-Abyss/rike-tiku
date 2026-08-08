@@ -184,6 +184,20 @@ h1 {
 .workspace-card .section-title-row { margin-bottom:16px; }
 .workspace-card .el-select { width:100%; }
 .student-knowledge-section { margin-top:26px; padding:24px; background:#f7fafc; border:1px solid #e4eaf1; border-radius:14px; }
+.student-mastery-section { margin-top:26px; padding:24px; background:#fff; border:1px solid #e4eaf1; border-radius:14px; }
+.mastery-overview { display:grid; grid-template-columns:minmax(220px,.75fr) minmax(0,1.6fr); gap:30px; align-items:center; }
+.mastery-accuracy { display:grid; gap:9px; padding-right:30px; border-right:1px solid var(--border); }
+.mastery-accuracy span,.mastery-accuracy small,.mastery-counts dt { color:var(--muted); font-size:13px; }
+.mastery-accuracy strong { color:var(--primary-deep); font-size:22px; }
+.mastery-counts { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:0; margin:0; }
+.mastery-counts div { padding:10px 16px; border-top:1px solid var(--border); }
+.mastery-counts div:nth-child(-n+3) { border-top:0; }
+.mastery-counts dd { margin:5px 0 0; color:var(--primary-deep); font-size:18px; font-weight:700; }
+.recommendation-list { display:grid; }
+.recommendation-list article { display:flex; align-items:center; justify-content:space-between; gap:24px; padding:17px 2px; border-top:1px solid var(--border); }
+.recommendation-list article:first-child { border-top:0; }
+.recommendation-list h3 { margin:0; color:#263c53; font-size:16px; }
+.recommendation-list p { margin:7px 0 0; color:#60758a; line-height:1.6; }
 .knowledge-point-cards { display:grid; gap:14px; }
 .knowledge-point-card { padding:20px; background:#fff; border:1px solid #e4eaf1; border-radius:12px; }
 .knowledge-point-card-heading { display:flex; align-items:flex-start; justify-content:space-between; gap:16px; }
@@ -223,4 +237,9 @@ h1 {
   .conversation-row { grid-template-columns:1fr auto; }
   .conversation-preview { grid-column:1 / -1; grid-row:2; }
   .chat-message > div { max-width:88%; }
+  .mastery-overview { grid-template-columns:1fr; gap:18px; }
+  .mastery-accuracy { padding:0 0 20px; border-right:0; border-bottom:1px solid var(--border); }
+  .mastery-counts { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .mastery-counts div:nth-child(3) { border-top:1px solid var(--border); }
+  .recommendation-list article { align-items:stretch; flex-direction:column; }
 }
