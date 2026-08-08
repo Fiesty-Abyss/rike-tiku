@@ -83,7 +83,7 @@ PR #16 已普通 merge（merge commit `588db6ee5b2a6c466c618249f072591af47609a1`
 
 PR #17 已普通 merge（merge commit `3e5454de8257075d1ccdf11d5f6d3a35b464adc1`）进入 `main`。它新增 `/admin/students` 单学生管理，保留 `/admin/students/import` 批量导入；支持分页筛选、详情与班级历史、事务新增、资料和状态编辑、调班、启停及管理员重置密码。`rike_tiku_demo` 同时扩充为保留原 smoke 数据的 3 班、4 教师、9 学生、9 条 ACTIVE 三元任课关系场景，其中 199 班 5 名固定学生、200 班 3 名固定学生。PR #17 合并时 Flyway 为 V1–V7；未修改 MVP30 原始 Excel。合并后回归为后端 86/86、前端 80/80，package、type-check、build、生产依赖 audit 及 `reset → seed → validate → smoke` 均通过。
 
-当前 PR #18 分支为 `feat/teacher-workspace-high-frequency`，基于 `main@abdc23c77ce37d7e35c0dcf33bdaf38ae55d10fb`，尚未合并。PR #18 新增 V8（不修改 V1–V7），将业务表扩展为 24 张：教师可在本人 ACTIVE 三元任课关系内进入班级学科工作台，查看班级学生和维护高频考点；学生端依据本人有效主班级和所选科目只读取对应 ACTIVE 高频考点。Demo 环境预置 199/200 六条场景任课关系各 2 条，共 12 条自编高频考点。浏览器验收已覆盖物理教师新增、编辑、停用、启用、双班切换，生物/化学学科隔离，以及 199/200 学生内容隔离；MA-008 已关闭。PR #18 当前验证为后端 87/87、前端 83/83、package/type-check/build/audit 和 Demo 脚本链均通过。
+PR #18 已普通 merge（merge commit `b615bc1a78d842d61928abc8f89b839f52c88b7f`）进入 `main`。它新增 V8（不修改 V1–V7），将业务表扩展为 24 张：教师可在本人 ACTIVE 三元任课关系内进入班级学科工作台，查看班级学生和维护高频考点；学生端依据本人有效主班级和所选科目只读取对应 ACTIVE 高频考点。Demo 环境预置 199/200 六条场景任课关系各 2 条，共 12 条自编高频考点。浏览器验收已覆盖物理教师新增、编辑、停用、启用、双班切换，生物/化学学科隔离，以及 199/200 学生内容隔离；MA-008 已关闭。合并后验证为后端 87/87、前端 83/83、package/type-check/build/audit 和 Demo 脚本链均通过。
 
 ## 本地启动
 
@@ -172,4 +172,4 @@ npm run build
 
 ## 下一阶段
 
-PR #13 至 PR #17 均已普通 merge；PR #17 合并提交为 `3e5454de8257075d1ccdf11d5f6d3a35b464adc1`。当前工作在 PR #18 分支 `feat/teacher-workspace-high-frequency`，Draft PR #18 尚未合并；本轮没有修改 MVP30 原始 Excel 或正式 `rike_tiku`。MVP30 尚未正式入库，基础个人资料、头像、私信、掌握度、推荐、DeepSeek、GLM 和 AI 能力仍未实现，非 AI 工程基础不得标记为 100%。下一业务模块仍以“管理员学生完整管理与账号恢复”为唯一候选，状态为 PLANNED。
+PR #13 至 PR #18 均已普通 merge；PR #18 merge commit 与合并基线 main HEAD 为 `b615bc1a78d842d61928abc8f89b839f52c88b7f`。当前分支为 `main`，已删除远程功能分支；本轮没有修改 MVP30 原始 Excel，正式 `rike_tiku` 只读污染检查四项均为 0。MVP30 尚未正式入库，基础个人资料、头像、私信、掌握度、推荐、DeepSeek、GLM 和 AI 能力仍未实现，非 AI 工程基础不得标记为 100%。当前停止并等待下一轮明确指令，不创建下一分支。
