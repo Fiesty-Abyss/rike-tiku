@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import http from './http'
-import { createHighFrequencyPoint, fetchTeacherWorkspace, fetchTeachingScopes, updateHighFrequencyPoint, updateHighFrequencyPointStatus } from './teacher'
+import { createHighFrequencyPoint, fetchTeacherLearningSummary, fetchTeacherWorkspace, fetchTeachingScopes, updateHighFrequencyPoint, updateHighFrequencyPointStatus } from './teacher'
 
 describe('教师班级学科工作台 API', () => {
   const adapter = vi.fn().mockResolvedValue({ data: {} })
@@ -15,6 +15,8 @@ describe('教师班级学科工作台 API', () => {
     expect(adapter).toHaveBeenCalledWith(expect.objectContaining({ method: 'get', url: '/teacher/teaching-scopes' }))
     await fetchTeacherWorkspace(12)
     expect(adapter).toHaveBeenCalledWith(expect.objectContaining({ url: '/teacher/scopes/12' }))
+    await fetchTeacherLearningSummary(12)
+    expect(adapter).toHaveBeenCalledWith(expect.objectContaining({ url: '/teacher/scopes/12/learning-summary' }))
   })
 
   it('高频考点维护接口只提交业务字段', async () => {

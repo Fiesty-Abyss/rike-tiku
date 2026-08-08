@@ -2,13 +2,14 @@
 import { computed, onMounted, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage, type FormInstance, type FormRules } from 'element-plus'
-import { createHighFrequencyPoint, fetchTeacherWorkspace, updateHighFrequencyPoint, updateHighFrequencyPointStatus, type HighFrequencyPoint, type TeacherWorkspace } from '../../api/teacher'
+import { createHighFrequencyPoint, fetchTeacherLearningSummary, fetchTeacherWorkspace, updateHighFrequencyPoint, updateHighFrequencyPointStatus, type HighFrequencyPoint, type TeacherScopeLearningSummary, type TeacherWorkspace } from '../../api/teacher'
 import { createConversation, fetchConversations } from '../../api/messages'
 
 const route = useRoute()
 const router = useRouter()
 const scopeId = computed(() => Number(route.params.scopeId))
 const workspace = ref<TeacherWorkspace | null>(null)
+const learningSummary = ref<TeacherScopeLearningSummary | null>(null)
 const loading = ref(false)
 const saving = ref(false)
 const dialogVisible = ref(false)
@@ -36,8 +37,14 @@ function message(error: unknown, fallback: string) {
 async function load() {
   loading.value = true
   try {
-    workspace.value = await fetchTeacherWorkspace(scopeId.value)
-    unreadCount.value = (await fetchConversations())
+    const [workspaceData, learningData, conversations] = await Promise.all([
+      fetchTeacherWorkspace(scopeId.value),
+      fetchTeacherLearningSummary(scopeId.value),
+      fetchConversations(),
+    ])
+    workspace.value = workspaceData
+    learningSummary.value = learningData
+    unreadCount.value = conversations
       .filter((item) => item.teachingAssignmentId === scopeId.value)
       .reduce((total, item) => total + item.unreadCount, 0)
   } catch (error) {
@@ -45,6 +52,10 @@ async function load() {
   } finally {
     loading.value = false
   }
+}
+
+function accuracy(value: number | null) {
+  return value === null ? '暂无数据' : `${value.toFixed(1)}%`
 }
 
 function openCreate() {
@@ -135,6 +146,19 @@ onMounted(() => void load())
             <el-table-column prop="name" label="姓名" />
             <el-table-column prop="grade" label="年级" />
             <el-table-column label="操作" width="90"><template #default="{ row }"><el-button link type="primary" @click="messageStudent(row.studentId)">私信</el-button></template></el-table-column>
+          </el-table>
+        </section>
+        <section v-if="learningSummary" class="workspace-card">
+          <div class="section-title-row">
+            <div><h2>班级学习情况</h2><p>仅统计当前班级、当前科目的已提交自动判分练习，不进行排名。</p></div>
+          </div>
+          <el-table :data="learningSummary.students" class="data-table" empty-text="当前班级暂无有效学生。">
+            <el-table-column prop="studentNumber" label="学号" min-width="130" />
+            <el-table-column prop="name" label="姓名" min-width="110" />
+            <el-table-column prop="answeredCount" label="答题数" width="88" />
+            <el-table-column label="正确率" width="100"><template #default="{ row }">{{ accuracy(row.accuracy) }}</template></el-table-column>
+            <el-table-column prop="weakKnowledgePointCount" label="薄弱知识点" width="110" />
+            <el-table-column prop="masteredKnowledgePointCount" label="已掌握" width="90" />
           </el-table>
         </section>
         <section class="workspace-card">
