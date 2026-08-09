@@ -4,6 +4,7 @@ import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
 import com.neu.riketiku.renzheng.RenZhengYeWuYiChang;
+import com.neu.riketiku.tiku.fujian.QuestionAttachmentContentService;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -18,6 +19,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -27,12 +29,14 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class StudentPracticeService {
     private static final List<String> AUTO_GRADABLE_TYPES = List.of("SINGLE_CHOICE", "MULTIPLE_CHOICE", "FILL_BLANK");
-    private static final Pattern OBJECT_MARKER = Pattern.compile("〔(?:图片|公式)对象\\s+[IF]\\d{3}〕");
+    private static final Pattern OBJECT_MARKER = Pattern.compile("〔(?:图片|公式)对象\\s+([IF]\\d{3})〕");
     private final JdbcTemplate jdbc;
+    private final QuestionAttachmentContentService attachmentContentService;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    public StudentPracticeService(JdbcTemplate jdbc) {
+    public StudentPracticeService(JdbcTemplate jdbc, QuestionAttachmentContentService attachmentContentService) {
         this.jdbc = jdbc;
+        this.attachmentContentService = attachmentContentService;
     }
 
     @Transactional(readOnly = true)
@@ -163,7 +167,7 @@ public class StudentPracticeService {
                     FROM xue_sheng_da_ti WHERE lian_xi_ti_mu_id=? AND xue_sheng_id=?
                     """, (rs, row) -> new AnswerFact(readJson(rs.getString(1)), rs.getBoolean(2), rs.getBigDecimal(3)), question.id(), studentId)
                     .stream().findFirst().orElseThrow(() -> business("PRACTICE_ANSWER_NOT_FOUND", "练习答题事实不完整", HttpStatus.INTERNAL_SERVER_ERROR));
-            records.add(new StudentPracticeDtos.ResultQuestion(toSafeQuestion(question), fact.answer(), readJson(question.correctAnswer()),
+            records.add(new StudentPracticeDtos.ResultQuestion(toSafeQuestion(question, sessionId, "SUBMITTED"), fact.answer(), readJson(question.correctAnswer()),
                     question.standardAnalysis(), fact.correct(), fact.score()));
         }
         return new StudentPracticeDtos.Result(sessionId, result.totalCount(), result.correctCount(), result.totalScore(), result.submittedAt(), records);
@@ -203,10 +207,10 @@ public class StudentPracticeService {
                         rs.getString(13), rs.getString(14), rs.getString(15)), studentId, questionId)
                 .stream().findFirst().orElseThrow(() -> business("WRONG_QUESTION_NOT_FOUND", "错题不存在或不属于当前学生", HttpStatus.NOT_FOUND));
         List<StudentPracticeDtos.Attachment> attachments = jdbc.query("""
-                SELECT id,guan_lian_wei_zhi,fu_jian_lei_xing,yuan_shi_wen_jian_ming,dui_xiang_biao_shi,zhuang_tai
+                SELECT id,guan_lian_wei_zhi,fu_jian_lei_xing,yuan_shi_wen_jian_ming,dui_xiang_biao_shi,zhuang_tai,xiang_dui_lu_jing,nei_rong_ha_xi
                 FROM ti_mu_fu_jian WHERE ti_mu_id=? AND yi_shan_chu=0 ORDER BY guan_lian_wei_zhi,pai_xu,id
-                """, (rs, index) -> new StudentPracticeDtos.Attachment(rs.getLong(1), rs.getString(2), rs.getString(3),
-                        rs.getString(4), rs.getString(5), rs.getString(6)), questionId);
+                """, (rs, index) -> attachment(rs.getLong(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8),
+                        "/api/v1/student/wrong-questions/" + questionId + "/attachments/" + rs.getLong(1) + "/content"), questionId);
         return new StudentPracticeDtos.WrongQuestionDetail(row.item(), row.stem(), readOptions(row.options()), readJson(row.studentAnswer()),
                 readJson(row.correctAnswer()), row.analysis(), readKnowledgePoints(row.knowledgePoints()), attachments);
     }
@@ -295,9 +299,7 @@ public class StudentPracticeService {
                 WHERE qkp.ti_mu_id=? AND qkp.yi_shan_chu=0 AND k.zhuang_tai='ACTIVE' AND k.yi_shan_chu=0
                 ORDER BY qkp.pai_xu,qkp.id
                 """, (rs, row) -> new StudentPracticeDtos.KnowledgePoint(rs.getLong(1), rs.getString(2), rs.getString(3)), question.id());
-        if (analysis.isEmpty() || points.isEmpty() || hasActiveAttachment(question.id())
-                || containsObjectMarker(question.stem()) || containsObjectMarker(question.correctAnswer())
-                || containsObjectMarker(analysis.get()) || options.stream().anyMatch(item -> containsObjectMarker(item.content()))
+        if (analysis.isEmpty() || points.isEmpty() || !safePracticeAttachments(question.id(), question.stem(), question.correctAnswer(), analysis.get(), options)
                 || !hasValidAnswerStructure(question.type(), question.correctAnswer(), options)) {
             return Optional.empty();
         }
@@ -315,13 +317,24 @@ public class StudentPracticeService {
                 writeJson(question.knowledgePoints()));
     }
 
-    private boolean hasActiveAttachment(long questionId) {
-        return count("SELECT COUNT(*) FROM ti_mu_fu_jian WHERE ti_mu_id=? AND yi_shan_chu=0 AND zhuang_tai='ACTIVE'", questionId) > 0;
+    private boolean safePracticeAttachments(long questionId, String stem, String answer, String analysis, List<StudentPracticeDtos.Option> options) {
+        if (containsObjectMarker(answer)) return false;
+        List<AttachmentRow> rows = jdbc.query("SELECT id,guan_lian_wei_zhi,fu_jian_lei_xing,zhuang_tai,dui_xiang_biao_shi,xiang_dui_lu_jing,nei_rong_ha_xi FROM ti_mu_fu_jian WHERE ti_mu_id=? AND yi_shan_chu=0", (rs, i) -> new AttachmentRow(rs.getLong(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(7)), questionId);
+        for (AttachmentRow row : rows) {
+            if (!"ACTIVE".equals(row.status()) || !"IMAGE".equals(row.type()) || "ANSWER".equals(row.position()) || !"AVAILABLE".equals(attachmentContentService.renderStatus(row.path(), row.hash(), row.type(), row.status()))) return false;
+        }
+        List<String> markers = new ArrayList<>();
+        markers.addAll(markers(stem)); markers.addAll(markers(analysis));
+        for (StudentPracticeDtos.Option option : options) markers.addAll(markers(option.content()));
+        if (markers.size() != rows.size()) return markers.isEmpty() && rows.isEmpty();
+        return new HashSet<>(markers).size() == markers.size() && new HashSet<>(markers).equals(rows.stream().map(AttachmentRow::marker).collect(java.util.stream.Collectors.toSet()));
     }
 
-    private boolean containsObjectMarker(String value) {
-        return value != null && OBJECT_MARKER.matcher(value).find();
+    private List<String> markers(String value) {
+        if (value == null) return List.of();
+        List<String> result = new ArrayList<>(); Matcher matcher = OBJECT_MARKER.matcher(value); while (matcher.find()) result.add(matcher.group(1)); return result;
     }
+    private boolean containsObjectMarker(String value) { return value != null && OBJECT_MARKER.matcher(value).find(); }
 
     private boolean hasValidAnswerStructure(String type, String answerJson, List<StudentPracticeDtos.Option> options) {
         try {
@@ -380,13 +393,26 @@ public class StudentPracticeService {
 
     private StudentPracticeDtos.Session toSession(SessionHeader header, List<FrozenQuestion> questions) {
         return new StudentPracticeDtos.Session(header.id(), header.subjectId(), header.subjectCode(), header.subjectName(), header.status(),
-                header.questionCount(), header.createdAt(), header.submittedAt(), questions.stream().map(this::toSafeQuestion).toList());
+                header.questionCount(), header.createdAt(), header.submittedAt(), questions.stream().map(question -> toSafeQuestion(question, header.id(), header.status())).toList());
     }
 
-    private StudentPracticeDtos.SessionQuestion toSafeQuestion(FrozenQuestion question) {
+    private StudentPracticeDtos.SessionQuestion toSafeQuestion(FrozenQuestion question, long sessionId, String sessionStatus) {
         int blankCount = "FILL_BLANK".equals(question.type()) ? readJson(question.correctAnswer()).path("blanks").size() : 0;
         return new StudentPracticeDtos.SessionQuestion(question.id(), question.order(), question.type(), question.stem(), question.difficulty(),
-                question.score(), blankCount, readOptions(question.options()), readKnowledgePoints(question.knowledgePoints()));
+                question.score(), blankCount, readOptions(question.options()), readKnowledgePoints(question.knowledgePoints()), sessionAttachments(question.questionId(), sessionId, sessionStatus));
+    }
+
+    private List<StudentPracticeDtos.Attachment> sessionAttachments(long questionId, long sessionId, String sessionStatus) {
+        return jdbc.query("SELECT id,guan_lian_wei_zhi,fu_jian_lei_xing,yuan_shi_wen_jian_ming,dui_xiang_biao_shi,zhuang_tai,xiang_dui_lu_jing,nei_rong_ha_xi FROM ti_mu_fu_jian WHERE ti_mu_id=? AND yi_shan_chu=0 ORDER BY guan_lian_wei_zhi,pai_xu,id", (rs, i) -> {
+            String position = rs.getString(2); long id = rs.getLong(1);
+            if ("ANSWER".equals(position) || ("CREATED".equals(sessionStatus) && "STANDARD_ANALYSIS".equals(position))) return null;
+            return attachment(id, position, rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8), "/api/v1/student/practice-sessions/" + sessionId + "/attachments/" + id + "/content");
+        }, questionId).stream().filter(java.util.Objects::nonNull).toList();
+    }
+
+    private StudentPracticeDtos.Attachment attachment(long id, String position, String type, String fileName, String marker, String status, String path, String hash, String url) {
+        String renderStatus = attachmentContentService.renderStatus(path, hash, type, status);
+        return new StudentPracticeDtos.Attachment(id, position, type, fileName, marker, status, renderStatus, "AVAILABLE".equals(renderStatus) ? url : null);
     }
 
     private Map<Long, StudentPracticeDtos.Answer> validateAnswerSet(List<StudentPracticeDtos.Answer> answers, List<FrozenQuestion> questions) {
@@ -611,6 +637,7 @@ public class StudentPracticeService {
                                     List<StudentPracticeDtos.Option> options, String standardAnalysis,
                                     List<StudentPracticeDtos.KnowledgePoint> knowledgePoints) {
     }
+    private record AttachmentRow(long id, String position, String type, String status, String marker, String path, String hash) { }
 
     private record SessionHeader(long id, long subjectId, String subjectCode, String subjectName, String status, int questionCount,
                                  LocalDateTime createdAt, LocalDateTime submittedAt) {

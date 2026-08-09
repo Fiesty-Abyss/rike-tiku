@@ -2,7 +2,7 @@
 
 > 2026-08-09 V3.0 非 AI 正式完工审计结论为 REJECT。历史审计快照识别出 4 个 A 层硬缺口；其中公共门户 MA-016 已在 `feat/public-portal` 完成并验证，剩余附件真实显示、管理员高风险操作日志、30 道合法样例完整导入发布显示闭环仍阻止开始 AI。完整原始证据见 [V3_NON_AI_COMPLETION_AUDIT.md](V3_NON_AI_COMPLETION_AUDIT.md)。
 
-> 当前接续分支：`main`。PR #25 已普通 merge（merge commit `0559a4e4eba041dd74a7bcb7d4c9f2cd8b29e617`），关闭 MA-016；当前 Flyway V1–V10、26 张业务表。
+> 当前接续分支：`feat/question-attachment-rendering`，base 为 `b967ce68027fe9776ca08f8d7547c0c5b2b0fbbf`。PR #25 已普通 merge（merge commit `0559a4e4eba041dd74a7bcb7d4c9f2cd8b29e617`），关闭 MA-016；当前 Flyway V1–V10、26 张业务表。
 
 更新时间：2026-08-09
 
@@ -42,16 +42,20 @@ PR #23 浏览器仅操作 `rike_tiku_demo`：物理 3、化学 3、生物 4 道�
 
 `feat/public-portal` 将根路径 `/` 从重定向登录改为无需认证的正式公共门户，复用唯一 `/login` 入口且不改认证协议或守卫。门户包含系统名称、副标题、三科介绍、单选/多选/填空题型边界、非 AI 功能介绍、六步学习闭环和三角色说明；首屏及能力区均明确运行时 AI 尚未上线。前端 32 文件 122/122、type-check、build、audit 0 通过；后端回归及 package 为 105/105。独立 Demo 的 reset/seed/validate/smoke、三角色真实登录、登录态/未登录态门户刷新和常见宽度复验均通过；控制台 0 error、0 warning，最终 Demo 已恢复固定 120 题。MA-016 已关闭，MA-017 至 MA-020 未改动。
 
+当前 MA-017 机器证据已完成：后端附件/权限/HTTP/导入/题池专项 27 个，26 PASS、1 个符号链接权限 assumption skipped；`mvn clean test` 112 个测试 0 失败、1 个符号链接权限 assumption skipped，`mvn clean package` PASS；前端附件专项 4/4、`npm test` 127/127 PASS，type-check、build PASS，`npm audit --omit=dev` 为 0 vulnerabilities。独立 `rike_tiku_demo` 的 `reset → seed → validate → smoke` PASS，Demo 题库为物理 40、化学 39、生物 41，共 120 道；PHYSICS-S1 两条附件记录实际文件/hash 回读通过。当前状态为 `IMPLEMENTED_AWAITING_FINAL_MANUAL_ACCEPTANCE`。用户 CAPTCHA 和浏览器视觉验收根据新策略延期至非 AI 最终集成验收，不属于 PR #26 的 merge gate。
+
 ## 继续时必须保持
 
+- PR #26 修正后的附件证据以本轮结果为准：附件/权限/导入/题池专项共 27 个测试，26 PASS、1 个符号链接权限 assumption skipped；`mvn clean test` 112 个测试 0 失败、1 个符号链接权限 assumption skipped，`mvn clean package` PASS；前端附件专项 4/4、`npm test` 33 文件 127/127 PASS，type-check、build、`npm audit --omit=dev` 为 0 vulnerabilities；Demo `reset → seed → validate → smoke` PASS，物理 40、化学 39、生物 41，共 120 道。当前仍为 `IMPLEMENTED_AWAITING_FINAL_MANUAL_ACCEPTANCE`，人工验收延期至非 AI 最终集成验收。
+- 附件对象标识保持兼容规范：正文是 `〔图片对象 I001〕` / `〔公式对象 F107〕`，数据库 `dui_xiang_biao_shi` 只存 `I001` / `F107`；任何新导入、Demo seed、后端权限判断和前端渲染都必须按提取后的对象 ID 匹配。
 - 仅 `STUDENT` 且有有效 `xue_sheng_dang_an` 可访问学生练习资源；会话、结果和错题均以当前学生档案隔离。
-- 题池只取可真正冻结的 `PUBLISHED + ONLINE_PRACTICE + shi_fou_ke_zi_dong_pan_fen=1` 单选、多选、填空：要求有效版本 1 STANDARD 解析、活动知识点、足够选项和合法答案 JSON；首版排除活动附件及图片/公式对象标记，不进入主观题。
+- 题池只取可真正冻结的 `PUBLISHED + ONLINE_PRACTICE + shi_fou_ke_zi_dong_pan_fen=1` 单选、多选、填空：要求有效版本 1 STANDARD 解析、活动知识点、足够选项和合法答案 JSON。仅真实存在、类型与 SHA-256 均校验成功的 PNG/JPEG STEM/OPTION/STANDARD 图片可进入；PDF、公式、ANSWER 附件、缺失或不安全附件继续排除。
 - 未提交会话 API 绝不返回正确答案或标准解析；答题内容和结果不存浏览器持久化存储。
 - 提交事务必须同步保存答题事实、错题聚合、结果和会话 `SUBMITTED`，重复提交返回 `409`。
 - 错题错误次数永久保留；答对只更新连续正确次数和复习状态。
 - Entity 只对应数据库，不直接暴露密码摘要、逻辑删除等内部字段；API 输入优先 `XxxRequest`，输出优先 `XxxResponse`，可统一放入 `dto` 包。
 - 不机械创建 VO、Converter、Assembler；只有真正独立的页面展示模型才考虑 VO。
-- 不把规则掌握度和推荐描述为 AI；不引入 AI Provider、AI 判分、教师任务、WebSocket、Redis 或附件修复。
+- 不把规则掌握度和推荐描述为 AI；不引入 AI Provider、AI 判分、教师任务、WebSocket、Redis 或超出 MA-017 范围的附件能力。
 - 图形验证码测试值只允许在自动化或独立本地 Demo 中显式开启；正式运行保持 `RIKE_TIKU_CAPTCHA_EXPOSE_TEST_CODE=false`。
 
 ## 重要文档
@@ -72,4 +76,4 @@ PR #23 浏览器仅操作 `rike_tiku_demo`：物理 3、化学 3、生物 4 道�
 
 ## 当前下一步
 
-下一轮唯一任务是 MA-017：题目附件真实存储、安全访问和前端显示。不得自动开始操作日志、30 题闭环、MA-020 或 AI。
+MA-017 机器实现已完成，状态为 `IMPLEMENTED_AWAITING_FINAL_MANUAL_ACCEPTANCE`。用户 CAPTCHA、ADMIN/STUDENT/TEACHER/多角色浏览器验收统一延期至非 AI 最终集成验收，不属于 PR #26 的 merge gate；最终通过后再关闭 MA-017。PR #26 合并后创建最后一个非 AI 分支 `feat/non-ai-final-closure`，在同一 PR 内完成 MA-018、MA-020、MA-019、管理员图片上传、菜单整理、多角色切换和最终非 AI 审计。
