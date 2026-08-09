@@ -4,6 +4,8 @@
 
 > 当前仓库处于分阶段开发中，不代表完整系统已经完成或投入真实学校使用。
 
+> 2026-08-09 V3.0 非 AI 正式完工审计结论为 **REJECT**：公共门户首页、附件真实显示、管理员高风险操作日志、30 道合法样例完整导入发布显示闭环仍是 A 层硬缺口，因此当前不得标记为 100% DONE_VERIFIED，也不得开始 AI。详见 [V3.0 非 AI 完工审计](docs/V3_NON_AI_COMPLETION_AUDIT.md)。
+
 ## 工程范围
 
 - 学科：高中物理、化学、生物。
@@ -177,6 +179,7 @@ npm run build
 - [本地演示环境](docs/DEMO_ENVIRONMENT.md)
 - [人工验收清单](docs/MANUAL_ACCEPTANCE_CHECKLIST.md)
 - [人工验收问题记录](docs/MANUAL_ACCEPTANCE_FINDINGS.md)
+- [V3.0 非 AI 正式完工审计](docs/V3_NON_AI_COMPLETION_AUDIT.md)
 - V3.0总体设计公开脱敏版（位于 `docs/`）
 
 ## 题库资料和权利说明
@@ -187,4 +190,4 @@ npm run build
 
 ## 下一阶段
 
-PR #23 已完成并进入 `main`。当前不自动创建下一功能分支，也不开始 AI；DeepSeek、GLM 和运行时 AI 能力仍未实现，非 AI 工程基础不得提前标记为 100%。
+PR #23 已完成并进入 `main`。V3.0 非 AI 正式完工审计已在 `audit/v3-non-ai-completion` 记录证据，结论为 REJECT；下一轮唯一推荐任务是实现 A 层公共门户首页。当前不开始 AI；DeepSeek、GLM 和运行时 AI 能力仍未实现。
