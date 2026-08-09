@@ -14,3 +14,5 @@
 # 当前分支补充（未合并）
 
 学生主页升级为物理、化学、生物三科工作台。`/student/subjects/physics`、`/student/subjects/chemistry`、`/student/subjects/biology` 提供随机五题、条件练习和本学科错题入口。创建页支持 `subjectId`、`knowledgePointId` query 预选；错题页支持 `subjectId` query 筛选，不新增或伪造学习统计。
+
+MA-017 附件机器验证已覆盖学生题干图片、提交后 STANDARD_ANALYSIS 图片、结果/错题上下文和 Blob URL 生命周期；未提交页面不显示标准解析图片。当前状态为 `IMPLEMENTED_AWAITING_FINAL_MANUAL_ACCEPTANCE`，真实 CAPTCHA 与视觉验收统一延期至非 AI 最终集成验收。

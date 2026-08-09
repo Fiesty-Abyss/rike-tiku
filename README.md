@@ -4,7 +4,7 @@
 
 > 当前仓库处于分阶段开发中，不代表完整系统已经完成或投入真实学校使用。
 
-> 2026-08-09 V3.0 非 AI 正式完工审计结论为 **REJECT**。PR #25 已合并并关闭公共门户 MA-016；本分支已实现 MA-017 附件真实显示的机器部分，但仍待用户人工浏览器复验，管理员高风险操作日志和 30 道合法样例完整导入发布显示闭环仍是 A 层硬缺口，因此当前仍不得标记为 100% DONE_VERIFIED，也不得开始 AI。详见 [V3.0 非 AI 完工审计](docs/V3_NON_AI_COMPLETION_AUDIT.md)。
+> 2026-08-09 V3.0 非 AI 正式完工审计结论为 **REJECT**。PR #25 已合并并关闭公共门户 MA-016；MA-017 附件真实显示的机器部分已完成，状态为 `IMPLEMENTED_AWAITING_FINAL_MANUAL_ACCEPTANCE`。用户 CAPTCHA 与浏览器视觉验收延期至非 AI 最终集成验收；管理员高风险操作日志和 30 道合法样例完整导入发布显示闭环仍是 A 层硬缺口，因此当前仍不得标记为 100% DONE_VERIFIED，也不得开始 AI。详见 [V3.0 非 AI 完工审计](docs/V3_NON_AI_COMPLETION_AUDIT.md)。
 
 ## 工程范围
 
@@ -190,4 +190,4 @@ npm run build
 
 ## 下一阶段
 
-PR #25 已普通 merge（merge commit `0559a4e4eba041dd74a7bcb7d4c9f2cd8b29e617`）进入 `main`，关闭 MA-016；V3.0 非 AI 正式完工审计结论仍为 REJECT。当前分支仅授权推进 MA-017 题目附件真实存储、访问与显示，状态为待用户人工浏览器复验；DeepSeek、GLM 和运行时 AI 能力仍未实现。
+PR #25 已普通 merge（merge commit `0559a4e4eba041dd74a7bcb7d4c9f2cd8b29e617`）进入 `main`，关闭 MA-016；V3.0 非 AI 正式完工审计结论仍为 REJECT。MA-017 题目附件真实存储、访问与显示的机器实现已完成，状态为等待非 AI 最终集成人工验收；DeepSeek、GLM 和运行时 AI 能力仍未实现。

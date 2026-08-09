@@ -56,8 +56,8 @@
 - 状态：题库、账号、教学组织、学生练习闭环、教师班级学科工作台、高频考点、师生私信、非 AI 掌握度与确定性规则推荐、三角色个人中心均已进入 `main`。
 - 当前分支：`feat/question-attachment-rendering`；PR #25 已合并，公共门户已进入 `main`。
 - 公共根路径 `/` 已实现无需认证的门户，包含系统/功能/三科/题型/学习闭环/角色介绍和统一 `/login` 入口，且首屏明确运行时 AI 尚未上线。自动化、三角色 Demo 浏览器、登录态与刷新、响应式及控制台证据均通过，MA-016 已关闭。
-- 当前 MA-017 已完成机器实现：受控 PNG/JPEG 存储、3MB 与真实 MIME 校验、SHA-256 回读、附件归属权限、未提交 STANDARD_ANALYSIS 防泄露、管理员详情和学生练习/结果/错题 Blob 显示；状态为 `IMPLEMENTED_AWAITING_MANUAL_ACCEPTANCE`，用户浏览器复验前不关闭。
-- PR #26 独立审查修正已完成：正文 marker 保留 `〔图片对象 I001〕`，数据库 `dui_xiang_biao_shi` 只保存 `I001`；真实 QuestionImportService 导入链已覆盖 preview、confirm、受控 storage、管理员 HTTP 内容和学生提交前后权限。机器门禁与 Demo 最新结果记录在 `DEVELOPMENT_STATUS.md`，MA-017 仍等待人工浏览器复验。
+- 当前 MA-017 已完成机器实现：受控 PNG/JPEG 存储、3MB 与真实 MIME 校验、SHA-256 回读、附件归属权限、未提交 STANDARD_ANALYSIS 防泄露、管理员详情和学生练习/结果/错题 Blob 显示；状态为 `IMPLEMENTED_AWAITING_FINAL_MANUAL_ACCEPTANCE`。用户 CAPTCHA 和浏览器视觉验收延期至非 AI 最终集成验收，未验收前不关闭。
+- PR #26 独立审查修正已完成：正文 marker 保留 `〔图片对象 I001〕`，数据库 `dui_xiang_biao_shi` 只保存 `I001`；真实 QuestionImportService 导入链已覆盖 preview、confirm、受控 storage、管理员 HTTP 内容和学生提交前后权限。机器门禁和 Demo 最新结果记录在 `DEVELOPMENT_STATUS.md`，人工验收不属于 PR #26 merge gate。
 - 当前 Flyway：V1–V10，共 26 张业务表；V10 只增加 `yong_hu` 简介与头像字段，V1–V9 不修改。
 - 独立 `rike_tiku_demo` 保留 Demo90 基线，并新增 30 道经筛选的项目原创变式，最终物理 40、化学 39、生物 41，共 120 道。V3.0 不要求名为 MVP30 的 Excel 整体正式入库；该原始文件保持不变，定位为结构化导入能力验证素材。
 - PR #17 已进入 `main`：新增管理员单学生分页、详情、事务新增、编辑启停、事务调班和密码重置；Demo 扩充为 14 账号、3 班级、4 教师、9 学生、9 条 ACTIVE 三元任课关系。
