@@ -1,8 +1,8 @@
 # AI 开发交接
 
-> 当前接续分支：`main`。PR #22 已普通 merge（merge commit `67b7bd7239e2ac1de3ad8c71b82b6d0a79162d3b`）；当前 Flyway V1–V10、26 张业务表。V10 只 ALTER `yong_hu`，V1–V9 未修改。
+> 当前接续分支：`feat/final-demo-question-bank`，基于 `main@23c5d79f3c23e71563d341a66bfe2fd4fce03a64`。PR #22 已普通 merge（merge commit `67b7bd7239e2ac1de3ad8c71b82b6d0a79162d3b`）；当前 Flyway V1–V10、26 张业务表，本轮不新增迁移。
 
-更新时间：2026-08-08
+更新时间：2026-08-09
 
 ## 当前状态
 
@@ -12,9 +12,9 @@ PR #19 已用 JDK 原生生成的 4 位随机 PNG 图形验证码替换 PR #15 �
 
 V7 的学生练习、正式答题、结果和错题聚合模型已进入 `main`。PR #18 新增 V8 高频考点表，PR #20 新增 V9 两张私信表，PR #22 新增只 ALTER `yong_hu` 的 V10；当前 Flyway 为 V1–V10，共 26 张业务表，MVP30 原始 Excel 未改动。历史 PR #13 自动化为后端 68/68、前端 68/68；PR #15 合并后自动化为后端 79/79、前端 72/72，打包、类型检查、构建、依赖审计与完整浏览器验收均已通过。
 
-`main` 中的 `rike_tiku_demo` 显式重建工具保留原 smoke 数据，并形成 199/200 双班级场景：14 账号、3 班级、4 教师、9 学生、9 条 ACTIVE 三元任课关系及 Demo90。PR #18 另预置 12 条 ACTIVE 高频考点。它不使用 Flyway 承载演示数据，不公开 seed 接口，也不在正常启动时执行。
+`main` 中的 `rike_tiku_demo` 显式重建工具保留原 smoke 数据，并形成 199/200 双班级场景：14 账号、3 班级、4 教师、9 学生、9 条 ACTIVE 三元任课关系及 Demo90。PR #23 保留 Demo90，并从 54 个原创候选中筛选 30 道变式，当前目标总题量 120；PR #18 的 12 条 ACTIVE 高频考点保持不变。演示数据不使用 Flyway 承载，不公开 seed 接口，也不在正常启动时执行。
 
-Demo90 是“本科毕业设计自编演示题”，不等于 MVP30 正式真实题库；MVP30 仍未正式入库，网络候选题没有因此变为 `PUBLISHED`。PR #18 已普通 merge，教师班级学科工作台和高频考点读写隔离已进入 `main`。
+Demo90 与 PR #23 筛选变式均是项目原创演示内容。V3.0 没有规定名为 MVP30 的 Excel 必须整体正式入库；MVP30 原始文件保持不变，定位为 PR #12 已验证的结构化导入能力素材。开发阶段由 Codex 辅助制作候选不等于系统实现运行时 AI 出题。
 
 历史 PR #14 合并后验证：后端 74/74、打包 PASS；前端 68/68、类型检查与构建 PASS；依赖审计 0 vulnerabilities。完整脚本链及三角色真实 HTTP smoke PASS，正式库未出现演示账号、演示题或学习记录。
 
@@ -33,6 +33,10 @@ MA-013 的旧测试数据源问题已关闭。合并前使用全新随机临时�
 PR #22 已将统一 `/profile` 与 `GET/PUT /api/v1/profile`、`POST/DELETE /api/v1/profile/avatar` 普通 merge 进入 `main`。学生、教师、管理员和 ADMIN+TEACHER 多角色账号均只读取本人真实资料；简介上限 500 字。头像只接受不超过 2 MB、可由 ImageIO 真实解析且 MIME/文件内容一致的 PNG/JPEG，MySQL 保存二进制，前端显示 data URL。业务档案、角色、用户名和组织关系不可在个人中心修改，主动改密继续复用现有接口；首次登录门禁不豁免 profile，必须先完成初始密码修改。
 
 PR #22 合并后验证为后端 102/102、前端 31 文件 117/117，package、type-check、build、audit 0、Demo reset/seed/validate/smoke 均 PASS。真实浏览器完整证据覆盖三角色与 `demo_physics_admin` 多角色资料、简介、头像上传/刷新持久化/删除、现有改密入口；门禁修正后轻量抽查正常，控制台 0 error。MA-006 已关闭。正式库为 V10、26 张业务表，Demo90、场景账号、场景班级、高频考点、私信及 V7 学习记录均为 0。
+
+PR #23 当前专项 27/27、后端 105/105、前端 31 文件 117/117，package、type-check、build、生产依赖 audit 0 及 Demo `reset → seed → validate → smoke` 均 PASS。正式库只读检查为 V10、26 张业务表，演示题与全部场景业务数据为 0；MVP30 原始文件 SHA-256 保持 `01E90ACFDFB8EF5194103C3B7DD1A99B4F351858FFFDF70CFF63187928DCAB17`。
+
+PR #23 浏览器仅操作 `rike_tiku_demo`：物理 3、化学 3、生物 4 道新变式真实进入随机练习；Unicode 化学式、三题型控件、提交前防泄露、结果答案与 STANDARD 解析、错题和掌握度均正常。同科连续随机题集不同，控制台 0 error；最终 reset/seed/validate 已清理验收会话并恢复固定 120 题状态。
 
 ## 继续时必须保持
 
@@ -59,7 +63,9 @@ PR #22 合并后验证为后端 102/102、前端 31 文件 117/117，package、t
 - [知识点掌握度与规则推荐](LEARNING_MASTERY_RULE_RECOMMENDATION.md)
 - [个人中心 API](PERSONAL_CENTER_API.md)
 - [个人中心前端](PERSONAL_CENTER_FRONTEND.md)
+- [最终演示题库](FINAL_DEMO_QUESTION_BANK.md)
+- [变式候选审核记录](DEMO_VARIANT_QUESTION_REVIEW.md)
 
 ## 当前下一步
 
-PR #22 已普通 merge；当前停止并等待下一项明确任务。不得创建 PR #23、开始 MVP30 最终收尾或 AI。
+PR #23 是当前唯一任务。完成测试、Demo 与浏览器验证后只创建 Draft PR #23；不得开始下一分支、AI Provider 或运行时 AI 出题。
