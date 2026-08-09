@@ -1,8 +1,8 @@
 # AI 开发交接
 
-> 2026-08-09 V3.0 非 AI 正式完工审计结论为 REJECT。当前仍有 4 个 A 层硬缺口，禁止开始 AI：公共门户首页、附件真实显示、管理员高风险操作日志、30 道合法样例完整导入发布显示闭环。完整证据见 [V3_NON_AI_COMPLETION_AUDIT.md](V3_NON_AI_COMPLETION_AUDIT.md)。
+> 2026-08-09 V3.0 非 AI 正式完工审计结论为 REJECT。历史审计快照识别出 4 个 A 层硬缺口；其中公共门户 MA-016 已在 `feat/public-portal` 完成并验证，剩余附件真实显示、管理员高风险操作日志、30 道合法样例完整导入发布显示闭环仍阻止开始 AI。完整原始证据见 [V3_NON_AI_COMPLETION_AUDIT.md](V3_NON_AI_COMPLETION_AUDIT.md)。
 
-> 当前接续分支：`main`。PR #24 已普通 merge（merge commit `bcfb2181af2197d2524a2df8ca64895e435a4857`），当前 Flyway V1–V10、26 张业务表；审计轮未新增迁移。
+> 当前接续分支：`feat/public-portal`，Base `8ddae9dcac8ad01729302ff42956d8009ba456b7`。PR #24 已普通 merge（merge commit `bcfb2181af2197d2524a2df8ca64895e435a4857`）；当前 Flyway V1–V10、26 张业务表，本轮未新增迁移或后端业务修改。
 
 更新时间：2026-08-09
 
@@ -40,6 +40,8 @@ PR #23 已普通 merge。合并后后端 105/105、前端 31 文件 117/117，pa
 
 PR #23 浏览器仅操作 `rike_tiku_demo`：物理 3、化学 3、生物 4 道新变式真实进入随机练习；Unicode 化学式、三题型控件、提交前防泄露、结果答案与 STANDARD 解析、错题和掌握度均正常。同科连续随机题集不同，控制台 0 error；最终 reset/seed/validate 已清理验收会话并恢复固定 120 题状态。
 
+`feat/public-portal` 将根路径 `/` 从重定向登录改为无需认证的正式公共门户，复用唯一 `/login` 入口且不改认证协议或守卫。门户包含系统名称、副标题、三科介绍、单选/多选/填空题型边界、非 AI 功能介绍、六步学习闭环和三角色说明；首屏及能力区均明确运行时 AI 尚未上线。前端 32 文件 122/122、type-check、build、audit 0 通过；后端回归及 package 为 105/105。独立 Demo 的 reset/seed/validate/smoke、三角色真实登录、登录态/未登录态门户刷新和常见宽度复验均通过；控制台 0 error、0 warning，最终 Demo 已恢复固定 120 题。MA-016 已关闭，MA-017 至 MA-020 未改动。
+
 ## 继续时必须保持
 
 - 仅 `STUDENT` 且有有效 `xue_sheng_dang_an` 可访问学生练习资源；会话、结果和错题均以当前学生档案隔离。
@@ -70,4 +72,4 @@ PR #23 浏览器仅操作 `rike_tiku_demo`：物理 3、化学 3、生物 4 道�
 
 ## 当前下一步
 
-PR #24 审计分支已合并并删除。下一轮唯一任务是实现 V3.0 A 层公共门户首页；不得顺手修复其他审计缺口，也不得开始 AI Provider 或运行时 AI 出题。
+对 `feat/public-portal` 的 Draft PR 做独立审查并裁决；本轮结束后不得自动开始附件、操作日志、30 题闭环、MA-020 或 AI。

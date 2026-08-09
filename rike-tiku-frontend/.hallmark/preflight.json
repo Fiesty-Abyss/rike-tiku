@@ -1,0 +1,13 @@
+{
+  "scannedAt": "2026-08-09",
+  "framework": "Vue 3 + TypeScript + Vite + Element Plus",
+  "fontStack": "Microsoft YaHei / PingFang SC / sans-serif",
+  "palette": "Existing cool blue and white application tokens in src/style.css",
+  "spacing": "Existing 8px-based application spacing",
+  "motion": "No animation library; CSS transitions only",
+  "preserve": [
+    "Element Plus",
+    "current cool-blue visual language",
+    "existing authentication and route-guard behavior"
+  ]
+}

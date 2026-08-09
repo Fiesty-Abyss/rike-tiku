@@ -1,0 +1,55 @@
+/* Hallmark · pre-emit critique: P4 H5 E4 S5 R5 V5 · macrostructure: Map / Diagram · tone: technical · anchor hue: cobalt-blue
+ * theme: incumbent-cool-blue · paper: oklch(98% 0.008 248) · accent: oklch(48% 0.145 251)
+ * display: Microsoft YaHei UI · body: PingFang SC / Microsoft YaHei · axes: light / system-native / cool
+ * enrichment: none · nav: N9 edge-aligned minimal · footer: Ft2 inline rule · context: explicit
+ * contrast: pass (40–41) · nav/footer/hero: pass (42–45) · honest/chrome/tokens/responsive/icons: pass (46–49, 30)
+ * mobile: pass (34, 49, 50–57) · slop: 57/58; gate 1 intentionally retains the established project font stack
+ */
+:root {
+  --color-portal-paper: oklch(98% 0.008 248);
+  --color-portal-paper-strong: oklch(95% 0.018 247);
+  --color-portal-surface: oklch(99% 0.005 248);
+  --color-portal-ink: oklch(24% 0.035 249);
+  --color-portal-ink-soft: oklch(39% 0.034 249);
+  --color-portal-muted: oklch(52% 0.026 249);
+  --color-portal-rule: oklch(86% 0.022 248);
+  --color-portal-rule-strong: oklch(74% 0.046 248);
+  --color-portal-accent: oklch(48% 0.145 251);
+  --color-portal-accent-deep: oklch(36% 0.105 251);
+  --color-portal-accent-ink: oklch(98% 0.008 248);
+  --color-portal-focus: oklch(58% 0.19 251);
+  --color-portal-plan: oklch(92% 0.028 90);
+  --color-portal-plan-ink: oklch(38% 0.055 78);
+
+  --font-portal-display: "Microsoft YaHei UI", "Microsoft YaHei", sans-serif;
+  --font-portal-body: "PingFang SC", "Microsoft YaHei", sans-serif;
+
+  --space-portal-2xs: 0.25rem;
+  --space-portal-xs: 0.5rem;
+  --space-portal-sm: 0.75rem;
+  --space-portal-md: 1rem;
+  --space-portal-lg: 1.5rem;
+  --space-portal-xl: 2.5rem;
+  --space-portal-2xl: 4rem;
+  --space-portal-3xl: 6rem;
+
+  --text-portal-sm: 0.875rem;
+  --text-portal-base: 1rem;
+  --text-portal-md: 1.25rem;
+  --text-portal-lg: 1.5625rem;
+  --text-portal-xl: 1.953rem;
+  --text-portal-display: clamp(2.25rem, 5vw, 4.4rem);
+
+  --radius-portal-control: 0.5rem;
+  --radius-portal-panel: 0.875rem;
+  --rule-portal: 1px;
+  --dur-portal-micro: 120ms;
+  --dur-portal-long: 420ms;
+  --ease-portal-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-portal-in: cubic-bezier(0.7, 0, 0.84, 0);
+}
+
+html,
+body {
+  overflow-x: clip;
+}
