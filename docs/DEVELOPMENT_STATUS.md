@@ -16,7 +16,7 @@
 - 管理员单学生管理已实现分页筛选、详情与班级历史、事务新增、编辑与启停、事务调班和一次性密码重置；Excel 批量导入入口继续独立保留。
 - 学生自主练习、自动判分、结果、错题闭环、实时知识点掌握度、固定规则推荐和教师班级学情查看均已进入 `main`。掌握度与推荐是确定性规则统计，不属于 AI；AI、教师任务、组卷考试和主观题评分仍未实现。
 - MA-017 当前已完成机器实现：图片附件仅接受受控路径下真实 PNG/JPEG，3MB 内、扩展名/MIME 一致并按 SHA-256 回读；管理员题目详情和学生练习题面、结果、错题通过带 JWT 的 Blob 请求显示，创建中会话拒绝 STANDARD_ANALYSIS，缺失/损坏/403/404 显示占位。正文继续使用完整 marker（如 `〔图片对象 I001〕`），`ti_mu_fu_jian.dui_xiang_biao_shi` 统一只保存对象 ID（如 `I001`/`F107`），前后端解析正文后按对象 ID 匹配。当前状态为 `IMPLEMENTED_AWAITING_MANUAL_ACCEPTANCE`。
-- MA-017 本轮机器门禁：附件/权限/导入/题池专项 27/27 PASS；`mvn clean test` 112 个测试 0 失败、1 个符号链接权限 assumption 跳过，`mvn clean package` PASS；前端附件专项 4/4、`npm test` 33 文件 126/126 PASS，type-check、build PASS，`npm audit --omit=dev` 为 0 vulnerabilities。新增真实 QuestionImportService 导入链覆盖 preview → confirm → 受控 storage → 管理员 detail/content → 学生题池及提交前后权限。Demo `reset → seed → validate → smoke` PASS；Demo 业务题 120 道（物理 40、化学 39、生物 41），PHYSICS-S1 的两个附件记录均为 I001/I002 并指向可回读且 hash 正确的 PNG，待用户本人浏览器验收后关闭 MA-017。
+- MA-017 本轮机器门禁：附件/权限/导入/题池专项共 27 个测试，26 PASS、1 个符号链接权限 assumption 跳过；`mvn clean test` 112 个测试 0 失败、1 个符号链接权限 assumption 跳过，`mvn clean package` PASS；前端附件专项 4/4、`npm test` 33 文件 126/126 PASS，type-check、build PASS，`npm audit --omit=dev` 为 0 vulnerabilities。新增真实 QuestionImportService 导入链覆盖 preview → confirm → 受控 storage → 管理员 detail/content → 学生题池及提交前后权限。Demo `reset → seed → validate → smoke` PASS；Demo 业务题 120 道（物理 40、化学 39、生物 41），PHYSICS-S1 的两个附件记录均为 I001/I002 并指向可回读且 hash 正确的 PNG，待用户本人浏览器验收后关闭 MA-017。
 - Flyway：V1–V10，共 26 张业务表；V10 只向 `yong_hu` 增加简介、头像 MIME、头像二进制和头像更新时间，V1–V9 未修改。
 - 教师工作台已支持按本人 ACTIVE 三元任课关系读取班级、科目、学生名单和高频考点，并支持新增、编辑、启停及排序；学生端按本人有效主班级和学科只读取对应 ACTIVE 高频考点。
 - PR #20 已实现受 ACTIVE 三元任课关系和学生当前主班级约束的师生纯文本私信；发送身份取自 JWT，支持会话、未读、已读、7 秒轮询和失效关系历史保留，不含 WebSocket、附件、群聊或管理员审计。
