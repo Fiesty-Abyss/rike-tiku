@@ -26,7 +26,7 @@
 | MA-019 | ADMIN | 题库批量导入 | 用 30 道合法样例完成预检查、确认、审核、发布、查询和附件显示 | 全链路可重复验收 | 原始 MVP30 缺少当前模板要求的“题目检查”工作表；纯 V1–V10 环境三个清洗表有效行仅 0/10、1/10、1/10 | BLOCKER | MVP30 SHA-256 未变化；未向正式库写入数据 | 未修复 |
 | MA-020 | STUDENT | 练习提交 API | 对提交接口发送空请求体 | 返回明确 4xx 校验错误 | 全局异常处理返回未处理 500；合法重复提交仍正确返回 409 | MEDIUM | 2026-08-09 独立 API 复现；正常浏览器 UI 不发送空请求体 | 未修复 |
 
-MA-017 机器证据更新（PR #26 独立审查修正后）：附件/权限/导入/题池专项 27/27 PASS；真实 `QuestionImportService` 已覆盖 Excel preview → confirm → `ti_mu_fu_jian` 的 I001/I002 → 受控 storage → 管理员 detail/content → 学生题池、提交前 STEM 和提交后 STANDARD_ANALYSIS。`mvn clean test` 为 112 个测试 0 失败、1 个符号链接权限 assumption 跳过；前端 126/126、type-check、build、audit 和 Demo `reset → seed → validate → smoke` 均通过。状态仍为 `IMPLEMENTED_AWAITING_MANUAL_ACCEPTANCE`，用户人工 CAPTCHA 浏览器复验前不关闭。
+MA-017 机器证据更新（PR #26 独立审查修正后）：附件/权限/导入/题池专项共 27 个测试，26 PASS、1 个符号链接权限 assumption 跳过；真实 `QuestionImportService` 已覆盖 Excel preview → confirm → `ti_mu_fu_jian` 的 I001/I002 → 受控 storage → 管理员 detail/content → 学生题池、提交前 STEM 和提交后 STANDARD_ANALYSIS。`mvn clean test` 为 112 个测试 0 失败、1 个符号链接权限 assumption 跳过；前端 126/126、type-check、build、audit 和 Demo `reset → seed → validate → smoke` 均通过。状态仍为 `IMPLEMENTED_AWAITING_MANUAL_ACCEPTANCE`，用户人工 CAPTCHA 浏览器复验前不关闭。
 
 严重级别：`BLOCKER`、`HIGH`、`MEDIUM`、`LOW`、`UX`。
 
