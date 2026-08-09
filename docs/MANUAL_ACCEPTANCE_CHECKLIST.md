@@ -1,5 +1,7 @@
 # 三角色人工验收清单
 
+> 2026-08-09 V3.0 最终总验收已执行，完整证据见 [V3_NON_AI_COMPLETION_AUDIT.md](V3_NON_AI_COMPLETION_AUDIT.md)。角色结论均为 `PASS_WITH_LIMITATION`：ADMIN 受合法导入批次与附件显示缺口限制；TEACHER 受教师任务缺失和前端弃用 warning 限制；STUDENT 受后两段错题迁移仅由自动化复验及空请求体 500 限制。以下历史未勾选项不因专项证据被机械改写为 `[x]`。
+
 先按 [演示环境说明](DEMO_ENVIRONMENT.md) 完成 `reset`、`seed`、`validate` 并启动前后端。每项只在亲自验证后勾选；发现问题登记到 [问题记录](MANUAL_ACCEPTANCE_FINDINGS.md)。
 
 启动前置核对：
