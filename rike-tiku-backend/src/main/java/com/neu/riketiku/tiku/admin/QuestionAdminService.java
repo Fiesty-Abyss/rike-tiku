@@ -1,5 +1,6 @@
 package com.neu.riketiku.tiku.admin;
 
+import com.neu.riketiku.guanlicaozuorizhi.GuanLiCaoZuoRiZhiFuWu;
 import com.neu.riketiku.renzheng.RenZhengYeWuYiChang;
 import com.neu.riketiku.tiku.fujian.QuestionAttachmentContentService;
 import tools.jackson.databind.JsonNode;
@@ -24,11 +25,14 @@ public class QuestionAdminService {
     private static final Set<String> PUBLISHABLE_RIGHTS = Set.of("AUTHORIZED", "OPEN_LICENSE", "PUBLIC_OFFICIAL", "USER_PROVIDED");
     private final JdbcTemplate jdbc;
     private final QuestionAttachmentContentService attachmentContentService;
+    private final GuanLiCaoZuoRiZhiFuWu auditLog;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    public QuestionAdminService(JdbcTemplate jdbc, QuestionAttachmentContentService attachmentContentService) {
+    public QuestionAdminService(JdbcTemplate jdbc, QuestionAttachmentContentService attachmentContentService,
+            GuanLiCaoZuoRiZhiFuWu auditLog) {
         this.jdbc = jdbc;
         this.attachmentContentService = attachmentContentService;
+        this.auditLog = auditLog;
     }
 
     @Transactional(readOnly = true)
@@ -59,6 +63,10 @@ public class QuestionAdminService {
 
     @Transactional
     public QuestionDtos.Detail create(QuestionDtos.Save request, Long creatorId) {
+        return auditLog.audited("QUESTION", "CREATE", null, "管理员创建题目", () -> createInternal(request, creatorId), result -> result.question().id());
+    }
+
+    private QuestionDtos.Detail createInternal(QuestionDtos.Save request, Long creatorId) {
         if (creatorId != null && count("SELECT COUNT(*) FROM yong_hu WHERE id=? AND yi_shan_chu=0", creatorId) == 0) {
             fail("CURRENT_USER_UNAVAILABLE", "当前管理员不可用", HttpStatus.UNAUTHORIZED);
         }
@@ -70,6 +78,10 @@ public class QuestionAdminService {
 
     @Transactional
     public QuestionDtos.Detail update(Long id, QuestionDtos.Save request) {
+        return auditLog.audited("QUESTION", "UPDATE", id, "管理员修改题目内容", () -> updateInternal(id, request));
+    }
+
+    private QuestionDtos.Detail updateInternal(Long id, QuestionDtos.Save request) {
         requireStatus(id, "DRAFT"); validateRequest(request); validateSubject(request.subjectId()); validateKnowledgePoints(request.subjectId(), request.knowledgePointIds());
         String hash = calculateContentHash(request); rejectDuplicate(request.subjectId(), hash, id);
         jdbc.update("UPDATE ti_mu SET ke_mu_id=?,ti_mu_lei_xing=?,shi_yong_mo_shi=?,ti_gan=?,zheng_que_da_an=CAST(? AS JSON),nan_du=?,nan_du_shuo_ming=?,shi_fou_ke_zi_dong_pan_fen=?,nei_rong_ha_xi=? WHERE id=?", request.subjectId(), request.questionType(), request.usageMode(), request.stem().trim(), request.correctAnswer(), request.difficulty(), blank(request.difficultyDescription()), request.autoGradable(), hash, id);
@@ -78,14 +90,16 @@ public class QuestionAdminService {
 
     @Transactional
     public QuestionDtos.Detail transition(Long id, String action, String expected, String target, String opinion, Long reviewerId) {
-        requireStatus(id, expected);
-        if ("REJECTED".equals(action) && blank(opinion) == null) fail("REVIEW_OPINION_REQUIRED", "退回必须填写审核意见", HttpStatus.BAD_REQUEST);
-        if ("SUBMITTED".equals(action)) validateComplete(id);
-        if ("APPROVED".equals(action)) validatePublishableSources(id);
-        jdbc.update("UPDATE ti_mu SET zhuang_tai=? WHERE id=?", target, id);
-        jdbc.update("UPDATE ti_mu_jie_xi SET zhuang_tai=? WHERE ti_mu_id=? AND jie_xi_lei_xing='STANDARD' AND ban_ben_hao=1 AND yi_shan_chu=0", target, id);
-        jdbc.update("INSERT INTO ti_mu_shen_he_ji_lu(ti_mu_id,shen_he_dong_zuo,yuan_zhuang_tai,mu_biao_zhuang_tai,shen_he_ren_id,shen_he_yi_jian) VALUES (?,?,?,?,?,?)", id, action, expected, target, reviewerId, blank(opinion));
-        return detailInternal(id);
+        return auditLog.audited("QUESTION", action, id, "题目审核、发布或状态变更", () -> {
+            requireStatus(id, expected);
+            if ("REJECTED".equals(action) && blank(opinion) == null) fail("REVIEW_OPINION_REQUIRED", "退回必须填写审核意见", HttpStatus.BAD_REQUEST);
+            if ("SUBMITTED".equals(action)) validateComplete(id);
+            if ("APPROVED".equals(action)) validatePublishableSources(id);
+            jdbc.update("UPDATE ti_mu SET zhuang_tai=? WHERE id=?", target, id);
+            jdbc.update("UPDATE ti_mu_jie_xi SET zhuang_tai=? WHERE ti_mu_id=? AND jie_xi_lei_xing='STANDARD' AND ban_ben_hao=1 AND yi_shan_chu=0", target, id);
+            jdbc.update("INSERT INTO ti_mu_shen_he_ji_lu(ti_mu_id,shen_he_dong_zuo,yuan_zhuang_tai,mu_biao_zhuang_tai,shen_he_ren_id,shen_he_yi_jian) VALUES (?,?,?,?,?,?)", id, action, expected, target, reviewerId, blank(opinion));
+            return detailInternal(id);
+        });
     }
 
     @Transactional(readOnly = true)

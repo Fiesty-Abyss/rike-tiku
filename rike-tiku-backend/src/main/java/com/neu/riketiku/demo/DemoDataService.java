@@ -52,10 +52,10 @@ public class DemoDataService {
         guardDatabaseName(database);
         int version = jdbc.queryForObject("SELECT MAX(CAST(version AS UNSIGNED)) FROM flyway_schema_history WHERE success=1", Integer.class);
         int tableCount = jdbc.queryForObject("SELECT COUNT(*) FROM information_schema.tables WHERE table_schema=DATABASE() AND table_name<>'flyway_schema_history'", Integer.class);
-        if (version != 10 || tableCount != 26) {
-            throw new IllegalStateException("演示库必须完整执行V1-V10且包含26张业务表，当前V" + version + "，" + tableCount + "张");
+        if (version != 11 || tableCount != 27) {
+            throw new IllegalStateException("演示库必须完整执行V1-V11且包含27张业务表，当前V" + version + "，" + tableCount + "张");
         }
-        System.out.println("演示数据库结构校验通过: " + database + "，V1-V10，26张业务表");
+        System.out.println("演示数据库结构校验通过: " + database + "，V1-V11，27张业务表");
     }
 
     @Transactional
@@ -406,6 +406,7 @@ public class DemoDataService {
         jdbc.update("DELETE FROM ban_ji WHERE ban_ji_bian_ma LIKE 'DEMO_CLASS_%'");
         jdbc.update("DELETE FROM jiao_shi_dang_an WHERE gong_hao LIKE 'DEMO_T%'");
         jdbc.update("DELETE FROM xue_sheng_dang_an WHERE xue_hao LIKE 'DEMO_%'");
+        jdbc.update("DELETE l FROM guan_li_cao_zuo_ri_zhi l JOIN yong_hu u ON u.id=l.cao_zuo_ren_yong_hu_id WHERE u.yong_hu_ming LIKE 'demo_%'");
         jdbc.update("DELETE ur FROM yong_hu_jiao_se ur JOIN yong_hu u ON u.id=ur.yong_hu_id WHERE u.yong_hu_ming LIKE 'demo_%'");
         jdbc.update("DELETE FROM yong_hu WHERE yong_hu_ming LIKE 'demo_%'");
         jdbc.update("DELETE FROM zhi_shi_dian WHERE wan_zheng_lu_jing IN ('力学>运动和力>牛顿运动定律','电磁学>电场>电场强度','热学>分子动理论>温度和内能','化学基本概念>物质的量>摩尔计算','无机化学>元素化合物>氧化还原反应','化学反应原理>化学平衡>平衡移动','分子与细胞>细胞结构>细胞膜','遗传与进化>遗传规律>分离定律','稳态与调节>生命活动调节>激素调节') AND fu_zhi_shi_dian_id IS NULL");

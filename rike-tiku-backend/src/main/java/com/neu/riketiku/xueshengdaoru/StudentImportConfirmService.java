@@ -1,6 +1,7 @@
 package com.neu.riketiku.xueshengdaoru;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.neu.riketiku.guanlicaozuorizhi.GuanLiCaoZuoRiZhiFuWu;
 import com.neu.riketiku.jiaoxue.entity.BanJi;
 import com.neu.riketiku.jiaoxue.entity.BanJiXueSheng;
 import com.neu.riketiku.jiaoxue.mapper.BanJiMapper;
@@ -30,17 +31,23 @@ public class StudentImportConfirmService {
     private final BanJiXueShengMapper classStudentMapper;
     private final JdbcTemplate jdbcTemplate;
     private final PasswordEncoder passwordEncoder;
+    private final GuanLiCaoZuoRiZhiFuWu auditLog;
 
     public StudentImportConfirmService(StudentImportService previewService, StudentInitialPasswordGenerator passwordGenerator,
             YongHuMapper userMapper, BanJiMapper classMapper, BanJiXueShengMapper classStudentMapper,
-            JdbcTemplate jdbcTemplate, PasswordEncoder passwordEncoder) {
+            JdbcTemplate jdbcTemplate, PasswordEncoder passwordEncoder, GuanLiCaoZuoRiZhiFuWu auditLog) {
         this.previewService = previewService; this.passwordGenerator = passwordGenerator; this.userMapper = userMapper;
         this.classMapper = classMapper; this.classStudentMapper = classStudentMapper; this.jdbcTemplate = jdbcTemplate;
         this.passwordEncoder = passwordEncoder;
+        this.auditLog = auditLog;
     }
 
     @Transactional
     public StudentImportConfirmResponse confirm(MultipartFile file) {
+        return auditLog.audited("STUDENT_IMPORT", "CONFIRM", null, "管理员确认学生批量导入（不记录初始密码）", () -> confirmInternal(file));
+    }
+
+    private StudentImportConfirmResponse confirmInternal(MultipartFile file) {
         List<StudentImportService.ValidatedRow> rows = previewService.validateRows(file);
         if (rows.stream().anyMatch(row -> !"VALID".equals(row.response().status()))) {
             throw new RenZhengYeWuYiChang("IMPORT_VALIDATION_FAILED", "文件存在无效行，请先修正后再确认导入", HttpStatus.BAD_REQUEST);

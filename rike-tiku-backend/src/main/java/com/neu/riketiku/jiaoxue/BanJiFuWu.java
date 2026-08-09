@@ -2,6 +2,7 @@ package com.neu.riketiku.jiaoxue;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.neu.riketiku.guanlicaozuorizhi.GuanLiCaoZuoRiZhiFuWu;
 import com.neu.riketiku.jiaoxue.dto.BanJiChuangJianQingQiu;
 import com.neu.riketiku.jiaoxue.dto.BanJiXiangYing;
 import com.neu.riketiku.jiaoxue.dto.BanJiXiuGaiQingQiu;
@@ -16,12 +17,18 @@ import org.springframework.stereotype.Service;
 @Service
 public class BanJiFuWu {
     private final BanJiMapper mapper;
+    private final GuanLiCaoZuoRiZhiFuWu auditLog;
 
-    public BanJiFuWu(BanJiMapper mapper) {
+    public BanJiFuWu(BanJiMapper mapper, GuanLiCaoZuoRiZhiFuWu auditLog) {
         this.mapper = mapper;
+        this.auditLog = auditLog;
     }
 
     public BanJiXiangYing create(BanJiChuangJianQingQiu request) {
+        return auditLog.audited("CLASS", "CREATE", null, "管理员创建班级", () -> createInternal(request), BanJiXiangYing::id);
+    }
+
+    private BanJiXiangYing createInternal(BanJiChuangJianQingQiu request) {
         String classCode = trim(request.classCode());
         if (mapper.selectCount(new LambdaQueryWrapper<BanJi>()
                 .eq(BanJi::getBanJiBianMa, classCode)) > 0) {
@@ -43,6 +50,10 @@ public class BanJiFuWu {
     }
 
     public BanJiXiangYing update(Long id, BanJiXiuGaiQingQiu request) {
+        return auditLog.audited("CLASS", "UPDATE", id, "管理员修改班级档案", () -> updateInternal(id, request));
+    }
+
+    private BanJiXiangYing updateInternal(Long id, BanJiXiuGaiQingQiu request) {
         BanJi banJi = findExisting(id);
         banJi.setBanJiMingCheng(trim(request.className()));
         banJi.setNianJi(trim(request.grade()));
@@ -52,6 +63,10 @@ public class BanJiFuWu {
     }
 
     public BanJiXiangYing changeStatus(Long id, BanJiZhuangTaiQingQiu request) {
+        return auditLog.audited("CLASS", "STATUS_CHANGE", id, "管理员变更班级状态", () -> changeStatusInternal(id, request));
+    }
+
+    private BanJiXiangYing changeStatusInternal(Long id, BanJiZhuangTaiQingQiu request) {
         String status = trim(request.status());
         if (!List.of("ACTIVE", "GRADUATED", "DISABLED").contains(status)) {
             throw new RenZhengYeWuYiChang("INVALID_CLASS_STATUS", "班级状态不正确", HttpStatus.BAD_REQUEST);

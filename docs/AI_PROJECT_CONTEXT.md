@@ -2,7 +2,7 @@
 
 > 2026-08-09 V3.0 非 AI 正式完工审计已确认当时不是 100% DONE_VERIFIED。PR #25 已合并关闭公共门户 MA-016，MA-017 后续已实现安全图片附件显示；管理员高风险操作日志与 30 道合法样例完整闭环仍是 A 层硬缺口。历史审计结论保持 REJECT；见 [V3_NON_AI_COMPLETION_AUDIT.md](V3_NON_AI_COMPLETION_AUDIT.md)。
 
-> 当前工作分支为 `feat/question-attachment-rendering`，base 为 `b967ce68027fe9776ca08f8d7547c0c5b2b0fbbf`。PR #25 已普通 merge（merge commit `0559a4e4eba041dd74a7bcb7d4c9f2cd8b29e617`）。Flyway V1–V10、26 张业务表；公共门户轮未新增迁移、未修改后端业务或 MVP30 原始 Excel。
+> PR #26 已普通 merge（merge commit `b992bffef07465665b371b7b707ca8814ec2d36d`）。当前工作分支为 `feat/non-ai-final-closure`；人工 CAPTCHA/浏览器验收延期至非 AI 最终集成验收，MA-017 仍为 `IMPLEMENTED_AWAITING_FINAL_MANUAL_ACCEPTANCE`。PR #27 当前新增 V11 管理员操作日志表，Flyway V1–V11、27 张业务表；V1–V10 和 MVP30 原始 Excel 未修改。
 
 更新时间：2026-08-09
 
@@ -54,11 +54,11 @@
 ## 5. 当前实现状态
 
 - 状态：题库、账号、教学组织、学生练习闭环、教师班级学科工作台、高频考点、师生私信、非 AI 掌握度与确定性规则推荐、三角色个人中心均已进入 `main`。
-- 当前分支：`feat/question-attachment-rendering`；PR #25 已合并，公共门户已进入 `main`。
+- 当前分支：`feat/non-ai-final-closure`；PR #26 已合并，公共门户和附件机器实现已进入 `main`。
 - 公共根路径 `/` 已实现无需认证的门户，包含系统/功能/三科/题型/学习闭环/角色介绍和统一 `/login` 入口，且首屏明确运行时 AI 尚未上线。自动化、三角色 Demo 浏览器、登录态与刷新、响应式及控制台证据均通过，MA-016 已关闭。
 - 当前 MA-017 已完成机器实现：受控 PNG/JPEG 存储、3MB 与真实 MIME 校验、SHA-256 回读、附件归属权限、未提交 STANDARD_ANALYSIS 防泄露、管理员详情和学生练习/结果/错题 Blob 显示；状态为 `IMPLEMENTED_AWAITING_FINAL_MANUAL_ACCEPTANCE`。用户 CAPTCHA 和浏览器视觉验收延期至非 AI 最终集成验收，未验收前不关闭。
 - PR #26 独立审查修正已完成：正文 marker 保留 `〔图片对象 I001〕`，数据库 `dui_xiang_biao_shi` 只保存 `I001`；真实 QuestionImportService 导入链已覆盖 preview、confirm、受控 storage、管理员 HTTP 内容和学生提交前后权限。机器门禁和 Demo 最新结果记录在 `DEVELOPMENT_STATUS.md`，人工验收不属于 PR #26 merge gate。
-- 当前 Flyway：V1–V10，共 26 张业务表；V10 只增加 `yong_hu` 简介与头像字段，V1–V9 不修改。
+- 当前 Flyway：V1–V11，共 27 张业务表；V10 只增加 `yong_hu` 简介与头像字段，V11 只新增管理员操作日志表，V1–V10 未修改。
 - 独立 `rike_tiku_demo` 保留 Demo90 基线，并新增 30 道经筛选的项目原创变式，最终物理 40、化学 39、生物 41，共 120 道。V3.0 不要求名为 MVP30 的 Excel 整体正式入库；该原始文件保持不变，定位为结构化导入能力验证素材。
 - PR #17 已进入 `main`：新增管理员单学生分页、详情、事务新增、编辑启停、事务调班和密码重置；Demo 扩充为 14 账号、3 班级、4 教师、9 学生、9 条 ACTIVE 三元任课关系。
 - PR #18 合并后后端 87/87、前端 83/83，package、type-check、build、audit、Demo 脚本链均通过；真实浏览器高频考点权限验收保持通过。正式库污染检查包含 Demo90、场景账号、场景班级和高频考点，均为 0。

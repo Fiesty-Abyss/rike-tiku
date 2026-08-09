@@ -6,6 +6,8 @@
 
 > 2026-08-09 V3.0 非 AI 正式完工审计结论为 **REJECT**。PR #25 已合并并关闭公共门户 MA-016；MA-017 附件真实显示的机器部分已完成，状态为 `IMPLEMENTED_AWAITING_FINAL_MANUAL_ACCEPTANCE`。用户 CAPTCHA 与浏览器视觉验收延期至非 AI 最终集成验收；管理员高风险操作日志和 30 道合法样例完整导入发布显示闭环仍是 A 层硬缺口，因此当前仍不得标记为 100% DONE_VERIFIED，也不得开始 AI。详见 [V3.0 非 AI 完工审计](docs/V3_NON_AI_COMPLETION_AUDIT.md)。
 
+> 当前接续分支为 `feat/non-ai-final-closure`。PR #26 已以 merge commit `b992bffef07465665b371b7b707ca8814ec2d36d` 普通合并；人工 CAPTCHA/浏览器验收仍统一延期至非 AI 最终集成验收，未执行的人工结果不写为 PASS。PR #27 正在收口 MA-018、MA-020、MA-019、管理员题目图片上传、菜单整理和多角色切换；本分支当前新增 Flyway V11，业务表为 27 张，仍不得开始 AI。
+
 ## 工程范围
 
 - 学科：高中物理、化学、生物。

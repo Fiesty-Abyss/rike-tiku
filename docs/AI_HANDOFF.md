@@ -4,6 +4,8 @@
 
 > 当前接续分支：`feat/question-attachment-rendering`，base 为 `b967ce68027fe9776ca08f8d7547c0c5b2b0fbbf`。PR #25 已普通 merge（merge commit `0559a4e4eba041dd74a7bcb7d4c9f2cd8b29e617`），关闭 MA-016；当前 Flyway V1–V10、26 张业务表。
 
+> 当前接续分支：`feat/non-ai-final-closure`，从 PR #26 merge commit `b992bffef07465665b371b7b707ca8814ec2d36d` 创建。PR #26 已普通 merge；MA-017 保持 `IMPLEMENTED_AWAITING_FINAL_MANUAL_ACCEPTANCE`，人工验收延期至非 AI 最终集成验收。当前分支正在形成最后一个非 AI Draft PR #27，已加入 V11 管理员操作日志表，Flyway V1–V11、27 张业务表，V1–V10 不得修改。
+
 更新时间：2026-08-09
 
 ## 当前状态
@@ -12,7 +14,7 @@ PR #10 至 PR #22 均已普通 merge；PR #22 merge commit 为 `67b7bd7239e2ac1d
 
 PR #19 已用 JDK 原生生成的 4 位随机 PNG 图形验证码替换 PR #15 历史滑块并进入 `main`。登录页默认不显示验证码；首次点击/Enter 只展开，第二次才提交。challenge 在内存保存两分钟并一次性消费，不新增 Redis、第三方依赖、数据库表或 Flyway。
 
-V7 的学生练习、正式答题、结果和错题聚合模型已进入 `main`。PR #18 新增 V8 高频考点表，PR #20 新增 V9 两张私信表，PR #22 新增只 ALTER `yong_hu` 的 V10；当前 Flyway 为 V1–V10，共 26 张业务表，MVP30 原始 Excel 未改动。历史 PR #13 自动化为后端 68/68、前端 68/68；PR #15 合并后自动化为后端 79/79、前端 72/72，打包、类型检查、构建、依赖审计与完整浏览器验收均已通过。
+V7 的学生练习、正式答题、结果和错题聚合模型已进入 `main`。PR #18 新增 V8 高频考点表，PR #20 新增 V9 两张私信表，PR #22 新增只 ALTER `yong_hu` 的 V10；PR #27 当前新增 V11 管理员操作日志表，Flyway 为 V1–V11，共 27 张业务表，MVP30 原始 Excel 未改动。历史 PR #13 自动化为后端 68/68、前端 68/68；PR #15 合并后自动化为后端 79/79、前端 72/72，打包、类型检查、构建、依赖审计与完整浏览器验收均已通过。
 
 `main` 中的 `rike_tiku_demo` 显式重建工具保留原 smoke 数据，并形成 199/200 双班级场景：14 账号、3 班级、4 教师、9 学生、9 条 ACTIVE 三元任课关系及 Demo90。PR #23 保留 Demo90，并从 54 个原创候选中筛选 30 道变式，当前目标总题量 120；PR #18 的 12 条 ACTIVE 高频考点保持不变。演示数据不使用 Flyway 承载，不公开 seed 接口，也不在正常启动时执行。
 
