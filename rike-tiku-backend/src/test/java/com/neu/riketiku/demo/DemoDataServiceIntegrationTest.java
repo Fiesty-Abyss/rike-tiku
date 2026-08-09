@@ -15,6 +15,8 @@ import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.text.Normalizer;
+import java.util.HashSet;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -54,9 +56,12 @@ class DemoDataServiceIntegrationTest extends AdminQuestionIntegrationTestSupport
         assertThat(digest).doesNotContain(DemoDataService.DEMO_PASSWORD);
         assertThat(passwordEncoder.matches(DemoDataService.DEMO_PASSWORD, digest)).isTrue();
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM ren_ke_guan_xi r JOIN jiao_shi_dang_an t ON t.id=r.jiao_shi_id WHERE t.gong_hao='DEMO_T001'", Integer.class)).isEqualTo(3);
-        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM ti_mu WHERE ti_gan LIKE '【演示】%'", Integer.class)).isEqualTo(90);
-        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM ti_mu_lai_yuan s JOIN ti_mu q ON q.id=s.ti_mu_id WHERE q.ti_gan LIKE '【演示】%' AND s.quan_li_zhuang_tai='USER_PROVIDED' AND s.lai_yuan_ming_cheng='本科毕业设计自编演示题'", Integer.class)).isEqualTo(270);
-        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM ti_mu_shen_he_ji_lu r JOIN ti_mu q ON q.id=r.ti_mu_id WHERE q.ti_gan LIKE '【演示】%'", Integer.class)).isEqualTo(180);
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM ti_mu WHERE ti_gan LIKE '【演示】%'", Integer.class))
+                .isEqualTo(DemoDataService.FINAL_DEMO_QUESTION_COUNT);
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM ti_mu_lai_yuan s JOIN ti_mu q ON q.id=s.ti_mu_id WHERE q.ti_gan LIKE '【演示】%' AND s.quan_li_zhuang_tai='USER_PROVIDED' AND s.lai_yuan_ming_cheng='本科毕业设计自编演示题'", Integer.class))
+                .isEqualTo(DemoDataService.FINAL_DEMO_QUESTION_COUNT * 3);
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM ti_mu_shen_he_ji_lu r JOIN ti_mu q ON q.id=r.ti_mu_id WHERE q.ti_gan LIKE '【演示】%'", Integer.class))
+                .isEqualTo(DemoDataService.FINAL_DEMO_QUESTION_COUNT * 2);
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM ban_ji WHERE ban_ji_bian_ma LIKE 'DEMO_CLASS_%'", Integer.class)).isEqualTo(3);
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM jiao_shi_dang_an WHERE gong_hao LIKE 'DEMO_T%'", Integer.class)).isEqualTo(4);
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM xue_sheng_dang_an WHERE xue_hao LIKE 'DEMO_%'", Integer.class)).isEqualTo(9);
@@ -71,22 +76,27 @@ class DemoDataServiceIntegrationTest extends AdminQuestionIntegrationTestSupport
 
     @Test
     @Transactional
-    void demo90CoversSubjectsTypesDifficultiesAndKnowledgePoints() {
+    void demo90RemainsStableAndFinalBankAddsReviewedVariants() {
         demo.seed();
+
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM ti_mu WHERE ti_gan LIKE '【演示】%' AND ti_gan NOT LIKE '【演示】变式：%'", Integer.class))
+                .isEqualTo(90);
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM ti_mu WHERE ti_gan LIKE '【演示】变式：%'", Integer.class))
+                .isEqualTo(DemoVariantQuestionBank.ACCEPTED_COUNT);
 
         for (String subject : List.of("PHYSICS", "CHEMISTRY", "BIOLOGY")) {
             assertThat(jdbc.queryForObject("""
                     SELECT COUNT(*) FROM ti_mu q JOIN ke_mu s ON s.id=q.ke_mu_id
-                    WHERE q.ti_gan LIKE '【演示】%' AND s.ke_mu_dai_ma=?
+                    WHERE q.ti_gan LIKE '【演示】%' AND q.ti_gan NOT LIKE '【演示】变式：%' AND s.ke_mu_dai_ma=?
                     """, Integer.class, subject)).isEqualTo(30);
             assertThat(jdbc.queryForList("""
                     SELECT COUNT(*) FROM ti_mu q JOIN ke_mu s ON s.id=q.ke_mu_id
-                    WHERE q.ti_gan LIKE '【演示】%' AND s.ke_mu_dai_ma=?
+                    WHERE q.ti_gan LIKE '【演示】%' AND q.ti_gan NOT LIKE '【演示】变式：%' AND s.ke_mu_dai_ma=?
                     GROUP BY q.ti_mu_lei_xing ORDER BY q.ti_mu_lei_xing
                     """, Integer.class, subject)).containsExactly(10, 10, 10);
             assertThat(jdbc.queryForList("""
                     SELECT COUNT(*) FROM ti_mu q JOIN ke_mu s ON s.id=q.ke_mu_id
-                    WHERE q.ti_gan LIKE '【演示】%' AND s.ke_mu_dai_ma=?
+                    WHERE q.ti_gan LIKE '【演示】%' AND q.ti_gan NOT LIKE '【演示】变式：%' AND s.ke_mu_dai_ma=?
                     GROUP BY q.nan_du ORDER BY q.nan_du
                     """, Integer.class, subject)).containsExactly(10, 10, 10);
             assertThat(jdbc.queryForList("""
@@ -94,9 +104,113 @@ class DemoDataServiceIntegrationTest extends AdminQuestionIntegrationTestSupport
                     JOIN ke_mu s ON s.id=q.ke_mu_id
                     JOIN ti_mu_zhi_shi_dian qk ON qk.ti_mu_id=q.id AND qk.yi_shan_chu=0
                     JOIN zhi_shi_dian k ON k.id=qk.zhi_shi_dian_id AND k.yi_shan_chu=0
-                    WHERE q.ti_gan LIKE '【演示】%' AND s.ke_mu_dai_ma=?
+                    WHERE q.ti_gan LIKE '【演示】%' AND q.ti_gan NOT LIKE '【演示】变式：%' AND s.ke_mu_dai_ma=?
                     GROUP BY k.id ORDER BY k.id
                     """, Integer.class, subject)).containsExactly(10, 10, 10);
+        }
+    }
+
+    @Test
+    @Transactional
+    void acceptedVariantsPassStructureRightsReviewAndDuplicateChecks() {
+        assertThat(DemoVariantQuestionBank.CANDIDATE_COUNT).isEqualTo(54);
+        assertThat(DemoVariantQuestionBank.ACCEPTED_COUNT).isEqualTo(30);
+        assertThat(DemoVariantQuestionBank.REJECTED_COUNT).isEqualTo(24);
+        assertThat(DemoVariantQuestionBank.acceptedQuestions()).hasSize(30);
+        demo.seed();
+
+        assertThat(jdbc.queryForObject("""
+                SELECT COUNT(*) FROM ti_mu q
+                WHERE q.ti_gan LIKE '【演示】变式：%'
+                  AND q.zhuang_tai='PUBLISHED' AND q.shi_yong_mo_shi='ONLINE_PRACTICE'
+                  AND q.shi_fou_ke_zi_dong_pan_fen=1 AND q.yi_shan_chu=0
+                  AND q.ti_mu_lei_xing IN ('SINGLE_CHOICE','MULTIPLE_CHOICE','FILL_BLANK')
+                """, Integer.class)).isEqualTo(30);
+        assertThat(jdbc.queryForObject("""
+                SELECT COUNT(*) FROM ti_mu q JOIN ke_mu s ON s.id=q.ke_mu_id
+                WHERE q.ti_gan LIKE '【演示】变式：%' AND s.ke_mu_dai_ma='PHYSICS'
+                """, Integer.class)).isEqualTo(10);
+        assertThat(jdbc.queryForObject("""
+                SELECT COUNT(*) FROM ti_mu q JOIN ke_mu s ON s.id=q.ke_mu_id
+                WHERE q.ti_gan LIKE '【演示】变式：%' AND s.ke_mu_dai_ma='CHEMISTRY'
+                """, Integer.class)).isEqualTo(9);
+        assertThat(jdbc.queryForObject("""
+                SELECT COUNT(*) FROM ti_mu q JOIN ke_mu s ON s.id=q.ke_mu_id
+                WHERE q.ti_gan LIKE '【演示】变式：%' AND s.ke_mu_dai_ma='BIOLOGY'
+                """, Integer.class)).isEqualTo(11);
+
+        assertThat(jdbc.queryForObject("""
+                SELECT COUNT(*) FROM ti_mu q
+                WHERE q.ti_gan LIKE '【演示】变式：%'
+                  AND (TRIM(q.ti_gan)='' OR q.ti_gan LIKE '%[[I%' OR q.ti_gan LIKE '%[[F%'
+                    OR EXISTS (SELECT 1 FROM ti_mu_fu_jian f WHERE f.ti_mu_id=q.id AND f.zhuang_tai='ACTIVE' AND f.yi_shan_chu=0)
+                    OR NOT EXISTS (SELECT 1 FROM ti_mu_jie_xi a WHERE a.ti_mu_id=q.id AND a.jie_xi_lei_xing='STANDARD'
+                      AND a.zhuang_tai='PUBLISHED' AND a.yi_shan_chu=0 AND TRIM(a.jie_xi_nei_rong)<>'')
+                    OR NOT EXISTS (SELECT 1 FROM ti_mu_zhi_shi_dian qk JOIN zhi_shi_dian k ON k.id=qk.zhi_shi_dian_id
+                      WHERE qk.ti_mu_id=q.id AND qk.yi_shan_chu=0 AND k.zhuang_tai='ACTIVE' AND k.ke_mu_id=q.ke_mu_id))
+                """, Integer.class)).isZero();
+        assertThat(jdbc.queryForObject("""
+                SELECT COUNT(*) FROM ti_mu_lai_yuan s JOIN ti_mu q ON q.id=s.ti_mu_id
+                WHERE q.ti_gan LIKE '【演示】变式：%' AND s.lai_yuan_lei_xing='TEACHER_CREATED'
+                  AND s.lai_yuan_ming_cheng='本科毕业设计自编演示题'
+                  AND s.quan_li_zhuang_tai='USER_PROVIDED' AND TRIM(s.quan_li_yi_ju)<>'' AND s.yi_shan_chu=0
+                """, Integer.class)).isEqualTo(90);
+        assertThat(jdbc.queryForObject("""
+                SELECT COUNT(*) FROM ti_mu_shen_he_ji_lu r JOIN ti_mu q ON q.id=r.ti_mu_id
+                WHERE q.ti_gan LIKE '【演示】变式：%' AND r.shen_he_dong_zuo IN ('SUBMITTED','APPROVED')
+                """, Integer.class)).isEqualTo(60);
+
+        List<String> baselineSourceStems = jdbc.queryForList(
+                "SELECT ti_gan FROM ti_mu WHERE ti_gan LIKE '【演示】%' AND ti_gan NOT LIKE '【演示】变式：%'", String.class);
+        HashSet<String> baselineStems = new HashSet<>();
+        baselineSourceStems.forEach(stem -> assertThat(baselineStems.add(normalizeStem(stem)))
+                .as("Demo90内部重复: " + stem).isTrue());
+        assertThat(baselineStems).hasSize(DemoDataService.BASE_DEMO_QUESTION_COUNT);
+        HashSet<String> variantStems = new HashSet<>();
+        jdbc.queryForList("SELECT ti_gan FROM ti_mu WHERE ti_gan LIKE '【演示】变式：%'", String.class).forEach(stem -> {
+            String normalized = normalizeStem(stem);
+            assertThat(variantStems.add(normalized)).as("变式内部重复: " + stem).isTrue();
+            assertThat(baselineStems).as("变式与Demo90重复: " + stem).doesNotContain(normalized);
+        });
+        assertThat(baselineStems).doesNotContainAnyElementsOf(variantStems);
+
+        List<String> chemistryText = jdbc.queryForList("""
+                SELECT CONCAT_WS(' ',q.ti_gan,GROUP_CONCAT(DISTINCT o.xuan_xiang_nei_rong SEPARATOR ' '),
+                    GROUP_CONCAT(DISTINCT a.jie_xi_nei_rong SEPARATOR ' '))
+                FROM ti_mu q JOIN ke_mu s ON s.id=q.ke_mu_id
+                LEFT JOIN ti_mu_xuan_xiang o ON o.ti_mu_id=q.id AND o.yi_shan_chu=0
+                LEFT JOIN ti_mu_jie_xi a ON a.ti_mu_id=q.id AND a.yi_shan_chu=0
+                WHERE q.ti_gan LIKE '【演示】变式：%' AND s.ke_mu_dai_ma='CHEMISTRY' GROUP BY q.id
+                """, String.class);
+        assertThat(chemistryText).allSatisfy(text -> assertThat(text)
+                .doesNotContain("H2", "O2", "CO2", "H2SO4", "SO4^", "10^", "[[I", "[[F", "\\frac", "\\mathrm"));
+    }
+
+    @Test
+    @Transactional
+    void studentPracticeServiceActuallySelectsAcceptedVariants() {
+        demo.seed();
+        long userId = jdbc.queryForObject("SELECT id FROM yong_hu WHERE yong_hu_ming='demo_student'", Long.class);
+        for (long subjectId : jdbc.queryForList("SELECT id FROM ke_mu WHERE ke_mu_dai_ma IN ('PHYSICS','CHEMISTRY','BIOLOGY') ORDER BY id", Long.class)) {
+            long knowledgePointId = jdbc.queryForObject("""
+                    SELECT k.id FROM zhi_shi_dian k
+                    JOIN ti_mu_zhi_shi_dian qk ON qk.zhi_shi_dian_id=k.id AND qk.yi_shan_chu=0
+                    JOIN ti_mu q ON q.id=qk.ti_mu_id AND q.yi_shan_chu=0
+                    WHERE k.ke_mu_id=? AND k.zhuang_tai='ACTIVE' AND k.yi_shan_chu=0
+                      AND q.ti_gan LIKE '【演示】变式：%'
+                    GROUP BY k.id ORDER BY k.id LIMIT 1
+                    """, Long.class, subjectId);
+            boolean selectedVariant = false;
+            HashSet<List<String>> questionSets = new HashSet<>();
+            for (int attempt = 0; attempt < 10; attempt++) {
+                var session = practice.create(userId,
+                        new StudentPracticeDtos.CreateRequest(subjectId, List.of(knowledgePointId), null, null, 5));
+                List<String> stems = session.questions().stream().map(StudentPracticeDtos.SessionQuestion::stem).sorted().toList();
+                questionSets.add(stems);
+                selectedVariant |= stems.stream().anyMatch(stem -> stem.contains("变式："));
+            }
+            assertThat(selectedVariant).as("subjectId=" + subjectId).isTrue();
+            assertThat(questionSets).as("相同知识点多次随机题集应发生变化, subjectId=" + subjectId).hasSizeGreaterThan(1);
         }
     }
 
@@ -152,6 +266,15 @@ class DemoDataServiceIntegrationTest extends AdminQuestionIntegrationTestSupport
                 .doesNotContain("RIKE_TIKU_SERVER_PORT", "RIKE_TIKU_CORS_ALLOWED_ORIGIN =");
     }
 
+    @Test
+    void variantReviewRecordMatchesSeedInventory() throws Exception {
+        String review = Files.readString(Path.of("..", "docs", "DEMO_VARIANT_QUESTION_REVIEW.md"), StandardCharsets.UTF_8);
+        assertThat(review)
+                .contains("| 物理 | 18 | 10 | 8 |", "| 化学 | 18 | 9 | 9 |", "| 生物 | 18 | 11 | 7 |",
+                        "| 合计 | 54 | 30 | 24 |", "开发阶段由 Codex 辅助整理候选不等于系统实现了运行时 AI 出题")
+                .doesNotContain("MVP30 已正式入库");
+    }
+
     private void assertHttpLogin(String username, String role, int status, String expectedBody) throws Exception {
         HttpResponse<String> challenge = HttpClient.newHttpClient().send(HttpRequest.newBuilder()
                 .uri(URI.create("http://localhost:" + port + "/api/v1/auth/captcha-challenge")).GET().build(), HttpResponse.BodyHandlers.ofString());
@@ -167,5 +290,13 @@ class DemoDataServiceIntegrationTest extends AdminQuestionIntegrationTestSupport
         assertThat(response.statusCode()).isEqualTo(status);
         assertThat(response.body()).contains(expectedBody);
         if (status == 200) assertThat(response.body()).contains("\"accessToken\"").doesNotContain("a1234567");
+    }
+
+    private static String normalizeStem(String stem) {
+        return Normalizer.normalize(stem, Normalizer.Form.NFKC)
+                .replace("【演示】", "")
+                .replaceFirst("^变式：", "")
+                .toLowerCase()
+                .replaceAll("[\\p{P}\\p{Z}\\s]+", "");
     }
 }

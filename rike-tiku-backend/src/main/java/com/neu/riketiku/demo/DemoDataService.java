@@ -20,6 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class DemoDataService {
     public static final String DEMO_PASSWORD = "a1234567";
     public static final String RIGHTS_BASIS = "本科毕业设计本地演示数据，由项目开发者自行编写，仅用于功能测试。";
+    public static final int BASE_DEMO_QUESTION_COUNT = 90;
+    public static final int FINAL_DEMO_QUESTION_COUNT = BASE_DEMO_QUESTION_COUNT + DemoVariantQuestionBank.ACCEPTED_COUNT;
     private static final Set<String> FORBIDDEN_DATABASES = Set.of(
             "rike_tiku", "mysql", "information_schema", "performance_schema", "sys");
     private static final String DEMO_STEM_PREFIX = "【演示】";
@@ -164,28 +166,37 @@ public class DemoDataService {
                 WHERE k.ke_mu_id<>r.ke_mu_id OR k.yi_shan_chu=1
                 """));
         expect("演示知识点", 9, count("SELECT COUNT(*) FROM zhi_shi_dian WHERE wan_zheng_lu_jing IN ('力学>运动和力>牛顿运动定律','电磁学>电场>电场强度','热学>分子动理论>温度和内能','化学基本概念>物质的量>摩尔计算','无机化学>元素化合物>氧化还原反应','化学反应原理>化学平衡>平衡移动','分子与细胞>细胞结构>细胞膜','遗传与进化>遗传规律>分离定律','稳态与调节>生命活动调节>激素调节')") );
-        expect("演示题总数", 90, demoQuestionCount());
+        expect("Demo90稳定基线", BASE_DEMO_QUESTION_COUNT,
+                count("SELECT COUNT(*) FROM ti_mu WHERE ti_gan LIKE '【演示】%' AND ti_gan NOT LIKE '【演示】变式：%'"));
+        expect("审核通过变式题", DemoVariantQuestionBank.ACCEPTED_COUNT,
+                count("SELECT COUNT(*) FROM ti_mu WHERE ti_gan LIKE '【演示】变式：%'"));
+        expect("最终演示题总数", FINAL_DEMO_QUESTION_COUNT, demoQuestionCount());
+        Map<String, Integer> subjectCounts = Map.of("PHYSICS", 40, "CHEMISTRY", 39, "BIOLOGY", 41);
         for (String subject : List.of("PHYSICS", "CHEMISTRY", "BIOLOGY")) {
-            expect(subject + "题目", 30, count("SELECT COUNT(*) FROM ti_mu q JOIN ke_mu s ON s.id=q.ke_mu_id WHERE q.ti_gan LIKE '【演示】%' AND s.ke_mu_dai_ma=?", subject));
+            expect(subject + "题目", subjectCounts.get(subject), count("SELECT COUNT(*) FROM ti_mu q JOIN ke_mu s ON s.id=q.ke_mu_id WHERE q.ti_gan LIKE '【演示】%' AND s.ke_mu_dai_ma=?", subject));
             expect(subject + "难度覆盖", 3, count("SELECT COUNT(DISTINCT q.nan_du) FROM ti_mu q JOIN ke_mu s ON s.id=q.ke_mu_id WHERE q.ti_gan LIKE '【演示】%' AND s.ke_mu_dai_ma=?", subject));
             for (String type : List.of("SINGLE_CHOICE", "MULTIPLE_CHOICE", "FILL_BLANK")) {
-                expect(subject + type, 10, count("SELECT COUNT(*) FROM ti_mu q JOIN ke_mu s ON s.id=q.ke_mu_id WHERE q.ti_gan LIKE '【演示】%' AND s.ke_mu_dai_ma=? AND q.ti_mu_lei_xing=?", subject, type));
+                if (count("SELECT COUNT(*) FROM ti_mu q JOIN ke_mu s ON s.id=q.ke_mu_id WHERE q.ti_gan LIKE '【演示】%' AND s.ke_mu_dai_ma=? AND q.ti_mu_lei_xing=?", subject, type) < 10) {
+                    throw new IllegalStateException(subject + type + " 少于Demo90稳定基线的10题");
+                }
             }
             for (int difficulty : List.of(1, 2, 3)) {
-                expect(subject + "难度" + difficulty, 10, count("SELECT COUNT(*) FROM ti_mu q JOIN ke_mu s ON s.id=q.ke_mu_id WHERE q.ti_gan LIKE '【演示】%' AND s.ke_mu_dai_ma=? AND q.nan_du=?", subject, difficulty));
+                if (count("SELECT COUNT(*) FROM ti_mu q JOIN ke_mu s ON s.id=q.ke_mu_id WHERE q.ti_gan LIKE '【演示】%' AND s.ke_mu_dai_ma=? AND q.nan_du=?", subject, difficulty) < 10) {
+                    throw new IllegalStateException(subject + "难度" + difficulty + " 少于Demo90稳定基线的10题");
+                }
             }
         }
-        expect("每知识点10题", 9, count("""
+        expect("每知识点至少10题", 9, count("""
                 SELECT COUNT(*) FROM (
                     SELECT k.id FROM zhi_shi_dian k
                     JOIN ti_mu_zhi_shi_dian qk ON qk.zhi_shi_dian_id=k.id AND qk.yi_shan_chu=0
                     JOIN ti_mu q ON q.id=qk.ti_mu_id AND q.yi_shan_chu=0
                     WHERE q.ti_gan LIKE '【演示】%' AND k.zhuang_tai='ACTIVE' AND k.yi_shan_chu=0
-                    GROUP BY k.id HAVING COUNT(DISTINCT q.id)=10
+                    GROUP BY k.id HAVING COUNT(DISTINCT q.id)>=10
                 ) covered_points
                 """));
-        expect("可练习题", 90, count("SELECT COUNT(*) FROM ti_mu q WHERE q.ti_gan LIKE '【演示】%' AND q.zhuang_tai='PUBLISHED' AND q.shi_yong_mo_shi='ONLINE_PRACTICE' AND q.shi_fou_ke_zi_dong_pan_fen=1 AND q.yi_shan_chu=0"));
-        expect("完整可冻结题", 90, count("""
+        expect("可练习题", FINAL_DEMO_QUESTION_COUNT, count("SELECT COUNT(*) FROM ti_mu q WHERE q.ti_gan LIKE '【演示】%' AND q.zhuang_tai='PUBLISHED' AND q.shi_yong_mo_shi='ONLINE_PRACTICE' AND q.shi_fou_ke_zi_dong_pan_fen=1 AND q.yi_shan_chu=0"));
+        expect("完整可冻结题", FINAL_DEMO_QUESTION_COUNT, count("""
                 SELECT COUNT(*) FROM ti_mu q
                 WHERE q.ti_gan LIKE '【演示】%' AND q.zhuang_tai='PUBLISHED'
                   AND q.shi_yong_mo_shi='ONLINE_PRACTICE' AND q.shi_fou_ke_zi_dong_pan_fen=1 AND q.yi_shan_chu=0
@@ -218,7 +229,7 @@ public class DemoDataService {
                     OR JSON_LENGTH(JSON_EXTRACT(q.zheng_que_da_an,'$.blanks'))<1
                     OR JSON_LENGTH(JSON_EXTRACT(q.zheng_que_da_an,'$.blanks[0].acceptedAnswers'))<1)
                 """));
-        expect("PUBLISHED标准解析", 90, count("SELECT COUNT(*) FROM ti_mu_jie_xi a JOIN ti_mu q ON q.id=a.ti_mu_id WHERE q.ti_gan LIKE '【演示】%' AND a.jie_xi_lei_xing='STANDARD' AND a.ban_ben_hao=1 AND a.zhuang_tai='PUBLISHED' AND a.yi_shan_chu=0"));
+        expect("PUBLISHED标准解析", FINAL_DEMO_QUESTION_COUNT, count("SELECT COUNT(*) FROM ti_mu_jie_xi a JOIN ti_mu q ON q.id=a.ti_mu_id WHERE q.ti_gan LIKE '【演示】%' AND a.jie_xi_lei_xing='STANDARD' AND a.ban_ben_hao=1 AND a.zhuang_tai='PUBLISHED' AND a.yi_shan_chu=0"));
         expect("STANDARD解析无演示说明", 0, count("""
                 SELECT COUNT(*) FROM ti_mu_jie_xi a JOIN ti_mu q ON q.id=a.ti_mu_id
                 WHERE q.ti_gan LIKE '【演示】%' AND a.jie_xi_lei_xing='STANDARD'
@@ -235,16 +246,17 @@ public class DemoDataService {
                     OR EXISTS (SELECT 1 FROM ti_mu_jie_xi a WHERE a.ti_mu_id=q.id AND (a.jie_xi_nei_rong LIKE '%[[I%' OR a.jie_xi_nei_rong LIKE '%[[F%')))
                 """));
         expect("重复内容哈希", 0, count("SELECT COUNT(*)-COUNT(DISTINCT q.nei_rong_ha_xi) FROM ti_mu q WHERE q.ti_gan LIKE '【演示】%' AND q.yi_shan_chu=0"));
-        expect("三项来源", 270, count("""
+        expect("三项来源", FINAL_DEMO_QUESTION_COUNT * 3, count("""
                 SELECT COUNT(*) FROM ti_mu_lai_yuan s JOIN ti_mu q ON q.id=s.ti_mu_id
                 WHERE q.ti_gan LIKE '【演示】%' AND s.lai_yuan_lei_xing='TEACHER_CREATED'
                   AND s.lai_yuan_ming_cheng='本科毕业设计自编演示题'
                   AND s.quan_li_zhuang_tai='USER_PROVIDED' AND s.quan_li_yi_ju IS NOT NULL
                   AND TRIM(s.quan_li_yi_ju)<>'' AND s.yi_shan_chu=0
                 """));
-        expect("审核轨迹", 180, count("SELECT COUNT(*) FROM ti_mu_shen_he_ji_lu r JOIN ti_mu q ON q.id=r.ti_mu_id WHERE q.ti_gan LIKE '【演示】%' AND r.shen_he_dong_zuo IN ('SUBMITTED','APPROVED')"));
+        expect("审核轨迹", FINAL_DEMO_QUESTION_COUNT * 2, count("SELECT COUNT(*) FROM ti_mu_shen_he_ji_lu r JOIN ti_mu q ON q.id=r.ti_mu_id WHERE q.ti_gan LIKE '【演示】%' AND r.shen_he_dong_zuo IN ('SUBMITTED','APPROVED')"));
         for (String table : List.of("lian_xi_hui_hua", "lian_xi_ti_mu", "xue_sheng_da_ti", "xue_xi_jie_guo", "cuo_ti_ji_lu", "si_xin_hui_hua", "si_xin_xiao_xi")) expect(table + "初始记录", 0, count("SELECT COUNT(*) FROM " + table));
-        System.out.println("演示数据校验通过: 14账号、3班级、4教师、9学生、9任课关系、12高频考点、9知识点、90题、学习与私信记录为0");
+        System.out.println("演示数据校验通过: 14账号、3班级、4教师、9学生、9任课关系、12高频考点、9知识点、"
+                + FINAL_DEMO_QUESTION_COUNT + "题、学习与私信记录为0");
     }
 
     public static void guardDatabaseName(String database) {
@@ -461,6 +473,7 @@ public class DemoDataService {
         items.add(fill("BIOLOGY-F1", "BIOLOGY", "细胞膜控制物质进出体现了膜的____功能。", "分子与细胞>细胞结构>细胞膜", 2, "选择透过"));
         items.add(fill("BIOLOGY-F2", "BIOLOGY", "成对遗传因子在形成配子时彼此____。", "遗传与进化>遗传规律>分离定律", 3, "分离"));
         items.addAll(DemoQuestionBank.additionalQuestions());
+        items.addAll(DemoVariantQuestionBank.acceptedQuestions());
         return items;
     }
 

@@ -98,14 +98,14 @@ Vite 启动参数为 `--host localhost --port 18080`。
 - 学生：保留 `DEMO_S001`；199 班固定 5 名、200 班固定 3 名，每人只有 STUDENT 和一个 ACTIVE 主班级。
 - 任课：保留原三条；新增物理、生物、化学教师各自对 199/200 的两条 ACTIVE 三元关系，共 9 条 ACTIVE。
 - 知识点：每科 3 个，共 9 个。
-- 题库：Demo90 共 90 道，物理、化学、生物各 30 道；每科单选、多选、填空各 10 道，难度 1、2、3 各 10 道，三个演示知识点各 10 道。
+- 题库：保留 Demo90 基线（物理、化学、生物各 30 道），另增加 30 道经审核的原创变式；最终共 120 道，物理 40、化学 39、生物 41。
 - 高频考点：V8 的 `gao_pin_kao_dian` 仅绑定真实 `ren_ke_guan_xi_id`；199/200 班物理、化学、生物六条场景任课关系各预置 2 条，共 12 条 ACTIVE 自编纯文本考点。
 - 私信：V9 的两张表不预置聊天内容；浏览器验收消息可由 `reset` 清理，固定账号和组织关系保持可重复 seed。
 - 个人中心：V10 的简介和头像字段默认均为空，不在固定 seed 写入二进制头像；浏览器验收内容可由 `reset → seed` 完整清理。
 
-所有 Demo90 题均为项目原创的“本科毕业设计自编演示题”，不复制网络题原文，也不读取 MVP30。题目均为无附件 `PUBLISHED + ONLINE_PRACTICE` 自动判分题，STANDARD 解析为 `PUBLISHED`。QUESTION、ANSWER、STANDARD_ANALYSIS 三项来源均为 `TEACHER_CREATED + USER_PROVIDED`，并有 SUBMITTED、APPROVED 审核轨迹。
+Demo90 和筛选变式均为项目原创的“本科毕业设计自编演示题”，不复制网络题原文。题目均为无附件 `PUBLISHED + ONLINE_PRACTICE` 自动判分题，STANDARD 解析为 `PUBLISHED`。QUESTION、ANSWER、STANDARD_ANALYSIS 三项来源均为 `TEACHER_CREATED + USER_PROVIDED`，并有 SUBMITTED、APPROVED 审核轨迹。
 
-Demo90 只服务独立演示环境，不等于 MVP30 正式真实题库。MVP30 仍未正式入库，仓库中的网络候选题也未因本轮扩充而变为 `PUBLISHED`。
+最终 120 题只服务独立演示环境。V3.0 没有规定名为 MVP30 的 Excel 必须整体正式入库；MVP30 原始文件不修改，继续作为结构化导入能力验证素材，仓库中的网络候选题也未因本轮扩充而变为 `PUBLISHED`。
 
 ## 清理与重建
 
@@ -116,6 +116,6 @@ Demo90 只服务独立演示环境，不等于 MVP30 正式真实题库。MVP30 
 ```
 
 `clean` 后演示账号、组织、题目和学习记录均被删除；`reset` 是库级重建，只允许对通过安全检查的演示库名执行。MVP30 原始 Excel 和正式 `rike_tiku` 不参与上述流程。
-## PR #22 分支状态
+## PR #23 分支状态
 
-当前分支为 `feat/personal-center`，PR #22 尚未合并。Flyway 为 V1–V10、26 张业务表；`reset`、`seed`、`validate`、`clean` 继续受数据库名保护，固定 seed 不含聊天记录、简介或头像。正式 `rike_tiku` 已正常执行 V10 结构升级，但 Demo90、场景账号、场景班级、高频考点、会话、消息、学习记录及验收个人资料计数均为 0；MVP30 原始 Excel 未参与任何演示操作。
+当前分支为 `feat/final-demo-question-bank`。Flyway 保持 V1–V10、26 张业务表；`reset`、`seed`、`validate`、`clean` 继续受数据库名保护。PR #23 只扩充独立演示 seed，不向正式 `rike_tiku` 写入题目或其他演示业务数据，也不修改 MVP30 原始 Excel。
