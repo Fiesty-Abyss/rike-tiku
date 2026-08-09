@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import tools.jackson.databind.node.JsonNodeFactory;
 import com.neu.riketiku.renzheng.RenZhengYeWuYiChang;
 import com.neu.riketiku.tiku.admin.AdminQuestionIntegrationTestSupport;
+import com.neu.riketiku.tiku.fujian.QuestionAttachmentContentService;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -20,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 @SpringBootTest
 class StudentPracticeIntegrationTest extends AdminQuestionIntegrationTestSupport {
     @Autowired private StudentPracticeService service;
+    @Autowired private QuestionAttachmentContentService attachmentContentService;
     @Autowired private JdbcTemplate jdbc;
 
     @Test
@@ -183,6 +185,27 @@ class StudentPracticeIntegrationTest extends AdminQuestionIntegrationTestSupport
                 .hasMessageContaining("不属于当前学生");
         assertThatThrownBy(() -> service.wrongQuestion(other, questionId)).isInstanceOf(RenZhengYeWuYiChang.class)
                 .hasMessageContaining("错题不存在");
+    }
+
+    @Test
+    @Transactional
+    void rejectsWrongQuestionAttachmentFromAnotherQuestion() {
+        long userId = student("wrong_attachment_scope");
+        long ownedQuestionId = question("SINGLE_CHOICE", "PUBLISHED", 1, "A");
+        var session = service.create(userId, new StudentPracticeDtos.CreateRequest(1L, null, List.of("SINGLE_CHOICE"), null, 1));
+        long otherQuestionId = question("SINGLE_CHOICE", "PUBLISHED", 1, "A");
+        var selected = session.questions().getFirst();
+        service.submit(userId, session.id(), new StudentPracticeDtos.SubmitRequest(List.of(
+                new StudentPracticeDtos.Answer(selected.practiceQuestionId(), JsonNodeFactory.instance.textNode("B"), 1))));
+        jdbc.update("""
+                INSERT INTO ti_mu_fu_jian(ti_mu_id,guan_lian_wei_zhi,fu_jian_lei_xing,yuan_shi_wen_jian_ming,xiang_dui_lu_jing,nei_rong_ha_xi,pai_xu,zhuang_tai)
+                VALUES (?,'QUESTION','IMAGE','other.png','images/other.png',?,1,'ACTIVE')
+                """, otherQuestionId, "a".repeat(64));
+        long otherAttachmentId = jdbc.queryForObject("SELECT LAST_INSERT_ID()", Long.class);
+
+        assertThatThrownBy(() -> attachmentContentService.wrongQuestion(userId, ownedQuestionId, otherAttachmentId))
+                .isInstanceOf(RenZhengYeWuYiChang.class)
+                .hasMessageContaining("不存在、不可用或无访问权限");
     }
 
     @Test

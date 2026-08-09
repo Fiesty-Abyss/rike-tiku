@@ -19,6 +19,7 @@ public final class QuestionDtos {
     public record Detail(Item question, String stem, String correctAnswer, List<Option> options, String standardAnalysis, List<KnowledgePoint> knowledgePoints,
                          List<Source> sources, List<Attachment> attachments, List<Review> reviews, List<String> allowedActions) { }
     public record KnowledgePoint(Long id, String code, String name, String path) { }
-    public record Attachment(Long id, String position, String type, String fileName, String objectMarker, String status) { }
+    public record Attachment(Long id, String position, String type, String fileName, String objectMarker, String status,
+                             String renderStatus, String contentUrl) { }
     public record Review(Long id, String action, String fromStatus, String toStatus, Long reviewerId, String opinion, LocalDateTime createdAt) { }
 }
