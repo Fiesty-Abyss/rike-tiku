@@ -1,6 +1,6 @@
 # AI 开发交接
 
-> 当前接续分支：`feat/final-demo-question-bank`，基于 `main@23c5d79f3c23e71563d341a66bfe2fd4fce03a64`。PR #22 已普通 merge（merge commit `67b7bd7239e2ac1de3ad8c71b82b6d0a79162d3b`）；当前 Flyway V1–V10、26 张业务表，本轮不新增迁移。
+> 当前接续分支：`main`。PR #23 已普通 merge（merge commit `3677c7623e08e34ee63e45dbcfd557a27b32f990`）；该合并代码基线的 main HEAD 为同一提交。当前 Flyway V1–V10、26 张业务表，PR #23 未新增迁移。
 
 更新时间：2026-08-09
 
@@ -34,7 +34,7 @@ PR #22 已将统一 `/profile` 与 `GET/PUT /api/v1/profile`、`POST/DELETE /api
 
 PR #22 合并后验证为后端 102/102、前端 31 文件 117/117，package、type-check、build、audit 0、Demo reset/seed/validate/smoke 均 PASS。真实浏览器完整证据覆盖三角色与 `demo_physics_admin` 多角色资料、简介、头像上传/刷新持久化/删除、现有改密入口；门禁修正后轻量抽查正常，控制台 0 error。MA-006 已关闭。正式库为 V10、26 张业务表，Demo90、场景账号、场景班级、高频考点、私信及 V7 学习记录均为 0。
 
-PR #23 当前专项 27/27、后端 105/105、前端 31 文件 117/117，package、type-check、build、生产依赖 audit 0 及 Demo `reset → seed → validate → smoke` 均 PASS。正式库只读检查为 V10、26 张业务表，演示题与全部场景业务数据为 0；MVP30 原始文件 SHA-256 保持 `01E90ACFDFB8EF5194103C3B7DD1A99B4F351858FFFDF70CFF63187928DCAB17`。
+PR #23 已普通 merge。合并后后端 105/105、前端 31 文件 117/117，package、type-check、build、生产依赖 audit 0 及 Demo `reset → seed → validate → smoke` 均 PASS；合并前专项 27/27 PASS。正式库只读检查为 V10、26 张业务表，演示题与全部场景业务数据为 0；MVP30 原始文件 SHA-256 保持 `01E90ACFDFB8EF5194103C3B7DD1A99B4F351858FFFDF70CFF63187928DCAB17`。
 
 PR #23 浏览器仅操作 `rike_tiku_demo`：物理 3、化学 3、生物 4 道新变式真实进入随机练习；Unicode 化学式、三题型控件、提交前防泄露、结果答案与 STANDARD 解析、错题和掌握度均正常。同科连续随机题集不同，控制台 0 error；最终 reset/seed/validate 已清理验收会话并恢复固定 120 题状态。
 
@@ -68,4 +68,4 @@ PR #23 浏览器仅操作 `rike_tiku_demo`：物理 3、化学 3、生物 4 道�
 
 ## 当前下一步
 
-PR #23 是当前唯一任务。完成测试、Demo 与浏览器验证后只创建 Draft PR #23；不得开始下一分支、AI Provider 或运行时 AI 出题。
+PR #23 已完成并进入 `main`。当前停止，不自动创建下一分支，也不开始 AI Provider 或运行时 AI 出题。
