@@ -1,14 +1,14 @@
 # 开发状态
 
-> 2026-08-09 正在 `audit/v3-non-ai-completion` 记录 V3.0 非 AI 正式完工审计。基线 main 为 `cb0f828e2fbb3da5e7f3585b06f7e84266d4db4f`。结论为 REJECT，当前不能认证 100% DONE_VERIFIED。正式证据见 [V3_NON_AI_COMPLETION_AUDIT.md](V3_NON_AI_COMPLETION_AUDIT.md)。
+> 2026-08-09 V3.0 非 AI 正式完工审计已由 PR #24 普通 merge（merge commit `bcfb2181af2197d2524a2df8ca64895e435a4857`）进入 `main`。结论为 REJECT，当前不能认证 100% DONE_VERIFIED。正式证据见 [V3_NON_AI_COMPLETION_AUDIT.md](V3_NON_AI_COMPLETION_AUDIT.md)。
 
-> 当前审计分支为 `audit/v3-non-ai-completion`，基于 main `cb0f828e2fbb3da5e7f3585b06f7e84266d4db4f`。PR #23 已普通 merge（merge commit `3677c7623e08e34ee63e45dbcfd557a27b32f990`）。Flyway 为 V1–V10，共 26 张业务表；PR #23 未新增迁移且未修改 MVP30 原始 Excel。
+> 当前分支为 `main`。Flyway 为 V1–V10，共 26 张业务表；审计轮未修改 Flyway、业务代码或 MVP30 原始 Excel。
 
 更新时间：2026-08-09
 
 ## 当前主线状态
 
-- 当前分支：`audit/v3-non-ai-completion`；只记录基于最新 main 的审计证据，不修改业务实现。
+- 当前分支：`main`；PR #24 已合并，审计分支已删除。
 - V3.0 未指定名为 MVP30 的 Excel 必须整体正式入库；它要求 30 题 MVP 验证导入、审核、发布、查询和附件显示闭环，并强调少量高质量题目。MVP30 因此保留为结构化导入能力验证素材，原始文件不修改。
 - 三角色共用 `/profile`，本人身份从 JWT 推导；页面展示真实账号角色及学生/教师档案，只允许维护 500 字简介和本人头像，并复用现有主动修改密码流程。
 - 登录页当前使用两分钟有效、内存保存、一次性消费的 4 位随机图形验证码；验证码默认隐藏，首次登录操作只展开，第二次才认证。PR #15 滑块仅为历史实现。

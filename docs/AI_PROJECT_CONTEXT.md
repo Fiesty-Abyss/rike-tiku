@@ -2,7 +2,7 @@
 
 > 2026-08-09 V3.0 非 AI 正式完工审计已确认当前不是 100% DONE_VERIFIED。A 层硬缺口为公共门户首页、附件真实显示、管理员高风险操作日志、30 道合法样例完整闭环。审计结论 REJECT；见 [V3_NON_AI_COMPLETION_AUDIT.md](V3_NON_AI_COMPLETION_AUDIT.md)。
 
-> 当前工作分支为 `audit/v3-non-ai-completion`，基于 main `cb0f828e2fbb3da5e7f3585b06f7e84266d4db4f`。PR #23 已普通 merge（merge commit `3677c7623e08e34ee63e45dbcfd557a27b32f990`）。Flyway V1–V10、26 张业务表，PR #23 未新增迁移且未修改 MVP30 原始 Excel。
+> 当前工作分支为 `main`。PR #24 已普通 merge（merge commit `bcfb2181af2197d2524a2df8ca64895e435a4857`）。Flyway V1–V10、26 张业务表；审计轮未新增迁移且未修改 MVP30 原始 Excel。
 
 更新时间：2026-08-09
 
@@ -54,7 +54,7 @@
 ## 5. 当前实现状态
 
 - 状态：题库、账号、教学组织、学生练习闭环、教师班级学科工作台、高频考点、师生私信、非 AI 掌握度与确定性规则推荐、三角色个人中心均已进入 `main`。
-- 当前分支：`audit/v3-non-ai-completion`；只记录 V3.0 非 AI 完工审计证据，PR #23 已完成并合入 main。
+- 当前分支：`main`；PR #24 审计证据已合入，审计分支已删除。
 - 当前 Flyway：V1–V10，共 26 张业务表；V10 只增加 `yong_hu` 简介与头像字段，V1–V9 不修改。
 - 独立 `rike_tiku_demo` 保留 Demo90 基线，并新增 30 道经筛选的项目原创变式，最终物理 40、化学 39、生物 41，共 120 道。V3.0 不要求名为 MVP30 的 Excel 整体正式入库；该原始文件保持不变，定位为结构化导入能力验证素材。
 - PR #17 已进入 `main`：新增管理员单学生分页、详情、事务新增、编辑启停、事务调班和密码重置；Demo 扩充为 14 账号、3 班级、4 教师、9 学生、9 条 ACTIVE 三元任课关系。
