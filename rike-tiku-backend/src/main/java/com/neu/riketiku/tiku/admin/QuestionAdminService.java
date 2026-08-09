@@ -1,6 +1,7 @@
 package com.neu.riketiku.tiku.admin;
 
 import com.neu.riketiku.renzheng.RenZhengYeWuYiChang;
+import com.neu.riketiku.tiku.fujian.QuestionAttachmentContentService;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
 import java.nio.charset.StandardCharsets;
@@ -22,10 +23,12 @@ public class QuestionAdminService {
     private static final Set<String> SOURCE_PARTS = Set.of("QUESTION", "ANSWER", "STANDARD_ANALYSIS");
     private static final Set<String> PUBLISHABLE_RIGHTS = Set.of("AUTHORIZED", "OPEN_LICENSE", "PUBLIC_OFFICIAL", "USER_PROVIDED");
     private final JdbcTemplate jdbc;
+    private final QuestionAttachmentContentService attachmentContentService;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    public QuestionAdminService(JdbcTemplate jdbc) {
+    public QuestionAdminService(JdbcTemplate jdbc, QuestionAttachmentContentService attachmentContentService) {
         this.jdbc = jdbc;
+        this.attachmentContentService = attachmentContentService;
     }
 
     @Transactional(readOnly = true)
@@ -140,7 +143,12 @@ public class QuestionAdminService {
         String analysis = jdbc.query("SELECT jie_xi_nei_rong FROM ti_mu_jie_xi WHERE ti_mu_id=? AND jie_xi_lei_xing='STANDARD' AND yi_shan_chu=0 ORDER BY ban_ben_hao DESC", rs -> rs.next() ? rs.getString(1) : "", id);
         List<QuestionDtos.KnowledgePoint> points = jdbc.query("SELECT k.id,k.wan_zheng_lu_jing,k.zhi_shi_dian_ming_cheng,k.wan_zheng_lu_jing FROM ti_mu_zhi_shi_dian x JOIN zhi_shi_dian k ON k.id=x.zhi_shi_dian_id WHERE x.ti_mu_id=? AND x.yi_shan_chu=0", (rs, row) -> new QuestionDtos.KnowledgePoint(rs.getLong(1), rs.getString(2), rs.getString(3), rs.getString(4)), id);
         List<QuestionDtos.Source> sources = jdbc.query("SELECT nei_rong_lei_xing,lai_yuan_lei_xing,lai_yuan_ming_cheng,quan_li_zhuang_tai,lai_yuan_di_zhi,nian_fen,di_qu,shi_juan_ming_cheng,ti_hao,quan_li_yi_ju FROM ti_mu_lai_yuan WHERE ti_mu_id=? AND yi_shan_chu=0", (rs, row) -> new QuestionDtos.Source(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), (Integer) rs.getObject(6), rs.getString(7), rs.getString(8), rs.getString(9), rs.getString(10)), id);
-        List<QuestionDtos.Attachment> attachments = jdbc.query("SELECT id,guan_lian_wei_zhi,fu_jian_lei_xing,yuan_shi_wen_jian_ming,dui_xiang_biao_shi,zhuang_tai FROM ti_mu_fu_jian WHERE ti_mu_id=? AND yi_shan_chu=0 ORDER BY pai_xu", (rs, row) -> new QuestionDtos.Attachment(rs.getLong(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6)), id);
+        List<QuestionDtos.Attachment> attachments = jdbc.query("SELECT id,guan_lian_wei_zhi,fu_jian_lei_xing,yuan_shi_wen_jian_ming,dui_xiang_biao_shi,zhuang_tai,xiang_dui_lu_jing,nei_rong_ha_xi FROM ti_mu_fu_jian WHERE ti_mu_id=? AND yi_shan_chu=0 ORDER BY pai_xu", (rs, row) -> {
+            long attachmentId = rs.getLong(1);
+            String renderStatus = attachmentContentService.renderStatus(rs.getString(7), rs.getString(8), rs.getString(3), rs.getString(6));
+            return new QuestionDtos.Attachment(attachmentId, rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), renderStatus,
+                    "AVAILABLE".equals(renderStatus) ? "/api/v1/admin/question-attachments/" + attachmentId + "/content" : null);
+        }, id);
         List<QuestionDtos.Review> reviews = jdbc.query("SELECT id,shen_he_dong_zuo,yuan_zhuang_tai,mu_biao_zhuang_tai,shen_he_ren_id,shen_he_yi_jian,chuang_jian_shi_jian FROM ti_mu_shen_he_ji_lu WHERE ti_mu_id=? ORDER BY id", (rs, row) -> new QuestionDtos.Review(rs.getLong(1), rs.getString(2), rs.getString(3), rs.getString(4), (Long) rs.getObject(5), rs.getString(6), rs.getObject(7, LocalDateTime.class)), id);
         String stem = jdbc.queryForObject("SELECT ti_gan FROM ti_mu WHERE id=?", String.class, id);
         return new QuestionDtos.Detail(item, stem, answer, options, analysis, points, sources, attachments, reviews, allowedActions(item.status()));

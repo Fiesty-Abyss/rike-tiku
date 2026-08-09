@@ -37,20 +37,27 @@ function message(error: unknown, fallback: string) {
 async function load() {
   loading.value = true
   try {
-    const [workspaceData, learningData, conversations] = await Promise.all([
+    const [workspaceData, learningData] = await Promise.all([
       fetchTeacherWorkspace(scopeId.value),
       fetchTeacherLearningSummary(scopeId.value),
-      fetchConversations(),
     ])
     workspace.value = workspaceData
     learningSummary.value = learningData
-    unreadCount.value = conversations
-      .filter((item) => item.teachingAssignmentId === scopeId.value)
-      .reduce((total, item) => total + item.unreadCount, 0)
   } catch (error) {
     ElMessage.error(message(error, '工作台加载失败。'))
   } finally {
     loading.value = false
+  }
+
+  // 消息未读数属于辅助信息，不应阻塞班级工作台的主数据和页面渲染。
+  unreadCount.value = 0
+  try {
+    const conversations = await fetchConversations()
+    unreadCount.value = conversations
+      .filter((item) => item.teachingAssignmentId === scopeId.value)
+      .reduce((total, item) => total + item.unreadCount, 0)
+  } catch {
+    // 消息接口暂不可用时保留工作台，未读数按 0 展示。
   }
 }
 

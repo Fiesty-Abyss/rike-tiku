@@ -1,6 +1,10 @@
 package com.neu.riketiku.demo;
 
 import java.nio.charset.StandardCharsets;
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.security.MessageDigest;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
@@ -10,6 +14,8 @@ import java.util.HexFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.imageio.ImageIO;
+import com.neu.riketiku.tiku.fujian.QuestionAttachmentStorage;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -33,10 +39,12 @@ public class DemoDataService {
 
     private final JdbcTemplate jdbc;
     private final PasswordEncoder passwordEncoder;
+    private final QuestionAttachmentStorage attachmentStorage;
 
-    public DemoDataService(JdbcTemplate jdbc, PasswordEncoder passwordEncoder) {
+    public DemoDataService(JdbcTemplate jdbc, PasswordEncoder passwordEncoder, QuestionAttachmentStorage attachmentStorage) {
         this.jdbc = jdbc;
         this.passwordEncoder = passwordEncoder;
+        this.attachmentStorage = attachmentStorage;
     }
 
     public void validateSchema() {
@@ -202,7 +210,6 @@ public class DemoDataService {
                   AND q.shi_yong_mo_shi='ONLINE_PRACTICE' AND q.shi_fou_ke_zi_dong_pan_fen=1 AND q.yi_shan_chu=0
                   AND EXISTS (SELECT 1 FROM ti_mu_jie_xi a WHERE a.ti_mu_id=q.id AND a.jie_xi_lei_xing='STANDARD' AND a.ban_ben_hao=1 AND a.zhuang_tai='PUBLISHED' AND a.yi_shan_chu=0)
                   AND EXISTS (SELECT 1 FROM ti_mu_zhi_shi_dian qk JOIN zhi_shi_dian k ON k.id=qk.zhi_shi_dian_id WHERE qk.ti_mu_id=q.id AND qk.yi_shan_chu=0 AND k.zhuang_tai='ACTIVE' AND k.yi_shan_chu=0)
-                  AND NOT EXISTS (SELECT 1 FROM ti_mu_fu_jian f WHERE f.ti_mu_id=q.id AND f.zhuang_tai='ACTIVE' AND f.yi_shan_chu=0)
                   AND ((q.ti_mu_lei_xing='FILL_BLANK' AND JSON_LENGTH(JSON_EXTRACT(q.zheng_que_da_an,'$.blanks'))>=1)
                     OR (q.ti_mu_lei_xing IN ('SINGLE_CHOICE','MULTIPLE_CHOICE')
                       AND (SELECT COUNT(*) FROM ti_mu_xuan_xiang o WHERE o.ti_mu_id=q.id AND o.yi_shan_chu=0)>=2
@@ -236,7 +243,7 @@ public class DemoDataService {
                   AND (a.jie_xi_nei_rong LIKE '%演示时可用其他选项构造错题%'
                        OR a.jie_xi_nei_rong LIKE '%正确答案为由%')
                 """));
-        expect("活动附件", 0, count("SELECT COUNT(*) FROM ti_mu_fu_jian f JOIN ti_mu q ON q.id=f.ti_mu_id WHERE q.ti_gan LIKE '【演示】%' AND f.zhuang_tai='ACTIVE' AND f.yi_shan_chu=0"));
+        expect("活动图片附件", 2, count("SELECT COUNT(*) FROM ti_mu_fu_jian f JOIN ti_mu q ON q.id=f.ti_mu_id WHERE q.ti_gan LIKE '【演示】%' AND f.fu_jian_lei_xing='IMAGE' AND f.zhuang_tai='ACTIVE' AND f.yi_shan_chu=0"));
         expect("对象标记", 0, count("""
                 SELECT COUNT(*) FROM ti_mu q
                 WHERE q.ti_gan LIKE '【演示】%'
@@ -361,11 +368,17 @@ public class DemoDataService {
         long questionId = insert("""
                 INSERT INTO ti_mu (ke_mu_id,ti_mu_lei_xing,shi_yong_mo_shi,ti_gan,zheng_que_da_an,nan_du,nan_du_shuo_ming,shi_fou_ke_zi_dong_pan_fen,zhuang_tai,nei_rong_ha_xi)
                 VALUES (?,?,'ONLINE_PRACTICE',?,?,?,'本地演示数据难度分级',1,'PUBLISHED',?)
-                """, subjectId, q.type(), DEMO_STEM_PREFIX + q.stem(), q.answer(), q.difficulty(), sha256(q.subject() + "|" + q.key() + "|" + q.stem()));
+                """, subjectId, q.type(), DEMO_STEM_PREFIX + q.stem() + ("PHYSICS-S1".equals(q.key()) ? "〔图片对象 I001〕" : ""), q.answer(), q.difficulty(), sha256(q.subject() + "|" + q.key() + "|" + q.stem()));
         int optionOrder = 1;
         for (Option option : q.options()) jdbc.update("INSERT INTO ti_mu_xuan_xiang (ti_mu_id,xuan_xiang_biao_shi,xuan_xiang_nei_rong,shi_fou_zheng_que,pai_xu) VALUES (?,?,?,?,?)",
                 questionId, option.label(), option.content(), option.correct() ? 1 : 0, optionOrder++);
-        jdbc.update("INSERT INTO ti_mu_jie_xi (ti_mu_id,jie_xi_lei_xing,jie_xi_nei_rong,ban_ben_hao,zhuang_tai) VALUES (?,'STANDARD',?,1,'PUBLISHED')", questionId, q.analysis());
+        String analysis = q.analysis() + ("PHYSICS-S1".equals(q.key()) ? "〔图片对象 I002〕" : "");
+        jdbc.update("INSERT INTO ti_mu_jie_xi (ti_mu_id,jie_xi_lei_xing,jie_xi_nei_rong,ban_ben_hao,zhuang_tai) VALUES (?,'STANDARD',?,1,'PUBLISHED')", questionId, analysis);
+        if ("PHYSICS-S1".equals(q.key())) {
+            QuestionAttachmentStorage.StoredImage image = attachmentStorage.store("demo-net-force.png", demoDiagram());
+            long analysisId = jdbc.queryForObject("SELECT id FROM ti_mu_jie_xi WHERE ti_mu_id=? AND jie_xi_lei_xing='STANDARD'", Long.class, questionId);
+            for (String position : List.of("QUESTION", "STANDARD_ANALYSIS")) jdbc.update("INSERT INTO ti_mu_fu_jian(ti_mu_id,ti_mu_jie_xi_id,guan_lian_wei_zhi,fu_jian_lei_xing,yuan_shi_wen_jian_ming,xiang_dui_lu_jing,nei_rong_ha_xi,dui_xiang_biao_shi,zheng_wen_zi_fu_wei_zhi,pai_xu,zhuang_tai) VALUES (?,?,?,?,?,?,?,?,?,?, 'ACTIVE')", questionId, "STANDARD_ANALYSIS".equals(position) ? analysisId : null, position, "IMAGE", "demo-net-force.png", image.relativePath(), image.hash(), "QUESTION".equals(position) ? "I001" : "I002", 1, 1);
+        }
         jdbc.update("INSERT INTO ti_mu_zhi_shi_dian (ti_mu_id,zhi_shi_dian_id,shi_fou_zhu_yao,pai_xu) VALUES (?,?,1,1)", questionId, pointId);
         for (String contentType : List.of("QUESTION", "ANSWER", "STANDARD_ANALYSIS")) jdbc.update("""
                 INSERT INTO ti_mu_lai_yuan (ti_mu_id,nei_rong_lei_xing,lai_yuan_lei_xing,lai_yuan_ming_cheng,lai_yuan_di_zhi,quan_li_zhuang_tai,quan_li_yi_ju)
@@ -377,6 +390,7 @@ public class DemoDataService {
 
     private void cleanInternal() {
         guardDatabaseName(currentDatabase());
+        jdbc.query("SELECT f.xiang_dui_lu_jing FROM ti_mu_fu_jian f JOIN ti_mu q ON q.id=f.ti_mu_id WHERE q.ti_gan LIKE '【演示】%'", (rs, row) -> rs.getString(1)).forEach(attachmentStorage::delete);
         jdbc.update("DELETE m FROM si_xin_xiao_xi m JOIN si_xin_hui_hua h ON h.id=m.hui_hua_id JOIN xue_sheng_dang_an s ON s.id=h.xue_sheng_id WHERE s.xue_hao LIKE 'DEMO_%'");
         jdbc.update("DELETE h FROM si_xin_hui_hua h JOIN xue_sheng_dang_an s ON s.id=h.xue_sheng_id WHERE s.xue_hao LIKE 'DEMO_%'");
         jdbc.update("DELETE w FROM cuo_ti_ji_lu w LEFT JOIN xue_sheng_dang_an s ON s.id=w.xue_sheng_id LEFT JOIN ti_mu q ON q.id=w.ti_mu_id WHERE s.xue_hao LIKE 'DEMO_%' OR q.ti_gan LIKE '【演示】%'");
@@ -436,6 +450,13 @@ public class DemoDataService {
         } catch (Exception exception) {
             throw new IllegalStateException("无法计算演示题哈希", exception);
         }
+    }
+
+    private byte[] demoDiagram() {
+        try (ByteArrayOutputStream output = new ByteArrayOutputStream()) {
+            BufferedImage image = new BufferedImage(360, 180, BufferedImage.TYPE_INT_RGB); Graphics2D g = image.createGraphics();
+            g.setColor(Color.WHITE); g.fillRect(0, 0, 360, 180); g.setColor(new Color(37, 99, 235)); g.fillRect(135, 70, 90, 45); g.drawString("静止物体", 151, 96); g.setColor(Color.DARK_GRAY); g.drawLine(180, 45, 180, 65); g.drawLine(180, 65, 174, 57); g.drawLine(180, 65, 186, 57); g.drawString("合力 = 0", 145, 32); g.dispose(); ImageIO.write(image, "png", output); return output.toByteArray();
+        } catch (Exception exception) { throw new IllegalStateException("无法生成演示图片", exception); }
     }
 
     private static List<Question> questions() {
