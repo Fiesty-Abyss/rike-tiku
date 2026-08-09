@@ -2,7 +2,7 @@
 
 > 2026-08-09 V3.0 非 AI 正式完工审计结论为 REJECT。历史审计快照识别出 4 个 A 层硬缺口；其中公共门户 MA-016 已在 `feat/public-portal` 完成并验证，剩余附件真实显示、管理员高风险操作日志、30 道合法样例完整导入发布显示闭环仍阻止开始 AI。完整原始证据见 [V3_NON_AI_COMPLETION_AUDIT.md](V3_NON_AI_COMPLETION_AUDIT.md)。
 
-> 当前接续分支：`feat/public-portal`，Base `8ddae9dcac8ad01729302ff42956d8009ba456b7`。PR #24 已普通 merge（merge commit `bcfb2181af2197d2524a2df8ca64895e435a4857`）；当前 Flyway V1–V10、26 张业务表，本轮未新增迁移或后端业务修改。
+> 当前接续分支：`main`。PR #25 已普通 merge（merge commit `0559a4e4eba041dd74a7bcb7d4c9f2cd8b29e617`），关闭 MA-016；当前 Flyway V1–V10、26 张业务表。
 
 更新时间：2026-08-09
 
@@ -72,4 +72,4 @@ PR #23 浏览器仅操作 `rike_tiku_demo`：物理 3、化学 3、生物 4 道�
 
 ## 当前下一步
 
-对 `feat/public-portal` 的 Draft PR 做独立审查并裁决；本轮结束后不得自动开始附件、操作日志、30 题闭环、MA-020 或 AI。
+下一轮唯一任务是 MA-017：题目附件真实存储、安全访问和前端显示。不得自动开始操作日志、30 题闭环、MA-020 或 AI。
