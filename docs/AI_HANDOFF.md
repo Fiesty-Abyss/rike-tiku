@@ -1,6 +1,8 @@
 # AI 开发交接
 
-> 当前接续分支：`main`。PR #23 已普通 merge（merge commit `3677c7623e08e34ee63e45dbcfd557a27b32f990`）；该合并代码基线的 main HEAD 为同一提交。当前 Flyway V1–V10、26 张业务表，PR #23 未新增迁移。
+> 2026-08-09 V3.0 非 AI 正式完工审计结论为 REJECT。当前仍有 4 个 A 层硬缺口，禁止开始 AI：公共门户首页、附件真实显示、管理员高风险操作日志、30 道合法样例完整导入发布显示闭环。完整证据见 [V3_NON_AI_COMPLETION_AUDIT.md](V3_NON_AI_COMPLETION_AUDIT.md)。
+
+> 当前接续分支：`audit/v3-non-ai-completion`，基于 main `cb0f828e2fbb3da5e7f3585b06f7e84266d4db4f`。PR #23 已普通 merge（merge commit `3677c7623e08e34ee63e45dbcfd557a27b32f990`）。当前 Flyway V1–V10、26 张业务表，PR #23 未新增迁移。
 
 更新时间：2026-08-09
 
@@ -68,4 +70,4 @@ PR #23 浏览器仅操作 `rike_tiku_demo`：物理 3、化学 3、生物 4 道�
 
 ## 当前下一步
 
-PR #23 已完成并进入 `main`。当前停止，不自动创建下一分支，也不开始 AI Provider 或运行时 AI 出题。
+本审计分支只包含证据文档。下一轮唯一任务是实现 V3.0 A 层公共门户首页；不得在该审计分支修业务功能，也不得开始 AI Provider 或运行时 AI 出题。
