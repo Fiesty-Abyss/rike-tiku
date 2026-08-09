@@ -2,13 +2,14 @@
 
 > 2026-08-09 V3.0 非 AI 正式完工审计已由 PR #24 普通 merge（merge commit `bcfb2181af2197d2524a2df8ca64895e435a4857`）进入 `main`。结论为 REJECT，当前不能认证 100% DONE_VERIFIED。正式证据见 [V3_NON_AI_COMPLETION_AUDIT.md](V3_NON_AI_COMPLETION_AUDIT.md)。
 
-> 当前分支为 `main`。Flyway 为 V1–V10，共 26 张业务表；审计轮未修改 Flyway、业务代码或 MVP30 原始 Excel。
+> 当前开发分支为 `feat/public-portal`，基于 `8ddae9dcac8ad01729302ff42956d8009ba456b7`。本轮只修复公共门户 MA-016；Flyway 仍为 V1–V10、26 张业务表，未修改数据库、后端业务或 MVP30 原始 Excel。
 
 更新时间：2026-08-09
 
 ## 当前主线状态
 
-- 当前分支：`main`；PR #24 已合并，审计分支已删除。
+- 当前分支：`feat/public-portal`；PR #24 已合并，审计分支已删除。
+- 根路径 `/` 已改为无需认证的公共门户，展示系统与学科介绍、当前非 AI 能力、学习闭环及统一 `/login` 入口；首屏明确运行时 AI 智能答疑尚未上线。现有登录、角色选择、首次改密和受保护路由守卫未改动。MA-016 已由自动化与真实浏览器复验关闭，等待独立 PR 审查。
 - V3.0 未指定名为 MVP30 的 Excel 必须整体正式入库；它要求 30 题 MVP 验证导入、审核、发布、查询和附件显示闭环，并强调少量高质量题目。MVP30 因此保留为结构化导入能力验证素材，原始文件不修改。
 - 三角色共用 `/profile`，本人身份从 JWT 推导；页面展示真实账号角色及学生/教师档案，只允许维护 500 字简介和本人头像，并复用现有主动修改密码流程。
 - 登录页当前使用两分钟有效、内存保存、一次性消费的 4 位随机图形验证码；验证码默认隐藏，首次登录操作只展开，第二次才认证。PR #15 滑块仅为历史实现。
@@ -30,6 +31,8 @@
 
 ## 当前验证
 
+- 公共门户本轮验证：前端 32 文件、122/122 PASS；type-check、build PASS，生产依赖 audit 为 0 vulnerabilities。后端未改动，`mvn clean test` 与 `mvn clean package` 均为 105/105 PASS，可执行 JAR 已生成。
+- 公共门户浏览器验证仅使用 `rike_tiku_demo`：清除登录状态后 `/` 展示完整门户，统一登录 CTA 进入原 `/login`；`demo_student`、`demo_teacher`、`demo_admin` 均登录正常；登录态返回和刷新 `/` 保持门户。320/375/414/768/1280 宽度无横向溢出，控制台 0 error、0 warning，无未处理 500。Demo `reset → seed → validate → smoke` PASS，末次 `reset → seed → validate` 恢复 120 题固定状态，18080/18081 端口已清理。
 - PR #23 合并后自动化：`mvn clean test` 105/105 PASS；`mvn clean package` PASS。前端 `npm test` 31 文件、117/117 PASS，type-check、build PASS，生产依赖 audit 为 0 vulnerabilities。合并前 Demo 题库/学生题池/数据库模型专项 27/27 PASS。
 - PR #23 Demo `reset → seed → validate → smoke` PASS，固定题量 120；正式 `rike_tiku` 只读检查为 Flyway V10、26 张业务表，演示题、场景账号、场景班级、高频考点、私信和 V7 学习记录均为 0。MVP30 SHA-256 仍为 `01E90ACFDFB8EF5194103C3B7DD1A99B4F351858FFFDF70CFF63187928DCAB17`。
 - PR #23 浏览器 PASS（仅 `rike_tiku_demo`）：随机抽查物理 3、化学 3、生物 4 道新变式；单选、多选、填空、提交前防泄露、提交后答案与 STANDARD 解析、错题和掌握度均正常。同科连续随机题集发生变化，控制台 0 error；验收数据已由最终 `reset → seed → validate` 清理。
@@ -93,7 +96,7 @@
 
 ## 下一步
 
-下一轮唯一任务：实现 V3.0 A 层公共门户首页（功能介绍、三科学科介绍、统一登录入口），并单独补齐自动化与浏览器证据。公共门户、附件真实显示、管理员高风险操作日志和 30 道合法样例闭环未完成前，不开始运行时 AI。
+下一步唯一任务：独立审查并裁决公共门户 Draft PR；本分支不继续修复 MA-017、MA-018、MA-019、MA-020，也不开始运行时 AI。
 
 ## 非 AI 工程基础完成门槛
 
