@@ -16,7 +16,7 @@
 
 创建、编辑和状态变更均在事务内完成。状态变更会同步当前未逻辑删除的 `STANDARD` 解析（版本号 1）到相同状态，并在写入审核记录前完成；审核记录写入失败会使题目与解析状态一起回滚。审核人由认证上下文取得，不接受前端提交。题干、答案、解析来源必须齐全；存在 `COPYRIGHT_UNKNOWN` 或 `RESTRICTED` 来源时不得发布。
 
-详情响应包含完整题干（列表仅返回摘要）、受控附件业务元数据、标准答案 JSON、标准解析、知识点、三类来源、审核历史和允许动作；附件的 `xiang_dui_lu_jing` 不向前端返回，真实可用图片额外返回 `renderStatus=AVAILABLE` 和管理员内容 URL。管理员内容接口仅接受 `ROLE_ADMIN`，响应为 `image/png` 或 `image/jpeg`；文件缺失、类型不符或 SHA-256 不一致均拒绝。单选/多选答案必须使用 `optionLabels` 与正确选项一致；填空答案使用 `blanks[].acceptedAnswers`；主观题只能是 `TOPIC_LEARNING` 且不可自动判分。
+详情响应包含完整题干（列表仅返回摘要）、受控附件业务元数据、标准答案 JSON、标准解析、知识点、三类来源、审核历史和允许动作；正文 marker 仍是 `〔图片对象 I001〕` 这样的完整文本，附件 `objectMarker` 只返回 `I001` 这样的对象 ID。附件的 `xiang_dui_lu_jing` 不向前端返回，真实可用图片额外返回 `renderStatus=AVAILABLE` 和管理员内容 URL。管理员内容接口仅接受 `ROLE_ADMIN`，响应为 `image/png` 或 `image/jpeg`；文件缺失、类型不符或 SHA-256 不一致均拒绝。单选/多选答案必须使用 `optionLabels` 与正确选项一致；填空答案使用 `blanks[].acceptedAnswers`；主观题只能是 `TOPIC_LEARNING` 且不可自动判分。
 
 `ti_mu` 在 V1–V6 中没有创建人字段。创建接口从认证上下文接收当前管理员且绝不接受客户端创建人 ID，但在不新增迁移的约束下不能将创建人持久化；审核人可准确写入既有 `ti_mu_shen_he_ji_lu.shen_he_ren_id`。
 

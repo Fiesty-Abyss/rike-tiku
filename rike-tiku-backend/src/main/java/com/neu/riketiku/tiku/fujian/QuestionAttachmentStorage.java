@@ -96,7 +96,20 @@ public class QuestionAttachmentStorage {
         if (relative.isAbsolute() || relative.toString().contains("..")) fail("ATTACHMENT_PATH_INVALID", "附件路径不合法", HttpStatus.BAD_REQUEST);
         Path target = root.resolve(relative).normalize();
         if (!target.startsWith(root)) fail("ATTACHMENT_PATH_INVALID", "附件路径不合法", HttpStatus.BAD_REQUEST);
+        rejectSymbolicLinkComponents(target);
         return target;
+    }
+
+    private void rejectSymbolicLinkComponents(Path target) {
+        Path filesystemRoot = target.getRoot();
+        Path current = filesystemRoot == null ? Path.of("") : filesystemRoot;
+        Path components = filesystemRoot == null ? target : filesystemRoot.relativize(target);
+        for (Path component : components) {
+            current = current.resolve(component);
+            if (Files.isSymbolicLink(current)) {
+                fail("ATTACHMENT_PATH_INVALID", "附件路径不能经过符号链接", HttpStatus.BAD_REQUEST);
+            }
+        }
     }
 
     private ImageFact validate(String name, byte[] bytes) {
