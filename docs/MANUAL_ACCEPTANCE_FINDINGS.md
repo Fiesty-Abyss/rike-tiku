@@ -21,7 +21,7 @@
 | MA-015 | STUDENT | 条件练习预选 | 从推荐卡进入并创建练习 | 学科、知识点、5题预选应完整进入创建请求 | 学科监听的并发加载会在路由预选后再次清空知识点，首次实际创建成全科练习 | HIGH | 重载选项仅移除当前学科无效选择，新增并发预选专项测试；浏览器复验题目全部属于目标知识点 | 已关闭 |
 | MA-016 | 全部 | 公共入口 | 未登录访问根路径 | 显示公共首页、功能介绍、三科学科介绍和统一登录入口 | 根路径已渲染无需认证的公共门户，统一登录继续复用 `/login`；首屏明确运行时 AI 尚未上线 | BLOCKER | 2026-08-09 `feat/public-portal`：前端 122/122、type-check、build、audit 0；独立 Demo 三角色登录、登录态/未登录态刷新、320–1280 宽度和控制台复验通过 | 已关闭 |
 | MA-017 | ADMIN/STUDENT | 题库附件 | 导入含附件题并在详情/练习查看 | 附件可安全访问，题干或解析中真实显示 | PNG/JPEG 受控存储，SHA-256 回读校验；管理员详情及学生题面/结果/错题统一渲染。未提交会话拒绝 STANDARD_ANALYSIS；PDF 仍不进入普通练习 | BLOCKER | 后端附件/权限/导入/题池专项 27 个，26 PASS、1 个符号链接 assumption skipped；全量 112 个测试 0 失败、1 skipped、package PASS；前端附件专项 4/4、全量 127/127、type-check/build/audit；Demo `reset → seed → validate → smoke` PASS，PHYSICS-S1 两条附件实际文件/hash 回读通过。按新策略，用户 CAPTCHA 浏览器验收延期至非 AI 最终集成验收，不属于 PR #26 merge gate | IMPLEMENTED_AWAITING_FINAL_MANUAL_ACCEPTANCE |
-| MA-018 | ADMIN | 高风险操作日志 | 执行账号、题库、审核等管理员写操作 | 关键高风险操作可追溯 | 无日志表、Service、API 或页面，关键写操作未留痕 | BLOCKER | V3.0 A 层验收项；Flyway 与代码扫描确认 | 未修复 |
+| MA-018 | ADMIN | 高风险操作日志 | 执行账号、题库、审核等管理员写操作 | 关键高风险操作可追溯 | PR #27 当前已加入 V11 日志表、记录 Service 和 ADMIN 查询 API；管理页面及最终审计仍待完成 | BLOCKER | 后端专项及全量当前 113/113，无失败、1 个符号链接权限 assumption skipped；未写入正式库 | 实现中 |
 
 | MA-019 | ADMIN | 题库批量导入 | 用 30 道合法样例完成预检查、确认、审核、发布、查询和附件显示 | 全链路可重复验收 | 原始 MVP30 缺少当前模板要求的“题目检查”工作表；纯 V1–V10 环境三个清洗表有效行仅 0/10、1/10、1/10 | BLOCKER | MVP30 SHA-256 未变化；未向正式库写入数据 | 未修复 |
 | MA-020 | STUDENT | 练习提交 API | 对提交接口发送空请求体 | 返回明确 4xx 校验错误 | 全局异常处理返回未处理 500；合法重复提交仍正确返回 409 | MEDIUM | 2026-08-09 独立 API 复现；正常浏览器 UI 不发送空请求体 | 未修复 |
@@ -29,6 +29,8 @@
 MA-017 机器证据更新（PR #26 独立审查修正后）：附件/权限/导入/题池专项共 27 个测试，26 PASS、1 个符号链接 assumption skipped；真实 `QuestionImportService` 已覆盖 Excel preview → confirm → `ti_mu_fu_jian` 的 I001/I002 → 受控 storage → 管理员 detail/content → 学生题池、提交前 STEM 和提交后 STANDARD_ANALYSIS。`mvn clean test` 为 112 个测试 0 失败、1 个 skipped；前端 127/127、type-check、build、audit 和 Demo `reset → seed → validate → smoke` 均通过。状态为 `IMPLEMENTED_AWAITING_FINAL_MANUAL_ACCEPTANCE`。用户 CAPTCHA、ADMIN/STUDENT/TEACHER/多角色视觉验收统一延期至非 AI 最终集成验收，不属于 PR #26 merge gate。
 
 验收策略更新（2026-08-09）：不再为每个非 AI PR 单独执行人工浏览器验收；机器可验证的 HTTP、权限、文件、数据库、Demo 和构建证据仍按 PR 记录。真实 CAPTCHA 与页面视觉交互统一积累到非 AI 工程完成后的最终集成验收。未实际执行的人工结果不写为 PASS，MA-017 在最终验收前保持 `IMPLEMENTED_AWAITING_FINAL_MANUAL_ACCEPTANCE`。
+
+PR #26 已普通 merge，merge commit 为 `b992bffef07465665b371b7b707ca8814ec2d36d`。当前 `feat/non-ai-final-closure` 为最后一个非 AI 分支，MA-018 正在 PR #27 内实现；该 PR 完成前不创建后续非 AI PR，也不开始 AI。
 
 严重级别：`BLOCKER`、`HIGH`、`MEDIUM`、`LOW`、`UX`。
 

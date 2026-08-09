@@ -4,11 +4,13 @@
 
 > PR #25 已普通 merge（merge commit `0559a4e4eba041dd74a7bcb7d4c9f2cd8b29e617`）并关闭 MA-016。当前接续分支为 `feat/question-attachment-rendering`；Flyway 仍为 V1–V10、26 张业务表。
 
+> PR #26 已普通 merge（merge commit `b992bffef07465665b371b7b707ca8814ec2d36d`）。当前接续分支为 `feat/non-ai-final-closure`，正在同一个最后非 AI Draft PR #27 内完成 MA-018、MA-020、MA-019、管理员题目图片上传、菜单整理、多角色切换和最终非 AI 审计。当前分支已加入 V11 管理员操作日志表，Flyway 为 V1–V11、27 张业务表；V1–V10 未修改。
+
 更新时间：2026-08-09
 
 ## 当前主线状态
 
-- 当前分支：`feat/question-attachment-rendering`；PR #25 已合并，公共门户已进入 `main`。
+- 当前分支：`feat/non-ai-final-closure`；PR #26 已合并，公共门户和附件机器实现已进入 `main`。
 - 根路径 `/` 已改为无需认证的公共门户，展示系统与学科介绍、当前非 AI 能力、学习闭环及统一 `/login` 入口；首屏明确运行时 AI 智能答疑尚未上线。现有登录、角色选择、首次改密和受保护路由守卫未改动。MA-016 已关闭。
 - V3.0 未指定名为 MVP30 的 Excel 必须整体正式入库；它要求 30 题 MVP 验证导入、审核、发布、查询和附件显示闭环，并强调少量高质量题目。MVP30 因此保留为结构化导入能力验证素材，原始文件不修改。
 - 三角色共用 `/profile`，本人身份从 JWT 推导；页面展示真实账号角色及学生/教师档案，只允许维护 500 字简介和本人头像，并复用现有主动修改密码流程。
@@ -17,7 +19,8 @@
 - 学生自主练习、自动判分、结果、错题闭环、实时知识点掌握度、固定规则推荐和教师班级学情查看均已进入 `main`。掌握度与推荐是确定性规则统计，不属于 AI；AI、教师任务、组卷考试和主观题评分仍未实现。
 - MA-017 当前已完成机器实现：图片附件仅接受受控路径下真实 PNG/JPEG，3MB 内、扩展名/MIME 一致并按 SHA-256 回读；管理员题目详情和学生练习题面、结果、错题通过带 JWT 的 Blob 请求显示，创建中会话拒绝 STANDARD_ANALYSIS，缺失/损坏/403/404 显示占位。正文继续使用完整 marker（如 `〔图片对象 I001〕`），`ti_mu_fu_jian.dui_xiang_biao_shi` 统一只保存对象 ID（如 `I001`/`F107`），前后端解析正文后按对象 ID 匹配。当前状态为 `IMPLEMENTED_AWAITING_FINAL_MANUAL_ACCEPTANCE`。
 - MA-017 本轮机器门禁：附件/权限/导入/题池专项共 27 个测试，26 PASS、1 个符号链接权限 assumption skipped；`mvn clean test` 112 个测试 0 失败、1 个符号链接权限 assumption skipped，`mvn clean package` PASS；前端附件专项 4/4、`npm test` 33 文件 127/127 PASS，type-check、build PASS，`npm audit --omit=dev` 为 0 vulnerabilities。新增真实 QuestionImportService 导入链覆盖 preview → confirm → 受控 storage → 管理员 detail/content → 学生题池及提交前后权限。Demo `reset → seed → validate → smoke` PASS；Demo 业务题 120 道（物理 40、化学 39、生物 41），PHYSICS-S1 的两个附件记录均为 I001/I002 并指向可回读且 hash 正确的 PNG。按项目验收策略，用户 CAPTCHA 和浏览器视觉验收延期至非 AI 最终集成验收，不属于 PR #26 的 merge gate。
-- Flyway：V1–V10，共 26 张业务表；V10 只向 `yong_hu` 增加简介、头像 MIME、头像二进制和头像更新时间，V1–V9 未修改。
+- MA-018 当前实现中：新增 V11 `guan_li_cao_zuo_ri_zhi` 管理员高风险操作日志表、真实操作者/模块/动作/业务对象/成功失败/脱敏摘要/错误码和 ADMIN 查询 API；学生、教师、班级、任课、题目审核发布、题目导入确认等现有管理员写操作已接入记录，专项和全量后端测试当前为 113/113，无失败、1 个符号链接权限 assumption skipped。页面、MA-020、Golden30、图片上传、菜单与角色切换仍待 PR #27 完成。
+- Flyway：V1–V11，共 27 张业务表；V11 只新增管理员操作日志表，V1–V10 未修改。
 - 教师工作台已支持按本人 ACTIVE 三元任课关系读取班级、科目、学生名单和高频考点，并支持新增、编辑、启停及排序；学生端按本人有效主班级和学科只读取对应 ACTIVE 高频考点。
 - PR #20 已实现受 ACTIVE 三元任课关系和学生当前主班级约束的师生纯文本私信；发送身份取自 JWT，支持会话、未读、已读、7 秒轮询和失效关系历史保留，不含 WebSocket、附件、群聊或管理员审计。
 - PR #21 掌握度只统计本人已提交、已判分的单选/多选/填空答题，实时关联冻结知识点快照；当前学科全部 ACTIVE 知识点参与掌握度和总体统计，不能因当前题量不足而丢失历史事实。NEW/REVIEWING 错题阻止“已掌握”，MASTERED 错题不阻止。5 题推荐单独复用现有练习题池资格，按活动错题、低正确率、巩固中、样本不足、未练习依次排序，最多 3 项，不属于 AI。
