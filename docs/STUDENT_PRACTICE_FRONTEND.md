@@ -10,7 +10,7 @@
 | `/student/practice/:id/result` | 结果 | 提交后展示正确数、分数、本人答案、正确答案和标准解析。 |
 | `/student/wrong-questions` | 错题本 | 展示聚合状态并打开安全详情。 |
 
-前端在提交前检查未答题并二次确认；后端仍是唯一判分、状态与越权校验来源。`401`、`403`、题库不足、重复提交等业务错误使用中文提示。结果与错题答案会按题型格式化，不直接展示答案 JSON。首版练习题池排除附件与图片/公式对象标记，前端不访问、展示或渲染附件文件。
+前端在提交前检查未答题并二次确认；后端仍是唯一判分、状态与越权校验来源。`401`、`403`、题库不足、重复提交等业务错误使用中文提示。结果与错题答案会按题型格式化，不直接展示答案 JSON。题干和选项图片、提交后标准解析图片统一由 `QuestionContent` 通过带 JWT 的 Blob 请求加载；组件卸载时 revoke Blob URL，403/404/损坏附件显示“图片附件暂不可用”占位。未提交页面不显示 STANDARD_ANALYSIS 图片。
 # 当前分支补充（未合并）
 
 学生主页升级为物理、化学、生物三科工作台。`/student/subjects/physics`、`/student/subjects/chemistry`、`/student/subjects/biology` 提供随机五题、条件练习和本学科错题入口。创建页支持 `subjectId`、`knowledgePointId` query 预选；错题页支持 `subjectId` query 筛选，不新增或伪造学习统计。
