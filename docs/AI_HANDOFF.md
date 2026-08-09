@@ -42,11 +42,11 @@ PR #23 浏览器仅操作 `rike_tiku_demo`：物理 3、化学 3、生物 4 道�
 
 `feat/public-portal` 将根路径 `/` 从重定向登录改为无需认证的正式公共门户，复用唯一 `/login` 入口且不改认证协议或守卫。门户包含系统名称、副标题、三科介绍、单选/多选/填空题型边界、非 AI 功能介绍、六步学习闭环和三角色说明；首屏及能力区均明确运行时 AI 尚未上线。前端 32 文件 122/122、type-check、build、audit 0 通过；后端回归及 package 为 105/105。独立 Demo 的 reset/seed/validate/smoke、三角色真实登录、登录态/未登录态门户刷新和常见宽度复验均通过；控制台 0 error、0 warning，最终 Demo 已恢复固定 120 题。MA-016 已关闭，MA-017 至 MA-020 未改动。
 
-当前 MA-017 机器证据已完成：后端附件/权限/HTTP 专项 25/25 PASS，`mvn clean test` 110/110 PASS，`mvn clean package` PASS；前端附件专项 4/4、`npm test` 126/126 PASS，type-check、build PASS，`npm audit --omit=dev` 为 0 vulnerabilities。独立 `rike_tiku_demo` 的 `reset → seed → validate → smoke` PASS，Demo 题库为物理 40、化学 39、生物 41，共 120 道；PHYSICS-S1 两条附件记录实际文件/hash 回读通过。当前状态为 `IMPLEMENTED_AWAITING_MANUAL_ACCEPTANCE`，用户浏览器验收前不关闭 MA-017。
+当前 MA-017 机器证据已完成：后端附件/权限/HTTP/导入/题池专项 27 个，26 PASS、1 个符号链接权限 assumption skipped；`mvn clean test` 112 个测试 0 失败、1 个符号链接权限 assumption skipped，`mvn clean package` PASS；前端附件专项 4/4、`npm test` 127/127 PASS，type-check、build PASS，`npm audit --omit=dev` 为 0 vulnerabilities。独立 `rike_tiku_demo` 的 `reset → seed → validate → smoke` PASS，Demo 题库为物理 40、化学 39、生物 41，共 120 道；PHYSICS-S1 两条附件记录实际文件/hash 回读通过。当前状态为 `IMPLEMENTED_AWAITING_FINAL_MANUAL_ACCEPTANCE`。用户 CAPTCHA 和浏览器视觉验收根据新策略延期至非 AI 最终集成验收，不属于 PR #26 的 merge gate。
 
 ## 继续时必须保持
 
-- PR #26 修正后的附件证据以本轮结果为准：附件/权限/导入/题池专项共 27 个测试，26 PASS、1 个符号链接权限 assumption 跳过；`mvn clean test` 112 个测试 0 失败、1 个符号链接权限 assumption 跳过，`mvn clean package` PASS；前端附件专项 4/4、`npm test` 33 文件 126/126 PASS，type-check、build、`npm audit --omit=dev` 为 0 vulnerabilities；Demo `reset → seed → validate → smoke` PASS，物理 40、化学 39、生物 41，共 120 道。当前仍为 `IMPLEMENTED_AWAITING_MANUAL_ACCEPTANCE`。
+- PR #26 修正后的附件证据以本轮结果为准：附件/权限/导入/题池专项共 27 个测试，26 PASS、1 个符号链接权限 assumption skipped；`mvn clean test` 112 个测试 0 失败、1 个符号链接权限 assumption skipped，`mvn clean package` PASS；前端附件专项 4/4、`npm test` 33 文件 127/127 PASS，type-check、build、`npm audit --omit=dev` 为 0 vulnerabilities；Demo `reset → seed → validate → smoke` PASS，物理 40、化学 39、生物 41，共 120 道。当前仍为 `IMPLEMENTED_AWAITING_FINAL_MANUAL_ACCEPTANCE`，人工验收延期至非 AI 最终集成验收。
 - 附件对象标识保持兼容规范：正文是 `〔图片对象 I001〕` / `〔公式对象 F107〕`，数据库 `dui_xiang_biao_shi` 只存 `I001` / `F107`；任何新导入、Demo seed、后端权限判断和前端渲染都必须按提取后的对象 ID 匹配。
 - 仅 `STUDENT` 且有有效 `xue_sheng_dang_an` 可访问学生练习资源；会话、结果和错题均以当前学生档案隔离。
 - 题池只取可真正冻结的 `PUBLISHED + ONLINE_PRACTICE + shi_fou_ke_zi_dong_pan_fen=1` 单选、多选、填空：要求有效版本 1 STANDARD 解析、活动知识点、足够选项和合法答案 JSON。仅真实存在、类型与 SHA-256 均校验成功的 PNG/JPEG STEM/OPTION/STANDARD 图片可进入；PDF、公式、ANSWER 附件、缺失或不安全附件继续排除。
@@ -76,4 +76,4 @@ PR #23 浏览器仅操作 `rike_tiku_demo`：物理 3、化学 3、生物 4 道�
 
 ## 当前下一步
 
-MA-017 已实现，待用户人工浏览器复验；用户通过后在同一 Draft PR 更新证据并关闭。不得自动开始 MA-018、MA-019、MA-020 或 AI。
+MA-017 机器实现已完成，状态为 `IMPLEMENTED_AWAITING_FINAL_MANUAL_ACCEPTANCE`。用户 CAPTCHA、ADMIN/STUDENT/TEACHER/多角色浏览器验收统一延期至非 AI 最终集成验收，不属于 PR #26 的 merge gate；最终通过后再关闭 MA-017。PR #26 合并后创建最后一个非 AI 分支 `feat/non-ai-final-closure`，在同一 PR 内完成 MA-018、MA-020、MA-019、管理员图片上传、菜单整理、多角色切换和最终非 AI 审计。
