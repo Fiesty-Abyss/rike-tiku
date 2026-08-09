@@ -17,7 +17,7 @@ function loginPathFor(_route: RouteLocationNormalized) { return '/login' }
 const router = createRouter({
   history: createWebHistory(),
   routes: [
-    { path: '/', redirect: '/login' },
+    { path: '/', name: 'portal', component: () => import('../views/PortalView.vue') },
     { path: '/login', name: 'login', component: () => import('../views/auth/LoginView.vue'), meta: { guestOnly: true } },
     {
       path: '/login/:role(student|teacher|admin)',
