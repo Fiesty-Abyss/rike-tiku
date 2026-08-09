@@ -1,12 +1,13 @@
 # 开发状态
 
-> 当前分支为 `main`。PR #22 已普通 merge（merge commit `67b7bd7239e2ac1de3ad8c71b82b6d0a79162d3b`）；Flyway 为 V1–V10，共 26 张业务表。V10 只 ALTER `yong_hu`，V1–V9 和 MVP30 原始 Excel 均未修改。
+> 当前分支为 `feat/final-demo-question-bank`，基于 `main@23c5d79f3c23e71563d341a66bfe2fd4fce03a64`；PR #22 已普通 merge（merge commit `67b7bd7239e2ac1de3ad8c71b82b6d0a79162d3b`）。Flyway 为 V1–V10，共 26 张业务表，本轮不新增迁移且不修改 MVP30 原始 Excel。
 
-更新时间：2026-08-08
+更新时间：2026-08-09
 
 ## 当前主线状态
 
-- 当前分支：`main`；PR #22 已合并，本轮停止，不创建 PR #23。
+- 当前分支：`feat/final-demo-question-bank`；PR #23 正在冻结最终非 AI 演示题库与 MVP30 数据口径。
+- V3.0 未指定名为 MVP30 的 Excel 必须整体正式入库；它要求 30 题 MVP 验证导入、审核、发布、查询和附件显示闭环，并强调少量高质量题目。MVP30 因此保留为结构化导入能力验证素材，原始文件不修改。
 - 三角色共用 `/profile`，本人身份从 JWT 推导；页面展示真实账号角色及学生/教师档案，只允许维护 500 字简介和本人头像，并复用现有主动修改密码流程。
 - 登录页当前使用两分钟有效、内存保存、一次性消费的 4 位随机图形验证码；验证码默认隐藏，首次登录操作只展开，第二次才认证。PR #15 滑块仅为历史实现。
 - 管理员单学生管理已实现分页筛选、详情与班级历史、事务新增、编辑与启停、事务调班和一次性密码重置；Excel 批量导入入口继续独立保留。
@@ -27,6 +28,9 @@
 
 ## 当前验证
 
+- PR #23 当前自动化：Demo 题库/学生题池/数据库模型专项 27/27 PASS；`mvn clean test` 105/105 PASS；`mvn clean package` PASS。前端 `npm test` 31 文件、117/117 PASS，type-check、build PASS，生产依赖 audit 为 0 vulnerabilities。
+- PR #23 Demo `reset → seed → validate → smoke` PASS，固定题量 120；正式 `rike_tiku` 只读检查为 Flyway V10、26 张业务表，演示题、场景账号、场景班级、高频考点、私信和 V7 学习记录均为 0。MVP30 SHA-256 仍为 `01E90ACFDFB8EF5194103C3B7DD1A99B4F351858FFFDF70CFF63187928DCAB17`。
+- PR #23 浏览器 PASS（仅 `rike_tiku_demo`）：随机抽查物理 3、化学 3、生物 4 道新变式；单选、多选、填空、提交前防泄露、提交后答案与 STANDARD 解析、错题和掌握度均正常。同科连续随机题集发生变化，控制台 0 error；验收数据已由最终 `reset → seed → validate` 清理。
 - PR #22 合并后后端：首次改密门禁与个人中心专项 25/25 PASS；`mvn clean test` 102/102 PASS；`mvn clean package` PASS。
 - PR #22 合并后前端：`npm test` 31 文件、117/117 PASS；type-check、build PASS，`npm audit --omit=dev` 为 0 vulnerabilities。
 - PR #22 合并后 Demo：`reset → seed → validate → smoke` PASS；完整三角色和多角色真实浏览器个人中心验收保持 PASS，门禁修正后轻量抽查正常、控制台 0 error。
@@ -46,7 +50,7 @@
 - PR #19 浏览器验收保持 PASS（仅 `rike_tiku_demo`）：验证码默认隐藏、错误后中文提示并自动换图、图片/文字刷新、三个单角色直达、多角色选择、退出重登均通过；控制台 0 error。
 - PR #18 合并后后端：`mvn clean test` 87/87 PASS；`mvn clean package` 87/87 PASS，并成功生成可执行 JAR。
 - PR #18 合并后前端：`npm test` 83/83 PASS；`npm run type-check` PASS；`npm run build` PASS（保留既有大 chunk 提示）；`npm audit --omit=dev` 为 0 vulnerabilities。
-- `rike_tiku_demo`：`reset → seed → validate → smoke` PASS；V1–V10、26 张业务表，固定状态为 14 账号、3 班级、4 教师、9 学生、9 条 ACTIVE 任课关系、Demo90 和 12 条 ACTIVE 高频考点；固定 seed 不预置私信、简介或头像。
+- `rike_tiku_demo` 当前 seed 目标：V1–V10、26 张业务表，固定状态为 14 账号、3 班级、4 教师、9 学生、9 条 ACTIVE 任课关系、保留的 Demo90 基线、30 道筛选变式（最终 120 题）和 12 条 ACTIVE 高频考点；固定 seed 不预置私信、简介或头像。
 - PR #19 历史阶段 Demo `reset → seed → validate → smoke` PASS；当时正式 `rike_tiku` 的 Demo90、场景账号、场景班级、高频考点均为 0。当前正式库基线已为 Flyway V9。
 - PR #18 真实浏览器 PASS（仅 `rike_tiku_demo`）：物理教师进入 199/200 工作台，查看 5/3 名学生，新增、编辑、停用、启用高频考点；生物教师仅见 199/200 生物，化学教师仅见 199/200 化学；199/200 学生分别只读取本班物理 ACTIVE 考点；控制台 error 日志为空。临时验收考点已由 reset/seed 清理。
 - 合并前门禁使用全新随机临时库完整迁移 V1–V9；临时库与正式 `rike_tiku` 的 V9 script 均为 `V9__create_teacher_student_message_tables.sql`、checksum 均为 `1192958817`、success 均为 1。MA-013 导致正式库提前执行的 V9 现已与 main 正式基线一致，两张结构表不再描述为业务数据污染；测试隔离修复保持有效，MA-013 已关闭。
@@ -59,6 +63,7 @@
 - 显式 PowerShell 工具创建、重置、播种、校验和清理独立 `rike_tiku_demo`，正常应用启动不会自动写入演示数据。
 - 保留原三角色 smoke 账号和 `DEMO_CLASS_01`，并新增 199/200 两班、三位场景教师和八名固定场景学生；共 14 账号、3 班级、4 教师、9 学生、9 条 ACTIVE 三元任课关系。
 - PR #16 已将题库扩充为 Demo90：90 道项目原创自编、无附件、可自动判分的 `PUBLISHED` 演示题；每科 30 道，每科三题型、三档难度、三个演示知识点各 10 道，来源权利状态为 `USER_PROVIDED`，审核轨迹完整。可见化学符号和科学计数法使用稳定 Unicode，STANDARD 解析不包含演示操作说明。
+- PR #23 保留上述 Demo90 不重写，并从物理、化学、生物各 18 个原创候选中接受 10、9、11 道变式；最终当前题量为物理 40、化学 39、生物 41，共 120 道。候选审核与最终分布见 `FINAL_DEMO_QUESTION_BANK.md`、`DEMO_VARIANT_QUESTION_REVIEW.md`。
 - 本轮不修改 V1–V7，不写正式 `rike_tiku`，不修改 MVP30 原始 Excel。
 - 历史 PR #14 合并后回归：后端 74/74、`mvn clean package` PASS；前端 68/68、类型检查和构建 PASS；`npm audit` 为 0 vulnerabilities。
 - 真实脚本链 `reset → seed → validate → clean → reset → seed` PASS，末次 seed 后演示库保持待人工验收状态；正式库演示账号、演示题和 V7 五张学习表均为 0。
@@ -86,7 +91,7 @@
 
 ## 下一步
 
-PR #22 已普通 merge；当前停止并等待下一项明确任务，不创建 PR #23，也不开始 MVP30 或 AI 工作。
+PR #23 是当前唯一任务；完成后创建 Draft PR #23 并停止，不开始下一分支或运行时 AI。
 
 ## 非 AI 工程基础完成门槛
 
@@ -97,7 +102,7 @@ PR #22 已普通 merge；当前停止并等待下一项明确任务，不创建 
 - 学生 Excel 导入与单学生完整管理；
 - 基础个人资料、简介、头像；
 - 管理员题库 CRUD、导入、审核、发布；
-- MVP30 正式可用演示题库；
+- 稳定可用的物理、化学、生物演示题库，以及已验证的结构化题库导入能力；
 - 学生三科练习、随机练习、判分、结果、错题；
 - 教师基础正式工作台；
 - 高频考点；

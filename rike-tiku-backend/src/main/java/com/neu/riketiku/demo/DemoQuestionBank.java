@@ -112,7 +112,7 @@ final class DemoQuestionBank {
                 List.of("平衡位置不变，只加快达到平衡", "一定正向移动", "一定逆向移动", "平衡常数增大"), Set.of("A"), "催化剂同等程度加快正逆反应，不改变平衡位置和平衡常数"));
         items.add(choice("CHEMISTRY-M10", "CHEMISTRY", "MULTIPLE_CHOICE", "对于反应前后气体总物质的量相等的可逆反应，下列说法正确的是哪些？", equilibrium, 3,
                 List.of("改变压强通常不引起平衡移动", "催化剂不改变平衡位置", "增大压强一定正向移动", "平衡时反应停止"), Set.of("A", "B"), "气体总物质的量不变时压强改变不影响平衡方向，催化剂也不改变平衡位置"));
-        items.add(fill("CHEMISTRY-F10", "CHEMISTRY", "可逆反应达到平衡时，正反应速率与逆反应速率____。", equilibrium, 1, "相等"));
+        items.add(fill("CHEMISTRY-F10", "CHEMISTRY", "可逆反应达到平衡后，在外界条件不变时，各组分浓度随时间保持____。", equilibrium, 1, "不变"));
     }
 
     private static void addBiology(List<DemoDataService.Question> items) {

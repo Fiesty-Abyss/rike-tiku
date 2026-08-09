@@ -52,7 +52,7 @@ Flyway 是数据库结构的唯一建表和升级入口。已经执行的迁移�
 - 管理员 MVP30 题库导入：单文件 Excel 预检查、逐行错误、知识点精确匹配、来源文件追溯、附件对象精确映射与全批次确认入库；成功题目和 STANDARD 解析统一为 `PENDING`。已通过普通 merge 合并至 `main`（PR #12，合并提交 `f499f0c2e1e3b4637d22480868e94dbdacdcbaa0`）。纯 V1–V6 测试库预检查结果为物理 0/10、化学 1/10、生物 1/10；仅在测试事务预置 Excel 所需知识点后，附件专项结果为 2/10、1/10、6/10。随机临时库的真实 HTTP multipart 与浏览器回查结论为 `PASS_WITH_ENV_LIMITATION`；匿名临时题已清理，MVP30 原始 Excel 尚未确认入库。
 - 学生自主练习、自动判分与错题闭环已通过普通 merge 进入 `main`（PR #13，合并提交 `db04fbc9caeeb5e4eb003a45581e62e76dbab420`）：创建时仅冻结无活动附件、无图片/公式对象标记的题集，提交整场答案后完成单选/多选/填空自动判分、结果与错题聚合；未提交前不返回标准答案或解析。历史 PR #13 自动化结果为后端 68/68、前端 68/68；附件文件访问、图片展示和公式渲染不在首版范围内。
 
-已完成前端认证基础：三角色登录入口、Pinia认证状态、Bearer Token注入、会话恢复、首次改密、路由守卫、管理员业务页及学生三科学习工作台。PR #21 已将基于真实答题事实的知识点掌握度、规则推荐和教师班级学情查看普通 merge 进入 `main`；它是确定性规则统计，不属于 AI。尚未完成：AI Provider、AI 答疑、教师任务与考试。题库30题候选数据尚未正式发布。
+已完成前端认证基础：三角色登录入口、Pinia认证状态、Bearer Token注入、会话恢复、首次改密、路由守卫、管理员业务页及学生三科学习工作台。PR #21 已将基于真实答题事实的知识点掌握度、规则推荐和教师班级学情查看普通 merge 进入 `main`；它是确定性规则统计，不属于 AI。尚未完成：AI Provider、AI 答疑、教师任务与考试。当前最终演示题库为保留 Demo90 加 30 道筛选变式，共 120 道；MVP30 是结构化导入能力验证素材，不等于最终演示内容。
 
 准确状态请以 [开发状态](docs/DEVELOPMENT_STATUS.md) 和 [AI交接](docs/AI_HANDOFF.md) 为准。
 
@@ -92,6 +92,8 @@ PR #20 已普通 merge（merge commit `1055dee567b7afa153750792670fb0bafed1151c`
 PR #21 已普通 merge（merge commit `c0d655324fec0a36772c2d095b6025e5f708fc4c`）进入 `main`。它基于 V7 已提交答题、冻结知识点快照、学习结果和错题状态实时计算掌握度，不新增迁移、缓存或统计表。掌握度覆盖当前学科全部 ACTIVE 知识点；5 题规则推荐单独复用真实练习题池资格。学生三科学科页展示知识点掌握与最多 3 项固定规则推荐，教师只在本人 ACTIVE 三元任课范围内查看班内学生当前学科汇总。合并后回归为后端 98/98、前端 29 文件 106/106，package、type-check、build、audit 0 及 Demo `reset → seed → validate → smoke` 均通过；MA-014、MA-015 已关闭。该功能是确定性规则统计，不属于 AI。
 
 PR #22 已普通 merge（merge commit `67b7bd7239e2ac1de3ad8c71b82b6d0a79162d3b`）进入 `main`，提供三角色共用的 `/profile`：本人账号、真实角色、学生/教师档案只读展示，500 字个人简介，PNG/JPEG 小头像上传、持久化和删除，以及现有主动改密入口。V10 只为 `yong_hu` 增加简介与头像字段，不增加业务表、不修改 V1–V9；当前仍为 26 张业务表。首次登录用户必须先完成初始密码修改，不能提前访问或修改个人中心。合并后回归为后端 102/102、前端 31 文件 117/117，package、type-check、build、audit 0 和 Demo `reset → seed → validate → smoke` 均通过；MA-006 已关闭。
+
+PR #23 当前在 `feat/final-demo-question-bank` 上冻结最终非 AI 演示题库口径：保留经验证的 Demo90，并从 54 个开发阶段原创候选中筛选 30 道变式，形成 120 道最终 Demo 题库。V3.0 要求的是 30 题 MVP 对导入、审核、发布、查询和附件显示闭环的验证，并未指定名为 MVP30 的 Excel 必须整体成为最终演示题库；MVP30 原始文件保持不变，继续作为结构化导入能力验证素材。本轮不新增迁移，也不实现运行时 AI 出题。
 
 ## 本地启动
 
@@ -162,6 +164,8 @@ npm run build
 - [师生私信 API](docs/TEACHER_STUDENT_MESSAGING_API.md)
 - [师生私信前端](docs/TEACHER_STUDENT_MESSAGING_FRONTEND.md)
 - [知识点掌握度与规则推荐](docs/LEARNING_MASTERY_RULE_RECOMMENDATION.md)
+- [最终演示题库](docs/FINAL_DEMO_QUESTION_BANK.md)
+- [变式候选审核记录](docs/DEMO_VARIANT_QUESTION_REVIEW.md)
 - [管理员教师与任课关系接口](docs/ADMIN_TEACHER_ASSIGNMENT_API.md)
 - [管理员教师与任课关系前端](docs/ADMIN_TEACHER_ASSIGNMENT_FRONTEND.md)
 - [管理员题库审核发布接口](docs/ADMIN_QUESTION_REVIEW_API.md)
@@ -183,4 +187,4 @@ npm run build
 
 ## 下一阶段
 
-PR #13 至 PR #22 均已普通 merge；PR #22 merge commit 为 `67b7bd7239e2ac1de3ad8c71b82b6d0a79162d3b`。V10 只 ALTER `yong_hu`，业务表仍为 26 张；三角色个人中心真实浏览器验收通过，MA-006 已关闭。MVP30 尚未正式入库，DeepSeek、GLM 和 AI 能力仍未实现，非 AI 工程基础不得标记为 100%。当前停止，不创建 PR #23。
+PR #23 是当前唯一开发任务：冻结 Demo90 + 筛选变式的最终演示题库及 MVP30 数据口径。V10 和 26 张业务表保持不变；MVP30 原始 Excel 不修改、不强制整体入库。DeepSeek、GLM 和运行时 AI 能力仍未实现，非 AI 工程基础不得提前标记为 100%。完成后只创建 Draft PR #23，不开始下一分支。
