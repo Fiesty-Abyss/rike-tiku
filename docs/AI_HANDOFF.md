@@ -46,6 +46,8 @@ PR #23 浏览器仅操作 `rike_tiku_demo`：物理 3、化学 3、生物 4 道�
 
 ## 继续时必须保持
 
+- PR #26 修正后的附件证据以本轮结果为准：附件/权限/导入/题池专项 27/27 PASS；`mvn clean test` 112 个测试 0 失败、1 个符号链接权限 assumption 跳过，`mvn clean package` PASS；前端附件专项 4/4、`npm test` 33 文件 126/126 PASS，type-check、build、`npm audit --omit=dev` 为 0 vulnerabilities；Demo `reset → seed → validate → smoke` PASS，物理 40、化学 39、生物 41，共 120 道。当前仍为 `IMPLEMENTED_AWAITING_MANUAL_ACCEPTANCE`。
+- 附件对象标识保持兼容规范：正文是 `〔图片对象 I001〕` / `〔公式对象 F107〕`，数据库 `dui_xiang_biao_shi` 只存 `I001` / `F107`；任何新导入、Demo seed、后端权限判断和前端渲染都必须按提取后的对象 ID 匹配。
 - 仅 `STUDENT` 且有有效 `xue_sheng_dang_an` 可访问学生练习资源；会话、结果和错题均以当前学生档案隔离。
 - 题池只取可真正冻结的 `PUBLISHED + ONLINE_PRACTICE + shi_fou_ke_zi_dong_pan_fen=1` 单选、多选、填空：要求有效版本 1 STANDARD 解析、活动知识点、足够选项和合法答案 JSON。仅真实存在、类型与 SHA-256 均校验成功的 PNG/JPEG STEM/OPTION/STANDARD 图片可进入；PDF、公式、ANSWER 附件、缺失或不安全附件继续排除。
 - 未提交会话 API 绝不返回正确答案或标准解析；答题内容和结果不存浏览器持久化存储。
