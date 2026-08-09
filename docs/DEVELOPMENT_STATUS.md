@@ -1,12 +1,12 @@
 # 开发状态
 
-> 当前分支为 `feat/final-demo-question-bank`，基于 `main@23c5d79f3c23e71563d341a66bfe2fd4fce03a64`；PR #22 已普通 merge（merge commit `67b7bd7239e2ac1de3ad8c71b82b6d0a79162d3b`）。Flyway 为 V1–V10，共 26 张业务表，本轮不新增迁移且不修改 MVP30 原始 Excel。
+> 当前分支为 `main`。PR #23 已普通 merge（merge commit `3677c7623e08e34ee63e45dbcfd557a27b32f990`）；该合并代码基线的 main HEAD 为同一提交。Flyway 为 V1–V10，共 26 张业务表；PR #23 未新增迁移且未修改 MVP30 原始 Excel。
 
 更新时间：2026-08-09
 
 ## 当前主线状态
 
-- 当前分支：`feat/final-demo-question-bank`；PR #23 正在冻结最终非 AI 演示题库与 MVP30 数据口径。
+- 当前分支：`main`；PR #23 已合并，最终非 AI 演示题库与 MVP30 数据口径已经冻结。
 - V3.0 未指定名为 MVP30 的 Excel 必须整体正式入库；它要求 30 题 MVP 验证导入、审核、发布、查询和附件显示闭环，并强调少量高质量题目。MVP30 因此保留为结构化导入能力验证素材，原始文件不修改。
 - 三角色共用 `/profile`，本人身份从 JWT 推导；页面展示真实账号角色及学生/教师档案，只允许维护 500 字简介和本人头像，并复用现有主动修改密码流程。
 - 登录页当前使用两分钟有效、内存保存、一次性消费的 4 位随机图形验证码；验证码默认隐藏，首次登录操作只展开，第二次才认证。PR #15 滑块仅为历史实现。
@@ -28,7 +28,7 @@
 
 ## 当前验证
 
-- PR #23 当前自动化：Demo 题库/学生题池/数据库模型专项 27/27 PASS；`mvn clean test` 105/105 PASS；`mvn clean package` PASS。前端 `npm test` 31 文件、117/117 PASS，type-check、build PASS，生产依赖 audit 为 0 vulnerabilities。
+- PR #23 合并后自动化：`mvn clean test` 105/105 PASS；`mvn clean package` PASS。前端 `npm test` 31 文件、117/117 PASS，type-check、build PASS，生产依赖 audit 为 0 vulnerabilities。合并前 Demo 题库/学生题池/数据库模型专项 27/27 PASS。
 - PR #23 Demo `reset → seed → validate → smoke` PASS，固定题量 120；正式 `rike_tiku` 只读检查为 Flyway V10、26 张业务表，演示题、场景账号、场景班级、高频考点、私信和 V7 学习记录均为 0。MVP30 SHA-256 仍为 `01E90ACFDFB8EF5194103C3B7DD1A99B4F351858FFFDF70CFF63187928DCAB17`。
 - PR #23 浏览器 PASS（仅 `rike_tiku_demo`）：随机抽查物理 3、化学 3、生物 4 道新变式；单选、多选、填空、提交前防泄露、提交后答案与 STANDARD 解析、错题和掌握度均正常。同科连续随机题集发生变化，控制台 0 error；验收数据已由最终 `reset → seed → validate` 清理。
 - PR #22 合并后后端：首次改密门禁与个人中心专项 25/25 PASS；`mvn clean test` 102/102 PASS；`mvn clean package` PASS。
@@ -91,7 +91,7 @@
 
 ## 下一步
 
-PR #23 是当前唯一任务；完成后创建 Draft PR #23 并停止，不开始下一分支或运行时 AI。
+PR #23 已完成并进入 `main`。当前停止，不自动创建下一分支，也不开始运行时 AI。
 
 ## 非 AI 工程基础完成门槛
 

@@ -93,7 +93,7 @@ PR #21 已普通 merge（merge commit `c0d655324fec0a36772c2d095b6025e5f708fc4c`
 
 PR #22 已普通 merge（merge commit `67b7bd7239e2ac1de3ad8c71b82b6d0a79162d3b`）进入 `main`，提供三角色共用的 `/profile`：本人账号、真实角色、学生/教师档案只读展示，500 字个人简介，PNG/JPEG 小头像上传、持久化和删除，以及现有主动改密入口。V10 只为 `yong_hu` 增加简介与头像字段，不增加业务表、不修改 V1–V9；当前仍为 26 张业务表。首次登录用户必须先完成初始密码修改，不能提前访问或修改个人中心。合并后回归为后端 102/102、前端 31 文件 117/117，package、type-check、build、audit 0 和 Demo `reset → seed → validate → smoke` 均通过；MA-006 已关闭。
 
-PR #23 当前在 `feat/final-demo-question-bank` 上冻结最终非 AI 演示题库口径：保留经验证的 Demo90，并从 54 个开发阶段原创候选中筛选 30 道变式，形成 120 道最终 Demo 题库。V3.0 要求的是 30 题 MVP 对导入、审核、发布、查询和附件显示闭环的验证，并未指定名为 MVP30 的 Excel 必须整体成为最终演示题库；MVP30 原始文件保持不变，继续作为结构化导入能力验证素材。本轮不新增迁移，也不实现运行时 AI 出题。
+PR #23 已普通 merge（merge commit `3677c7623e08e34ee63e45dbcfd557a27b32f990`）进入 `main`，冻结最终非 AI 演示题库口径：保留经验证的 Demo90，并从 54 个开发阶段原创候选中筛选 30 道变式，形成 120 道最终 Demo 题库。V3.0 要求的是 30 题 MVP 对导入、审核、发布、查询和附件显示闭环的验证，并未指定名为 MVP30 的 Excel 必须整体成为最终演示题库；MVP30 原始文件保持不变，继续作为结构化导入能力验证素材。合并后回归为后端 105/105、前端 31 文件 117/117，package、type-check、build、audit 0 和 Demo `reset → seed → validate → smoke` 均通过；Flyway 仍为 V1–V10、26 张业务表。
 
 ## 本地启动
 
@@ -187,4 +187,4 @@ npm run build
 
 ## 下一阶段
 
-PR #23 是当前唯一开发任务：冻结 Demo90 + 筛选变式的最终演示题库及 MVP30 数据口径。V10 和 26 张业务表保持不变；MVP30 原始 Excel 不修改、不强制整体入库。DeepSeek、GLM 和运行时 AI 能力仍未实现，非 AI 工程基础不得提前标记为 100%。完成后只创建 Draft PR #23，不开始下一分支。
+PR #23 已完成并进入 `main`。当前不自动创建下一功能分支，也不开始 AI；DeepSeek、GLM 和运行时 AI 能力仍未实现，非 AI 工程基础不得提前标记为 100%。
