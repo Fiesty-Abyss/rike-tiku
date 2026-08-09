@@ -4,7 +4,7 @@
 
 > 当前仓库处于分阶段开发中，不代表完整系统已经完成或投入真实学校使用。
 
-> 2026-08-09 V3.0 非 AI 正式完工审计结论为 **REJECT**：公共门户首页、附件真实显示、管理员高风险操作日志、30 道合法样例完整导入发布显示闭环仍是 A 层硬缺口，因此当前不得标记为 100% DONE_VERIFIED，也不得开始 AI。详见 [V3.0 非 AI 完工审计](docs/V3_NON_AI_COMPLETION_AUDIT.md)。
+> 2026-08-09 V3.0 非 AI 正式完工审计结论为 **REJECT**。历史审计识别的公共门户首页已由 `feat/public-portal` 完成并验证；附件真实显示、管理员高风险操作日志、30 道合法样例完整导入发布显示闭环仍是 A 层硬缺口，因此当前仍不得标记为 100% DONE_VERIFIED，也不得开始 AI。详见 [V3.0 非 AI 完工审计](docs/V3_NON_AI_COMPLETION_AUDIT.md)。
 
 ## 工程范围
 
@@ -190,4 +190,4 @@ npm run build
 
 ## 下一阶段
 
-PR #24 已普通 merge（merge commit `bcfb2181af2197d2524a2df8ca64895e435a4857`）进入 `main`，V3.0 非 AI 正式完工审计结论为 REJECT；下一轮唯一任务是实现 A 层公共门户首页。当前不开始 AI；DeepSeek、GLM 和运行时 AI 能力仍未实现。
+PR #24 已普通 merge（merge commit `bcfb2181af2197d2524a2df8ca64895e435a4857`）进入 `main`，V3.0 非 AI 正式完工审计结论保持 REJECT。`feat/public-portal` 已实现并验证 A 层公共门户，当前等待独立 PR 审查；其余审计缺口和 AI 均不在本分支处理，DeepSeek、GLM 和运行时 AI 能力仍未实现。
