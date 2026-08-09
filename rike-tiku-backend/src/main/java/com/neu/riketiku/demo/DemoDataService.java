@@ -377,7 +377,7 @@ public class DemoDataService {
         if ("PHYSICS-S1".equals(q.key())) {
             QuestionAttachmentStorage.StoredImage image = attachmentStorage.store("demo-net-force.png", demoDiagram());
             long analysisId = jdbc.queryForObject("SELECT id FROM ti_mu_jie_xi WHERE ti_mu_id=? AND jie_xi_lei_xing='STANDARD'", Long.class, questionId);
-            for (String position : List.of("QUESTION", "STANDARD_ANALYSIS")) jdbc.update("INSERT INTO ti_mu_fu_jian(ti_mu_id,ti_mu_jie_xi_id,guan_lian_wei_zhi,fu_jian_lei_xing,yuan_shi_wen_jian_ming,xiang_dui_lu_jing,nei_rong_ha_xi,dui_xiang_biao_shi,zheng_wen_zi_fu_wei_zhi,pai_xu,zhuang_tai) VALUES (?,?,?,?,?,?,?,?,?,?, 'ACTIVE')", questionId, "STANDARD_ANALYSIS".equals(position) ? analysisId : null, position, "IMAGE", "demo-net-force.png", image.relativePath(), image.hash(), "QUESTION".equals(position) ? "〔图片对象 I001〕" : "〔图片对象 I002〕", 1, 1);
+            for (String position : List.of("QUESTION", "STANDARD_ANALYSIS")) jdbc.update("INSERT INTO ti_mu_fu_jian(ti_mu_id,ti_mu_jie_xi_id,guan_lian_wei_zhi,fu_jian_lei_xing,yuan_shi_wen_jian_ming,xiang_dui_lu_jing,nei_rong_ha_xi,dui_xiang_biao_shi,zheng_wen_zi_fu_wei_zhi,pai_xu,zhuang_tai) VALUES (?,?,?,?,?,?,?,?,?,?, 'ACTIVE')", questionId, "STANDARD_ANALYSIS".equals(position) ? analysisId : null, position, "IMAGE", "demo-net-force.png", image.relativePath(), image.hash(), "QUESTION".equals(position) ? "I001" : "I002", 1, 1);
         }
         jdbc.update("INSERT INTO ti_mu_zhi_shi_dian (ti_mu_id,zhi_shi_dian_id,shi_fou_zhu_yao,pai_xu) VALUES (?,?,1,1)", questionId, pointId);
         for (String contentType : List.of("QUESTION", "ANSWER", "STANDARD_ANALYSIS")) jdbc.update("""

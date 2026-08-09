@@ -4,7 +4,7 @@ import QuestionContent from './QuestionContent.vue'
 
 const { get } = vi.hoisted(() => ({ get: vi.fn() }))
 vi.mock('../../api/http', () => ({ default: { get } }))
-const attachment={id:7,position:'QUESTION',type:'IMAGE',fileName:'force.png',objectMarker:'〔图片对象 I001〕',status:'ACTIVE',renderStatus:'AVAILABLE',contentUrl:'/api/v1/student/practice-sessions/1/attachments/7/content'}
+const attachment={id:7,position:'QUESTION',type:'IMAGE',fileName:'force.png',objectMarker:'I001',status:'ACTIVE',renderStatus:'AVAILABLE',contentUrl:'/api/v1/student/practice-sessions/1/attachments/7/content'}
 
 describe('QuestionContent',()=>{
   afterEach(()=>vi.restoreAllMocks())

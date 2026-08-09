@@ -4,8 +4,8 @@ import http from '../../api/http'
 
 export interface QuestionAttachment { id:number; position:string; type:string; fileName:string; objectMarker?:string; status:string; renderStatus?:string; contentUrl?:string }
 const props=withDefaults(defineProps<{content:string; attachments?:QuestionAttachment[]; position:string}>(),{attachments:()=>[]})
-const marker=/〔(?:图片|公式)对象\s+[IF]\d{3}〕/g
-const pieces=computed(()=>{const result:Array<{text?:string;attachment?:QuestionAttachment;marker?:string}>=[];let last=0;for(const match of props.content.matchAll(marker)){if(match.index!>last)result.push({text:props.content.slice(last,match.index)});const value=match[0];result.push({marker:value,attachment:props.attachments.find(item=>item.position===props.position&&item.objectMarker===value)});last=match.index!+value.length}if(last<props.content.length)result.push({text:props.content.slice(last)});return result})
+const marker=/〔(?:图片|公式)对象\s+([IF]\d{3})〕/g
+const pieces=computed(()=>{const result:Array<{text?:string;attachment?:QuestionAttachment;marker?:string}>=[];let last=0;for(const match of props.content.matchAll(marker)){if(match.index!>last)result.push({text:props.content.slice(last,match.index)});const value=match[0];result.push({marker:value,attachment:props.attachments.find(item=>item.position===props.position&&item.objectMarker===match[1])});last=match.index!+value.length}if(last<props.content.length)result.push({text:props.content.slice(last)});return result})
 const sources=ref<Record<number,string>>({})
 const failed=ref<Set<number>>(new Set())
 async function load(attachment:QuestionAttachment){if(!attachment.contentUrl||attachment.type!=='IMAGE'||attachment.renderStatus==='MISSING'||sources.value[attachment.id]||failed.value.has(attachment.id))return;try{const response=await http.get(attachment.contentUrl.replace('/api/v1',''),{responseType:'blob'});sources.value[attachment.id]=URL.createObjectURL(response.data)}catch{failed.value=new Set([...failed.value,attachment.id])}}

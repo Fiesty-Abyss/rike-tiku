@@ -87,14 +87,14 @@ class QuestionAttachmentHttpIntegrationTest extends AdminQuestionIntegrationTest
         long questionId = question("题干〔图片对象 I001〕", "解析〔图片对象 I002〕");
         long analysisId = jdbc.queryForObject("SELECT id FROM ti_mu_jie_xi WHERE ti_mu_id=? AND jie_xi_lei_xing='STANDARD'", Long.class, questionId);
         var image = storage.store("force.png", png());
-        long questionAttachmentId = attachment(questionId, null, "QUESTION", image, "〔图片对象 I001〕");
-        long analysisAttachmentId = attachment(questionId, analysisId, "STANDARD_ANALYSIS", image, "〔图片对象 I002〕");
+        long questionAttachmentId = attachment(questionId, null, "QUESTION", image, "I001");
+        long analysisAttachmentId = attachment(questionId, analysisId, "STANDARD_ANALYSIS", image, "I002");
 
         var session = practice.create(ownerId, new StudentPracticeDtos.CreateRequest(1L, null, List.of("SINGLE_CHOICE"), null, 1));
         long otherQuestionId = question("其他题干〔图片对象 I001〕", "其他解析〔图片对象 I002〕");
         long otherAnalysisId = jdbc.queryForObject("SELECT id FROM ti_mu_jie_xi WHERE ti_mu_id=? AND jie_xi_lei_xing='STANDARD'", Long.class, otherQuestionId);
-        long otherAttachmentId = attachment(otherQuestionId, null, "QUESTION", image, "〔图片对象 I001〕");
-        attachment(otherQuestionId, otherAnalysisId, "STANDARD_ANALYSIS", image, "〔图片对象 I002〕");
+        long otherAttachmentId = attachment(otherQuestionId, null, "QUESTION", image, "I001");
+        attachment(otherQuestionId, otherAnalysisId, "STANDARD_ANALYSIS", image, "I002");
 
         String adminToken = login("attachment_admin", "ADMIN");
         String ownerToken = login("attachment_owner", "STUDENT");

@@ -29,7 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class StudentPracticeService {
     private static final List<String> AUTO_GRADABLE_TYPES = List.of("SINGLE_CHOICE", "MULTIPLE_CHOICE", "FILL_BLANK");
-    private static final Pattern OBJECT_MARKER = Pattern.compile("〔(?:图片|公式)对象\\s+[IF]\\d{3}〕");
+    private static final Pattern OBJECT_MARKER = Pattern.compile("〔(?:图片|公式)对象\\s+([IF]\\d{3})〕");
     private final JdbcTemplate jdbc;
     private final QuestionAttachmentContentService attachmentContentService;
     private final ObjectMapper objectMapper = new ObjectMapper();
@@ -332,7 +332,7 @@ public class StudentPracticeService {
 
     private List<String> markers(String value) {
         if (value == null) return List.of();
-        List<String> result = new ArrayList<>(); Matcher matcher = OBJECT_MARKER.matcher(value); while (matcher.find()) result.add(matcher.group()); return result;
+        List<String> result = new ArrayList<>(); Matcher matcher = OBJECT_MARKER.matcher(value); while (matcher.find()) result.add(matcher.group(1)); return result;
     }
     private boolean containsObjectMarker(String value) { return value != null && OBJECT_MARKER.matcher(value).find(); }
 
