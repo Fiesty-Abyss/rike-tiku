@@ -53,4 +53,14 @@ describe('教师班级学习情况', () => {
     expect(wrapper.text()).toContain('62.5')
     expect(wrapper.text()).not.toContain('第1名')
   })
+
+  it('消息接口失败时不阻塞班级工作台主数据', async () => {
+    fetchConversations.mockRejectedValue(new Error('消息服务暂不可用'))
+
+    const wrapper = mountView()
+    await flushPromises()
+
+    expect(wrapper.text()).toContain('班级学习情况')
+    expect(wrapper.text()).toContain('199班学生01')
+  })
 })
