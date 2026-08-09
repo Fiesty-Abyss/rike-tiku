@@ -203,15 +203,17 @@ h1 {
   .profile-topbar { align-items:flex-start; padding:16px 20px; }.profile-topbar-actions { flex-wrap:wrap; justify-content:flex-end; }.profile-layout { grid-template-columns:1fr; width:min(100% - 28px,720px); margin-top:26px; }.profile-identity { position:static; }.profile-section { padding:22px; }.profile-section-heading { align-items:stretch; flex-direction:column; }.profile-facts { grid-template-columns:1fr; }
   .student-header,.student-page-heading,.practice-progress { align-items:stretch; flex-direction:column; }.student-header { padding:16px 20px; }.student-header nav { flex-wrap:wrap; }.student-main { width:min(100% - 28px,1020px); margin-top:28px; }.subject-cards,.subject-action-grid { grid-template-columns:1fr; }.subject-card,.subject-action-grid article,.practice-form,.practice-question,.result-question { padding:22px; }.practice-navigation { align-items:stretch; flex-wrap:wrap; }.practice-navigation > div { order:3; width:100%; }
 }
-.teacher-scope-page { display:grid; gap:24px; }
-.scope-overview { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:14px; }
+.teacher-scope-page { width:min(1120px,calc(100% - 48px)); min-width:0; display:grid; gap:24px; }
+.teacher-scope-page > *,.scope-overview > div { min-width:0; }
+.scope-overview { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:14px; min-width:0; }
 .scope-overview > div { padding:18px; background:#fff; border:1px solid #e4eaf1; border-radius:12px; }
 .scope-overview span,.scope-overview strong { display:block; }
 .scope-overview span { color:#748196; font-size:13px; }
 .scope-overview strong { margin-top:8px; color:#263c53; }
-.workspace-card { padding:22px; background:#fff; border:1px solid #e4eaf1; border-radius:14px; }
+.workspace-card { min-width:0; padding:22px; background:#fff; border:1px solid #e4eaf1; border-radius:14px; }
 .workspace-card .section-title-row { margin-bottom:16px; }
 .workspace-card .el-select { width:100%; }
+.teacher-scope-page .data-table { max-width:100%; }
 .student-knowledge-section { margin-top:26px; padding:24px; background:#f7fafc; border:1px solid #e4eaf1; border-radius:14px; }
 .student-mastery-section { margin-top:26px; padding:24px; background:#fff; border:1px solid #e4eaf1; border-radius:14px; }
 .mastery-overview { display:grid; grid-template-columns:minmax(220px,.75fr) minmax(0,1.6fr); gap:30px; align-items:center; }

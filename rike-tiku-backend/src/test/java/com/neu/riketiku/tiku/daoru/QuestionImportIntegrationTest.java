@@ -5,11 +5,13 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.neu.riketiku.renzheng.RenZhengYeWuYiChang;
 import com.neu.riketiku.tiku.admin.AdminQuestionIntegrationTestSupport;
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.UUID;
+import javax.imageio.ImageIO;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -144,7 +146,7 @@ class QuestionImportIntegrationTest extends AdminQuestionIntegrationTestSupport 
         assertThat(mixed.subjectCode()).isNull();
         assertThat(mixed.rows()).allSatisfy(value -> assertThat(value.errors()).extracting(QuestionImportDtos.Error::code).contains("SUBJECT_MIXED_FILE"));
 
-        Files.writeString(ROOT.resolve("物理/母题库/images/q17_答案_image_002.png"), "answer-image");
+        Files.write(ROOT.resolve("物理/母题库/images/q17_答案_image_002.png"), png());
         String[] subjective = with(row("17", "解答题", "主观题干", "", "原始参考答案〔图片对象 I002〕", "解析", "medium"), 10, "0");
         var upload = file("subjective.xlsx", workbook(subjective));
         var preview = service.preview(upload);
@@ -232,6 +234,14 @@ class QuestionImportIntegrationTest extends AdminQuestionIntegrationTestSupport 
         try (XSSFWorkbook workbook = new XSSFWorkbook(new java.io.ByteArrayInputStream(body)); ByteArrayOutputStream output = new ByteArrayOutputStream()) {
             workbook.getSheet("题目检查").getRow(2).getCell(6).setCellFormula("1+1");
             workbook.write(output);
+            return output.toByteArray();
+        }
+    }
+
+    private byte[] png() throws Exception {
+        BufferedImage image = new BufferedImage(2, 2, BufferedImage.TYPE_INT_RGB);
+        try (ByteArrayOutputStream output = new ByteArrayOutputStream()) {
+            ImageIO.write(image, "png", output);
             return output.toByteArray();
         }
     }

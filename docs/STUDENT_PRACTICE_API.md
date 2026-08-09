@@ -24,7 +24,9 @@
 }
 ```
 
-题池严格限定为 `PUBLISHED + ONLINE_PRACTICE + 自动判分` 的单选、多选、填空题，并在冻结前排除缺少版本 1 `PUBLISHED` STANDARD 解析、无活动知识点、选项或答案结构无效的题。首版也排除具有未逻辑删除 `ACTIVE` 附件，或题干、选项、答案、STANDARD 解析含图片/公式对象标记的题。题目不足时返回 `PRACTICE_QUESTION_INSUFFICIENT`，不会调用 AI 补题。会话响应在提交前不含正确答案或标准解析。
+题池严格限定为 `PUBLISHED + ONLINE_PRACTICE + 自动判分` 的单选、多选、填空题，并在冻结前排除缺少版本 1 `PUBLISHED` STANDARD 解析、无活动知识点、选项或答案结构无效的题。带附件题只有在所有 PNG/JPEG 图片真实存在、类型一致且 SHA-256 回读成功，且正文对象 marker（例如 `〔图片对象 I001〕`）提取出的对象 ID 与附件 `objectMarker=I001` 及关联位置一一对应时才进入题池；PDF、公式、ANSWER 附件、缺失或不安全附件会被排除。题目不足时返回 `PRACTICE_QUESTION_INSUFFICIENT`，不会调用 AI 补题。会话响应在提交前不含正确答案或标准解析，也不暴露 STANDARD_ANALYSIS 附件。
+
+学生题面中的 QUESTION/OPTION 图片使用带 JWT 的 Blob 内容接口：`GET /api/v1/student/practice-sessions/{sessionId}/attachments/{attachmentId}/content`。会话提交后，本人结果上下文才允许读取 STANDARD_ANALYSIS 图片；未提交会话、其他学生会话、其他题目附件和 ANSWER 附件均返回 4xx。错题详情使用 `GET /api/v1/student/wrong-questions/{questionId}/attachments/{attachmentId}/content`，并同时校验本人错题记录和附件题目归属。
 
 提交请求示例：
 
@@ -47,4 +49,4 @@
 | `GET` | `/api/v1/student/wrong-questions` | 获取当前学生的错题聚合列表。 |
 | `GET` | `/api/v1/student/wrong-questions/{questionId}` | 获取本人错题的最近答案、正确答案、解析、知识点和受控附件元数据。 |
 
-错误时通过原子 `INSERT ... ON DUPLICATE KEY UPDATE` 创建或累加 `cuo_wu_ci_shu`，并重置连续正确次数与状态为 `NEW`；已有错题答对后保留历史错误次数，连续正确一次为 `REVIEWING`，连续正确两次为 `MASTERED`。单题 `elapsedSeconds` 为非负且最多 86400 秒。所有资源通过当前学生档案过滤，篡改会话或题目 ID 不会越权。
+错误时通过原子 `INSERT ... ON DUPLICATE KEY UPDATE` 创建或累加 `cuo_wu_ci_shu`，并重置连续正确次数与状态为 `NEW`；已有错题答对后保留历史错误次数，连续正确一次为 `REVIEWING`，连续正确两次为 `MASTERED`。单题 `elapsedSeconds` 为非负且最多 86400 秒。所有资源通过当前学生档案过滤，篡改会话、题目或附件 ID 不会越权。

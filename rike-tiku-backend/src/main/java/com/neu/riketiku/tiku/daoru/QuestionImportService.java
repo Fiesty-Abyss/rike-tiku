@@ -1,6 +1,7 @@
 package com.neu.riketiku.tiku.daoru;
 
 import com.neu.riketiku.renzheng.RenZhengYeWuYiChang;
+import com.neu.riketiku.tiku.fujian.QuestionAttachmentStorage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -44,10 +45,13 @@ public class QuestionImportService {
     private static final Pattern BLANK = Pattern.compile("(?=[①②③④⑤⑥⑦⑧⑨⑩])");
     private final JdbcTemplate jdbc;
     private final Path sourceRoot;
+    private final QuestionAttachmentStorage attachmentStorage;
 
     public QuestionImportService(JdbcTemplate jdbc,
+                                 QuestionAttachmentStorage attachmentStorage,
                                  @Value("${rike.tiku.question-import.source-root:../题库}") String sourceRoot) {
         this.jdbc = jdbc;
+        this.attachmentStorage = attachmentStorage;
         this.sourceRoot = Path.of(sourceRoot).toAbsolutePath().normalize();
     }
 
@@ -187,7 +191,7 @@ public class QuestionImportService {
                 Path file = findObjectFile(subjectCode, raw.questionNumber(), marker, type, errors, raw.rowNumber());
                 if (file != null) {
                     result.add(new AttachmentDraft(part.position(), part.optionIndex(), type, marker, file.getFileName().toString(),
-                            controlledRelativePath(file), sha256(file), matcher.start() + 1, order++));
+                            file, controlledRelativePath(file), sha256(file), matcher.start() + 1, order++));
                 }
             }
         }
@@ -248,6 +252,9 @@ public class QuestionImportService {
                     questionId, contentType, "REAL_EXAM", row.raw().paperName(), row.sources().address(contentType), row.raw().year(), blank(row.raw().region()), row.raw().paperName(), row.raw().questionNumber(), "COPYRIGHT_UNKNOWN", "MVP30 本地候选文件未提供可发布权利依据");
         }
         for (AttachmentDraft attachment : row.attachments()) {
+            String storedRelativePath = "IMAGE".equals(attachment.type())
+                    ? attachmentStorage.store(attachment.sourceFile(), attachment.hash()).relativePath()
+                    : attachment.relativePath();
             Long optionId = "OPTION".equals(attachment.position()) ? optionIds.get(attachment.optionIndex() + 1) : null;
             Long relatedAnalysisId = "STANDARD_ANALYSIS".equals(attachment.position()) ? analysisId : null;
             int characterPosition = attachment.characterPosition();
@@ -259,7 +266,7 @@ public class QuestionImportService {
                 }
             }
             jdbc.update("INSERT INTO ti_mu_fu_jian(ti_mu_id,ti_mu_xuan_xiang_id,ti_mu_jie_xi_id,guan_lian_wei_zhi,fu_jian_lei_xing,yuan_shi_wen_jian_ming,xiang_dui_lu_jing,nei_rong_ha_xi,dui_xiang_biao_shi,zheng_wen_zi_fu_wei_zhi,pai_xu,zhuang_tai) VALUES (?,?,?,?,?,?,?,?,?,?,?, 'ACTIVE')",
-                    questionId, optionId, relatedAnalysisId, attachment.position(), attachment.type(), attachment.fileName(), attachment.relativePath(), attachment.hash(), attachment.marker(), characterPosition, attachment.order());
+                    questionId, optionId, relatedAnalysisId, attachment.position(), attachment.type(), attachment.fileName(), storedRelativePath, attachment.hash(), attachment.marker(), characterPosition, attachment.order());
         }
         jdbc.update("INSERT INTO ti_mu_shen_he_ji_lu(ti_mu_id,shen_he_dong_zuo,yuan_zhuang_tai,mu_biao_zhuang_tai,shen_he_ren_id,shen_he_yi_jian) VALUES (?,'SUBMITTED','DRAFT','PENDING',?,?)",
                 questionId, reviewerId, "管理员导入，等待人工审核");
@@ -475,7 +482,7 @@ public class QuestionImportService {
     private record OptionDraft(String label, String content, boolean correct) {
     }
     private record AttachmentDraft(String position, Integer optionIndex, String type, String marker, String fileName,
-                                   String relativePath, String hash, int characterPosition, int order) {
+                                   Path sourceFile, String relativePath, String hash, int characterPosition, int order) {
     }
     private record TextPart(String position, Integer optionIndex, String text) {
     }

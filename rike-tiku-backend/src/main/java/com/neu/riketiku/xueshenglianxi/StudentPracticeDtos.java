@@ -50,7 +50,8 @@ public final class StudentPracticeDtos {
             BigDecimal score,
             int blankCount,
             List<Option> options,
-            List<KnowledgePoint> knowledgePoints) {
+            List<KnowledgePoint> knowledgePoints,
+            List<Attachment> attachments) {
     }
 
     public record Session(
@@ -95,7 +96,8 @@ public final class StudentPracticeDtos {
             LocalDateTime lastWrongAt) {
     }
 
-    public record Attachment(Long id, String position, String type, String fileName, String objectMarker, String status) {
+    public record Attachment(Long id, String position, String type, String fileName, String objectMarker, String status,
+                             String renderStatus, String contentUrl) {
     }
 
     public record WrongQuestionDetail(

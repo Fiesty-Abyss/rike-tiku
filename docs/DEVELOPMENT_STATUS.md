@@ -2,19 +2,21 @@
 
 > 2026-08-09 V3.0 非 AI 正式完工审计已由 PR #24 普通 merge（merge commit `bcfb2181af2197d2524a2df8ca64895e435a4857`）进入 `main`。结论为 REJECT，当前不能认证 100% DONE_VERIFIED。正式证据见 [V3_NON_AI_COMPLETION_AUDIT.md](V3_NON_AI_COMPLETION_AUDIT.md)。
 
-> PR #25 已普通 merge（merge commit `0559a4e4eba041dd74a7bcb7d4c9f2cd8b29e617`）并关闭 MA-016。当前接续为 `main`；Flyway 仍为 V1–V10、26 张业务表。
+> PR #25 已普通 merge（merge commit `0559a4e4eba041dd74a7bcb7d4c9f2cd8b29e617`）并关闭 MA-016。当前接续分支为 `feat/question-attachment-rendering`；Flyway 仍为 V1–V10、26 张业务表。
 
 更新时间：2026-08-09
 
 ## 当前主线状态
 
-- 当前分支：`main`；PR #25 已合并，远程公共门户分支已删除。
+- 当前分支：`feat/question-attachment-rendering`；PR #25 已合并，公共门户已进入 `main`。
 - 根路径 `/` 已改为无需认证的公共门户，展示系统与学科介绍、当前非 AI 能力、学习闭环及统一 `/login` 入口；首屏明确运行时 AI 智能答疑尚未上线。现有登录、角色选择、首次改密和受保护路由守卫未改动。MA-016 已关闭。
 - V3.0 未指定名为 MVP30 的 Excel 必须整体正式入库；它要求 30 题 MVP 验证导入、审核、发布、查询和附件显示闭环，并强调少量高质量题目。MVP30 因此保留为结构化导入能力验证素材，原始文件不修改。
 - 三角色共用 `/profile`，本人身份从 JWT 推导；页面展示真实账号角色及学生/教师档案，只允许维护 500 字简介和本人头像，并复用现有主动修改密码流程。
 - 登录页当前使用两分钟有效、内存保存、一次性消费的 4 位随机图形验证码；验证码默认隐藏，首次登录操作只展开，第二次才认证。PR #15 滑块仅为历史实现。
 - 管理员单学生管理已实现分页筛选、详情与班级历史、事务新增、编辑与启停、事务调班和一次性密码重置；Excel 批量导入入口继续独立保留。
 - 学生自主练习、自动判分、结果、错题闭环、实时知识点掌握度、固定规则推荐和教师班级学情查看均已进入 `main`。掌握度与推荐是确定性规则统计，不属于 AI；AI、教师任务、组卷考试和主观题评分仍未实现。
+- MA-017 当前已完成机器实现：图片附件仅接受受控路径下真实 PNG/JPEG，3MB 内、扩展名/MIME 一致并按 SHA-256 回读；管理员题目详情和学生练习题面、结果、错题通过带 JWT 的 Blob 请求显示，创建中会话拒绝 STANDARD_ANALYSIS，缺失/损坏/403/404 显示占位。正文继续使用完整 marker（如 `〔图片对象 I001〕`），`ti_mu_fu_jian.dui_xiang_biao_shi` 统一只保存对象 ID（如 `I001`/`F107`），前后端解析正文后按对象 ID 匹配。当前状态为 `IMPLEMENTED_AWAITING_FINAL_MANUAL_ACCEPTANCE`。
+- MA-017 本轮机器门禁：附件/权限/导入/题池专项共 27 个测试，26 PASS、1 个符号链接权限 assumption skipped；`mvn clean test` 112 个测试 0 失败、1 个符号链接权限 assumption skipped，`mvn clean package` PASS；前端附件专项 4/4、`npm test` 33 文件 127/127 PASS，type-check、build PASS，`npm audit --omit=dev` 为 0 vulnerabilities。新增真实 QuestionImportService 导入链覆盖 preview → confirm → 受控 storage → 管理员 detail/content → 学生题池及提交前后权限。Demo `reset → seed → validate → smoke` PASS；Demo 业务题 120 道（物理 40、化学 39、生物 41），PHYSICS-S1 的两个附件记录均为 I001/I002 并指向可回读且 hash 正确的 PNG。按项目验收策略，用户 CAPTCHA 和浏览器视觉验收延期至非 AI 最终集成验收，不属于 PR #26 的 merge gate。
 - Flyway：V1–V10，共 26 张业务表；V10 只向 `yong_hu` 增加简介、头像 MIME、头像二进制和头像更新时间，V1–V9 未修改。
 - 教师工作台已支持按本人 ACTIVE 三元任课关系读取班级、科目、学生名单和高频考点，并支持新增、编辑、启停及排序；学生端按本人有效主班级和学科只读取对应 ACTIVE 高频考点。
 - PR #20 已实现受 ACTIVE 三元任课关系和学生当前主班级约束的师生纯文本私信；发送身份取自 JWT，支持会话、未读、已读、7 秒轮询和失效关系历史保留，不含 WebSocket、附件、群聊或管理员审计。
@@ -96,7 +98,11 @@
 
 ## 下一步
 
-下一步唯一任务：独立实现并验证 V3.0 A 层题目附件真实存储、安全访问与前端显示，关闭 MA-017；不得顺手处理 MA-018、MA-019、MA-020 或 AI。
+MA-017 已完成机器实现，当前状态为 `IMPLEMENTED_AWAITING_FINAL_MANUAL_ACCEPTANCE`：附件仅接受 3MB 内 PNG/JPEG，路径始终位于受控 storage 根目录且回读复核类型与 SHA-256。管理员与学生通过带 JWT 的 Blob 请求显示图片；未提交练习只暴露 STEM/OPTION，提交后才允许 STANDARD_ANALYSIS。PDF 与历史无文件元数据不进入普通练习；练习附件未单独快照，文件被替换或删除时按 hash 失败并友好降级。用户 CAPTCHA 和浏览器视觉验收统一延期至非 AI 最终集成验收，不属于 PR #26 的 merge gate。
+
+附件对象标识规范：正文保留 `〔图片对象 I001〕`、`〔公式对象 F107〕`；Excel 导入和历史数据写入 `dui_xiang_biao_shi` 的是 `I001`、`F107`，不是带括号的完整正文 marker。管理员详情、学生题池校验和 `QuestionContent` 均先从正文提取对象 ID，再按位置和对象 ID 匹配。`QuestionAttachmentStorage` 还会拒绝 storage 根目录、父目录、中间目录或最终文件路径上的符号链接；当前 Windows 无创建符号链接权限，因此对应 JUnit 用例按 assumption 明确跳过，未伪造 PASS。
+
+用户最终集成人工验收通过后，统一更新附件、权限和视觉证据并关闭 MA-017；在此之前不得把 MA-017 写成 `DONE_VERIFIED`。PR #26 的人工验收延期不阻止其在机器证据有效且文档准确后普通 merge。MA-018、MA-019、MA-020 和 AI 按项目顺序推进。
 
 ## 非 AI 工程基础完成门槛
 
