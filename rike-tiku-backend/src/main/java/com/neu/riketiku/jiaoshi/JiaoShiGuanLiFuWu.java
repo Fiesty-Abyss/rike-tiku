@@ -102,6 +102,22 @@ public class JiaoShiGuanLiFuWu {
         return findTeacher(teacherId);
     }
 
+    @Transactional
+    public JiaoShiMiMaChongZhiXiangYing resetPassword(Long teacherId) {
+        return auditLog.audited("TEACHER", "RESET_PASSWORD", teacherId,
+                "管理员重置教师密码（不记录密码）", () -> resetPasswordInternal(teacherId));
+    }
+
+    private JiaoShiMiMaChongZhiXiangYing resetPasswordInternal(Long teacherId) {
+        JiaoShiXiangYing teacher = findTeacher(teacherId);
+        String password = passwordGenerator.generate();
+        jdbcTemplate.update("""
+                UPDATE yong_hu SET mi_ma_zhai_yao=?,shi_fou_shou_ci_deng_lu=1,mi_ma_xiu_gai_shi_jian=NULL
+                WHERE yong_hu_ming=? AND yi_shan_chu=0
+                """, passwordEncoder.encode(password), teacher.username());
+        return new JiaoShiMiMaChongZhiXiangYing(password);
+    }
+
     @Transactional(readOnly = true)
     public List<KeMuXiangYing> subjects() {
         return jdbcTemplate.query("SELECT id,ke_mu_dai_ma,ke_mu_ming_cheng FROM ke_mu WHERE zhuang_tai='ACTIVE' AND yi_shan_chu=0 ORDER BY pai_xu,id",

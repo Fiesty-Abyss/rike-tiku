@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { fetchPracticeOptions, type Subject } from '../api/student/practice'
 import ChangePasswordDialog from '../components/auth/ChangePasswordDialog.vue'
@@ -8,12 +9,19 @@ import { useAuthStore } from '../stores/auth'
 import { formatEnum } from '../utils/formatters'
 
 const router = useRouter()
+const route = useRoute()
 const auth = useAuthStore()
 const subjects = ref<Subject[]>([])
 const points = ref<Record<number, number>>({})
 const passwordVisible = ref(false)
 const name = computed(() => auth.currentUser?.displayName || auth.currentUser?.username || '同学')
 const canSwitchRole = computed(() => auth.roles.length > 1)
+const navActive = (name: 'home' | 'practice' | 'wrong' | 'messages') => {
+  if (name === 'home') return route.path === '/student'
+  if (name === 'practice') return route.path.startsWith('/student/practice')
+  if (name === 'wrong') return route.path === '/student/wrong-questions'
+  return route.path.startsWith('/messages')
+}
 
 onMounted(async () => {
   try {
@@ -43,10 +51,11 @@ async function logout() {
     <header class="student-header">
       <router-link to="/student" class="student-brand">理科学习辅助系统</router-link>
       <nav>
-        <router-link to="/student">三科工作台</router-link>
-        <router-link to="/student/practice/new">自主练习</router-link>
-        <router-link to="/student/wrong-questions">错题本</router-link>
-        <router-link to="/messages">消息</router-link>
+        <router-link to="/student" active-class="" exact-active-class="" :class="{ 'is-nav-active': navActive('home') }">三科工作台</router-link>
+        <router-link to="/student/practice/new" active-class="" exact-active-class="" :class="{ 'is-nav-active': navActive('practice') }">自主练习</router-link>
+        <router-link to="/student/wrong-questions" active-class="" exact-active-class="" :class="{ 'is-nav-active': navActive('wrong') }">错题本</router-link>
+        <router-link to="/student/topics" active-class="" exact-active-class="" :class="{ 'is-nav-active': route.path.startsWith('/student/topics') }">专题学习</router-link>
+        <router-link to="/messages" active-class="" exact-active-class="" :class="{ 'is-nav-active': navActive('messages') }">消息</router-link>
         <el-dropdown>
           <el-button text class="user-menu-button">
             <el-avatar :size="28" :src="auth.profileAvatar || undefined">{{ name.slice(0, 1) }}</el-avatar>
@@ -96,7 +105,7 @@ async function logout() {
               </el-button>
               <el-button
                 link
-                @click="router.push({ path: '/student/wrong-questions', query: { subjectId: subject.id } })"
+                @click="router.push({ path: '/student/wrong-questions', query: { subjectCode: subject.code } })"
               >
                 查看本学科错题
               </el-button>

@@ -1,16 +1,19 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { ElMessageBox } from 'element-plus'
 import ChangePasswordDialog from '../components/auth/ChangePasswordDialog.vue'
 
 import { useAuthStore } from '../stores/auth'
 
 const router = useRouter()
+const route = useRoute()
 const authStore = useAuthStore()
 const userName = computed(() => authStore.currentUser?.displayName || authStore.currentUser?.username || '管理员')
 const canSwitchRole = computed(() => authStore.roles.length > 1)
 const passwordVisible = ref(false)
+const routeTitle = computed(() => String(route.meta.title || '管理员工作台'))
+const routeSubtitle = computed(() => String(route.meta.subtitle || '系统管理'))
 
 async function logout() {
   await ElMessageBox.confirm('退出后需要重新登录才能继续管理。', '确认退出登录', { type: 'warning', confirmButtonText: '退出登录', cancelButtonText: '取消' })
@@ -37,7 +40,7 @@ async function logout() {
     </el-aside>
     <el-container>
       <el-header class="admin-topbar">
-        <div class="admin-context"><strong>教学组织管理</strong><span>管理员工作台</span></div>
+        <div class="admin-context"><strong>{{ routeTitle }}</strong><span>{{ routeSubtitle }}</span></div>
         <el-dropdown trigger="click">
           <el-button text class="user-menu-button"><el-avatar :size="28" :src="authStore.profileAvatar || undefined">{{ userName.slice(0, 1) }}</el-avatar><span>{{ userName }} · 管理员</span></el-button>
           <template #dropdown><el-dropdown-menu><el-dropdown-item v-if="canSwitchRole" @click="router.push('/select-role')">切换身份</el-dropdown-item><el-dropdown-item @click="router.push('/profile')">个人中心</el-dropdown-item><el-dropdown-item @click="passwordVisible=true">修改密码</el-dropdown-item><el-dropdown-item divided @click="logout">退出登录</el-dropdown-item></el-dropdown-menu></template>

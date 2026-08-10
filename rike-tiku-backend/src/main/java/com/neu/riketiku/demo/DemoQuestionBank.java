@@ -23,7 +23,7 @@ final class DemoQuestionBank {
         String thermal = "热学>分子动理论>温度和内能";
 
         items.add(choice("PHYSICS-S3", "PHYSICS", "SINGLE_CHOICE", "质量为2 kg的物体加速度为4 m/s²，所受合力为多少？", newton, 1,
-                List.of("8 N", "6 N", "2 N", "0.5 N"), Set.of("A"), "由F=ma可得合力为8 N"));
+                List.of("8 N", "6 N", "2 N", "0.5 N"), Set.of("A"), "由牛顿第二定律F=ma，代入质量2 kg和加速度4 m/s²，可得合力为8 N"));
         items.add(choice("PHYSICS-M3", "PHYSICS", "MULTIPLE_CHOICE", "质量为1 kg的物体同时受到水平向右5 N和向左2 N的力。下列判断正确的是哪些？", newton, 2,
                 List.of("合力为3 N，方向向右", "加速度为3 m/s²，方向向右", "物体一定向右运动", "合力为7 N"), Set.of("A", "B"), "合力和加速度均向右，大小分别为3 N和3 m/s²，但速度方向不能由已知条件确定"));
         items.add(fill("PHYSICS-F3", "PHYSICS", "质量为2 kg的物体由静止开始，在4 N恒力作用下运动3 s，末速度为____m/s。", newton, 3, "6"));
@@ -50,19 +50,19 @@ final class DemoQuestionBank {
         items.add(fill("PHYSICS-F7", "PHYSICS", "1 C正电荷在某点受到3 N电场力，该点电场强度为____N/C。", electric, 1, "3"));
 
         items.add(choice("PHYSICS-S8", "PHYSICS", "SINGLE_CHOICE", "一定质量的理想气体在体积不变时温度升高，其内能如何变化？", thermal, 3,
-                List.of("增加", "减少", "不变", "无法判断"), Set.of("A"), "理想气体内能随温度升高而增加"));
+                List.of("增加", "减少", "不变", "无法判断"), Set.of("A"), "一定量理想气体的内能只取决于温度；温度升高意味着分子平均动能增大，因此内能增加"));
         items.add(choice("PHYSICS-M8", "PHYSICS", "MULTIPLE_CHOICE", "关于分子热运动，下列说法正确的是哪些？", thermal, 1,
                 List.of("温度越高，分子平均动能通常越大", "分子热运动永不停息", "所有分子速率始终相同", "0℃时分子停止运动"), Set.of("A", "B"), "分子持续进行无规则热运动，温度反映平均动能水平"));
         items.add(fill("PHYSICS-F8", "PHYSICS", "温度27℃约等于____K。", thermal, 2, "300"));
         items.add(choice("PHYSICS-S9", "PHYSICS", "SINGLE_CHOICE", "改变物体内能的两种基本方式是什么？", thermal, 1,
                 List.of("做功和热传递", "升高和降低", "加速和减速", "熔化和凝固"), Set.of("A"), "做功和热传递是改变内能的两种基本方式"));
         items.add(choice("PHYSICS-M9", "PHYSICS", "MULTIPLE_CHOICE", "下列过程通常会使物体内能增加的是哪些？", thermal, 2,
-                List.of("摩擦使物体发热", "快速压缩气体", "物体向外放热且不做功", "气体绝热膨胀并对外做功"), Set.of("A", "B"), "摩擦做功和压缩做功都可使内能增加"));
+                List.of("摩擦使物体发热", "快速压缩气体", "物体向外放热且不做功", "气体绝热膨胀并对外做功"), Set.of("A", "B"), "克服摩擦做功和外界压缩气体都把其他形式能量转化为内能；放热或绝热对外做功则使内能减小"));
         items.add(fill("PHYSICS-F9", "PHYSICS", "气体吸收500 J热量，同时对外做功200 J，其内能增加____J。", thermal, 3, "300"));
         items.add(choice("PHYSICS-S10", "PHYSICS", "SINGLE_CHOICE", "从分子动理论看，温度主要反映大量分子的什么量？", thermal, 2,
                 List.of("平均动能", "总质量", "平均位置", "分子个数"), Set.of("A"), "温度是大量分子热运动平均动能的标志"));
         items.add(choice("PHYSICS-M10", "PHYSICS", "MULTIPLE_CHOICE", "关于一定量理想气体的内能，下列说法正确的是哪些？", thermal, 3,
-                List.of("温度升高时内能增加", "温度相同时内能相同", "只增大体积必然增加内能", "只增大压强必然增加内能"), Set.of("A", "B"), "一定量理想气体的内能只由温度决定"));
+                List.of("温度升高时内能增加", "温度相同时内能相同", "只增大体积必然增加内能", "只增大压强必然增加内能"), Set.of("A", "B"), "一定量理想气体的内能只由温度决定，所以升温时内能增加、同温时内能相同；仅知体积或压强变化不能确定内能"));
         items.add(fill("PHYSICS-F10", "PHYSICS", "温度0℃约等于____K。", thermal, 1, "273"));
     }
 
@@ -74,7 +74,7 @@ final class DemoQuestionBank {
         items.add(choice("CHEMISTRY-S3", "CHEMISTRY", "SINGLE_CHOICE", "NaCl的摩尔质量约为多少？", mole, 1,
                 List.of("58.5 g/mol", "23 g/mol", "35.5 g/mol", "18 g/mol"), Set.of("A"), "Na和Cl的相对原子质量之和约为58.5"));
         items.add(choice("CHEMISTRY-M3", "CHEMISTRY", "MULTIPLE_CHOICE", "0.5 mol CO₂中所含各元素原子的物质的量，下列说法正确的是哪些？", mole, 2,
-                List.of("C原子为0.5 mol", "O原子为1 mol", "C原子为1 mol", "O原子为0.5 mol"), Set.of("A", "B"), "每个CO₂分子含1个C和2个O"));
+                List.of("C原子为0.5 mol", "O原子为1 mol", "C原子为1 mol", "O原子为0.5 mol"), Set.of("A", "B"), "每个CO₂分子含1个C原子和2个O原子，因此0.5 mol CO₂含0.5 mol C原子和1 mol O原子"));
         items.add(fill("CHEMISTRY-F3", "CHEMISTRY", "标准状况下11.2 L理想气体约为____mol。", mole, 3, "0.5"));
         items.add(choice("CHEMISTRY-S4", "CHEMISTRY", "SINGLE_CHOICE", "18 g H₂O的物质的量约为多少？", mole, 2,
                 List.of("1 mol", "2 mol", "0.5 mol", "18 mol"), Set.of("A"), "H₂O摩尔质量为18 g/mol，因此18 g为1 mol"));
@@ -85,7 +85,7 @@ final class DemoQuestionBank {
                 List.of("0.5 mol", "1 mol", "2 mol", "3 mol"), Set.of("A"), "3.01×10²³约为阿伏加德罗常数的一半"));
 
         items.add(choice("CHEMISTRY-M5", "CHEMISTRY", "MULTIPLE_CHOICE", "关于氧化和还原，下列说法正确的是哪些？", redox, 1,
-                List.of("失去电子的过程是氧化", "得到电子的过程是还原", "氧化反应一定得到电子", "还原反应一定失去电子"), Set.of("A", "B"), "失电子对应氧化，得电子对应还原"));
+                List.of("失去电子的过程是氧化", "得到电子的过程是还原", "氧化反应一定得到电子", "还原反应一定失去电子"), Set.of("A", "B"), "氧化还原反应按电子转移判断：失去电子、化合价升高是氧化，得到电子、化合价降低是还原"));
         items.add(fill("CHEMISTRY-F5", "CHEMISTRY", "Fe³⁺转化为Fe²⁺时，每个Fe³⁺得到____个电子。", redox, 2, "1"));
         items.add(choice("CHEMISTRY-S6", "CHEMISTRY", "SINGLE_CHOICE", "反应Zn + CuSO₄ = ZnSO₄ + Cu中，还原剂是哪种物质？", redox, 1,
                 List.of("Zn", "CuSO₄", "ZnSO₄", "Cu"), Set.of("A"), "Zn失去电子被氧化，因此Zn是还原剂"));
@@ -93,7 +93,7 @@ final class DemoQuestionBank {
                 List.of("H₂是还原剂", "CuO是氧化剂", "Cu元素被氧化", "H元素被还原"), Set.of("A", "B"), "H₂被氧化为H₂O，CuO中的Cu被还原为单质"));
         items.add(fill("CHEMISTRY-F6", "CHEMISTRY", "KMnO₄中Mn元素的化合价为正____价。", redox, 3, "7"));
         items.add(choice("CHEMISTRY-S7", "CHEMISTRY", "SINGLE_CHOICE", "反应Cl₂ + 2KI = 2KCl + I₂中，被氧化的粒子是哪个？", redox, 2,
-                List.of("I⁻", "K⁺", "Cl₂", "Cl⁻"), Set.of("A"), "I⁻失去电子生成I₂，发生氧化"));
+                List.of("I⁻", "K⁺", "Cl₂", "Cl⁻"), Set.of("A"), "反应中I⁻失去电子生成I₂，碘元素化合价由-1升至0，因此I⁻发生氧化并作为还原剂"));
         items.add(choice("CHEMISTRY-M7", "CHEMISTRY", "MULTIPLE_CHOICE", "关于歧化反应，下列说法正确的是哪些？", redox, 3,
                 List.of("同一元素同时发生氧化和还原", "同一物质可同时作氧化剂和还原剂", "反应中一定没有电子转移", "所有元素化合价都不变"), Set.of("A", "B"), "歧化反应中同一元素的化合价一部分升高、一部分降低"));
         items.add(fill("CHEMISTRY-F7", "CHEMISTRY", "H₂O中O元素的化合价为负____价。", redox, 1, "2"));
@@ -106,7 +106,7 @@ final class DemoQuestionBank {
         items.add(choice("CHEMISTRY-S9", "CHEMISTRY", "SINGLE_CHOICE", "其他条件不变时，增大反应物浓度，平衡通常向哪个方向移动？", equilibrium, 1,
                 List.of("消耗反应物的方向", "生成反应物的方向", "一定不移动", "反应停止"), Set.of("A"), "平衡会向减弱反应物浓度增大影响的方向移动"));
         items.add(choice("CHEMISTRY-M9", "CHEMISTRY", "MULTIPLE_CHOICE", "某正反应为放热反应。下列判断正确的是哪些？", equilibrium, 2,
-                List.of("升高温度有利于逆反应", "降低温度有利于正反应", "升高温度一定使平衡正向移动", "温度不影响平衡"), Set.of("A", "B"), "温度变化使平衡向吸热方向移动"));
+                List.of("升高温度有利于逆反应", "降低温度有利于正反应", "升高温度一定使平衡正向移动", "温度不影响平衡"), Set.of("A", "B"), "温度升高时平衡向吸热方向移动，温度降低时向放热方向移动；本反应正向放热，因此升温利于逆反应、降温利于正反应"));
         items.add(fill("CHEMISTRY-F9", "CHEMISTRY", "反应N₂ + 3H₂ ⇌ 2NH₃达到平衡后，增大压强时平衡向____移动。", equilibrium, 3, "右"));
         items.add(choice("CHEMISTRY-S10", "CHEMISTRY", "SINGLE_CHOICE", "加入合适催化剂后，化学平衡如何变化？", equilibrium, 2,
                 List.of("平衡位置不变，只加快达到平衡", "一定正向移动", "一定逆向移动", "平衡常数增大"), Set.of("A"), "催化剂同等程度加快正逆反应，不改变平衡位置和平衡常数"));
