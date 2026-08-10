@@ -86,6 +86,7 @@ const router = createRouter({
         { path: 'questions/import', name: 'admin-question-import', component: () => import('../views/admin/QuestionImportView.vue') },
         { path: 'students', name: 'admin-students', component: () => import('../views/admin/StudentsView.vue') },
         { path: 'students/import', name: 'admin-student-import', component: () => import('../views/admin/StudentImportView.vue') },
+        { path: 'operation-logs', name: 'admin-operation-logs', component: () => import('../views/admin/OperationLogsView.vue') },
       ],
     },
     { path: '/:pathMatch(.*)*', redirect: '/login' },

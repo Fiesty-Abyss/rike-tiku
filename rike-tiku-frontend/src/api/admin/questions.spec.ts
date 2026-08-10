@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import http from '../http'
-import { createQuestion, fetchKnowledgePoints, fetchQuestion, fetchQuestions, questionAction, updateQuestion } from './questions'
+import { createQuestion, deleteQuestionAttachment, fetchKnowledgePoints, fetchQuestion, fetchQuestions, questionAction, replaceQuestionAttachment, updateQuestion, uploadQuestionAttachment } from './questions'
 
 describe('管理员题库 API', () => {
   const adapter = vi.fn().mockResolvedValue({ data: { records: [], total: 0 } })
@@ -12,4 +12,5 @@ describe('管理员题库 API', () => {
   it('状态动作使用专用 POST 路径', async () => { await questionAction(7, 'submit-review'); expect(adapter).toHaveBeenCalledWith(expect.objectContaining({ method: 'post', url: '/admin/questions/7/submit-review' })) })
   it('退回提交审核意见而非敏感前端状态', async () => { await questionAction(7, 'return', '请补齐授权'); expect(adapter).toHaveBeenCalledWith(expect.objectContaining({ method: 'post', url: '/admin/questions/7/return', data: JSON.stringify({ opinion: '请补齐授权' }) })) })
   it('知识点按真实学科 id 获取', async () => { await fetchKnowledgePoints(3); expect(adapter).toHaveBeenCalledWith(expect.objectContaining({ method: 'get', url: '/admin/knowledge-points', params: { subjectId: 3 } })) })
+  it('题目附件使用受控上传、替换和删除接口', async () => { const file = new File(['png'], 'stem.png', { type: 'image/png' }); await uploadQuestionAttachment(7, 'QUESTION', file); expect(adapter).toHaveBeenCalledWith(expect.objectContaining({ method: 'post', url: '/admin/questions/7/attachments', data: expect.any(FormData) })); await replaceQuestionAttachment(7, 9, file); expect(adapter).toHaveBeenCalledWith(expect.objectContaining({ method: 'put', url: '/admin/questions/7/attachments/9', data: expect.any(FormData) })); await deleteQuestionAttachment(7, 9); expect(adapter).toHaveBeenCalledWith(expect.objectContaining({ method: 'delete', url: '/admin/questions/7/attachments/9' })) })
 })

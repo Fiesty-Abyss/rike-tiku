@@ -9,6 +9,7 @@ import { useAuthStore } from '../stores/auth'
 const router = useRouter()
 const authStore = useAuthStore()
 const userName = computed(() => authStore.currentUser?.displayName || authStore.currentUser?.username || '管理员')
+const canSwitchRole = computed(() => authStore.roles.length > 1)
 const passwordVisible = ref(false)
 
 async function logout() {
@@ -30,9 +31,8 @@ async function logout() {
         <el-menu-item index="/admin/classes"><span>班级管理</span></el-menu-item>
         <el-menu-item index="/admin/teachers"><span>教师与任课关系</span></el-menu-item>
         <el-menu-item index="/admin/questions"><span>题库审核发布</span></el-menu-item>
-        <el-menu-item index="/admin/questions/import"><span>MVP30 题库导入</span></el-menu-item>
         <el-menu-item index="/admin/students"><span>学生管理</span></el-menu-item>
-        <el-menu-item index="/admin/students/import"><span>学生 Excel 导入</span></el-menu-item>
+        <el-menu-item index="/admin/operation-logs"><span>操作日志</span></el-menu-item>
       </el-menu>
     </el-aside>
     <el-container>
@@ -40,7 +40,7 @@ async function logout() {
         <div><strong>教学组织管理</strong><span>管理员专用</span></div>
         <el-dropdown trigger="click">
           <el-button text class="user-menu-button"><el-avatar :size="28" :src="authStore.profileAvatar || undefined">{{ userName.slice(0, 1) }}</el-avatar><span>{{ userName }} · 管理员</span></el-button>
-          <template #dropdown><el-dropdown-menu><el-dropdown-item @click="router.push('/profile')">个人中心</el-dropdown-item><el-dropdown-item @click="passwordVisible=true">修改密码</el-dropdown-item><el-dropdown-item divided @click="logout">退出登录</el-dropdown-item></el-dropdown-menu></template>
+          <template #dropdown><el-dropdown-menu><el-dropdown-item v-if="canSwitchRole" @click="router.push('/select-role')">切换身份</el-dropdown-item><el-dropdown-item @click="router.push('/profile')">个人中心</el-dropdown-item><el-dropdown-item @click="passwordVisible=true">修改密码</el-dropdown-item><el-dropdown-item divided @click="logout">退出登录</el-dropdown-item></el-dropdown-menu></template>
         </el-dropdown>
       </el-header>
       <el-main class="admin-main"><RouterView /></el-main><ChangePasswordDialog v-model="passwordVisible" />
