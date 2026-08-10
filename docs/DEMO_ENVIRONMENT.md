@@ -10,19 +10,18 @@ PR #27 当前分支新增 V11 管理员操作日志表；当前 Demo 结构目�
 
 ## 准备与执行
 
-在仓库根目录打开 PowerShell：
+在仓库根目录打开 PowerShell，一条命令完成 `reset → seed → validate`：
 
 ```powershell
 $env:RIKE_TIKU_DB_PASSWORD = "你的本机MySQL密码"
-.\scripts\demo-environment.ps1 reset
-.\scripts\demo-environment.ps1 seed
-.\scripts\demo-environment.ps1 validate
+.\scripts\demo-environment.ps1 final-acceptance
 ```
 
-- `create`：保留现有演示库，仅在不存在时创建并执行 V1–V10。
-- `reset`：删除并重建指定演示库，再执行 V1–V10；会清除该演示库的全部已有内容。
+- `final-acceptance`：仅允许 `rike_tiku_demo`，依次重建、播种并校验最终人工验收数据，然后显示前后端启动命令。
+- `create`：保留现有演示库，仅在不存在时创建并执行 V1–V11。
+- `reset`：删除并重建指定演示库，再执行 V1–V11；会清除该演示库的全部已有内容。
 - `seed`：清理旧演示数据后重建固定数据，重复执行结果稳定。
-- `validate`：只读检查结构、账号、关系、题库和学习记录。
+- `validate`：只读检查 V1–V11/27 张表、验收账号、关系、题库、PHYSICS-S1 图片文件/hash 和学习记录。
 - `clean`：只删除带受控演示标识的数据，保留 Flyway 基础科目和样例。
 
 ## 启动方案 A：IDE 默认端口
@@ -65,22 +64,35 @@ VITE_API_BASE_URL=http://localhost:18081/api/v1
 
 Vite 启动参数为 `--host localhost --port 18080`。
 
-也可以分别打开两个 PowerShell，让脚本自动设置上述演示端口变量：
+也可以让脚本自动设置上述演示端口变量。在执行 `final-acceptance` 的原 PowerShell 中继续启动后端：
 
 ```powershell
 .\scripts\demo-environment.ps1 backend
+```
+
+另开 PowerShell 启动前端（该动作不读取数据库密码）：
+
+```powershell
 .\scripts\demo-environment.ps1 frontend
 ```
 
 前端地址为 `http://localhost:18080`，后端地址为 `http://localhost:18081`，CORS 只允许此前端地址。
 
-服务启动后，在第三个 PowerShell 执行真实 HTTP 烟雾检查：
+`backend` 为人工验收模式，明确设置 `RIKE_TIKU_CAPTCHA_EXPOSE_TEST_CODE=false`；浏览器必须识别页面当前图形验证码。
+
+机器 smoke 如需读取 `testCode`，必须在单独 PowerShell 临时启动：
+
+```powershell
+.\scripts\demo-environment.ps1 smoke-backend
+```
+
+前端运行时，再在第三个 PowerShell 执行：
 
 ```powershell
 .\scripts\demo-environment.ps1 smoke
 ```
 
-该操作检查后端健康接口、实际演示数据库、三个角色登录和错误角色入口。图形验证码不使用 OCR；脚本的 `backend` 动作只为本地 Demo smoke 设置 `RIKE_TIKU_CAPTCHA_EXPOSE_TEST_CODE=true`，使 challenge 响应额外返回 `testCode`。正常/正式启动默认关闭该字段，浏览器登录始终必须提交图形验证码。smoke 不输出 JWT、数据库密码或 JWT 密钥。
+`smoke-backend` 只供脚本机器 smoke，禁止用于人工浏览器验收。smoke 检查后端健康接口、实际演示数据库、三个角色登录和错误角色入口，不输出 JWT、数据库密码或 JWT 密钥。
 
 ## 固定账号
 
@@ -118,6 +130,6 @@ Demo90 和筛选变式均为项目原创的“本科毕业设计自编演示题�
 ```
 
 `clean` 后演示账号、组织、题目和学习记录均被删除；`reset` 是库级重建，只允许对通过安全检查的演示库名执行。MVP30 原始 Excel 和正式 `rike_tiku` 不参与上述流程。
-## PR #23 分支状态
+## PR #27 分支状态
 
-当前分支为 `feat/final-demo-question-bank`。Flyway 保持 V1–V10、26 张业务表；`reset`、`seed`、`validate`、`clean` 继续受数据库名保护。PR #23 只扩充独立演示 seed，不向正式 `rike_tiku` 写入题目或其他演示业务数据，也不修改 MVP30 原始 Excel。
+当前分支为 `feat/non-ai-final-closure`，Draft PR #27。Flyway 为 V1–V11、27 张业务表；`reset`、`seed`、`validate`、`clean` 和 `final-acceptance` 继续受数据库名保护。最终人工验收只使用 `rike_tiku_demo`，不向正式 `rike_tiku` 写入题目或其他演示业务数据。
