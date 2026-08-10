@@ -262,7 +262,9 @@ class DemoDataServiceIntegrationTest extends AdminQuestionIntegrationTestSupport
     void demoScriptUsesExactBackendCorsAndApiEnvironmentContracts() throws Exception {
         String script = Files.readString(Path.of("..", "scripts", "demo-environment.ps1"), StandardCharsets.UTF_8);
         assertThat(script)
-                .contains("RIKE_TIKU_BACKEND_PORT", "RIKE_TIKU_CORS_ALLOWED_ORIGINS", "http://localhost:18081/api/v1")
+                .contains("RIKE_TIKU_BACKEND_PORT", "RIKE_TIKU_CORS_ALLOWED_ORIGINS", "http://localhost:18081/api/v1",
+                        "'final-acceptance'", "'smoke-backend'", "$env:RIKE_TIKU_CAPTCHA_EXPOSE_TEST_CODE = 'false'",
+                        "$env:RIKE_TIKU_CAPTCHA_EXPOSE_TEST_CODE = 'true'")
                 .doesNotContain("RIKE_TIKU_SERVER_PORT", "RIKE_TIKU_CORS_ALLOWED_ORIGIN =");
     }
 

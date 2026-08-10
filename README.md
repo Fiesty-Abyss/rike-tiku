@@ -64,15 +64,13 @@ Flyway 是数据库结构的唯一建表和升级入口。已经执行的迁移�
 
 ## 本地演示验收环境
 
-`main` 已通过 PR #14（普通 merge `4ffbcbda66f26e7390192985ce179f30d3a6b664`）提供显式执行的独立演示库工具。它默认操作 `rike_tiku_demo`，拒绝操作 `rike_tiku` 及 MySQL 系统库，不会在应用正常启动时自动写入数据。准备好 `RIKE_TIKU_DB_PASSWORD` 后执行：
+`main` 已通过 PR #14（普通 merge `4ffbcbda66f26e7390192985ce179f30d3a6b664`）提供显式执行的独立演示库工具。它默认操作 `rike_tiku_demo`，拒绝操作 `rike_tiku` 及 MySQL 系统库，不会在应用正常启动时自动写入数据。准备好 `RIKE_TIKU_DB_PASSWORD` 后，一条命令完成最终验收库的重建、播种和校验：
 
 ```powershell
-.\scripts\demo-environment.ps1 reset
-.\scripts\demo-environment.ps1 seed
-.\scripts\demo-environment.ps1 validate
+.\scripts\demo-environment.ps1 final-acceptance
 ```
 
-演示账号为 `demo_admin`、`demo_teacher`、`demo_student`，本地演示密码均为 `a1234567`；数据库仅保存 BCrypt 摘要。分别启动前后端：
+最终验收账号为 `demo_admin`、`demo_199_01`、`demo_teacher`、`demo_physics_admin`，本地演示密码均为 `a1234567`；数据库仅保存 BCrypt 摘要。分别启动前后端：
 
 ```powershell
 .\scripts\demo-environment.ps1 backend
@@ -81,7 +79,7 @@ Flyway 是数据库结构的唯一建表和升级入口。已经执行的迁移�
 
 详细安全边界与操作说明见 [演示环境说明](docs/DEMO_ENVIRONMENT.md)，人工检查步骤见 [人工验收清单](docs/MANUAL_ACCEPTANCE_CHECKLIST.md)。
 
-使用 IDEA 直接启动时必须在运行配置增加 `RIKE_TIKU_DB_NAME=rike_tiku_demo`；否则后端默认连接正式开发库 `rike_tiku`，其中不存在演示账号。默认端口方案的前端 API 地址为 `http://localhost:8081/api/v1`。脚本演示端口方案可在服务启动后执行 `.\scripts\demo-environment.ps1 smoke` 验证健康状态和三角色登录。
+使用 IDEA 直接启动时必须在运行配置增加 `RIKE_TIKU_DB_NAME=rike_tiku_demo`；否则后端默认连接正式开发库 `rike_tiku`，其中不存在演示账号。默认端口方案的前端 API 地址为 `http://localhost:8081/api/v1`。脚本的 `backend` 动作关闭 CAPTCHA `testCode`，供真实浏览器验收；机器 smoke 使用独立的 `smoke-backend` 动作。
 
 历史 PR #14 自动化验证为后端 74/74、前端 68/68，后端打包、前端类型检查与构建均通过，`npm audit` 为 0 vulnerabilities；真实脚本链及三角色 HTTP smoke 已通过。PR #15 已普通 merge 进入 `main`（merge commit `12d636fde4afa198edc78eb0c295f5b88c8e3456`）：当时统一登录使用服务端短时一次性滑块验证，并提供中文化、学生三科工作台、教师任教范围和主动改密。PR #15 合并后回归为后端 79/79、前端 72/72；该滑块只属于历史实现，已由 PR #19 的随机图形验证码替换。
 

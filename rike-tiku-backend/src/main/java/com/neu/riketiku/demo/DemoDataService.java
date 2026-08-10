@@ -55,6 +55,7 @@ public class DemoDataService {
         if (version != 11 || tableCount != 27) {
             throw new IllegalStateException("演示库必须完整执行V1-V11且包含27张业务表，当前V" + version + "，" + tableCount + "张");
         }
+        expect("管理员操作日志表", 1, count("SELECT COUNT(*) FROM information_schema.tables WHERE table_schema=DATABASE() AND table_name='guan_li_cao_zuo_ri_zhi'"));
         System.out.println("演示数据库结构校验通过: " + database + "，V1-V11，27张业务表");
     }
 
@@ -114,7 +115,9 @@ public class DemoDataService {
 
     public void validateSeed() {
         validateSchema();
+        expect("三个学科", 3, count("SELECT COUNT(*) FROM ke_mu WHERE ke_mu_dai_ma IN ('PHYSICS','CHEMISTRY','BIOLOGY') AND zhuang_tai='ACTIVE' AND yi_shan_chu=0"));
         expect("三个演示账号", 3, count("SELECT COUNT(*) FROM yong_hu WHERE yong_hu_ming IN ('demo_admin','demo_teacher','demo_student') AND yi_shan_chu=0"));
+        expect("最终验收四账号", 4, count("SELECT COUNT(*) FROM yong_hu WHERE yong_hu_ming IN ('demo_admin','demo_199_01','demo_teacher','demo_physics_admin') AND zhang_hao_zhuang_tai='ENABLED' AND yi_shan_chu=0"));
         expect("三个角色", 3, count("SELECT COUNT(DISTINCT r.jiao_se_dai_ma) FROM yong_hu u JOIN yong_hu_jiao_se ur ON ur.yong_hu_id=u.id AND ur.zhuang_tai='ACTIVE' JOIN jiao_se r ON r.id=ur.jiao_se_id WHERE u.yong_hu_ming IN ('demo_admin','demo_teacher','demo_student')"));
         for (String username : DEMO_USERS) {
             String digest = jdbc.queryForObject("SELECT mi_ma_zhai_yao FROM yong_hu WHERE yong_hu_ming=?", String.class, username);
@@ -244,6 +247,27 @@ public class DemoDataService {
                        OR a.jie_xi_nei_rong LIKE '%正确答案为由%')
                 """));
         expect("活动图片附件", 2, count("SELECT COUNT(*) FROM ti_mu_fu_jian f JOIN ti_mu q ON q.id=f.ti_mu_id WHERE q.ti_gan LIKE '【演示】%' AND f.fu_jian_lei_xing='IMAGE' AND f.zhuang_tai='ACTIVE' AND f.yi_shan_chu=0"));
+        List<DemoAttachment> physicsS1Attachments = jdbc.query("""
+                SELECT f.guan_lian_wei_zhi,f.dui_xiang_biao_shi,f.xiang_dui_lu_jing,f.nei_rong_ha_xi
+                FROM ti_mu_fu_jian f
+                JOIN ti_mu q ON q.id=f.ti_mu_id
+                JOIN ke_mu s ON s.id=q.ke_mu_id
+                WHERE s.ke_mu_dai_ma='PHYSICS'
+                  AND q.ti_gan='【演示】物体保持静止时，所受合力应为多少？〔图片对象 I001〕'
+                  AND f.fu_jian_lei_xing='IMAGE' AND f.zhuang_tai='ACTIVE' AND f.yi_shan_chu=0
+                ORDER BY f.guan_lian_wei_zhi
+                """, (rs, row) -> new DemoAttachment(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4)));
+        if (physicsS1Attachments.size() != 2
+                || physicsS1Attachments.stream().noneMatch(item -> "QUESTION".equals(item.position()) && "I001".equals(item.marker()))
+                || physicsS1Attachments.stream().noneMatch(item -> "STANDARD_ANALYSIS".equals(item.position()) && "I002".equals(item.marker()))) {
+            throw new IllegalStateException("PHYSICS-S1必须包含I001题干图片和I002标准解析图片");
+        }
+        for (DemoAttachment item : physicsS1Attachments) {
+            QuestionAttachmentStorage.StoredImage image = attachmentStorage.read(item.relativePath(), item.hash());
+            if (!"image/png".equals(image.mime()) || image.bytes().length == 0) {
+                throw new IllegalStateException("PHYSICS-S1图片文件必须是可回读的PNG: " + item.marker());
+            }
+        }
         expect("对象标记", 0, count("""
                 SELECT COUNT(*) FROM ti_mu q
                 WHERE q.ti_gan LIKE '【演示】%'
@@ -518,5 +542,8 @@ public class DemoDataService {
     }
 
     private record Option(String label, String content, boolean correct) {
+    }
+
+    private record DemoAttachment(String position, String marker, String relativePath, String hash) {
     }
 }
