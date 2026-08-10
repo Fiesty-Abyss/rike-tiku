@@ -27,7 +27,7 @@ async function logout() {
     <el-aside class="admin-sidebar" width="224px">
       <router-link class="admin-brand" to="/admin">
         <span class="admin-brand-mark">RL</span>
-        <span>理科学习辅助系统<small>ADMIN CONSOLE</small></span>
+        <span>理科学习辅助系统<small>管理员工作台</small></span>
       </router-link>
       <el-menu class="admin-menu" router :default-active="$route.path" aria-label="管理员工作区导航">
         <el-menu-item index="/admin"><span>工作台</span></el-menu-item>

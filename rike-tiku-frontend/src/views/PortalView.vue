@@ -6,50 +6,18 @@ const root = ref<HTMLElement>()
 let motion: gsap.MatchMedia | undefined
 let context: gsap.Context | undefined
 
-const learningLoop = [
-  { index: '01', title: '练习', copy: '按学科、知识点、题型与难度建立一场冻结题集。' },
-  { index: '02', title: '判分', copy: '单选、多选、填空由确定性规则完成判分。' },
-  { index: '03', title: '复盘', copy: '逐题核对本人答案、正确答案与 STANDARD 解析。' },
-  { index: '04', title: '错题', copy: '错误事实即时进入错题本，并按真实学科隔离。' },
-  { index: '05', title: '掌握度 / 推荐', copy: '根据答题和错题状态计算，不制造虚构学习指标。' },
-  { index: '06', title: '再练习', copy: '从知识点或相似规则题重新进入学习回路。' },
-]
-
-const subjects = [
-  { code: 'PHYSICS', name: '物理', className: 'physics', copy: '用轨迹、力与场，把抽象关系还原为可以验证的推理。', note: '运动 · 能量 · 电磁 · 实验' },
-  { code: 'CHEMISTRY', name: '化学', className: 'chemistry', copy: '在结构、反应和条件变化之间，建立层次清楚的判断链。', note: '计量 · 反应 · 平衡 · 实验' },
-  { code: 'BIOLOGY', name: '生物', className: 'biology', copy: '从细胞到生态系统，以稳态、信息与证据理解生命过程。', note: '细胞 · 遗传 · 调节 · 生态' },
-]
-
-const roles = [
-  { number: 'A', title: '学生学习舱', copy: '练习、逐题复盘、错题、掌握度、规则推荐和 Topic18 专题阅读。' },
-  { number: 'T', title: '教师分析室', copy: '围绕真实任课范围查看学生、学情、高频考点与师生私信。' },
-  { number: 'M', title: '管理员控制台', copy: '维护教学组织、账号、题库状态、附件与高风险操作审计。' },
-]
-
 onMounted(() => {
   if (!root.value || typeof window.matchMedia !== 'function') return
   motion = gsap.matchMedia()
   context = gsap.context(() => {
     motion?.add('(prefers-reduced-motion: no-preference)', () => {
       gsap.timeline({ defaults: { ease: 'power3.out' } })
-        .from('.portal-nav', { autoAlpha: 0, y: -16, duration: 0.55 })
-        .from('.portal-hero-copy > *', { autoAlpha: 0, y: 24, duration: 0.7, stagger: 0.08 }, '-=0.2')
-        .from('.optical-instrument', { autoAlpha: 0, scale: 0.96, duration: 0.85 }, '-=0.55')
-
-      gsap.to('.optical-core', { y: -8, duration: 3.8, repeat: -1, yoyo: true, ease: 'sine.inOut' })
-      gsap.utils.toArray<HTMLElement>('.portal-reveal').forEach((section) => {
-        gsap.from(section, {
-          autoAlpha: 0,
-          y: 34,
-          duration: 0.75,
-          ease: 'power3.out',
-          scrollTrigger: { trigger: section, start: 'top 86%', once: true },
-        })
-      })
+        .from('.portal-nav', { autoAlpha: 0, y: -14, duration: 0.45 })
+        .from('.portal-hero-copy > *', { autoAlpha: 0, y: 22, duration: 0.62, stagger: 0.07 }, '-=0.14')
+        .from('.optical-instrument', { autoAlpha: 0, scale: 0.97, duration: 0.72 }, '-=0.48')
     })
     motion?.add('(prefers-reduced-motion: reduce)', () => {
-      gsap.set('.portal-nav, .portal-hero-copy > *, .optical-instrument, .portal-reveal', { clearProps: 'all' })
+      gsap.set('.portal-nav, .portal-hero-copy > *, .optical-instrument', { clearProps: 'all' })
     })
   }, root.value)
 })
@@ -67,84 +35,90 @@ onUnmounted(() => {
         <span class="portal-mark" aria-hidden="true"><i></i></span>
         <span><strong>RIKE</strong><small>理科学习辅助系统</small></span>
       </RouterLink>
-      <div class="portal-nav-status"><span>NON-AI FOUNDATION</span><RouterLink class="portal-nav-login" to="/login">统一登录</RouterLink></div>
+      <RouterLink class="portal-nav-login" to="/login">登录</RouterLink>
     </header>
 
     <main>
       <section class="portal-hero" aria-labelledby="portal-title">
         <div class="portal-hero-copy">
-          <p class="portal-overline">AQUA LIMINAL LEARNING SYSTEM · 2026</p>
-          <h1 id="portal-title">在安静而清晰的界面里，<span>完成一次真正闭环的理科学习。</span></h1>
-          <p class="portal-subtitle">集成大模型智能答疑的在线题库实训管理系统，面向高中物理、化学、生物的练习、复盘与教学组织。</p>
-          <p class="portal-ai-boundary"><strong>能力边界</strong> 当前运行时 AI 智能答疑尚未上线；现阶段以标准答案与标准解析为权威。</p>
+          <h1 id="portal-title">RIKE 理科学习辅助系统</h1>
+          <p class="portal-subtitle">高中物理、化学、生物练习与学习管理</p>
           <div class="portal-actions">
-            <RouterLink data-testid="portal-login" class="portal-primary-action" to="/login">进入统一登录 <span aria-hidden="true">↗</span></RouterLink>
-            <a class="portal-secondary-action" href="#learning-loop">沿学习闭环向下</a>
+            <RouterLink data-testid="portal-login" class="portal-primary-action" to="/login">登录</RouterLink>
+            <a class="portal-secondary-action" href="#subjects">了解系统</a>
           </div>
         </div>
 
         <div class="optical-instrument" aria-hidden="true">
-          <div class="horizon-line"></div>
-          <div class="optical-orbit orbit-one"></div>
-          <div class="optical-orbit orbit-two"></div>
-          <div class="optical-core"><span>RIKE</span><small>LEARN · VERIFY · RETURN</small></div>
-          <span class="instrument-label label-a">03:42</span>
-          <span class="instrument-label label-b">MIST / 18°C</span>
-          <span class="instrument-label label-c">PH · CH · BI</span>
+          <span class="horizon-line"></span>
+          <span class="optical-arc optical-arc--wide"></span>
+          <span class="optical-arc optical-arc--narrow"></span>
+          <span class="optical-core"></span>
         </div>
       </section>
 
-      <section id="learning-loop" class="portal-section portal-story portal-reveal" aria-labelledby="learning-title">
-        <header class="portal-story-heading">
-          <p class="portal-overline">LEARNING CURRENT</p>
-          <h2 id="learning-title">一条可回到知识点的学习水流</h2>
-          <p>学习不是把答案堆成列表。每次提交都留下可追溯事实，并自然指向下一次练习。</p>
-        </header>
-        <ol class="learning-current">
-          <li v-for="step in learningLoop" :key="step.index">
-            <span>{{ step.index }}</span><div><h3>{{ step.title }}</h3><p>{{ step.copy }}</p></div>
-          </li>
-        </ol>
-      </section>
-
-      <section class="portal-section science-section portal-reveal" aria-labelledby="science-title">
+      <section id="subjects" class="portal-section science-section" aria-labelledby="science-title">
         <header class="portal-section-heading">
-          <p class="portal-overline">THREE SCIENCES</p>
-          <h2 id="science-title">三门学科，不是三张换色卡片</h2>
-          <p>每个入口保留自己的思维气质；普通题库仍共享确定性判分与标准解析。</p>
+          <h2 id="science-title">三科学习</h2>
         </header>
         <div class="science-compositions">
-          <article v-for="subject in subjects" :key="subject.code" :class="`science-composition science-${subject.className}`">
-            <div class="science-visual" aria-hidden="true"><i></i><i></i><i></i></div>
-            <div><span>{{ subject.code }}</span><h3>{{ subject.name }}</h3><p>{{ subject.copy }}</p><small>{{ subject.note }}</small></div>
+          <article class="science-composition science-physics">
+            <div class="science-visual">
+              <svg viewBox="0 0 360 220" role="img" aria-label="物理轨迹、波和场线示意">
+                <defs><linearGradient id="physics-wash" x1="0" x2="1"><stop stop-color="#dcecff"/><stop offset="1" stop-color="#9fc9f5" stop-opacity=".25"/></linearGradient></defs>
+                <path class="science-fill" d="M18 184C83 177 103 48 174 52c64 4 78 120 168 116v42H18Z" fill="url(#physics-wash)"/>
+                <path class="science-line science-line--strong" d="M22 179C86 170 106 44 174 48c66 4 82 119 167 112"/>
+                <path class="science-line" d="M42 123c40-44 82-44 122 0s82 44 124 0"/>
+                <path class="science-line" d="M42 139c40-44 82-44 122 0s82 44 124 0"/>
+                <path class="science-vector" d="M82 170 154 90m0 0-7 19m7-19-20 3"/>
+                <circle class="science-node" cx="174" cy="48" r="7"/>
+              </svg>
+            </div>
+            <div><h3>物理</h3><p>运动、力与场</p></div>
+          </article>
+
+          <article class="science-composition science-chemistry">
+            <div class="science-visual">
+              <svg viewBox="0 0 360 220" role="img" aria-label="化学溶液、分子键和光谱示意">
+                <defs><linearGradient id="chem-liquid" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#c8c9f0" stop-opacity=".36"/><stop offset="1" stop-color="#8f85bd" stop-opacity=".68"/></linearGradient></defs>
+                <path class="science-vessel" d="M108 24h78m-55 0v52l-58 103c-8 14 2 27 18 27h154c16 0 26-13 18-27L207 76V24"/>
+                <path class="science-liquid" d="M91 153c32-16 56 9 88-3 26-10 50-4 78 12l17 30c4 8-1 14-11 14H81c-10 0-15-7-10-15Z" fill="url(#chem-liquid)"/>
+                <path class="science-bond" d="m118 125 32-22 34 20 34-25"/>
+                <circle class="science-atom" cx="118" cy="125" r="7"/><circle class="science-atom" cx="150" cy="103" r="9"/><circle class="science-atom" cx="184" cy="123" r="6"/><circle class="science-atom" cx="218" cy="98" r="8"/>
+                <g class="science-spectrum"><path d="M286 58v58"/><path d="M300 48v68"/><path d="M314 69v47"/><path d="M328 38v78"/></g>
+              </svg>
+            </div>
+            <div><h3>化学</h3><p>结构、反应与平衡</p></div>
+          </article>
+
+          <article class="science-composition science-biology">
+            <div class="science-visual">
+              <svg viewBox="0 0 360 220" role="img" aria-label="生物细胞膜、叶脉和信息网络示意">
+                <path class="science-cell" d="M59 116c0-55 45-91 102-86 64 5 79 38 130 50 35 8 30 65 1 82-46 28-88 4-134 22-53 21-99-12-99-68Z"/>
+                <path class="science-vein science-line--strong" d="M88 160c48-25 74-62 112-108"/>
+                <path class="science-vein" d="m121 139-8-42m40 13 42-13m-17-18-3-34m-20 67-7 45m35-67 52 31"/>
+                <g class="membrane-nodes"><circle cx="84" cy="78" r="7"/><circle cx="105" cy="66" r="7"/><circle cx="128" cy="57" r="7"/><circle cx="152" cy="51" r="7"/><circle cx="178" cy="50" r="7"/><circle cx="203" cy="54" r="7"/><circle cx="227" cy="62" r="7"/></g>
+                <circle class="science-nucleus" cx="210" cy="124" r="27"/><path class="science-helix" d="M198 106c22 8 22 28 0 36m24-36c-22 8-22 28 0 36m-20-29h16m-16 18h16"/>
+              </svg>
+            </div>
+            <div><h3>生物</h3><p>细胞、遗传与生态</p></div>
           </article>
         </div>
       </section>
 
-      <section class="portal-section role-section portal-reveal" aria-labelledby="role-title">
-        <header class="portal-section-heading">
-          <p class="portal-overline">ROLE-NATIVE WORKSPACES</p>
-          <h2 id="role-title">同一个 RIKE，不同的工作节奏</h2>
-          <p>角色来自数据库配置；视觉结构帮助辨认当前任务，但绝不代替后端权限。</p>
-        </header>
-        <div class="role-runway">
-          <article v-for="role in roles" :key="role.number"><span>{{ role.number }}</span><h3>{{ role.title }}</h3><p>{{ role.copy }}</p></article>
-        </div>
+      <section class="portal-snapshot" aria-label="系统数据概览">
+        <div><strong>3</strong><span>个学科</span></div>
+        <div><strong>360</strong><span>道自动练习题</span></div>
+        <div><strong>18</strong><span>道专题综合题</span></div>
       </section>
 
-      <section class="portal-section boundary-section portal-reveal" aria-labelledby="boundary-title">
-        <div><p class="portal-overline">PRODUCT TRUTH</p><h2 id="boundary-title">AI 智能答疑：后续能力规划</h2></div>
-        <p>当前系统尚未实现运行时 AI 答疑。AI 不可用时，登录、题库、练习、判分、错题、标准解析、Topic18 与教学管理仍应正常工作。</p>
-      </section>
-
-      <section class="portal-entrance portal-reveal" aria-labelledby="entrance-title">
-        <span class="entrance-horizon" aria-hidden="true"></span>
-        <div><p class="portal-overline">GATE 01 · READY</p><h2 id="entrance-title">从一次清晰的练习开始。</h2><p>使用管理员发放的账号，通过图形验证码进入真实角色工作台。</p></div>
-        <RouterLink class="portal-primary-action" to="/login">进入统一登录 <span aria-hidden="true">↗</span></RouterLink>
+      <section class="portal-entrance" aria-labelledby="entrance-title">
+        <div><h2 id="entrance-title">进入 RIKE</h2><p>使用管理员发放的账号登录。</p></div>
+        <RouterLink class="portal-primary-action" to="/login">登录系统</RouterLink>
       </section>
     </main>
 
-    <footer class="portal-footer"><span>RIKE · AQUA LIMINAL FUTURE</span><span>物理 · 化学 · 生物</span><span>标准答案与解析始终权威</span></footer>
+    <footer class="portal-footer"><span>RIKE 理科学习辅助系统</span><span>物理 · 化学 · 生物</span><span>当前版本以标准答案与标准解析为准</span></footer>
   </div>
 </template>
 

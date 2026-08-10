@@ -53,8 +53,8 @@ async function handleLogin(payload: {
   <main ref="root" class="auth-page">
     <section class="auth-introduction" aria-label="系统说明">
       <p class="school-mark">RIKE · LEARNING</p>
-      <h1>理科学习，从清晰的练习开始。</h1>
-      <p>统一进入高中物理、化学、生物的题库实训空间；根据账号真实角色进入对应工作台。</p>
+      <h1>高中理科学习与教学管理</h1>
+      <p>使用管理员发放的账号进入物理、化学、生物工作区。</p>
       <div class="subject-line"><span>物理</span><span>化学</span><span>生物</span></div>
     </section>
     <section class="auth-panel" aria-labelledby="login-title">

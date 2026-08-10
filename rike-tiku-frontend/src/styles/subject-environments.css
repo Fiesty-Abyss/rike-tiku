@@ -1,0 +1,157 @@
+[data-subject="physics"] {
+  --subject-accent: var(--physics);
+  --subject-accent-deep: oklch(43% 0.145 253);
+  --subject-soft: var(--physics-soft);
+  --subject-environment: oklch(93% 0.052 239);
+  --subject-haze: oklch(83% 0.09 240 / 0.48);
+}
+
+[data-subject="chemistry"] {
+  --subject-accent: var(--chemistry);
+  --subject-accent-deep: oklch(45% 0.075 296);
+  --subject-soft: var(--chemistry-soft);
+  --subject-environment: oklch(94% 0.038 292);
+  --subject-haze: oklch(83% 0.07 288 / 0.46);
+}
+
+[data-subject="biology"] {
+  --subject-accent: var(--biology);
+  --subject-accent-deep: oklch(40% 0.09 163);
+  --subject-soft: var(--biology-soft);
+  --subject-environment: oklch(93% 0.046 164);
+  --subject-haze: oklch(80% 0.09 169 / 0.42);
+}
+
+.student-shell:has([data-subject="physics"]),
+.student-shell:has([data-subject="chemistry"]),
+.student-shell:has([data-subject="biology"]),
+.workspace-page[data-subject] {
+  --brand: var(--subject-accent);
+  --brand-deep: var(--subject-accent-deep);
+  --brand-soft: var(--subject-soft);
+  --focus-ring: var(--subject-accent);
+  --el-color-primary: var(--subject-accent);
+  --el-color-primary-light-9: var(--subject-soft);
+}
+
+.student-shell:has([data-subject="physics"]) {
+  --subject-accent: var(--physics);
+  --subject-accent-deep: oklch(43% 0.145 253);
+  --subject-soft: var(--physics-soft);
+  background:
+    radial-gradient(ellipse at 82% 5rem, oklch(79% 0.105 242 / .46), transparent 27rem),
+    linear-gradient(160deg, oklch(92% 0.055 239), var(--canvas) 32rem, oklch(96% .025 215));
+}
+
+.student-shell:has([data-subject="chemistry"]) {
+  --subject-accent: var(--chemistry);
+  --subject-accent-deep: oklch(45% 0.075 296);
+  --subject-soft: var(--chemistry-soft);
+  background:
+    radial-gradient(ellipse at 80% 6rem, oklch(82% 0.075 289 / .5), transparent 28rem),
+    linear-gradient(160deg, oklch(93% 0.043 292), var(--canvas) 32rem, oklch(97% .02 226));
+}
+
+.student-shell:has([data-subject="biology"]) {
+  --subject-accent: var(--biology);
+  --subject-accent-deep: oklch(40% 0.09 163);
+  --subject-soft: var(--biology-soft);
+  background:
+    radial-gradient(ellipse at 80% 6rem, oklch(79% 0.09 170 / .42), transparent 28rem),
+    linear-gradient(160deg, oklch(92% 0.05 164), var(--canvas) 32rem, oklch(96% .027 185));
+}
+
+.student-shell:has([data-subject]) .student-header {
+  border-color: color-mix(in oklch, var(--subject-accent), transparent 72%);
+  background: color-mix(in oklch, var(--subject-soft) 62%, transparent);
+  box-shadow: inset 0 1px oklch(100% 0 0 / .82), 0 .8rem 2.6rem color-mix(in oklch, var(--subject-accent), transparent 90%);
+  -webkit-backdrop-filter: blur(24px) saturate(132%);
+  backdrop-filter: blur(24px) saturate(132%);
+}
+
+.student-page[data-subject] { position: relative; }
+.student-page[data-subject] .student-page-heading,
+.student-page[data-subject] .practice-progress,
+.student-page[data-subject] .result-summary {
+  padding: 1.35rem 1.5rem;
+  border: 1px solid color-mix(in oklch, var(--subject-accent), transparent 70%);
+  border-radius: var(--radius-feature);
+  background: color-mix(in oklch, var(--subject-soft) 58%, transparent);
+  box-shadow: inset 1px 1px oklch(100% 0 0 / .82), 0 1.1rem 3rem color-mix(in oklch, var(--subject-accent), transparent 91%);
+  -webkit-backdrop-filter: blur(24px) saturate(128%);
+  backdrop-filter: blur(24px) saturate(128%);
+}
+
+.student-page[data-subject] .practice-question,
+.student-page[data-subject] .result-focus,
+.student-page[data-subject] .topic-reader,
+.student-page[data-subject] .data-table {
+  border-color: color-mix(in oklch, var(--subject-accent), transparent 79%);
+}
+
+.student-page[data-subject] .question-meta,
+.student-page[data-subject] .result-kicker,
+.student-page[data-subject] .topic-reader article > header span {
+  color: var(--subject-accent-deep);
+}
+
+.student-page[data-subject] .el-progress-bar__inner,
+.student-page[data-subject] .result-question-nav button.active {
+  background: var(--subject-accent);
+}
+
+.workspace-page[data-subject="physics"] {
+  background: radial-gradient(ellipse at 82% 7rem, oklch(77% .1 241 / .4), transparent 30rem), linear-gradient(165deg, oklch(92% .052 239), var(--canvas) 32rem);
+}
+.workspace-page[data-subject="chemistry"] {
+  background: radial-gradient(ellipse at 82% 7rem, oklch(80% .075 289 / .42), transparent 30rem), linear-gradient(165deg, oklch(93% .043 292), var(--canvas) 32rem);
+}
+.workspace-page[data-subject="biology"] {
+  background: radial-gradient(ellipse at 82% 7rem, oklch(78% .09 169 / .38), transparent 30rem), linear-gradient(165deg, oklch(92% .048 164), var(--canvas) 32rem);
+}
+
+.workspace-page[data-subject] .workspace-header {
+  border-bottom-color: color-mix(in oklch, var(--subject-accent), transparent 58%);
+  background: linear-gradient(120deg, color-mix(in oklch, var(--subject-accent-deep), oklch(24% .04 230) 56%), color-mix(in oklch, var(--subject-accent), oklch(35% .045 225) 64%));
+}
+
+.workspace-page[data-subject] .scope-overview > div {
+  border-color: color-mix(in oklch, var(--subject-accent), transparent 70%);
+  background: color-mix(in oklch, var(--subject-soft) 62%, transparent);
+  box-shadow: inset 1px 1px oklch(100% 0 0 / .8), 0 .9rem 2.5rem color-mix(in oklch, var(--subject-accent), transparent 91%);
+  -webkit-backdrop-filter: blur(22px) saturate(126%);
+  backdrop-filter: blur(22px) saturate(126%);
+}
+
+.workspace-page[data-subject] .workspace-card {
+  border-color: color-mix(in oklch, var(--subject-accent), transparent 80%);
+}
+
+.scientific-text { white-space: inherit; line-height: inherit; overflow-wrap: anywhere; }
+.scientific-text__plain { white-space: inherit; }
+.math-fragment { display: inline-block; max-width: 100%; margin-inline: .08em; vertical-align: -0.08em; color: var(--ink-primary); }
+.math-fragment--display { display: block; width: 100%; margin: .8rem 0; padding: .45rem 0; overflow-x: auto; overflow-y: hidden; text-align: center; -webkit-overflow-scrolling: touch; }
+.math-fragment[data-render-status="fallback"] { padding-inline: .25em; border-bottom: 1px dashed var(--warning); color: var(--ink-secondary); font-family: ui-monospace, "Cascadia Mono", monospace; }
+.katex { font-size: 1.04em; }
+.katex-display { margin: 0; }
+
+.metric-fraction { display: inline-grid; grid-template-rows: auto 1px auto; place-items: center; min-width: 2.2rem; color: var(--ink-primary); font: 680 1.05rem/1 var(--font-display); font-variant-numeric: tabular-nums; vertical-align: middle; }
+.metric-fraction__bar { width: 100%; min-width: 1.8rem; height: 1px; margin-block: .22rem; background: currentColor; }
+.metric-fraction__numerator, .metric-fraction__denominator { line-height: 1; }
+
+@supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+  .student-shell:has([data-subject]) .student-header,
+  .student-page[data-subject] .student-page-heading,
+  .student-page[data-subject] .practice-progress,
+  .student-page[data-subject] .result-summary,
+  .workspace-page[data-subject] .scope-overview > div {
+    background: color-mix(in oklch, var(--subject-soft) 92%, white);
+  }
+}
+
+@media (max-width: 30rem) {
+  .student-page[data-subject] .student-page-heading,
+  .student-page[data-subject] .practice-progress,
+  .student-page[data-subject] .result-summary { padding: 1rem; }
+  .math-fragment--display { text-align: left; }
+}

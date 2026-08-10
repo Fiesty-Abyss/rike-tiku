@@ -14,5 +14,13 @@
     "theme_axes": "light / aqua-liminal / quiet-technical",
     "enrichment": "original CSS/SVG optical-water geometry",
     "brief": "PR #27 final learning loop and product-level UI redesign"
+  },
+  {
+    "date": "2026-08-10",
+    "macrostructure": "Distilled Entrance / Subject Environments",
+    "theme": "mizuiro-aero",
+    "theme_axes": "light / aqua-liminal / scientific-readable",
+    "enrichment": "semantic science SVG plus explicit scientific typography",
+    "brief": "PR #27 second human visual review: subtract Portal copy, deepen glass, carry subjectCode into real workspaces"
   }
 ]

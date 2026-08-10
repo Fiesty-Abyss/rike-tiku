@@ -1,106 +1,95 @@
 # RIKE Aqua Liminal Future
 
-Status: locked primary design system for PR #27. Internal theme name: `mizuiro-aero`.
+Status: PR #27 唯一正式设计系统。内部主题名：`mizuiro-aero`。
 
 ## Product truth
 
-RIKE is a long-session learning and teaching product for high-school physics, chemistry, and biology. Decoration must never outrank question text, analysis, tables, permissions, or factual state. The public portal may be atmospheric; authenticated workspaces remain efficient.
+RIKE 面向高中物理、化学、生物的长时间学习与教学管理。题目、解析、表格、权限和真实业务状态始终优先于装饰；公共入口可以有环境感，登录后的工作区必须高效、清晰。
 
-## Hallmark audit
+## Hallmark second-round distill
 
-The pre-redesign audit ranked these issues highest:
+第二轮审计把“继续加设计”改成“删去解释设计的内容”。优先级最高的五项问题是：
 
-1. The portal followed a familiar hero → feature grid → three equal subject cards → CTA pattern, so its structure did not express the learning loop.
-2. Student, teacher, and administrator surfaces shared too much of the same card-and-table language; role differences were mostly headings.
-3. Nearly every block used the same white rounded rectangle, weakening hierarchy and creating generated-dashboard sameness.
-4. Large quiet areas were not always intentional; some pages lacked a clear focal task or useful empty-state next action.
-5. Filters, table identifiers, result review, and mobile navigation had inconsistent density and control widths.
+1. Portal 把学习流程和设计理念写成了面向用户的宣传文案。
+2. Learning Current、角色说明和 AI 规划形成了作品集概念页，而不是简洁入口。
+3. 化学矩形与生物椭圆缺乏学科含义。
+4. 学科色只停留在卡片局部，没有进入学生与教师的真实工作环境。
+5. 科学公式仍混在普通字符串中，理科学习内容缺少可靠的排版层。
+
+最终 Portal 只保留四个区段：事实型 Hero、三科学科、真实数据快照、登录入口。删除学习流程解说、角色说明和 AI 规划区块；总文字量显著下降，ScrollTrigger 也随冗余叙事一起移除。
 
 ## Reference study DNA
 
-Apple public product pages were studied only as a public design reference. The retained DNA is macro-level: one focal idea per viewport, strong heading/body rhythm, generous but purposeful whitespace, progressive disclosure, material hierarchy, and motion that explains sequence. No copy, imagery, icons, font, device composition, or pixel layout is copied.
+Apple 公开产品页面只作为宏观设计研究：保留清楚的标题/正文节奏、目的明确的留白、渐进披露、材质层级和服从内容的动效。没有复制文案、图片、图标、字体、设备构图或具体页面结构。
 
 ## Macrostructure
 
-- Public portal: a five-act narrative, not a card catalogue — Water Horizon, Learning Current, Three Sciences, Three Workspaces, Entrance.
-- Student: a learning cockpit with the current task dominant; answers and analysis live on solid reading surfaces.
-- Teacher: a pre-dawn teaching studio optimized for scanning class scope, learning state, and high-frequency points.
-- Administrator: a dense operational workbench inside a quieter architectural shell; tables and forms remain solid.
-- Authentication: an airport-at-night service terminal with a direct route back to the portal.
+- Public portal：品牌、三科学科、3/360/18 真实快照和登录入口。
+- Student：以当前学习任务为视觉中心；当前学科决定整页环境，而不是只改变按钮颜色。
+- Teacher：任课范围使用响应 DTO 的 `subjectCode` 决定环境主题；不依赖用户名或数据库固定 ID。
+- Administrator：保持中性 Aqua 环境，同时用学科 accent 表达混合学科数据。
+- Authentication：清楚的一次 CAPTCHA 登录，并保留返回 Portal 的自然出口。
 
-## Colour and material
+## Colour, subject environments and material
 
-Semantic tokens live in `rike-tiku-frontend/src/styles/tokens.css`; the primary theme is in `themes/mizuiro-aero.css`.
+语义 token 位于 `rike-tiku-frontend/src/styles/tokens.css`，主主题位于 `themes/mizuiro-aero.css`，学科环境位于 `subject-environments.css`。
 
-- Canvas: water-mist white and cold blue-grey.
-- Primary ink: deep ocean blue-black, never pure black.
-- Physics: restrained cobalt and ice blue.
-- Chemistry: muted periwinkle / mauve-grey, never saturated SaaS purple.
-- Biology: jade and forest mist, never fluorescent green.
+- Canvas：水雾白和冷蓝灰。
+- Ink：深海蓝黑，不使用大面积纯黑。
+- Physics：克制 cobalt、ice blue 和清楚的线性结构。
+- Chemistry：mist violet、periwinkle、mauve silver，不使用高饱和 SaaS 紫。
+- Biology：jade mist、seafoam、muted forest，不使用卡通草绿。
 
-Material levels:
+学科根节点统一使用 `data-subject="physics|chemistry|biology"`，来源只接受稳定的 `subjectCode`。学生学科首页、练习、结果、错题、专题学习和教师任课范围共享同一环境解析；管理员不按单一题目染整页。
 
-1. `surface-solid`: tables, forms, questions, answers, long text, logs.
-2. `surface-glass`: top bars, login, role selection, floating filters, selected dashboard panels.
-3. `optical-glass`: one or two signature portal/auth focal objects only.
+材质分层：
 
-Large `backdrop-filter` surfaces are limited and always have an opaque fallback. Repeated rows and answer options never use blur.
+1. `surface-solid`：表格、长表单、题目、答案、解析、Topic 长文和日志。
+2. `surface-glass`：顶部栏、登录、角色选择、学科页面标题、Dialog/Drawer 和少量浮动工具条。
+3. `optical-glass`：Portal/Auth 的少数视觉焦点。
 
-## Typography and spacing
+玻璃层使用可见的环境背景、半透明表面、24px 左右 blur/saturate、冷白边缘高光和轻微内外阴影建立前后深度；同屏不铺满 blur。`@supports not (backdrop-filter)` 使用高不透明度冷色实体表面，文字对比不依赖模糊。
 
-- Humanist system Chinese typography; no remote font dependency.
-- Display sizes use restrained fluid scaling; workspaces do not use marketing-sized headings.
-- 4/8-based spacing; control height is at least 42px and 44px for coarse pointers.
-- Reading columns stay near 68 Chinese characters; analysis and topic material prioritize line-height.
+## Semantic science visuals
+
+Portal 三科使用同一线条与水色材质语言的原创 SVG，不使用网络资源：
+
+- 物理：轨迹、波、矢量和场线。
+- 化学：烧瓶液面、分子键和光谱边缘。
+- 生物：细胞膜、细胞核、叶脉网络和螺旋结构。
+
+没有学科含义的矩形、椭圆和装饰性几何已删除。
+
+## Scientific typography
+
+`ScientificText` 只解析显式 `\\(...\\)` 与 `\\[...\\]` 片段，旧纯文本保持原样；普通 `/` 不会被猜成分数。`MathFragment` 通过 KaTeX 0.18.3 的 DOM renderer 输出 HTML + MathML，不使用 `v-html`，并固定 `trust=false`、大小/宏展开限制与可见 fallback。`QuestionContent` 继续负责附件 marker 与文本组合。
+
+`MetricFraction` 用于少数关键统计的堆叠分数，并提供完整 `aria-label`。Topic18 的代表性物理公式、化学式/离子、电荷上下标、科学单位和遗传分数已迁移到显式标记；后续题库可以渐进采用，不改变 Excel 导入兼容性，也不批量改写全部 378 道题。
+
+## Typography, spacing and interaction
+
+- 使用本地 humanist 中文字体栈，无远程字体依赖。
+- 工作区不使用营销页字号；题目/解析保持舒适行宽和行高。
+- 4/8 spacing；普通控件至少 42px，粗指针环境 44px。
+- 键盘 focus 始终可见；危险操作与普通操作分层。
+- 学生主导航同一时刻只有一个 active。
+- 管理员筛选使用响应式 grid，表格标识不在 token 中间断行。
+- display math 在窄屏可水平滚动，不撑破 390px 布局。
 
 ## Motion
 
-GSAP is reserved for portal narrative reveal, auth/role entrance, and dashboard metric reveal. Vue component scopes use `gsap.context()`; media conditions use `gsap.matchMedia()`; unmount calls `revert()`. ScrollTrigger is registered once and only used by the portal. Motion uses opacity, x/y, and small scale. Reduced-motion renders content immediately and disables parallax, long stagger, and scroll choreography.
-
-## Interaction rules
-
-- Focus rings are always visible for keyboard interaction.
-- One primary action per local task cluster.
-- Wrong/danger states use restrained accents, not full saturated surfaces.
-- Empty states state what is empty and offer the next legitimate action where one exists.
-- Student main navigation has exactly one active item.
-- Admin filters use responsive grids; actions are separate; identifiers do not break mid-token.
-
-## Deliberate omissions
-
-The optional `dark-deco` theme is documented as backlog, not implemented in PR #27. The primary theme, business blockers, Topic18, machine acceptance, screenshots, and final human acceptance take precedence; a second theme would expand QA without improving the required learning loop.
+Portal 只保留一次短促的 Hero 入场；删除为了长页面而存在的滚动叙事。Vue 中的 GSAP 在 `onMounted` 后通过 `gsap.context()` 和 `gsap.matchMedia()` 创建，卸载时 `revert()`；只动画 opacity、x/y 和小幅 scale。`prefers-reduced-motion` 下内容立即可见。练习切题和解析展开使用短 Vue transition，不为表格和普通按钮增加动画。
 
 ## Skill execution record
 
-The installed skills actually discovered and read before visual editing were:
+实际发现并读取：
 
-- `hallmark` — `D:/CodexHome/skills/hallmark/SKILL.md` plus its audit, study and redesign references;
-- `impeccable` — `D:/CodexHome/skills/impeccable/SKILL.md` plus the relevant audit/critique/normalize/polish/distill guidance;
-- `gsap-core`, `gsap-timeline`, `gsap-frameworks`, `gsap-performance`, and `gsap-scrolltrigger` — each installed `SKILL.md` was read in full.
+- `hallmark`：`D:/CodexHome/skills/hallmark/SKILL.md` 及 audit/study/redesign/distill 相关参考；
+- `impeccable`：`D:/CodexHome/skills/impeccable/SKILL.md` 与 `reference/craft-floor.md`；
+- `gsap-core`、`gsap-timeline`、`gsap-frameworks`、`gsap-performance`、`gsap-scrolltrigger`：对应 `SKILL.md` 均已读取。
 
-Hallmark was applied as an audit → public Apple product-page study → redesign workflow. The study retained only macrostructure, typography rhythm, whitespace, progressive disclosure, material hierarchy and restrained motion. The resulting structural decision is recorded in `.hallmark/log.json` as “Narrative Workflow / Role-native Workbenches”.
-
-Impeccable was applied as audit → critique → normalize → polish → distill. Its detector was run with:
-
-```text
-node D:\CodexHome\skills\impeccable\scripts\detect.mjs src
-```
-
-The first run found five thick side-stripe patterns. They were removed instead of suppressed; the final detector run reported no known findings. That result is only a static anti-pattern check, not the design-completion claim—the browser evidence remains the acceptance proof.
-
-GSAP is used on the Portal narrative, Login/Role entrance and Admin Dashboard metric reveal. The shared Vue helper and page-local animations create `gsap.context()` after mount, use `gsap.matchMedia()`, and call `revert()` during unmount. ScrollTrigger is registered once in the application entry and is limited to the Portal. Practice question/result changes use short Vue transitions rather than another global animation system.
-
-## Implemented tokens and signatures
-
-Primary semantic colours use OKLCH: canvas `96.8% 0.018 214`, deep-ocean ink `24% 0.047 226`, aqua brand `55% 0.12 224`, physics cobalt `55% 0.16 253`, chemistry muted periwinkle `58% 0.09 296`, and biology jade `53% 0.105 163`. Element Plus tokens map to the same semantic source; page components do not branch on theme names.
-
-The glass hierarchy is implemented as solid reading/work surfaces, limited 16px frosted interface glass, and optical accent glass only in Portal/Auth focal elements. Browsers without `backdrop-filter` receive a 98%-opaque cool surface through `@supports not`, so text contrast never depends on blur.
-
-- Portal signature: the Water Horizon opens into a continuous learning-current narrative; physics, chemistry and biology use different original CSS/SVG spatial compositions instead of three copied cards.
-- Student signature: the current question owns the visual centre; type rules, progress, answer surface, one-question result navigator and next-step actions form one continuous learning path.
-- Teacher signature: subject-accented scope studios prioritize class, student, learning-state and high-frequency-point scanning instead of inheriting the admin shell.
-- Administrator signature: a deep-ocean navigation rail surrounds solid, information-dense filters/tables; the real Dashboard adds one restrained optical layer without turning operational pages into marketing surfaces.
+Hallmark 本轮执行 audit Portal copy → distill Portal → audit subject pages → redesign subject environments，结论是删掉区块、删掉概念文案、删除 ScrollTrigger，并用语义 SVG/学科环境替代装饰图形。Impeccable 按 audit → critique → normalize → polish → distill 检查文字层级、玻璃可感知度、科学内容可读性、响应式与视觉噪声；最终执行 `node D:\\CodexHome\\skills\\impeccable\\scripts\\detect.mjs --json src`，返回 `[]`。这只表示已知静态反模式为 0，不代替浏览器视觉验收。GSAP 的实际保留范围只有 Portal/Auth/Dashboard 中有内容意义的短动效；本轮 Portal 不再使用 ScrollTrigger。
 
 ## Evidence
 
-Production-like browser screenshots are stored under `docs/evidence/pr27-ui/`. They include the requested 1280px and 390px Portal/Login views, all three role workspaces, all three automatic question types, one-question result review, a real wrong-question list, Topic18 and the high-frequency-point dialog. The machine run reported no console error/warning and no failed dynamic import. Human CAPTCHA and final visual approval remain explicitly pending.
+第二轮 production-like 浏览器证据位于 `docs/evidence/pr27-ui-round2/`，包含 Portal 1280/390、三科学生环境、三科教师任课环境和科学排版页面。机器结果不能替代用户真实 CAPTCHA 与最终视觉复验；在用户复验前，PR #27 保持 Draft，MA-017 保持 `IMPLEMENTED_AWAITING_FINAL_MANUAL_ACCEPTANCE`。

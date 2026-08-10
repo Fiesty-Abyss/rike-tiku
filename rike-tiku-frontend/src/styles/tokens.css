@@ -3,11 +3,11 @@
   --canvas: oklch(96.8% 0.018 214);
   --canvas-elevated: oklch(98.4% 0.011 210);
   --surface-solid: oklch(98.8% 0.007 220 / 0.97);
-  --surface-glass: oklch(97% 0.025 211 / 0.72);
-  --surface-glass-strong: oklch(96% 0.026 215 / 0.88);
+  --surface-glass: oklch(97% 0.025 211 / 0.58);
+  --surface-glass-strong: oklch(96% 0.026 215 / 0.7);
   --surface-muted: oklch(94.4% 0.022 212);
-  --glass-border: oklch(88% 0.045 212 / 0.72);
-  --glass-highlight: oklch(100% 0 0 / 0.82);
+  --glass-border: oklch(90% 0.04 212 / 0.82);
+  --glass-highlight: oklch(100% 0 0 / 0.9);
   --ink-primary: oklch(24% 0.047 226);
   --ink-secondary: oklch(39% 0.038 225);
   --ink-muted: oklch(53% 0.029 224);

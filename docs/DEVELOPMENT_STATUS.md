@@ -11,7 +11,7 @@
 ## 当前主线状态
 
 - 当前分支：`feat/non-ai-final-closure`；PR #26 已合并，公共门户和附件机器实现已进入 `main`。
-- 根路径 `/` 已改为无需认证的公共门户，展示系统与学科介绍、当前非 AI 能力、学习闭环及统一 `/login` 入口；首屏明确运行时 AI 智能答疑尚未上线。现有登录、角色选择、首次改密和受保护路由守卫未改动。MA-016 已关闭。
+- 根路径 `/` 是无需认证的公共门户，当前只保留系统事实说明、三科学科语义视觉、真实题量快照和统一 `/login` 入口，不再把学习闭环、角色分工、设计理念或未上线 AI 规划写成首页宣传区块。现有登录、角色选择、首次改密和受保护路由守卫未改动。MA-016 已关闭。
 - V3.0 未指定名为 MVP30 的 Excel 必须整体正式入库；它要求 30 题 MVP 验证导入、审核、发布、查询和附件显示闭环，并强调少量高质量题目。MVP30 因此保留为结构化导入能力验证素材，原始文件不修改。
 - 三角色共用 `/profile`，本人身份从 JWT 推导；页面展示真实账号角色及学生/教师档案，只允许维护 500 字简介和本人头像，并复用现有主动修改密码流程。
 - 登录页当前使用两分钟有效、内存保存、一次性消费的 4 位随机图形验证码；登录页首次渲染即加载验证码，用户名、密码、验证码一次填写并一次提交，失败后自动刷新 challenge。PR #15 滑块和 PR #19 的二阶段交互仅为历史实现。
@@ -24,10 +24,11 @@
 - MA-019 已加入独立 `Golden30ImportIntegrationTest`：复用现有三科清洗候选素材，在独立测试数据库真实走 preview → confirm → 来源权利补充 → 审核发布 → 查询 → 题池 → 学生提交/标准解析；物理 10、化学 10、生物 10，29 道固定答案题进入自动练习，1 道主观题保留为专题学习题。原始 MVP30 文件未修改，正式库未写入。
 - 管理员题目页已支持草稿题干/标准解析 PNG/JPEG 上传、预览、替换和删除，复用 PR #26 受控存储；正式菜单已将“批量导入题目”并入题库入口、将学生 Excel 导入并入学生管理，并为多角色账号增加“切换身份”。
 - PR #27 当前机器专项：MA-020、管理员图片上传、Golden30、导入回归、日志权限、管理员 Dashboard、教师密码重置、练习 availability、错题 `subjectCode` 隔离、规则型类似练习、Topic18 与 Demo 分布均通过。MA-017 仍为 `IMPLEMENTED_AWAITING_FINAL_MANUAL_ACCEPTANCE`。
-- PR #27 最新最终机器门禁：后端 `mvn clean test` 为 130 个测试，0 failure、0 error、1 个 symbolic-link assumption skipped，`mvn clean package` PASS；前端 44 个文件、150/150 PASS，type-check、build PASS，audit 0；Demo `acceptance-prepare → smoke` PASS，Golden30 独立导入测试 PASS。Demo360 固定为物理/化学/生物各 120 道，叶子知识点 18/16/21；每科题型分布 44/38/38、难度分布 36/48/36；Topic18 每科 6 道，总题量 378。PR #26 合并前和 PR #27 早期数字均为历史口径，不覆盖本轮最终复跑结果。题干附件内容 hash、文件/数据库事务回滚、草稿文本保护、SUCCESS 审计事务和附件外键稳定性修正继续保持。
-- PR #27 已完成第二轮 UI/UX Foundation，主主题为 `RIKE Aqua Liminal Future`（内部名 `mizuiro-aero`）：公共门户、登录/角色选择和三角色工作区共享语义 token、材质层级、排版、焦点、响应式与 reduced-motion 基线，同时保留管理员高密度工作面、教师任课分析工作室和学生学习产品三种结构差异。结果页改为逐题模式，学生导航为单一精确激活；登录页提供明确返回首页路径。production-like preview 机器浏览器完成 PUBLIC、ADMIN、TEACHER、STUDENT、ADMIN+TEACHER、三种指定练习组合、错题即时更新和 Topic18 主链，控制台 0 error / 0 warning。截图见 `docs/evidence/pr27-ui/`。该结果不等于用户人工 CAPTCHA/视觉验收。
+- PR #27 最新最终机器门禁：后端 `mvn clean test` 为 130 个测试，0 failure、0 error、1 个 symbolic-link assumption skipped，`mvn clean package` PASS；前端 47 个文件、160/160 PASS，type-check、build PASS，audit 0；Demo `acceptance-prepare → smoke` PASS，Golden30 独立导入测试 PASS。Demo360 固定为物理/化学/生物各 120 道，叶子知识点 18/16/21；每科题型分布 44/38/38、难度分布 36/48/36；Topic18 每科 6 道，总题量 378。PR #26 合并前和 PR #27 早期数字均为历史口径，不覆盖本轮最终复跑结果。题干附件内容 hash、文件/数据库事务回滚、草稿文本保护、SUCCESS 审计事务和附件外键稳定性修正继续保持。
+- PR #27 已完成 `mizuiro-aero` 唯一正式主题的第二轮视觉收敛：Portal 从长叙事减为四个事实区块；三科入口使用具有轨迹/场、液相/分子键、膜结构/叶脉语义的原创 SVG；学生学科页和教师真实任课范围由 `subjectCode` 驱动整页环境，管理员保持中性。`ScientificText` 只解析显式 TeX，并用受控 KaTeX DOM API 输出 HTML+MathML；`MetricFraction` 用于关键学习统计。production-like preview 机器浏览器完成 PUBLIC、ADMIN、TEACHER、STUDENT、三科学科环境、练习/逐题结果/错题和 Topic18 科学排版主链，控制台未发现 error。截图见 `docs/evidence/pr27-ui/` 与 `docs/evidence/pr27-ui-round2/`。该结果不等于用户人工 CAPTCHA/视觉验收。
 - 最终人工环境使用 `acceptance-backend` + `acceptance-frontend`：后端连接 `rike_tiku_demo:18081` 且 challenge JSON 不含 `testCode`；前端先 build 再以 strict-port Vite preview 运行于 18080。先前动态模块失败的真实根因是旧浏览器页面仍引用已停止的 Vite dev server（`ERR_CONNECTION_REFUSED`），不是 lazy import 源码错误。
 - 用户最终人工验收反馈已在同一 PR #27 修正：管理员总览使用真实只读指标；管理员路由标题按 meta 变化；列表筛选改为响应式 grid；管理员可安全重置教师密码；练习显示中文题型/难度规则与实时可用题数；结果按单题导航；知识点可进入定向练习；错题不再假设学科固定 ID，而是按 `subjectCode` 实时过滤；高频考点选择器使用可空值与完整路径；重复错误 Toast 由单一路径处理。用户仍需在最终环境复验这些页面，未记为人工 PASS。
+- 第二次人工视觉反馈同样未隐藏：Portal 已删除学习流程、角色和 AI 规划等自我解释区块，只保留品牌、三科、真实数据快照和登录；三科使用有语义的原创 SVG；学生页面与教师任课范围通过稳定 `subjectCode` 进入 physics/chemistry/biology 环境，管理员继续保持中性；新增 `ScientificText`/`MetricFraction`，仅解析显式 TeX 片段并通过受控 KaTeX DOM renderer 输出 HTML+MathML，普通旧文本和 Excel 导入保持兼容。该轮仍等待用户复验，不得写为 `DONE_VERIFIED`。
 - Flyway：V1–V11，共 27 张业务表；V11 只新增管理员操作日志表，V1–V10 未修改。
 - 教师工作台已支持按本人 ACTIVE 三元任课关系读取班级、科目、学生名单和高频考点，并支持新增、编辑、启停及排序；学生端按本人有效主班级和学科只读取对应 ACTIVE 高频考点。
 - PR #20 已实现受 ACTIVE 三元任课关系和学生当前主班级约束的师生纯文本私信；发送身份取自 JWT，支持会话、未读、已读、7 秒轮询和失效关系历史保留，不含 WebSocket、附件、群聊或管理员审计。

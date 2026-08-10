@@ -5,7 +5,7 @@ export const fetchTeachingScopes=()=>http.get<TeachingScope[]>('/teacher/teachin
 export interface WorkspaceStudent { studentId:number; studentNumber:string; name:string; grade:string }
 export interface HighFrequencyPoint { id:number; teachingAssignmentId:number; knowledgePointId:number; knowledgePointName:string; title:string; content:string; memoryTrick:string|null; commonMistake:string|null; sortOrder:number; status:'ACTIVE'|'DISABLED'; teacherName:string }
 export interface KnowledgePointOption { id:number; name:string; path:string }
-export interface TeacherWorkspace { teachingAssignmentId:number; classId:number; className:string; grade:string; subjectId:number; subjectName:string; teacherName:string; studentCount:number; students:WorkspaceStudent[]; highFrequencyPoints:HighFrequencyPoint[]; knowledgePoints:KnowledgePointOption[] }
+export interface TeacherWorkspace { teachingAssignmentId:number; classId:number; className:string; grade:string; subjectId:number; subjectCode:string; subjectName:string; teacherName:string; studentCount:number; students:WorkspaceStudent[]; highFrequencyPoints:HighFrequencyPoint[]; knowledgePoints:KnowledgePointOption[] }
 export interface TeacherStudentLearningSummary { studentId:number; studentNumber:string; name:string; grade:string; answeredCount:number; correctCount:number; accuracy:number|null; weakKnowledgePointCount:number; masteredKnowledgePointCount:number }
 export interface TeacherScopeLearningSummary { teachingAssignmentId:number; className:string; subjectId:number; subjectName:string; students:TeacherStudentLearningSummary[] }
 export interface HighFrequencyPointCreateRequest { knowledgePointId:number; title:string; content:string; memoryTrick?:string; commonMistake?:string; sortOrder:number }
