@@ -4,13 +4,20 @@ import ElementPlus from 'element-plus'
 import { ElMessage } from 'element-plus'
 import zhCn from 'element-plus/es/locale/lang/zh-cn'
 import 'element-plus/dist/index.css'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 import App from './App.vue'
 import router from './router'
 import { setAuthenticationErrorHandler } from './api/http'
 import { useAuthStore } from './stores/auth'
-import '../tokens.css'
 import './style.css'
+import './styles/tokens.css'
+import './styles/themes/mizuiro-aero.css'
+import './styles/components.css'
+import './styles/motion.css'
+
+gsap.registerPlugin(ScrollTrigger)
 
 const app = createApp(App)
 const pinia = createPinia()

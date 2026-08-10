@@ -5,12 +5,15 @@ import type { ApiError } from '../../api/http'
 import { resolvePostLoginPath } from '../../auth/postLoginRoute'
 import LoginForm from '../../components/auth/LoginForm.vue'
 import { useAuthStore } from '../../stores/auth'
+import { useEntranceMotion } from '../../utils/entranceMotion'
 
 const router = useRouter()
 const auth = useAuthStore()
 const loading = ref(false)
 const errorMessage = ref('')
 const loginForm = ref<InstanceType<typeof LoginForm>>()
+const root = ref<HTMLElement>()
+useEntranceMotion(root, '.auth-introduction > *, .auth-panel > *', 0.06)
 
 const messages: Record<string, string> = {
   INVALID_CREDENTIALS: '用户名或密码错误，请重新输入。',
@@ -47,7 +50,7 @@ async function handleLogin(payload: {
 }
 </script>
 <template>
-  <main class="auth-page">
+  <main ref="root" class="auth-page">
     <section class="auth-introduction" aria-label="系统说明">
       <p class="school-mark">RIKE · LEARNING</p>
       <h1>理科学习，从清晰的练习开始。</h1>

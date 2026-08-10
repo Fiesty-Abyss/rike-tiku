@@ -16,7 +16,7 @@ const dialogVisible = ref(false)
 const editing = ref<HighFrequencyPoint | null>(null)
 const unreadCount = ref(0)
 const formRef = ref<FormInstance>()
-const form = reactive({ knowledgePointId: 0, title: '', content: '', memoryTrick: '', commonMistake: '', sortOrder: 1 })
+const form = reactive({ knowledgePointId: undefined as number | undefined, title: '', content: '', memoryTrick: '', commonMistake: '', sortOrder: 1 })
 const rules: FormRules = {
   knowledgePointId: [{ required: true, message: '请选择知识点', trigger: 'change' }],
   title: [{ required: true, message: '请填写标题', trigger: 'blur' }],
@@ -65,9 +65,13 @@ function accuracy(value: number | null) {
   return value === null ? '暂无数据' : `${value.toFixed(1)}%`
 }
 
+function knowledgePath(id: number, fallback: string) {
+  return workspace.value?.knowledgePoints.find(point => point.id === id)?.path || fallback
+}
+
 function openCreate() {
   editing.value = null
-  Object.assign(form, { knowledgePointId: 0, title: '', content: '', memoryTrick: '', commonMistake: '', sortOrder: 1 })
+  Object.assign(form, { knowledgePointId: undefined, title: '', content: '', memoryTrick: '', commonMistake: '', sortOrder: 1 })
   dialogVisible.value = true
 }
 
@@ -79,7 +83,7 @@ function openEdit(point: HighFrequencyPoint) {
 
 async function savePoint() {
   const valid = await formRef.value?.validate().catch(() => false)
-  if (!valid || !workspace.value) return
+  if (!valid || !workspace.value || form.knowledgePointId === undefined) return
   saving.value = true
   try {
     if (editing.value) {
@@ -176,7 +180,7 @@ onMounted(() => void load())
           </div>
           <el-table :data="activePoints" class="data-table" empty-text="当前学科暂无高频考点。">
             <el-table-column prop="title" label="标题" min-width="190" />
-            <el-table-column prop="knowledgePointName" label="知识点" min-width="130" />
+            <el-table-column label="知识点" min-width="220"><template #default="{ row }">{{ knowledgePath(row.knowledgePointId, row.knowledgePointName) }}</template></el-table-column>
             <el-table-column prop="content" label="正文" min-width="260" show-overflow-tooltip />
             <el-table-column prop="sortOrder" label="排序" width="80" />
             <el-table-column label="状态" width="90"><template #default="{ row }"><el-tag :type="row.status === 'ACTIVE' ? 'success' : 'info'">{{ row.status === 'ACTIVE' ? '启用' : '停用' }}</el-tag></template></el-table-column>
@@ -187,7 +191,7 @@ onMounted(() => void load())
     </section>
     <el-dialog v-model="dialogVisible" :title="editing ? '编辑高频考点' : '新增高频考点'" width="min(680px, calc(100vw - 32px))" destroy-on-close>
       <el-form ref="formRef" :model="form" :rules="rules" label-position="top">
-        <el-form-item label="知识点" prop="knowledgePointId"><el-select v-model="form.knowledgePointId" placeholder="请选择当前科目知识点" :disabled="Boolean(editing)"><el-option v-for="point in workspace.knowledgePoints" :key="point.id" :label="point.path" :value="point.id" /></el-select></el-form-item>
+        <el-form-item label="知识点" prop="knowledgePointId"><el-select v-model="form.knowledgePointId" filterable clearable placeholder="请选择当前科目 ACTIVE 知识点" :disabled="Boolean(editing)"><el-option v-for="point in workspace.knowledgePoints" :key="point.id" :label="point.path" :value="point.id" /></el-select></el-form-item>
         <el-form-item label="标题" prop="title"><el-input v-model="form.title" maxlength="200" show-word-limit /></el-form-item>
         <el-form-item label="正文" prop="content"><el-input v-model="form.content" type="textarea" :rows="4" /></el-form-item>
         <el-form-item label="记忆口诀"><el-input v-model="form.memoryTrick" maxlength="500" /></el-form-item>

@@ -50,6 +50,26 @@ class JiaoShiGuanLiFuWuTest extends AdminQuestionIntegrationTestSupport {
     }
 
     @Test @Transactional
+    void adminResetTeacherPasswordInvalidatesOldPasswordAndAuditsWithoutPlaintext() {
+        String suffix = suffix();
+        var created = service.create(new JiaoShiChuangJianQingQiu("T" + suffix, "教师甲", "teacher_" + suffix, null, "OldPassword1", "ENABLED"));
+        Long userId = jdbc.queryForObject("SELECT yong_hu_id FROM jiao_shi_dang_an WHERE id=?", Long.class, created.teacher().id());
+
+        var response = service.resetPassword(created.teacher().id());
+        String hash = jdbc.queryForObject("SELECT mi_ma_zhai_yao FROM yong_hu WHERE id=?", String.class, userId);
+
+        assertThat(response.initialPassword()).matches("(?=.*[A-Za-z])(?=.*[0-9]).{8,64}");
+        assertThat(passwordEncoder.matches("OldPassword1", hash)).isFalse();
+        assertThat(passwordEncoder.matches(response.initialPassword(), hash)).isTrue();
+        assertThat(jdbc.queryForObject("SELECT shi_fou_shou_ci_deng_lu FROM yong_hu WHERE id=?", Boolean.class, userId)).isTrue();
+        String audit = jdbc.queryForObject("""
+                SELECT CONCAT(cao_zuo_lei_xing,'|',COALESCE(zhai_yao,'')) FROM guan_li_cao_zuo_ri_zhi
+                WHERE mo_kuai='TEACHER' AND ye_wu_dui_xiang_id=? ORDER BY id DESC LIMIT 1
+                """, String.class, created.teacher().id());
+        assertThat(audit).contains("RESET_PASSWORD").doesNotContain(response.initialPassword(), "OldPassword1");
+    }
+
+    @Test @Transactional
     void assignmentShouldRejectDuplicateAndKeepEndedHistory() {
         String suffix = suffix();
         var teacher = service.create(new JiaoShiChuangJianQingQiu("T" + suffix, "教师甲", "teacher_" + suffix, null, "Password1", "ENABLED")).teacher();

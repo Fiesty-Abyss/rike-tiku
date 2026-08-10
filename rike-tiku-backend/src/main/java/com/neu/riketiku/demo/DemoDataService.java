@@ -31,9 +31,11 @@ public class DemoDataService {
     public static final int BASE_DEMO_QUESTION_COUNT = 90;
     public static final int FINAL_DEMO_QUESTION_COUNT = BASE_DEMO_QUESTION_COUNT
             + DemoVariantQuestionBank.ACCEPTED_COUNT + DemoCurriculumQuestionBank.TOTAL_COUNT;
+    public static final int TOTAL_DEMO_QUESTION_COUNT = FINAL_DEMO_QUESTION_COUNT + DemoTopicQuestionBank.TOTAL_COUNT;
     private static final Set<String> FORBIDDEN_DATABASES = Set.of(
             "rike_tiku", "mysql", "information_schema", "performance_schema", "sys");
     private static final String DEMO_STEM_PREFIX = "【演示】";
+    private static final String TOPIC_STEM_PREFIX = "【专题演示】";
     private static final List<String> DEMO_USERS = List.of(
             "demo_admin", "demo_teacher", "demo_student",
             "demo_physics_admin", "demo_biology_teacher", "demo_chemistry_teacher",
@@ -107,6 +109,9 @@ public class DemoDataService {
         scopes.put("CHEMISTRY_200", seedTeachingScope(chemistryTeacher, class200, required(subjects, "CHEMISTRY")));
         Map<String, Long> points = seedKnowledgePoints(subjects);
         for (Question question : questions()) seedQuestion(question, required(subjects, question.subject()), required(points, question.knowledgePath()), users.get("demo_admin"));
+        for (DemoTopicQuestionBank.TopicQuestion question : DemoTopicQuestionBank.questions()) {
+            seedTopicQuestion(question, required(subjects, question.subject()), required(points, question.knowledgePath()), users.get("demo_admin"));
+        }
         seedHighFrequencyPoints(scopes, points);
         validateSeed();
         System.out.println("演示数据写入完成。14个固定演示账号、3个班级、4位教师、9名学生；固定密码: " + DEMO_PASSWORD + "（仅限本地演示库）");
@@ -189,7 +194,7 @@ public class DemoDataService {
                 count("SELECT COUNT(*) FROM ti_mu WHERE ti_gan LIKE '【演示】变式：%'"));
         expect("课程覆盖扩充题", DemoCurriculumQuestionBank.TOTAL_COUNT,
                 count("SELECT COUNT(*) FROM ti_mu WHERE ti_gan LIKE '【演示】覆盖：%'"));
-        expect("最终演示题总数", FINAL_DEMO_QUESTION_COUNT, demoQuestionCount());
+        expect("最终演示题总数", TOTAL_DEMO_QUESTION_COUNT, demoQuestionCount());
         Map<String, Integer> subjectCounts = Map.of("PHYSICS", 120, "CHEMISTRY", 120, "BIOLOGY", 120);
         for (String subject : List.of("PHYSICS", "CHEMISTRY", "BIOLOGY")) {
             expect(subject + "题目", subjectCounts.get(subject), count("SELECT COUNT(*) FROM ti_mu q JOIN ke_mu s ON s.id=q.ke_mu_id WHERE q.ti_gan LIKE '【演示】%' AND s.ke_mu_dai_ma=?", subject));
@@ -223,6 +228,20 @@ public class DemoDataService {
                 int expected = difficulty == 2 ? 48 : 36;
                 expect(subject + "难度" + difficulty, expected, count("SELECT COUNT(*) FROM ti_mu q JOIN ke_mu s ON s.id=q.ke_mu_id WHERE q.ti_gan LIKE '【演示】%' AND s.ke_mu_dai_ma=? AND q.nan_du=?", subject, difficulty));
             }
+            for (String type : List.of("SINGLE_CHOICE", "MULTIPLE_CHOICE", "FILL_BLANK")) {
+                for (int difficulty : List.of(1, 2, 3)) {
+                    int combinationCount = count("""
+                            SELECT COUNT(*) FROM ti_mu q JOIN ke_mu s ON s.id=q.ke_mu_id
+                            WHERE q.ti_gan LIKE '【演示】%' AND s.ke_mu_dai_ma=? AND q.ti_mu_lei_xing=? AND q.nan_du=?
+                              AND q.zhuang_tai='PUBLISHED' AND q.shi_yong_mo_shi='ONLINE_PRACTICE'
+                              AND q.shi_fou_ke_zi_dong_pan_fen=1 AND q.yi_shan_chu=0
+                            """, subject, type, difficulty);
+                    if (combinationCount < 5) {
+                        throw new IllegalStateException(subject + " " + type + " 难度" + difficulty
+                                + "至少需要5道可练习题，实际" + combinationCount);
+                    }
+                }
+            }
         }
         expect("全部覆盖叶子至少三题", 55, count("""
                 SELECT COUNT(*) FROM (
@@ -234,6 +253,24 @@ public class DemoDataService {
                 ) covered_points
                 """));
         expect("可练习题", FINAL_DEMO_QUESTION_COUNT, count("SELECT COUNT(*) FROM ti_mu q WHERE q.ti_gan LIKE '【演示】%' AND q.zhuang_tai='PUBLISHED' AND q.shi_yong_mo_shi='ONLINE_PRACTICE' AND q.shi_fou_ke_zi_dong_pan_fen=1 AND q.yi_shan_chu=0"));
+        expect("专题学习题", DemoTopicQuestionBank.TOTAL_COUNT, count("""
+                SELECT COUNT(*) FROM ti_mu q WHERE q.ti_gan LIKE '【专题演示】%'
+                  AND q.ti_mu_lei_xing='SUBJECTIVE' AND q.shi_yong_mo_shi='TOPIC_LEARNING'
+                  AND q.shi_fou_ke_zi_dong_pan_fen=0 AND q.zhuang_tai='PUBLISHED' AND q.yi_shan_chu=0
+                """));
+        for (String subject : List.of("PHYSICS", "CHEMISTRY", "BIOLOGY")) {
+            expect(subject + "专题学习题", DemoTopicQuestionBank.COUNT_PER_SUBJECT, count("""
+                    SELECT COUNT(*) FROM ti_mu q JOIN ke_mu s ON s.id=q.ke_mu_id
+                    WHERE q.ti_gan LIKE '【专题演示】%' AND s.ke_mu_dai_ma=?
+                      AND q.ti_mu_lei_xing='SUBJECTIVE' AND q.shi_yong_mo_shi='TOPIC_LEARNING'
+                      AND q.shi_fou_ke_zi_dong_pan_fen=0 AND q.zhuang_tai='PUBLISHED' AND q.yi_shan_chu=0
+                    """, subject));
+        }
+        expect("专题标准解析", DemoTopicQuestionBank.TOTAL_COUNT, count("""
+                SELECT COUNT(*) FROM ti_mu_jie_xi a JOIN ti_mu q ON q.id=a.ti_mu_id
+                WHERE q.ti_gan LIKE '【专题演示】%' AND a.jie_xi_lei_xing='STANDARD'
+                  AND a.zhuang_tai='PUBLISHED' AND a.yi_shan_chu=0 AND CHAR_LENGTH(TRIM(a.jie_xi_nei_rong))>=80
+                """));
         expect("完整可冻结题", FINAL_DEMO_QUESTION_COUNT, count("""
                 SELECT COUNT(*) FROM ti_mu q
                 WHERE q.ti_gan LIKE '【演示】%' AND q.zhuang_tai='PUBLISHED'
@@ -267,6 +304,25 @@ public class DemoDataService {
                     OR JSON_LENGTH(JSON_EXTRACT(q.zheng_que_da_an,'$.blanks[0].acceptedAnswers'))<1)
                 """));
         expect("PUBLISHED标准解析", FINAL_DEMO_QUESTION_COUNT, count("SELECT COUNT(*) FROM ti_mu_jie_xi a JOIN ti_mu q ON q.id=a.ti_mu_id WHERE q.ti_gan LIKE '【演示】%' AND a.jie_xi_lei_xing='STANDARD' AND a.ban_ben_hao=1 AND a.zhuang_tai='PUBLISHED' AND a.yi_shan_chu=0"));
+        List<String> lowQualityAnalyses = jdbc.queryForList("""
+                SELECT CONCAT(q.id, ':', a.jie_xi_nei_rong) FROM ti_mu_jie_xi a JOIN ti_mu q ON q.id=a.ti_mu_id
+                WHERE q.ti_gan LIKE '【演示】%' AND a.jie_xi_lei_xing='STANDARD'
+                  AND (TRIM(a.jie_xi_nei_rong)='' OR CHAR_LENGTH(TRIM(a.jie_xi_nei_rong))<18)
+                """, String.class);
+        if (!lowQualityAnalyses.isEmpty()) {
+            throw new IllegalStateException("普通题解析为空或明显过短: " + lowQualityAnalyses);
+        }
+        expect("普通题解析同义反复", 0, count("""
+                SELECT COUNT(*) FROM ti_mu_jie_xi a JOIN ti_mu q ON q.id=a.ti_mu_id
+                WHERE q.ti_gan LIKE '【演示】%' AND a.jie_xi_lei_xing='STANDARD'
+                  AND (a.jie_xi_nei_rong LIKE '%答案是%A%因为%A%正确%'
+                    OR a.jie_xi_nei_rong LIKE '%答案是%B%因为%B%正确%'
+                    OR a.jie_xi_nei_rong LIKE '%答案是%C%因为%C%正确%'
+                    OR a.jie_xi_nei_rong LIKE '%答案是%D%因为%D%正确%'
+                    OR a.jie_xi_nei_rong LIKE '%正确答案正确%'
+                    OR a.jie_xi_nei_rong LIKE '根据相关基本概念或计算%'
+                    OR a.jie_xi_nei_rong LIKE '%应先依据题干给出的条件建立对应概念或数量关系%')
+                """));
         expect("STANDARD解析无演示说明", 0, count("""
                 SELECT COUNT(*) FROM ti_mu_jie_xi a JOIN ti_mu q ON q.id=a.ti_mu_id
                 WHERE q.ti_gan LIKE '【演示】%' AND a.jie_xi_lei_xing='STANDARD'
@@ -303,7 +359,7 @@ public class DemoDataService {
                     OR EXISTS (SELECT 1 FROM ti_mu_xuan_xiang o WHERE o.ti_mu_id=q.id AND (o.xuan_xiang_nei_rong LIKE '%[[I%' OR o.xuan_xiang_nei_rong LIKE '%[[F%'))
                     OR EXISTS (SELECT 1 FROM ti_mu_jie_xi a WHERE a.ti_mu_id=q.id AND (a.jie_xi_nei_rong LIKE '%[[I%' OR a.jie_xi_nei_rong LIKE '%[[F%')))
                 """));
-        expect("重复内容哈希", 0, count("SELECT COUNT(*)-COUNT(DISTINCT q.nei_rong_ha_xi) FROM ti_mu q WHERE q.ti_gan LIKE '【演示】%' AND q.yi_shan_chu=0"));
+        expect("重复内容哈希", 0, count("SELECT COUNT(*)-COUNT(DISTINCT q.nei_rong_ha_xi) FROM ti_mu q WHERE (q.ti_gan LIKE '【演示】%' OR q.ti_gan LIKE '【专题演示】%') AND q.yi_shan_chu=0"));
         expect("重复标准化题干", 0, count("""
                 SELECT COUNT(*) FROM (
                     SELECT REPLACE(REPLACE(REPLACE(LOWER(TRIM(q.ti_gan)),' ',''),'【演示】',''),'变式：','') normalized
@@ -321,7 +377,8 @@ public class DemoDataService {
         expect("审核轨迹", FINAL_DEMO_QUESTION_COUNT * 2, count("SELECT COUNT(*) FROM ti_mu_shen_he_ji_lu r JOIN ti_mu q ON q.id=r.ti_mu_id WHERE q.ti_gan LIKE '【演示】%' AND r.shen_he_dong_zuo IN ('SUBMITTED','APPROVED')"));
         for (String table : List.of("lian_xi_hui_hua", "lian_xi_ti_mu", "xue_sheng_da_ti", "xue_xi_jie_guo", "cuo_ti_ji_lu", "si_xin_hui_hua", "si_xin_xiao_xi")) expect(table + "初始记录", 0, count("SELECT COUNT(*) FROM " + table));
         System.out.println("演示数据校验通过: 14账号、3班级、4教师、9学生、9任课关系、12高频考点、55个叶子知识点、"
-                + FINAL_DEMO_QUESTION_COUNT + "题（物理/化学/生物各120）、学习与私信记录为0");
+                + FINAL_DEMO_QUESTION_COUNT + "道普通练习题（物理/化学/生物各120）+ Topic18，合计"
+                + TOTAL_DEMO_QUESTION_COUNT + "题；学习与私信记录为0");
     }
 
     public static void guardDatabaseName(String database) {
@@ -470,9 +527,32 @@ public class DemoDataService {
         jdbc.update("INSERT INTO ti_mu_shen_he_ji_lu (ti_mu_id,shen_he_dong_zuo,yuan_zhuang_tai,mu_biao_zhuang_tai,shen_he_ren_id,shen_he_yi_jian) VALUES (?,'APPROVED','PENDING','PUBLISHED',?,'演示题审核通过')", questionId, adminId);
     }
 
+    private void seedTopicQuestion(DemoTopicQuestionBank.TopicQuestion q, long subjectId, long pointId, long adminId) {
+        String stem = TOPIC_STEM_PREFIX + q.title() + "｜" + q.stem();
+        String contentHash = contentHashService.calculate(stem, List.of());
+        String existingStem = jdbc.query("SELECT ti_gan FROM ti_mu WHERE ke_mu_id=? AND nei_rong_ha_xi=? AND yi_shan_chu=0",
+                rs -> rs.next() ? rs.getString(1) : null, subjectId, contentHash);
+        if (existingStem != null) {
+            throw new IllegalStateException("Topic18题内容重复: " + q.key() + " 与题面“" + existingStem + "”冲突");
+        }
+        long questionId = insert("""
+                INSERT INTO ti_mu (ke_mu_id,ti_mu_lei_xing,shi_yong_mo_shi,ti_gan,zheng_que_da_an,nan_du,nan_du_shuo_ming,shi_fou_ke_zi_dong_pan_fen,zhuang_tai,nei_rong_ha_xi)
+                VALUES (?,'SUBJECTIVE','TOPIC_LEARNING',?,JSON_OBJECT('type','SUBJECTIVE'),?,'综合材料阅读与分步推理',0,'PUBLISHED',?)
+                """, subjectId, stem, q.difficulty(), contentHash);
+        jdbc.update("INSERT INTO ti_mu_jie_xi (ti_mu_id,jie_xi_lei_xing,jie_xi_nei_rong,ban_ben_hao,zhuang_tai) VALUES (?,'STANDARD',?,1,'PUBLISHED')",
+                questionId, q.analysis());
+        jdbc.update("INSERT INTO ti_mu_zhi_shi_dian (ti_mu_id,zhi_shi_dian_id,shi_fou_zhu_yao,pai_xu) VALUES (?,?,1,1)", questionId, pointId);
+        for (String contentType : List.of("QUESTION", "ANSWER", "STANDARD_ANALYSIS")) jdbc.update("""
+                INSERT INTO ti_mu_lai_yuan (ti_mu_id,nei_rong_lei_xing,lai_yuan_lei_xing,lai_yuan_ming_cheng,lai_yuan_di_zhi,quan_li_zhuang_tai,quan_li_yi_ju)
+                VALUES (?,?,'TEACHER_CREATED','本科毕业设计自编演示题',NULL,'USER_PROVIDED',?)
+                """, questionId, contentType, RIGHTS_BASIS);
+        jdbc.update("INSERT INTO ti_mu_shen_he_ji_lu (ti_mu_id,shen_he_dong_zuo,yuan_zhuang_tai,mu_biao_zhuang_tai,shen_he_ren_id,shen_he_yi_jian) VALUES (?,'SUBMITTED','DRAFT','PENDING',?,'专题演示题提交审核')", questionId, adminId);
+        jdbc.update("INSERT INTO ti_mu_shen_he_ji_lu (ti_mu_id,shen_he_dong_zuo,yuan_zhuang_tai,mu_biao_zhuang_tai,shen_he_ren_id,shen_he_yi_jian) VALUES (?,'APPROVED','PENDING','PUBLISHED',?,'专题演示题审核通过')", questionId, adminId);
+    }
+
     private void cleanInternal() {
         guardDatabaseName(currentDatabase());
-        jdbc.query("SELECT f.xiang_dui_lu_jing FROM ti_mu_fu_jian f JOIN ti_mu q ON q.id=f.ti_mu_id WHERE q.ti_gan LIKE '【演示】%'", (rs, row) -> rs.getString(1)).forEach(attachmentStorage::delete);
+        jdbc.query("SELECT f.xiang_dui_lu_jing FROM ti_mu_fu_jian f JOIN ti_mu q ON q.id=f.ti_mu_id WHERE q.ti_gan LIKE '【演示】%' OR q.ti_gan LIKE '【专题演示】%'", (rs, row) -> rs.getString(1)).forEach(attachmentStorage::delete);
         jdbc.update("DELETE m FROM si_xin_xiao_xi m JOIN si_xin_hui_hua h ON h.id=m.hui_hua_id JOIN xue_sheng_dang_an s ON s.id=h.xue_sheng_id WHERE s.xue_hao LIKE 'DEMO_%'");
         jdbc.update("DELETE h FROM si_xin_hui_hua h JOIN xue_sheng_dang_an s ON s.id=h.xue_sheng_id WHERE s.xue_hao LIKE 'DEMO_%'");
         jdbc.update("DELETE w FROM cuo_ti_ji_lu w LEFT JOIN xue_sheng_dang_an s ON s.id=w.xue_sheng_id LEFT JOIN ti_mu q ON q.id=w.ti_mu_id WHERE s.xue_hao LIKE 'DEMO_%' OR q.ti_gan LIKE '【演示】%'");
@@ -480,8 +560,8 @@ public class DemoDataService {
         jdbc.update("DELETE a FROM xue_sheng_da_ti a JOIN lian_xi_ti_mu pq ON pq.id=a.lian_xi_ti_mu_id JOIN lian_xi_hui_hua h ON h.id=pq.lian_xi_hui_hua_id JOIN xue_sheng_dang_an s ON s.id=h.xue_sheng_id WHERE s.xue_hao LIKE 'DEMO_%'");
         jdbc.update("DELETE pq FROM lian_xi_ti_mu pq JOIN lian_xi_hui_hua h ON h.id=pq.lian_xi_hui_hua_id JOIN xue_sheng_dang_an s ON s.id=h.xue_sheng_id WHERE s.xue_hao LIKE 'DEMO_%'");
         jdbc.update("DELETE h FROM lian_xi_hui_hua h JOIN xue_sheng_dang_an s ON s.id=h.xue_sheng_id WHERE s.xue_hao LIKE 'DEMO_%'");
-        for (String table : List.of("ti_mu_fu_jian", "ti_mu_shen_he_ji_lu", "ti_mu_lai_yuan", "ti_mu_zhi_shi_dian", "ti_mu_jie_xi", "ti_mu_xuan_xiang")) jdbc.update("DELETE child FROM " + table + " child JOIN ti_mu q ON q.id=child.ti_mu_id WHERE q.ti_gan LIKE '【演示】%'");
-        jdbc.update("DELETE FROM ti_mu WHERE ti_gan LIKE '【演示】%'");
+        for (String table : List.of("ti_mu_fu_jian", "ti_mu_shen_he_ji_lu", "ti_mu_lai_yuan", "ti_mu_zhi_shi_dian", "ti_mu_jie_xi", "ti_mu_xuan_xiang")) jdbc.update("DELETE child FROM " + table + " child JOIN ti_mu q ON q.id=child.ti_mu_id WHERE q.ti_gan LIKE '【演示】%' OR q.ti_gan LIKE '【专题演示】%'");
+        jdbc.update("DELETE FROM ti_mu WHERE ti_gan LIKE '【演示】%' OR ti_gan LIKE '【专题演示】%'");
         jdbc.update("DELETE h FROM gao_pin_kao_dian h JOIN ren_ke_guan_xi r ON r.id=h.ren_ke_guan_xi_id JOIN ban_ji b ON b.id=r.ban_ji_id WHERE b.ban_ji_bian_ma LIKE 'DEMO_CLASS_%'");
         jdbc.update("DELETE r FROM ren_ke_guan_xi r JOIN ban_ji b ON b.id=r.ban_ji_id WHERE b.ban_ji_bian_ma LIKE 'DEMO_CLASS_%'");
         jdbc.update("DELETE bx FROM ban_ji_xue_sheng bx JOIN ban_ji b ON b.id=bx.ban_ji_id WHERE b.ban_ji_bian_ma LIKE 'DEMO_CLASS_%'");
@@ -501,7 +581,7 @@ public class DemoDataService {
     }
 
     private int demoQuestionCount() {
-        return count("SELECT COUNT(*) FROM ti_mu WHERE ti_gan LIKE '【演示】%' AND yi_shan_chu=0");
+        return count("SELECT COUNT(*) FROM ti_mu WHERE (ti_gan LIKE '【演示】%' OR ti_gan LIKE '【专题演示】%') AND yi_shan_chu=0");
     }
 
     private int count(String sql, Object... args) {
@@ -539,6 +619,14 @@ public class DemoDataService {
                 paths.add(current.toString());
             }
         }
+        for (DemoTopicQuestionBank.TopicQuestion question : DemoTopicQuestionBank.questions()) {
+            StringBuilder current = new StringBuilder();
+            for (String segment : question.knowledgePath().split(">")) {
+                if (!current.isEmpty()) current.append('>');
+                current.append(segment);
+                paths.add(current.toString());
+            }
+        }
         return paths;
     }
 
@@ -556,41 +644,73 @@ public class DemoDataService {
     private static List<Question> questions() {
         List<Question> items = new ArrayList<>();
         items.add(choice("PHYSICS-S1", "PHYSICS", "SINGLE_CHOICE", "物体保持静止时，所受合力应为多少？", "力学>运动和力>牛顿运动定律", 1,
-                List.of("0", "1 N", "2 N", "无法确定"), Set.of("A"), "静止物体加速度为零，因此合力为零"));
+                List.of("0", "1 N", "2 N", "无法确定"), Set.of("A"), "物体保持静止说明加速度为零；由牛顿第二定律F=ma可知，所受合力必须为零"));
         items.add(choice("PHYSICS-S2", "PHYSICS", "SINGLE_CHOICE", "在同一电场点，检验电荷量加倍时，该点电场强度如何变化？", "电磁学>电场>电场强度", 2,
-                List.of("不变", "变为2倍", "变为一半", "变为4倍"), Set.of("A"), "电场强度由场源决定，与检验电荷量无关"));
+                List.of("不变", "变为2倍", "变为一半", "变为4倍"), Set.of("A"), "电场中某点的场强由场源和位置共同决定；检验电荷量加倍时受力同比加倍，但E=F/q仍不变"));
         items.add(choice("PHYSICS-M1", "PHYSICS", "MULTIPLE_CHOICE", "关于惯性，下列说法正确的是哪些？", "力学>运动和力>牛顿运动定律", 3,
-                List.of("质量越大惯性越大", "惯性是物体的固有属性", "速度越大惯性越大", "只有静止物体有惯性"), Set.of("A", "B"), "惯性只与质量有关，运动和静止的物体都具有惯性"));
+                List.of("质量越大惯性越大", "惯性是物体的固有属性", "速度越大惯性越大", "只有静止物体有惯性"), Set.of("A", "B"), "惯性是物体保持原有运动状态的固有属性，质量是其量度；速度大小和是否静止都不决定惯性有无"));
         items.add(choice("PHYSICS-M2", "PHYSICS", "MULTIPLE_CHOICE", "下列哪些过程通常会使物体内能增加？", "热学>分子动理论>温度和内能", 1,
-                List.of("外界对物体做功", "物体吸收热量", "物体对外做功且不吸热", "物体向外放热"), Set.of("A", "B"), "做功和热传递都可以改变内能"));
+                List.of("外界对物体做功", "物体吸收热量", "物体对外做功且不吸热", "物体向外放热"), Set.of("A", "B"), "改变内能有做功和热传递两条途径；外界做功或物体吸热通常使内能增加，向外做功、放热则相反"));
         items.add(fill("PHYSICS-F1", "PHYSICS", "质量为2 kg的物体获得3 m/s²加速度，合力为____N。", "力学>运动和力>牛顿运动定律", 2, "6"));
         items.add(fill("PHYSICS-F2", "PHYSICS", "理想情况下，物体不受外力时将保持静止或做____运动。", "力学>运动和力>牛顿运动定律", 3, "匀速直线"));
 
         items.add(choice("CHEMISTRY-S1", "CHEMISTRY", "SINGLE_CHOICE", "1 mol任意微粒所含微粒数约为多少？", "化学基本概念>物质的量>摩尔计算", 1,
-                List.of("6.02×10²³", "3.01×10²³", "1.00×10²³", "6.02×10²²"), Set.of("A"), "1 mol微粒所含粒子数约为阿伏加德罗常数"));
+                List.of("6.02×10²³", "3.01×10²³", "1.00×10²³", "6.02×10²²"), Set.of("A"), "物质的量与微粒数满足N=nNA；当n=1 mol时，N约为阿伏加德罗常数6.02×10²³"));
         items.add(choice("CHEMISTRY-S2", "CHEMISTRY", "SINGLE_CHOICE", "氧化还原反应中，还原剂发生什么变化？", "无机化学>元素化合物>氧化还原反应", 2,
-                List.of("失去电子并被氧化", "得到电子并被还原", "只发生物理变化", "化合价一定降低"), Set.of("A"), "还原剂提供电子，自身发生氧化反应"));
+                List.of("失去电子并被氧化", "得到电子并被还原", "只发生物理变化", "化合价一定降低"), Set.of("A"), "还原剂把电子提供给氧化剂，因此自身失去电子、所含元素化合价升高，发生氧化反应"));
         items.add(choice("CHEMISTRY-M1", "CHEMISTRY", "MULTIPLE_CHOICE", "关于物质的量和摩尔质量，下列说法正确的是哪些？", "化学基本概念>物质的量>摩尔计算", 3,
-                List.of("物质的量单位是mol", "摩尔质量常用单位是g/mol", "1 mol任何物质质量都相同", "物质的量就是物质质量"), Set.of("A", "B"), "物质的量与质量是不同物理量，不同物质摩尔质量不同"));
+                List.of("物质的量单位是mol", "摩尔质量常用单位是g/mol", "1 mol任何物质质量都相同", "物质的量就是物质质量"), Set.of("A", "B"), "物质的量单位是mol，摩尔质量常用g/mol；由m=nM可知，不同物质的摩尔质量不同，1 mol时质量也不同"));
         items.add(choice("CHEMISTRY-M2", "CHEMISTRY", "MULTIPLE_CHOICE", "改变可逆反应条件后，下列哪些量可能立即发生变化？", "化学反应原理>化学平衡>平衡移动", 1,
-                List.of("反应速率", "平衡移动方向", "元素种类", "原子总数"), Set.of("A", "B"), "浓度、温度或压强变化可改变速率并引起平衡移动，但不改变元素和原子守恒"));
+                List.of("反应速率", "平衡移动方向", "元素种类", "原子总数"), Set.of("A", "B"), "浓度、温度或压强变化可立即改变反应速率，并可能使平衡向新状态移动；体系中的元素种类和原子总数仍守恒"));
         items.add(fill("CHEMISTRY-F1", "CHEMISTRY", "2 mol水分子含有____mol氢原子。", "化学基本概念>物质的量>摩尔计算", 2, "4"));
         items.add(fill("CHEMISTRY-F2", "CHEMISTRY", "可逆反应达到平衡时，正反应速率与逆反应速率____。", "化学反应原理>化学平衡>平衡移动", 3, "相等"));
 
         items.add(choice("BIOLOGY-S1", "BIOLOGY", "SINGLE_CHOICE", "细胞膜的基本支架主要由什么构成？", "分子与细胞>细胞结构>细胞膜", 1,
-                List.of("磷脂双分子层", "纤维素单分子层", "核酸双链", "糖原颗粒"), Set.of("A"), "磷脂双分子层构成细胞膜的基本支架"));
+                List.of("磷脂双分子层", "纤维素单分子层", "核酸双链", "糖原颗粒"), Set.of("A"), "磷脂分子的亲水头部朝向两侧水环境、疏水尾部相对排列，形成细胞膜的磷脂双分子层基本支架"));
         items.add(choice("BIOLOGY-S2", "BIOLOGY", "SINGLE_CHOICE", "孟德尔分离定律描述的是哪类遗传因子的行为？", "遗传与进化>遗传规律>分离定律", 2,
-                List.of("成对遗传因子", "细胞膜蛋白", "环境因子", "所有染色体整体"), Set.of("A"), "成对遗传因子在形成配子时彼此分离"));
+                List.of("成对遗传因子", "细胞膜蛋白", "环境因子", "所有染色体整体"), Set.of("A"), "分离定律指出，杂合子中的成对遗传因子在形成配子时彼此分离，分别进入不同配子"));
         items.add(choice("BIOLOGY-M1", "BIOLOGY", "MULTIPLE_CHOICE", "细胞膜具有的功能包括哪些？", "分子与细胞>细胞结构>细胞膜", 3,
-                List.of("控制物质进出", "参与细胞间信息交流", "储存全部遗传信息", "合成全部蛋白质"), Set.of("A", "B"), "细胞膜参与物质运输和信息交流，遗传信息主要储存在DNA中"));
+                List.of("控制物质进出", "参与细胞间信息交流", "储存全部遗传信息", "合成全部蛋白质"), Set.of("A", "B"), "细胞膜的选择透过性参与物质运输，膜受体等结构参与信息交流；遗传信息主要由DNA储存，蛋白质合成依赖核糖体"));
         items.add(choice("BIOLOGY-M2", "BIOLOGY", "MULTIPLE_CHOICE", "下列属于激素调节特点的有哪些？", "稳态与调节>生命活动调节>激素调节", 1,
-                List.of("微量高效", "通过体液运输", "只在分泌部位起作用", "作用时间都极短"), Set.of("A", "B"), "激素通常微量高效，并随体液运输到靶细胞"));
+                List.of("微量高效", "通过体液运输", "只在分泌部位起作用", "作用时间都极短"), Set.of("A", "B"), "激素通常具有微量高效、经体液运输并作用于特定靶细胞等特点，不局限于分泌部位，作用时间也并非都极短"));
         items.add(fill("BIOLOGY-F1", "BIOLOGY", "细胞膜控制物质进出体现了膜的____功能。", "分子与细胞>细胞结构>细胞膜", 2, "选择透过"));
         items.add(fill("BIOLOGY-F2", "BIOLOGY", "成对遗传因子在形成配子时彼此____。", "遗传与进化>遗传规律>分离定律", 3, "分离"));
         items.addAll(DemoQuestionBank.additionalQuestions());
         items.addAll(DemoVariantQuestionBank.acceptedQuestions());
         items.addAll(DemoCurriculumQuestionBank.questions());
-        return items;
+        return rebalanceDifficulties(items);
+    }
+
+    private static List<Question> rebalanceDifficulties(List<Question> items) {
+        Map<String, int[]> finalTargets = Map.of(
+                "SINGLE_CHOICE", new int[] {14, 16, 14},
+                "MULTIPLE_CHOICE", new int[] {11, 16, 11},
+                "FILL_BLANK", new int[] {11, 16, 11});
+        Map<String, Integer> reassigned = new HashMap<>();
+        for (String subject : List.of("PHYSICS", "CHEMISTRY", "BIOLOGY")) {
+            for (String type : List.of("SINGLE_CHOICE", "MULTIPLE_CHOICE", "FILL_BLANK")) {
+                List<Question> fixed = items.stream()
+                        .filter(item -> subject.equals(item.subject()) && type.equals(item.type()) && !item.stem().startsWith("覆盖："))
+                        .toList();
+                int[] target = finalTargets.get(type);
+                int[] remaining = new int[] {target[0], target[1], target[2]};
+                for (Question item : fixed) remaining[item.difficulty() - 1]--;
+                if (java.util.Arrays.stream(remaining).anyMatch(value -> value < 0)) {
+                    throw new IllegalStateException(subject + " " + type + "固定题难度分布超过重平衡目标");
+                }
+                List<Question> ranked = items.stream()
+                        .filter(item -> subject.equals(item.subject()) && type.equals(item.type()) && item.stem().startsWith("覆盖："))
+                        .sorted(Comparator.comparingInt(Question::difficulty).thenComparing(Question::key))
+                        .toList();
+                if (ranked.size() != remaining[0] + remaining[1] + remaining[2]) {
+                    throw new IllegalStateException(subject + " " + type + "题型数量无法执行确定性难度重平衡");
+                }
+                for (int index = 0; index < ranked.size(); index++) {
+                    reassigned.put(ranked.get(index).key(), index < remaining[0] ? 1 : index < remaining[0] + remaining[1] ? 2 : 3);
+                }
+            }
+        }
+        return items.stream().map(item -> reassigned.containsKey(item.key()) ? item.withDifficulty(reassigned.get(item.key())) : item).toList();
     }
 
     static Question choice(String key, String subject, String type, String stem, String point, int difficulty,
@@ -604,13 +724,58 @@ public class DemoDataService {
 
     static Question fill(String key, String subject, String stem, String point, int difficulty, String accepted) {
         String answer = "{\"schemaVersion\":1,\"type\":\"FILL_BLANK\",\"blanks\":[{\"index\":1,\"acceptedAnswers\":[\"" + accepted + "\"],\"caseSensitive\":false}]}";
-        return new Question(key, subject, "FILL_BLANK", stem, point, difficulty, answer, List.of(), "根据相关基本概念或计算，空格应填写“" + accepted + "”。");
+        return new Question(key, subject, "FILL_BLANK", stem, point, difficulty, answer, List.of(),
+                fillExplanation(subject, stem, point, accepted));
+    }
+
+    private static String fillExplanation(String subject, String stem, String point, String accepted) {
+        if ("PHYSICS".equals(subject)) {
+            if (stem.contains("不受外力")) return "本题考查牛顿第一定律。合力为零时物体的运动状态保持不变，所以原来运动的物体继续做匀速直线运动。";
+            if (stem.contains("末速度")) return "本题考查牛顿第二定律和匀变速运动。先由a=F/m求加速度2 m/s²，再由v=at计算3 s后的速度为6 m/s。";
+            if (stem.contains("合力为____")) return "本题考查牛顿第二定律。由F=ma，将质量2 kg和加速度3 m/s²代入，得到合力为6 N。";
+            if (stem.contains("受到10 N合力")) return "本题考查牛顿第二定律。由a=F/m，将合力10 N除以质量5 kg，得到加速度2 m/s²。";
+            if (stem.contains("所受电场力")) return "本题考查匀强电场中的受力关系。由F=qE，将0.02 C与500 N/C相乘，得到电场力10 N。";
+            if (stem.contains("电场力做功")) return "本题考查匀强电场做功。电荷沿场强方向移动时W=qEd，代入0.01 C、200 N/C和0.5 m，得到1 J。";
+            if (stem.contains("受到3 N电场力")) return "本题考查电场强度定义。由E=F/q，将3 N除以1 C，得到该点电场强度3 N/C。";
+            if (stem.contains("27℃")) return "本题考查摄氏温标与热力学温标换算。按T=t+273计算，27℃约等于300 K。";
+            if (stem.contains("0℃")) return "本题考查摄氏温标与热力学温标换算。按T=t+273计算，0℃约等于273 K。";
+            if (stem.contains("吸收500 J")) return "本题考查热力学第一定律。气体吸热500 J并对外做功200 J，故内能增量ΔU=Q-W=300 J。";
+        }
+        if ("CHEMISTRY".equals(subject)) {
+            if (stem.contains("2 mol水分子")) return "本题考查化学式与微粒计量。每个H₂O含2个氢原子，所以2 mol水分子含4 mol氢原子。";
+            if (stem.contains("正反应速率")) return "本题考查化学平衡的动态特征。达到平衡时反应仍在进行，但正、逆反应速率相等，宏观组成保持稳定。";
+            if (stem.contains("11.2 L")) return "本题考查标准状况气体摩尔体积。按22.4 L/mol计算，11.2 L除以22.4 L/mol得到0.5 mol。";
+            if (stem.contains("2 mol CO₂")) return "本题考查化学式中的原子计量。每个CO₂含2个氧原子，所以2 mol CO₂含4 mol氧原子。";
+            if (stem.contains("Fe³⁺转化为Fe²⁺")) return "本题考查氧化还原中的电子守恒。铁元素化合价由+3降至+2，每个Fe³⁺需要得到1个电子。";
+            if (stem.contains("KMnO₄")) return "本题考查化合物中化合价代数和为零。K为+1、4个O合计-8，因此Mn应为+7价。";
+            if (stem.contains("H₂O中O")) return "本题考查常见元素化合价。水分子呈电中性，两个H合计+2，因此O的化合价为-2。";
+            if (stem.contains("平衡常数")) return "本题考查平衡常数的影响因素。对确定的可逆反应，平衡常数由温度决定，浓度或压强变化不改变其数值。";
+            if (stem.contains("增大压强")) return "本题考查勒夏特列原理。加压时平衡向气体物质的量较小的一侧移动，合成氨反应右侧气体系数较小，所以向右移动。";
+            if (stem.contains("各组分浓度")) return "本题考查动态平衡。外界条件不变时正、逆反应速率相等，各组分浓度保持不变，但反应并未停止。";
+        }
+        if ("BIOLOGY".equals(subject)) {
+            if (stem.contains("控制物质进出")) return "本题考查细胞膜功能。膜对不同物质的通透能力不同，能够有选择地控制物质进出，体现选择透过功能。";
+            if (stem.contains("形成配子时")) return "本题考查分离定律。杂合子形成配子时，成对遗传因子随同源染色体分开而彼此分离。";
+            if (stem.contains("基本支架")) return "本题考查流动镶嵌模型。磷脂分子的亲水头朝向水环境、疏水尾相对排列，磷脂双分子层因此构成膜的基本支架。";
+            if (stem.contains("限制另一些物质")) return "本题考查细胞膜的功能特性。膜对不同物质具有不同通透能力，这种有选择地允许物质通过的特性称为选择透过性。";
+            if (stem.contains("Aa与Aa")) return "本题考查分离定律。Aa双方各产生A、a两类等比例配子，随机结合得到AA:Aa:aa=1:2:1，因此aa概率为1/4。";
+            if (stem.contains("AA与aa")) return "本题考查配子结合。AA个体只产生A配子，aa个体只产生a配子，受精后F1全部为Aa。";
+            if (stem.contains("显性纯合子")) return "本题考查基因型表示。纯合子含两个相同等位基因，显性等位基因用A表示，因此显性纯合子的基因型为AA。";
+            if (stem.contains("血糖升高")) return "本题考查血糖的反馈调节。血糖升高会促进胰岛B细胞分泌胰岛素，增强葡萄糖摄取、利用和储存，所以分泌量增加。";
+            if (stem.contains("持续高血糖")) return "本题考查胰岛素的生理作用。胰岛素不足时组织摄取和利用葡萄糖受限，血糖难以下降，因而可出现持续高血糖。";
+            if (stem.contains("运输到全身")) return "本题考查激素调节特点。内分泌腺没有导管，激素进入血液等体液后随循环运输到相应靶细胞。";
+        }
+        return "本题考查“" + point + "”。应先依据题干给出的条件建立对应概念或数量关系，再得到结论“" + accepted + "”。";
     }
 
     record Question(String key, String subject, String type, String stem, String knowledgePath,
                     int difficulty, String answer, List<Option> options, String analysis) {
         Question withStemPrefix(String prefix) {
             return new Question(key, subject, type, prefix + stem, knowledgePath, difficulty, answer, options, analysis);
+        }
+
+        Question withDifficulty(int value) {
+            return new Question(key, subject, type, stem, knowledgePath, value, answer, options, analysis);
         }
     }
 
