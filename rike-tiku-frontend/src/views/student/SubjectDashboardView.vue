@@ -6,6 +6,8 @@ import { createPracticeSession, fetchPracticeOptions, type Subject } from '../..
 import { fetchStudentHighFrequencyPoints, type StudentHighFrequencyPoint } from '../../api/student/highFrequency'
 import { fetchStudentLearningSummary, type MasteryLevel, type StudentLearningSummary } from '../../api/student/learningMastery'
 import type { ApiError } from '../../api/http'
+import MetricFraction from '../../components/MetricFraction.vue'
+import { subjectTheme } from '../../utils/subjectTheme'
 const route = useRoute()
 const router = useRouter()
 const subject = ref<Subject | null>(null)
@@ -16,6 +18,7 @@ const learningSummary = ref<StudentLearningSummary | null>(null)
 const focusedKnowledgePointId = computed(() => Number(route.query?.knowledgePointId) || 0)
 const focusedKnowledgePoint = computed(() => learningSummary.value?.knowledgePoints.find(point => point.knowledgePointId === focusedKnowledgePointId.value) || null)
 const subjectCode = computed(() => String(route.params.subjectCode).toUpperCase())
+const environment = computed(() => subjectTheme(subjectCode.value))
 const valid = computed(() => ['PHYSICS', 'CHEMISTRY', 'BIOLOGY'].includes(subjectCode.value))
 
 async function load() {
@@ -77,7 +80,7 @@ onMounted(() => void load())
 </script>
 
 <template>
-  <section v-if="subject" class="student-page subject-page">
+  <section v-if="subject" class="student-page subject-page" :data-subject="environment">
     <div class="student-page-heading">
       <div>
         <h1>{{ subject.name }}学习工作台</h1>
@@ -125,7 +128,7 @@ onMounted(() => void load())
           <small>{{ learningSummary.overall.totalCorrectCount }} / {{ learningSummary.overall.totalAnsweredCount }} 题答对</small>
         </div>
         <dl class="mastery-counts">
-          <div><dt>已练习知识点</dt><dd>{{ learningSummary.overall.practicedKnowledgePointCount }} / {{ learningSummary.overall.totalKnowledgePointCount }}</dd></div>
+          <div><dt>已练习知识点</dt><dd><MetricFraction :numerator="learningSummary.overall.practicedKnowledgePointCount" :denominator="learningSummary.overall.totalKnowledgePointCount" :label="`已练习知识点 ${learningSummary.overall.practicedKnowledgePointCount} / ${learningSummary.overall.totalKnowledgePointCount}`" /></dd></div>
           <div><dt>已掌握</dt><dd>{{ learningSummary.overall.masteredKnowledgePointCount }}</dd></div>
           <div><dt>巩固中</dt><dd>{{ learningSummary.overall.improvingKnowledgePointCount }}</dd></div>
           <div><dt>薄弱</dt><dd>{{ learningSummary.overall.weakKnowledgePointCount }}</dd></div>

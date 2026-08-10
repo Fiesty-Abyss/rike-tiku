@@ -44,9 +44,9 @@ body {
 .el-drawer {
   border-color: var(--glass-border);
   background: var(--surface-glass-strong);
-  -webkit-backdrop-filter: blur(16px) saturate(115%);
-  backdrop-filter: blur(16px) saturate(115%);
-  box-shadow: inset 0 1px var(--glass-highlight);
+  -webkit-backdrop-filter: blur(24px) saturate(132%);
+  backdrop-filter: blur(24px) saturate(132%);
+  box-shadow: inset 1px 1px var(--glass-highlight), inset -1px -1px oklch(63% 0.06 218 / .08), 0 .85rem 2.7rem oklch(37% .055 226 / .09);
 }
 
 @supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {

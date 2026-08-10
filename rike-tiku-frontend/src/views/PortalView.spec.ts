@@ -14,22 +14,24 @@ function mountPortal() {
 }
 
 describe('公共门户首页', () => {
-  it('展示系统名称、三科学科和学习闭环', () => {
+  it('只展示事实型系统信息、三科学科和真实题量', () => {
     const text = mountPortal().text()
-    expect(text).toContain('集成大模型智能答疑的在线题库实训管理系统')
+    expect(text).toContain('RIKE 理科学习辅助系统')
+    expect(text).toContain('高中物理、化学、生物练习与学习管理')
     expect(text).toContain('物理')
     expect(text).toContain('化学')
     expect(text).toContain('生物')
-    expect(text).toContain('练习')
-    expect(text).toContain('判分')
-    expect(text).toContain('标准解析')
-    expect(text).toContain('掌握度 / 推荐')
+    expect(text).toContain('360道自动练习题')
+    expect(text).toContain('18道专题综合题')
   })
 
-  it('明确 AI 智能答疑仍为后续能力规划', () => {
+  it('移除设计自述、宣传口号和独立 AI 规划章节', () => {
     const text = mountPortal().text()
-    expect(text).toContain('AI 智能答疑：后续能力规划')
-    expect(text).toContain('当前系统尚未实现运行时 AI 答疑')
+    expect(text).not.toContain('学习水流')
+    expect(text).not.toContain('不是三张换色卡片')
+    expect(text).not.toContain('工作节奏')
+    expect(text).not.toContain('AI 智能答疑：后续能力规划')
+    expect(text).not.toContain('NON-AI FOUNDATION')
   })
 
   it('统一登录 CTA 继续指向现有登录页', () => {

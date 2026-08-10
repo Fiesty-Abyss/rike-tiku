@@ -4,6 +4,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { ElMessage, type FormInstance, type FormRules } from 'element-plus'
 import { createHighFrequencyPoint, fetchTeacherLearningSummary, fetchTeacherWorkspace, updateHighFrequencyPoint, updateHighFrequencyPointStatus, type HighFrequencyPoint, type TeacherScopeLearningSummary, type TeacherWorkspace } from '../../api/teacher'
 import { createConversation, fetchConversations } from '../../api/messages'
+import { subjectTheme } from '../../utils/subjectTheme'
 
 const route = useRoute()
 const router = useRouter()
@@ -24,6 +25,7 @@ const rules: FormRules = {
 }
 
 const activePoints = computed(() => workspace.value?.highFrequencyPoints || [])
+const environment = computed(() => subjectTheme(workspace.value?.subjectCode))
 
 function message(error: unknown, fallback: string) {
   const api = error as { message?: string; code?: string }
@@ -129,7 +131,7 @@ onMounted(() => void load())
 </script>
 
 <template>
-  <main class="workspace-page">
+  <main class="workspace-page" :data-subject="environment">
     <header class="workspace-header teacher-header">
       <div class="teacher-header-context">
         <router-link class="workspace-brand" to="/teacher">RIKE · 教师工作台</router-link>

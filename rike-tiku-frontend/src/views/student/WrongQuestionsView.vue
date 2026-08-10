@@ -6,6 +6,7 @@ import { fetchWrongQuestion, fetchWrongQuestions, type WrongQuestion, type Wrong
 import { formatPracticeAnswer } from './practiceAnswerFormatter'
 import type { ApiError } from '../../api/http'
 import QuestionContent from '../../components/question/QuestionContent.vue'
+import { subjectTheme } from '../../utils/subjectTheme'
 
 const router = useRouter()
 const route = useRoute()
@@ -14,6 +15,7 @@ const records = ref<WrongQuestion[]>([])
 const detail = ref<WrongQuestionDetail | null>(null)
 const visible = ref(false)
 const subjectCode = computed(() => String(route.query.subjectCode || '').trim().toUpperCase() || undefined)
+const environment = computed(() => subjectTheme(detail.value?.wrongQuestion.subjectCode || subjectCode.value))
 const state = (value: string) => ({ NEW: '新错题', REVIEWING: '复习中', MASTERED: '已掌握' } as Record<string, string>)[value] || value
 
 async function load() {
@@ -46,7 +48,7 @@ onMounted(() => void load())
 </script>
 
 <template>
-  <section class="student-page wrong-book-page">
+  <section class="student-page wrong-book-page" :data-subject="environment">
     <div class="student-page-heading"><div><h1>{{ subjectCode ? '本学科错题' : '错题本' }}</h1><p>提交后实时更新；连续两次答对后标为已掌握，但不删除历史记录。</p></div><el-button @click="router.push({path:'/student/practice/new',query:subjectCode?{subjectCode}:undefined})">创建练习</el-button></div>
     <el-table v-loading="loading" :data="records" class="data-table" empty-text="暂时没有错题，继续保持。"><el-table-column prop="subjectName" label="学科" /><el-table-column prop="stemSummary" label="题干摘要" min-width="300" show-overflow-tooltip /><el-table-column prop="errorCount" label="错误次数" /><el-table-column prop="consecutiveCorrectCount" label="连续正确" /><el-table-column label="状态"><template #default="{row}"><el-tag>{{ state(row.status) }}</el-tag></template></el-table-column><el-table-column label="操作"><template #default="{row}"><el-button link type="primary" @click="show(row)">查看详情</el-button></template></el-table-column></el-table>
     <el-drawer v-model="visible" title="错题详情" size="min(760px,100%)"><template v-if="detail"><h2><QuestionContent :content="detail.stem" :attachments="detail.attachments" position="QUESTION" /></h2><el-table v-if="detail.options.length" :data="detail.options" class="data-table"><el-table-column prop="label" label="选项" width="90"/><el-table-column label="内容"><template #default="{row}"><QuestionContent :content="row.content" :attachments="detail.attachments" position="OPTION" /></template></el-table-column></el-table><div class="answer-comparison"><div><span>最近答案</span><strong>{{ formatPracticeAnswer(detail.wrongQuestion.questionType,detail.latestStudentAnswer) }}</strong></div><div><span>正确答案</span><strong>{{ formatPracticeAnswer(detail.wrongQuestion.questionType,detail.correctAnswer) }}</strong></div></div><section class="analysis-panel"><h3>标准解析</h3><QuestionContent :content="detail.standardAnalysis" :attachments="detail.attachments" position="STANDARD_ANALYSIS" /></section><div class="knowledge-chip-row"><span>知识点</span><el-button v-for="point in detail.knowledgePoints" :key="point.id" class="knowledge-chip" round plain @click="openKnowledgePoint(point.id)">{{ point.path }}</el-button></div><el-button type="primary" plain @click="similarPractice">练习类似题</el-button></template></el-drawer>
