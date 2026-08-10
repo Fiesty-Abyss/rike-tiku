@@ -133,7 +133,8 @@ class QuestionImportAttachmentHttpIntegrationTest extends AdminQuestionIntegrati
         assertThat(adminContent.headers().firstValue("content-type").orElse("")).startsWith("image/png");
         assertThat(ImageIO.read(new ByteArrayInputStream(adminContent.body()))).isNotNull();
 
-        jdbc.update("UPDATE ti_mu_lai_yuan SET quan_li_zhuang_tai='USER_PROVIDED' WHERE ti_mu_id=?", questionId);
+        adminQuestions.updateSourceRights(questionId,
+                new QuestionDtos.SourceRightsUpdate("USER_PROVIDED", "测试附件由专项提供，仅用于隔离测试"), adminId);
         adminQuestions.transition(questionId, "APPROVED", "PENDING", "PUBLISHED", null, adminId);
 
         long studentId = studentUser();

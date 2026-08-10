@@ -8,15 +8,18 @@ import com.neu.riketiku.tiku.admin.QuestionDtos;
 import com.neu.riketiku.xueshenglianxi.StudentPracticeDtos;
 import com.neu.riketiku.xueshenglianxi.StudentPracticeService;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -30,6 +33,7 @@ import tools.jackson.databind.ObjectMapper;
 
 @SpringBootTest
 class Golden30ImportIntegrationTest extends AdminQuestionIntegrationTestSupport {
+    private static final int GOLDEN_POINT_ORDER = 998;
     private static final Path PROJECT_ROOT = Path.of(System.getProperty("user.dir")).toAbsolutePath().normalize().getParent();
     private static final Path SOURCE_ROOT = PROJECT_ROOT.resolve("题库");
     private static final Path STORAGE_ROOT = Path.of(System.getProperty("java.io.tmpdir"), "rike-tiku-golden30-storage-" + UUID.randomUUID());
@@ -44,6 +48,7 @@ class Golden30ImportIntegrationTest extends AdminQuestionIntegrationTestSupport 
     @Autowired private QuestionImportService importer;
     @Autowired private QuestionAdminService adminQuestions;
     @Autowired private StudentPracticeService practice;
+    private final List<Long> importedQuestionIds = new ArrayList<>();
 
     @DynamicPropertySource
     static void golden30Properties(DynamicPropertyRegistry registry) {
@@ -62,7 +67,9 @@ class Golden30ImportIntegrationTest extends AdminQuestionIntegrationTestSupport 
             assertThat(preview.totalCount()).as(subject).isEqualTo(10);
             assertThat(preview.validCount()).as(() -> subject + ":" + preview.rows()).isEqualTo(10);
             var confirmation = importer.confirm(upload, preview.fileHash(), adminId);
-            questionIds.addAll(jdbc.queryForList("SELECT q.id FROM ti_mu q JOIN dao_ru_pi_ci b ON b.id=q.dao_ru_pi_ci_id WHERE b.pi_ci_bian_hao=? ORDER BY q.id", Long.class, confirmation.batchCode()));
+            List<Long> batchQuestionIds = jdbc.queryForList("SELECT q.id FROM ti_mu q JOIN dao_ru_pi_ci b ON b.id=q.dao_ru_pi_ci_id WHERE b.pi_ci_bian_hao=? ORDER BY q.id", Long.class, confirmation.batchCode());
+            questionIds.addAll(batchQuestionIds);
+            importedQuestionIds.addAll(batchQuestionIds);
         }
         assertThat(questionIds).hasSize(30);
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM ti_mu_fu_jian WHERE ti_mu_id IN (" + marks(questionIds.size()) + ") AND fu_jian_lei_xing='IMAGE' AND zhuang_tai='ACTIVE'", Integer.class, questionIds.toArray()))
@@ -115,7 +122,7 @@ class Golden30ImportIntegrationTest extends AdminQuestionIntegrationTestSupport 
                     long subjectId = jdbc.queryForObject("SELECT id FROM ke_mu WHERE ke_mu_dai_ma=?", Long.class, subjectCode);
                     for (String path : formatter.formatCellValue(current.getCell(13)).split("[；;]")) {
                         String normalized = path.trim().replaceAll("\\s*[>＞]\\s*", ">");
-                        if (!normalized.isBlank()) jdbc.update("INSERT IGNORE INTO zhi_shi_dian(ke_mu_id,zhi_shi_dian_ming_cheng,wan_zheng_lu_jing,ceng_ji,pai_xu,zhuang_tai) VALUES (?,?,?,1,999,'ACTIVE')",
+                        if (!normalized.isBlank()) jdbc.update("INSERT IGNORE INTO zhi_shi_dian(ke_mu_id,zhi_shi_dian_ming_cheng,wan_zheng_lu_jing,ceng_ji,pai_xu,zhuang_tai) VALUES (?,?,?,1," + GOLDEN_POINT_ORDER + ",'ACTIVE')",
                                 subjectId, normalized.substring(normalized.lastIndexOf('>') + 1), normalized);
                     }
                 }
@@ -174,4 +181,49 @@ class Golden30ImportIntegrationTest extends AdminQuestionIntegrationTestSupport 
     }
 
     private String marks(int count) { return String.join(",", java.util.Collections.nCopies(count, "?")); }
+
+    @AfterEach
+    void cleanupGolden30() throws IOException {
+        List<Long> questionIds = new ArrayList<>(importedQuestionIds);
+        List<Long> studentProfileIds = jdbc.queryForList("SELECT d.id FROM xue_sheng_dang_an d JOIN yong_hu u ON u.id=d.yong_hu_id WHERE u.yong_hu_ming='golden30_student'", Long.class);
+        if (!studentProfileIds.isEmpty()) {
+            String profileMarks = marks(studentProfileIds.size());
+            List<Long> sessionIds = jdbc.queryForList("SELECT id FROM lian_xi_hui_hua WHERE xue_sheng_id IN (" + profileMarks + ")", Long.class, studentProfileIds.toArray());
+            jdbc.update("DELETE FROM cuo_ti_ji_lu WHERE xue_sheng_id IN (" + profileMarks + ")", studentProfileIds.toArray());
+            jdbc.update("DELETE FROM xue_sheng_da_ti WHERE xue_sheng_id IN (" + profileMarks + ")", studentProfileIds.toArray());
+            if (!sessionIds.isEmpty()) {
+                String sessionMarks = marks(sessionIds.size());
+                jdbc.update("DELETE FROM xue_xi_jie_guo WHERE lian_xi_hui_hua_id IN (" + sessionMarks + ")", sessionIds.toArray());
+                jdbc.update("DELETE FROM lian_xi_ti_mu WHERE lian_xi_hui_hua_id IN (" + sessionMarks + ")", sessionIds.toArray());
+                jdbc.update("DELETE FROM lian_xi_hui_hua WHERE id IN (" + sessionMarks + ")", sessionIds.toArray());
+            }
+        }
+        if (!questionIds.isEmpty()) {
+            String questionMarks = marks(questionIds.size());
+            List<Long> batchIds = jdbc.queryForList("SELECT DISTINCT dao_ru_pi_ci_id FROM ti_mu WHERE id IN (" + questionMarks + ") AND dao_ru_pi_ci_id IS NOT NULL", Long.class, questionIds.toArray());
+            jdbc.update("DELETE FROM guan_li_cao_zuo_ri_zhi WHERE ye_wu_dui_xiang_id IN (" + questionMarks + ")", questionIds.toArray());
+            jdbc.update("DELETE FROM cuo_ti_ji_lu WHERE ti_mu_id IN (" + questionMarks + ")", questionIds.toArray());
+            jdbc.update("DELETE FROM ti_mu_fu_jian WHERE ti_mu_id IN (" + questionMarks + ")", questionIds.toArray());
+            jdbc.update("DELETE FROM ti_mu_shen_he_ji_lu WHERE ti_mu_id IN (" + questionMarks + ")", questionIds.toArray());
+            jdbc.update("DELETE FROM ti_mu_lai_yuan WHERE ti_mu_id IN (" + questionMarks + ")", questionIds.toArray());
+            jdbc.update("DELETE FROM ti_mu_zhi_shi_dian WHERE ti_mu_id IN (" + questionMarks + ")", questionIds.toArray());
+            jdbc.update("DELETE FROM ti_mu_jie_xi WHERE ti_mu_id IN (" + questionMarks + ")", questionIds.toArray());
+            jdbc.update("DELETE FROM ti_mu_xuan_xiang WHERE ti_mu_id IN (" + questionMarks + ")", questionIds.toArray());
+            jdbc.update("DELETE FROM ti_mu WHERE id IN (" + questionMarks + ")", questionIds.toArray());
+            if (!batchIds.isEmpty()) jdbc.update("DELETE FROM dao_ru_pi_ci WHERE id IN (" + marks(batchIds.size()) + ")", batchIds.toArray());
+        }
+        jdbc.update("DELETE FROM zhi_shi_dian WHERE pai_xu=?", GOLDEN_POINT_ORDER);
+        jdbc.update("DELETE FROM guan_li_cao_zuo_ri_zhi WHERE cao_zuo_ren_yong_hu_id IN (SELECT id FROM yong_hu WHERE yong_hu_ming IN ('golden30_admin','golden30_student'))");
+        jdbc.update("DELETE FROM xue_sheng_dang_an WHERE yong_hu_id IN (SELECT id FROM yong_hu WHERE yong_hu_ming='golden30_student')");
+        jdbc.update("DELETE FROM yong_hu_jiao_se WHERE yong_hu_id IN (SELECT id FROM yong_hu WHERE yong_hu_ming IN ('golden30_admin','golden30_student'))");
+        jdbc.update("DELETE FROM yong_hu WHERE yong_hu_ming IN ('golden30_admin','golden30_student')");
+        importedQuestionIds.clear();
+        if (Files.exists(STORAGE_ROOT)) {
+            try (var paths = Files.walk(STORAGE_ROOT)) {
+                paths.sorted(Comparator.reverseOrder()).forEach(path -> {
+                    try { Files.deleteIfExists(path); } catch (IOException ignored) { }
+                });
+            }
+        }
+    }
 }
