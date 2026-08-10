@@ -13,6 +13,7 @@ import com.neu.riketiku.renzheng.RenZhengYeWuYiChang;
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class BanJiFuWu {
@@ -24,6 +25,7 @@ public class BanJiFuWu {
         this.auditLog = auditLog;
     }
 
+    @Transactional
     public BanJiXiangYing create(BanJiChuangJianQingQiu request) {
         return auditLog.audited("CLASS", "CREATE", null, "管理员创建班级", () -> createInternal(request), BanJiXiangYing::id);
     }
@@ -49,6 +51,7 @@ public class BanJiFuWu {
         return BanJiXiangYing.from(findExisting(id));
     }
 
+    @Transactional
     public BanJiXiangYing update(Long id, BanJiXiuGaiQingQiu request) {
         return auditLog.audited("CLASS", "UPDATE", id, "管理员修改班级档案", () -> updateInternal(id, request));
     }
@@ -62,6 +65,7 @@ public class BanJiFuWu {
         return BanJiXiangYing.from(banJi);
     }
 
+    @Transactional
     public BanJiXiangYing changeStatus(Long id, BanJiZhuangTaiQingQiu request) {
         return auditLog.audited("CLASS", "STATUS_CHANGE", id, "管理员变更班级状态", () -> changeStatusInternal(id, request));
     }

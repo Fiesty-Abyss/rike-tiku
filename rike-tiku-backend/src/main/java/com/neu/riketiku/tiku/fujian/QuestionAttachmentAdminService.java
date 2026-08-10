@@ -2,9 +2,11 @@ package com.neu.riketiku.tiku.fujian;
 
 import com.neu.riketiku.guanlicaozuorizhi.GuanLiCaoZuoRiZhiFuWu;
 import com.neu.riketiku.renzheng.RenZhengYeWuYiChang;
+import com.neu.riketiku.tiku.admin.QuestionContentHashService;
 import com.neu.riketiku.tiku.admin.QuestionDtos;
-import java.nio.file.Path;
 import java.nio.file.InvalidPathException;
+import java.nio.file.Path;
+import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -12,6 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
@@ -20,13 +24,16 @@ public class QuestionAttachmentAdminService {
     private final JdbcTemplate jdbc;
     private final QuestionAttachmentStorage storage;
     private final QuestionAttachmentContentService contentService;
+    private final QuestionContentHashService contentHashService;
     private final GuanLiCaoZuoRiZhiFuWu auditLog;
 
     public QuestionAttachmentAdminService(JdbcTemplate jdbc, QuestionAttachmentStorage storage,
-            QuestionAttachmentContentService contentService, GuanLiCaoZuoRiZhiFuWu auditLog) {
+            QuestionAttachmentContentService contentService, QuestionContentHashService contentHashService,
+            GuanLiCaoZuoRiZhiFuWu auditLog) {
         this.jdbc = jdbc;
         this.storage = storage;
         this.contentService = contentService;
+        this.contentHashService = contentHashService;
         this.auditLog = auditLog;
     }
 
@@ -55,11 +62,11 @@ public class QuestionAttachmentAdminService {
         String content = context.content();
         String newContent = content == null || content.isBlank() ? markerText : content + "\n" + markerText;
         QuestionAttachmentStorage.StoredImage stored = null;
-        Long newAttachmentId = null;
         try {
             stored = store(file);
+            cleanupOnRollback(stored.relativePath());
             if ("QUESTION".equals(position)) {
-                jdbc.update("UPDATE ti_mu SET ti_gan=? WHERE id=?", newContent, questionId);
+                updateStem(questionId, newContent);
             } else {
                 jdbc.update("UPDATE ti_mu_jie_xi SET jie_xi_nei_rong=? WHERE id=?", newContent, context.analysisId());
             }
@@ -70,10 +77,10 @@ public class QuestionAttachmentAdminService {
                     VALUES (?,?,?,'IMAGE',?,?,?,?,?,?, 'ACTIVE')
                     """, questionId, context.analysisId(), position, fileName(file), stored.relativePath(),
                     stored.hash(), marker, newContent.indexOf(markerText) + 1, nextOrder(questionId, position));
-            newAttachmentId = jdbc.queryForObject("SELECT LAST_INSERT_ID()", Long.class);
+            Long newAttachmentId = jdbc.queryForObject("SELECT LAST_INSERT_ID()", Long.class);
             return attachment(newAttachmentId);
         } catch (RuntimeException exception) {
-            cleanup(stored, newAttachmentId);
+            cleanupImmediately(stored);
             throw exception;
         }
     }
@@ -85,12 +92,13 @@ public class QuestionAttachmentAdminService {
         QuestionAttachmentStorage.StoredImage stored = null;
         try {
             stored = store(file);
+            cleanupOnRollback(stored.relativePath());
             jdbc.update("UPDATE ti_mu_fu_jian SET yuan_shi_wen_jian_ming=?,xiang_dui_lu_jing=?,nei_rong_ha_xi=?,zhuang_tai='ACTIVE',yi_shan_chu=0 WHERE id=? AND ti_mu_id=?",
                     fileName(file), stored.relativePath(), stored.hash(), attachmentId, questionId);
-            cleanupIfUnreferenced(existing.relativePath(), attachmentId);
+            cleanupAfterCommit(existing.relativePath());
             return attachment(attachmentId);
         } catch (RuntimeException exception) {
-            cleanup(stored, attachmentId);
+            cleanupImmediately(stored);
             throw exception;
         }
     }
@@ -110,11 +118,20 @@ public class QuestionAttachmentAdminService {
         }
         jdbc.update("UPDATE ti_mu_fu_jian SET zhuang_tai='DISABLED',yi_shan_chu=1 WHERE id=? AND ti_mu_id=?",
                 attachmentId, questionId);
-        cleanupIfUnreferenced(existing.relativePath(), attachmentId);
+        cleanupAfterCommit(existing.relativePath());
     }
 
     private void removeStemMarker(long questionId, String marker) {
-        jdbc.update("UPDATE ti_mu SET ti_gan=REPLACE(ti_gan,?, '') WHERE id=?", marker, questionId);
+        String stem = jdbc.queryForObject("SELECT ti_gan FROM ti_mu WHERE id=?", String.class, questionId);
+        updateStem(questionId, stem.replace(marker, ""));
+    }
+
+    private void updateStem(long questionId, String stem) {
+        List<QuestionContentHashService.OptionContent> options = jdbc.query(
+                "SELECT xuan_xiang_biao_shi,xuan_xiang_nei_rong FROM ti_mu_xuan_xiang WHERE ti_mu_id=? AND yi_shan_chu=0 ORDER BY pai_xu",
+                (rs, row) -> new QuestionContentHashService.OptionContent(rs.getString(1), rs.getString(2)), questionId);
+        String hash = contentHashService.calculate(stem, options);
+        jdbc.update("UPDATE ti_mu SET ti_gan=?,nei_rong_ha_xi=? WHERE id=?", stem, hash, questionId);
     }
 
     private String markerText(String marker) {
@@ -194,14 +211,33 @@ public class QuestionAttachmentAdminService {
         return name.length() <= 255 ? name : name.substring(name.length() - 255);
     }
 
-    private void cleanup(QuestionAttachmentStorage.StoredImage stored) {
-        cleanup(stored, null);
+    private void cleanupImmediately(QuestionAttachmentStorage.StoredImage stored) {
+        if (stored != null) {
+            try { cleanupIfUnreferenced(stored.relativePath(), null); } catch (RuntimeException ignored) { }
+        }
     }
 
-    private void cleanup(QuestionAttachmentStorage.StoredImage stored, Long excludedAttachmentId) {
-        if (stored != null) {
-            try { cleanupIfUnreferenced(stored.relativePath(), excludedAttachmentId); } catch (RuntimeException ignored) { }
+    private void cleanupOnRollback(String relativePath) {
+        deferCleanup(relativePath, TransactionSynchronization.STATUS_ROLLED_BACK);
+    }
+
+    private void cleanupAfterCommit(String relativePath) {
+        deferCleanup(relativePath, TransactionSynchronization.STATUS_COMMITTED);
+    }
+
+    private void deferCleanup(String relativePath, int targetStatus) {
+        if (!TransactionSynchronizationManager.isSynchronizationActive()) {
+            if (targetStatus == TransactionSynchronization.STATUS_COMMITTED) cleanupIfUnreferenced(relativePath, null);
+            return;
         }
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+            @Override
+            public void afterCompletion(int status) {
+                if (status == targetStatus) {
+                    try { cleanupIfUnreferenced(relativePath, null); } catch (RuntimeException ignored) { }
+                }
+            }
+        });
     }
 
     private void cleanupIfUnreferenced(String relativePath, Long excludedAttachmentId) {

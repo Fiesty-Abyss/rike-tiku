@@ -23,7 +23,7 @@ Authorization: Bearer <ADMIN JWT>
 
 仅 `ADMIN` 可访问。`page` 从 1 开始，`size` 范围为 1–100；`module`、`action`、`result` 为可选精确筛选条件。响应返回 `records`、`total`、`page`、`size` 和 `pages`。
 
-管理员页面为 `/admin/operation-logs`，查询页面支持模块、动作、结果和分页筛选。`GuanLiCaoZuoRiZhiIntegrationTest` 与认证集成测试覆盖日志写入及 ADMIN/非 ADMIN 查询权限；最终非 AI 审计和统一浏览器验收仍按 PR #27 状态执行。在最终集成人工验收前，不把 MA-017 写成 `DONE_VERIFIED`。
+管理员页面为 `/admin/operation-logs`，查询页面支持模块、动作、结果和分页筛选。`GuanLiCaoZuoRiZhiIntegrationTest` 与认证集成测试覆盖日志写入及 ADMIN/非 ADMIN 查询权限；`BanJiAuditTransactionIntegrationTest` 验证 SUCCESS 审计写入失败时班级业务写入随同事务回滚，不出现业务已提交而接口失败的独立提交。最终非 AI 审计和统一浏览器验收仍按 PR #27 状态执行。在最终集成人工验收前，不把 MA-017 写成 `DONE_VERIFIED`。
 
 ## 题目来源权利补充
 

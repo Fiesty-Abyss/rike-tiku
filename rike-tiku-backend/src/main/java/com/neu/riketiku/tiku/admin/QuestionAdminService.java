@@ -5,8 +5,6 @@ import com.neu.riketiku.renzheng.RenZhengYeWuYiChang;
 import com.neu.riketiku.tiku.fujian.QuestionAttachmentContentService;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -25,13 +23,15 @@ public class QuestionAdminService {
     private static final Set<String> PUBLISHABLE_RIGHTS = Set.of("AUTHORIZED", "OPEN_LICENSE", "PUBLIC_OFFICIAL", "USER_PROVIDED");
     private final JdbcTemplate jdbc;
     private final QuestionAttachmentContentService attachmentContentService;
+    private final QuestionContentHashService contentHashService;
     private final GuanLiCaoZuoRiZhiFuWu auditLog;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     public QuestionAdminService(JdbcTemplate jdbc, QuestionAttachmentContentService attachmentContentService,
-            GuanLiCaoZuoRiZhiFuWu auditLog) {
+            QuestionContentHashService contentHashService, GuanLiCaoZuoRiZhiFuWu auditLog) {
         this.jdbc = jdbc;
         this.attachmentContentService = attachmentContentService;
+        this.contentHashService = contentHashService;
         this.auditLog = auditLog;
     }
 
@@ -201,15 +201,10 @@ public class QuestionAdminService {
     }
     private void rejectDuplicate(Long subjectId, String hash, long excludedId) { if (count("SELECT COUNT(*) FROM ti_mu WHERE ke_mu_id=? AND nei_rong_ha_xi=? AND id<>? AND yi_shan_chu=0", subjectId, hash, excludedId) > 0) fail("QUESTION_DUPLICATE", "存在完全重复题目", HttpStatus.CONFLICT); }
     private String calculateContentHash(QuestionDtos.Save request) {
-        try {
-            StringBuilder value = new StringBuilder(request.stem().replaceAll("\\s+", ""));
-            for (QuestionDtos.Option option : request.options() == null ? List.<QuestionDtos.Option>of() : request.options()) {
-                value.append('|').append(option.label().trim()).append(':').append(option.content().replaceAll("\\s+", ""));
-            }
-            return java.util.HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(value.toString().getBytes(StandardCharsets.UTF_8)));
-        } catch (Exception exception) {
-            throw new IllegalStateException("无法计算内容哈希", exception);
-        }
+        List<QuestionContentHashService.OptionContent> options = request.options() == null ? List.of() : request.options().stream()
+                .map(option -> new QuestionContentHashService.OptionContent(option.label(), option.content()))
+                .toList();
+        return contentHashService.calculate(request.stem(), options);
     }
     private JsonNode readAnswer(String answer) {
         try {

@@ -23,8 +23,8 @@
 - MA-020 已机器修复：练习提交空 body 和不可解析 body 均由全局异常处理返回 `400 INVALID_REQUEST`，正常提交/判分回归不变。
 - MA-019 已加入独立 `Golden30ImportIntegrationTest`：复用现有三科清洗候选素材，在独立测试数据库真实走 preview → confirm → 来源权利补充 → 审核发布 → 查询 → 题池 → 学生提交/标准解析；物理 10、化学 10、生物 10，29 道固定答案题进入自动练习，1 道主观题保留为专题学习题。原始 MVP30 文件未修改，正式库未写入。
 - 管理员题目页已支持草稿题干/标准解析 PNG/JPEG 上传、预览、替换和删除，复用 PR #26 受控存储；正式菜单已将“批量导入题目”并入题库入口、将学生 Excel 导入并入学生管理，并为多角色账号增加“切换身份”。
-- PR #27 当前机器专项：MA-020、管理员图片上传、Golden30、导入回归和日志权限专项均通过；前端 129/129、type-check、build、audit 0 需在最终全量门禁中再次确认。MA-017 仍为 `IMPLEMENTED_AWAITING_FINAL_MANUAL_ACCEPTANCE`。
-- PR #27 最终机器门禁补充：后端 `mvn clean test` 为 117 个测试 0 失败、1 个 symbolic-link assumption skipped，`mvn clean package` PASS；前端为 34 个文件、129/129 PASS，type-check、build PASS，audit 0；Demo `reset → seed → validate → smoke` PASS。PR #26 合并前的 112/127 是历史口径，不覆盖本轮最终复跑结果。MA-017 仍为 `IMPLEMENTED_AWAITING_FINAL_MANUAL_ACCEPTANCE`。
+- PR #27 当前机器专项：MA-020、管理员图片上传、Golden30、导入回归和日志权限专项均通过；最终全量已复跑：前端 35 个文件、133/133、type-check、build、audit 0。MA-017 仍为 `IMPLEMENTED_AWAITING_FINAL_MANUAL_ACCEPTANCE`。
+- PR #27 最终机器门禁补充：后端 `mvn clean test` 为 121 个测试 0 失败、1 个 symbolic-link assumption skipped，`mvn clean package` PASS；前端为 35 个文件、133/133 PASS，type-check、build PASS，audit 0；Demo `reset → seed → validate → smoke` PASS，Golden30 独立导入测试 PASS。PR #26 合并前的 112/127、PR #27 修正前的 117/129 是历史口径，不覆盖本轮最终复跑结果。另补齐题干附件变更后的内容 hash、附件文件/数据库事务回滚清理、管理员草稿图片上传时的未保存文本保护，以及班级写入与 SUCCESS 审计的事务一致性。MA-017 仍为 `IMPLEMENTED_AWAITING_FINAL_MANUAL_ACCEPTANCE`。
 - Flyway：V1–V11，共 27 张业务表；V11 只新增管理员操作日志表，V1–V10 未修改。
 - 教师工作台已支持按本人 ACTIVE 三元任课关系读取班级、科目、学生名单和高频考点，并支持新增、编辑、启停及排序；学生端按本人有效主班级和学科只读取对应 ACTIVE 高频考点。
 - PR #20 已实现受 ACTIVE 三元任课关系和学生当前主班级约束的师生纯文本私信；发送身份取自 JWT，支持会话、未读、已读、7 秒轮询和失效关系历史保留，不含 WebSocket、附件、群聊或管理员审计。

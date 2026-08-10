@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.jayway.jsonpath.JsonPath;
 import com.neu.riketiku.tiku.admin.AdminQuestionIntegrationTestSupport;
+import com.neu.riketiku.tiku.admin.QuestionContentHashService;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.net.URI;
@@ -40,6 +41,8 @@ class QuestionAttachmentAdminIntegrationTest extends AdminQuestionIntegrationTes
     private JdbcTemplate jdbc;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private QuestionContentHashService contentHashService;
 
     @DynamicPropertySource
     static void attachmentProperties(DynamicPropertyRegistry registry) {
@@ -67,22 +70,32 @@ class QuestionAttachmentAdminIntegrationTest extends AdminQuestionIntegrationTes
         long adminId = user();
         questionId = question();
         String token = login();
+        String originalHash = jdbc.queryForObject("SELECT nei_rong_ha_xi FROM ti_mu WHERE id=?", String.class, questionId);
 
         HttpResponse<String> stemUpload = multipart("POST", "/api/v1/admin/questions/" + questionId + "/attachments?position=QUESTION",
                 "file", "stem.png", png(4, 4), token);
         assertThat(stemUpload.statusCode()).isEqualTo(200);
         long stemAttachmentId = ((Number) JsonPath.read(stemUpload.body(), "$.id")).longValue();
+        String originalPath = jdbc.queryForObject("SELECT xiang_dui_lu_jing FROM ti_mu_fu_jian WHERE id=?", String.class, stemAttachmentId);
+        assertThat(STORAGE_ROOT.resolve(originalPath)).exists();
         assertThat((String) JsonPath.read(stemUpload.body(), "$.objectMarker")).isEqualTo("I001");
         assertThat((String) JsonPath.read(stemUpload.body(), "$.renderStatus")).isEqualTo("AVAILABLE");
         assertThat((String) JsonPath.read(stemUpload.body(), "$.contentUrl"))
                 .startsWith("/api/v1/admin/question-attachments/")
                 .doesNotContain("E:\\");
+        String stemWithMarker = jdbc.queryForObject("SELECT ti_gan FROM ti_mu WHERE id=?", String.class, questionId);
+        assertThat(jdbc.queryForObject("SELECT nei_rong_ha_xi FROM ti_mu WHERE id=?", String.class, questionId))
+                .isEqualTo(expectedHash(stemWithMarker));
+        assertThat(jdbc.queryForObject("SELECT nei_rong_ha_xi FROM ti_mu WHERE id=?", String.class, questionId))
+                .isNotEqualTo(originalHash);
 
         HttpResponse<String> analysisUpload = multipart("POST", "/api/v1/admin/questions/" + questionId + "/attachments?position=STANDARD_ANALYSIS",
                 "file", "analysis.jpg", jpeg(), token);
         assertThat(analysisUpload.statusCode()).isEqualTo(200);
         long analysisAttachmentId = ((Number) JsonPath.read(analysisUpload.body(), "$.id")).longValue();
         assertThat((String) JsonPath.read(analysisUpload.body(), "$.objectMarker")).isEqualTo("I002");
+        assertThat(jdbc.queryForObject("SELECT nei_rong_ha_xi FROM ti_mu WHERE id=?", String.class, questionId))
+                .isEqualTo(expectedHash(stemWithMarker));
 
         HttpResponse<String> detail = get("/api/v1/admin/questions/" + questionId, token);
         assertThat(detail.statusCode()).isEqualTo(200);
@@ -99,11 +112,24 @@ class QuestionAttachmentAdminIntegrationTest extends AdminQuestionIntegrationTes
         assertThat((String) JsonPath.read(replacement.body(), "$.objectMarker")).isEqualTo("I001");
         assertThat(getBytes("/api/v1/admin/question-attachments/" + stemAttachmentId + "/content", token).body())
                 .containsExactly(png(6, 6));
+        String replacementPath = jdbc.queryForObject("SELECT xiang_dui_lu_jing FROM ti_mu_fu_jian WHERE id=?", String.class, stemAttachmentId);
+        assertThat(STORAGE_ROOT.resolve(replacementPath)).exists();
+        assertThat(STORAGE_ROOT.resolve(originalPath)).doesNotExist();
+        assertThat(jdbc.queryForObject("SELECT nei_rong_ha_xi FROM ti_mu WHERE id=?", String.class, questionId))
+                .isEqualTo(expectedHash(stemWithMarker));
 
         HttpResponse<Void> deleted = delete("/api/v1/admin/questions/" + questionId + "/attachments/" + analysisAttachmentId, token);
         assertThat(deleted.statusCode()).isEqualTo(204);
         assertThat(getBytes("/api/v1/admin/question-attachments/" + analysisAttachmentId + "/content", token).statusCode()).isEqualTo(404);
         assertThat(get("/api/v1/admin/questions/" + questionId, token).body()).doesNotContain("〔图片对象 I002〕");
+        assertThat(jdbc.queryForObject("SELECT nei_rong_ha_xi FROM ti_mu WHERE id=?", String.class, questionId))
+                .isEqualTo(expectedHash(stemWithMarker));
+        HttpResponse<Void> deletedStem = delete("/api/v1/admin/questions/" + questionId + "/attachments/" + stemAttachmentId, token);
+        assertThat(deletedStem.statusCode()).isEqualTo(204);
+        assertThat(jdbc.queryForObject("SELECT nei_rong_ha_xi FROM ti_mu WHERE id=?", String.class, questionId))
+                .isEqualTo(expectedHash("原始题干"));
+        assertThat(getBytes("/api/v1/admin/question-attachments/" + stemAttachmentId + "/content", token).statusCode()).isEqualTo(404);
+        assertThat(STORAGE_ROOT.resolve(replacementPath)).doesNotExist();
         assertThat(adminId).isPositive();
     }
 
@@ -121,8 +147,23 @@ class QuestionAttachmentAdminIntegrationTest extends AdminQuestionIntegrationTes
                 VALUES (1,'SINGLE_CHOICE','ONLINE_PRACTICE','原始题干','{"schemaVersion":1,"type":"SINGLE_CHOICE","optionLabels":["A"]}',1,1,'DRAFT',?)
                 """, UUID.randomUUID().toString().replace("-", ""));
         long id = jdbc.queryForObject("SELECT LAST_INSERT_ID()", Long.class);
+        jdbc.update("INSERT INTO ti_mu_xuan_xiang(ti_mu_id,xuan_xiang_biao_shi,xuan_xiang_nei_rong,shi_fou_zheng_que,pai_xu) VALUES (?,?,?,?,?)",
+                id, "A", "选项A", true, 1);
+        jdbc.update("INSERT INTO ti_mu_xuan_xiang(ti_mu_id,xuan_xiang_biao_shi,xuan_xiang_nei_rong,shi_fou_zheng_que,pai_xu) VALUES (?,?,?,?,?)",
+                id, "B", "选项B", false, 2);
         jdbc.update("INSERT INTO ti_mu_jie_xi(ti_mu_id,jie_xi_lei_xing,jie_xi_nei_rong,ban_ben_hao,zhuang_tai) VALUES (?,'STANDARD','原始解析',1,'DRAFT')", id);
+        jdbc.update("UPDATE ti_mu SET nei_rong_ha_xi=? WHERE id=?", expectedHash("原始题干", id), id);
         return id;
+    }
+
+    private String expectedHash(String stem) {
+        return expectedHash(stem, questionId);
+    }
+
+    private String expectedHash(String stem, long id) {
+        var options = jdbc.query("SELECT xuan_xiang_biao_shi,xuan_xiang_nei_rong FROM ti_mu_xuan_xiang WHERE ti_mu_id=? AND yi_shan_chu=0 ORDER BY pai_xu",
+                (rs, row) -> new QuestionContentHashService.OptionContent(rs.getString(1), rs.getString(2)), id);
+        return contentHashService.calculate(stem, options);
     }
 
     private String login() throws Exception {
