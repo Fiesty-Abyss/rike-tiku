@@ -32,7 +32,7 @@ MA-017 机器证据更新（PR #26 独立审查修正后）：附件/权限/导�
 
 PR #26 已普通 merge，merge commit 为 `b992bffef07465665b371b7b707ca8814ec2d36d`。当前 `feat/non-ai-final-closure` 为最后一个非 AI 分支，PR #27 为最后一个非 AI Draft PR；机器实现完成后直接在该 PR 内修复最终审计发现，不创建 PR #28，也不开始 AI。MA-017、MA-018、MA-019、MA-020 涉及的最终浏览器视觉/CAPTCHA验收统一延期至非 AI 最终集成验收，未执行结果不写为人工 PASS。
 
-PR #27 最终机器门禁补充（2026-08-10）：后端 `mvn clean test` 117 个测试 0 失败、1 个 symbolic-link assumption skipped，`mvn clean package` PASS；前端 34 个文件 129/129、type-check、build、audit 0；Demo `reset → seed → validate → smoke` PASS，业务题 120 道（物理 40、化学 39、生物 41）。这些是机器证据，不代表最终人工 CAPTCHA/视觉验收已执行。
+PR #27 最终机器门禁补充（2026-08-10）：后端 `mvn clean test` 121 个测试 0 失败、1 个 symbolic-link assumption skipped，`mvn clean package` PASS；前端 35 个文件 133/133、type-check、build、audit 0；Demo `reset → seed → validate → smoke` PASS，Golden30 独立导入测试 PASS，业务题 120 道（物理 40、化学 39、生物 41）。本轮同时修正题干附件变更后的共用内容 hash、附件文件/数据库事务回滚清理、管理员图片操作前的草稿文本持久化，以及班级写入与 SUCCESS 审计的事务一致性。这些是机器证据，不代表最终人工 CAPTCHA/视觉验收已执行。
 
 严重级别：`BLOCKER`、`HIGH`、`MEDIUM`、`LOW`、`UX`。
 
