@@ -10,7 +10,7 @@
 
 ## 工程范围
 
-> PR #27 最终机器门禁已通过：后端 121 个测试 0 失败、1 个符号链接 assumption skipped，package PASS；前端 35 个测试文件、133/133、type-check、build PASS，audit 0；Demo reset/seed/validate/smoke PASS，Golden30 导入闭环 PASS，120 道业务题分布为物理 40、化学 39、生物 41。人工 CAPTCHA/浏览器视觉验收仍统一延期，未执行结果不写为人工 PASS。
+> PR #27 最终机器门禁已通过：后端 123 个测试 0 失败、1 个符号链接 assumption skipped，package PASS；前端 35 个测试文件、133/133、type-check、build PASS，audit 0；Demo reset/seed/validate/smoke PASS，Golden30 导入闭环 PASS，120 道业务题分布为物理 40、化学 39、生物 41。草稿编辑会原位保留已被附件引用的 STANDARD 解析与同 label OPTION 行，不能删除活动 OPTION 附件时返回 409。人工 CAPTCHA/浏览器视觉验收仍统一延期，未执行结果不写为人工 PASS。
 
 - 学科：高中物理、化学、生物。
 - 题型：首版规划支持单选、多选、填空自动判分；综合大题只用于专题学习，不自动评分。
