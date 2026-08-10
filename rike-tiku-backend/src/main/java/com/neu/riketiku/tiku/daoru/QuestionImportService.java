@@ -355,7 +355,7 @@ public class QuestionImportService {
             Matcher matcher = OPTION.matcher(line);
             if (!matcher.matches()) {
                 error(errors, "options", "OPTION_FORMAT_INVALID", "选择题选项必须使用 A. 选项内容 的逐行格式");
-                return List.of();
+                return new ArrayList<>();
             }
             options.add(new OptionDraft(matcher.group(1), matcher.group(2), false));
         }

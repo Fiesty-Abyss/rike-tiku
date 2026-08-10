@@ -50,6 +50,13 @@ public class QuestionAdminController {
         return service.update(id, request);
     }
 
+    @PatchMapping("/questions/{id}/source-rights")
+    public QuestionDtos.Detail updateSourceRights(@PathVariable Long id,
+            @Valid @RequestBody QuestionDtos.SourceRightsUpdate request,
+            @AuthenticationPrincipal RenZhengYongHu user) {
+        return service.updateSourceRights(id, request, user.id());
+    }
+
     @PostMapping("/questions/{id}/submit-review")
     public QuestionDtos.Detail submit(@PathVariable Long id, @AuthenticationPrincipal RenZhengYongHu user) {
         return service.transition(id, "SUBMITTED", "DRAFT", "PENDING", null, user.id());
