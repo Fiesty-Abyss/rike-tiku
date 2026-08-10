@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { nextTick, reactive, ref } from 'vue'
+import { reactive, ref } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
 import ImageCaptcha from './ImageCaptcha.vue'
 
@@ -16,7 +16,6 @@ const emit = defineEmits<{
 
 const formRef = ref<FormInstance>()
 const captchaRef = ref<InstanceType<typeof ImageCaptcha>>()
-const captchaVisible = ref(false)
 const challengeId = ref('')
 const form = reactive({
   username: '',
@@ -29,22 +28,7 @@ const rules: FormRules<typeof form> = {
   captchaCode: [{ required: true, message: '请输入验证码', trigger: 'blur' }],
 }
 
-async function validateCredentials() {
-  return formRef.value
-    ?.validateField(['username', 'password'])
-    .then(() => true)
-    .catch(() => false)
-}
-
 async function submit() {
-  if (!captchaVisible.value) {
-    if (await validateCredentials()) {
-      captchaVisible.value = true
-      await nextTick()
-    }
-    return
-  }
-
   const valid = await formRef.value?.validate().catch(() => false)
   if (!valid || !challengeId.value) return
   emit('submit', {
@@ -90,7 +74,7 @@ defineExpose({ refreshCaptcha })
         size="large"
       />
     </el-form-item>
-    <el-form-item v-if="captchaVisible" prop="captchaCode" class="captcha-form-item">
+    <el-form-item prop="captchaCode" class="captcha-form-item">
       <ImageCaptcha
         ref="captchaRef"
         v-model="form.captchaCode"

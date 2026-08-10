@@ -1,20 +1,22 @@
 package com.neu.riketiku.demo;
 
-import java.nio.charset.StandardCharsets;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
-import java.security.MessageDigest;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.time.Year;
 import java.util.ArrayList;
-import java.util.HexFormat;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.imageio.ImageIO;
+import com.neu.riketiku.tiku.admin.QuestionContentHashService;
+import com.neu.riketiku.tiku.admin.QuestionContentHashService.OptionContent;
 import com.neu.riketiku.tiku.fujian.QuestionAttachmentStorage;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -25,9 +27,10 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class DemoDataService {
     public static final String DEMO_PASSWORD = "a1234567";
-    public static final String RIGHTS_BASIS = "本科毕业设计本地演示数据，由项目开发者自行编写，仅用于功能测试。";
+    public static final String RIGHTS_BASIS = "本科毕业设计项目原创自编演示题，仅用于本地验收环境。";
     public static final int BASE_DEMO_QUESTION_COUNT = 90;
-    public static final int FINAL_DEMO_QUESTION_COUNT = BASE_DEMO_QUESTION_COUNT + DemoVariantQuestionBank.ACCEPTED_COUNT;
+    public static final int FINAL_DEMO_QUESTION_COUNT = BASE_DEMO_QUESTION_COUNT
+            + DemoVariantQuestionBank.ACCEPTED_COUNT + DemoCurriculumQuestionBank.TOTAL_COUNT;
     private static final Set<String> FORBIDDEN_DATABASES = Set.of(
             "rike_tiku", "mysql", "information_schema", "performance_schema", "sys");
     private static final String DEMO_STEM_PREFIX = "【演示】";
@@ -40,11 +43,14 @@ public class DemoDataService {
     private final JdbcTemplate jdbc;
     private final PasswordEncoder passwordEncoder;
     private final QuestionAttachmentStorage attachmentStorage;
+    private final QuestionContentHashService contentHashService;
 
-    public DemoDataService(JdbcTemplate jdbc, PasswordEncoder passwordEncoder, QuestionAttachmentStorage attachmentStorage) {
+    public DemoDataService(JdbcTemplate jdbc, PasswordEncoder passwordEncoder,
+            QuestionAttachmentStorage attachmentStorage, QuestionContentHashService contentHashService) {
         this.jdbc = jdbc;
         this.passwordEncoder = passwordEncoder;
         this.attachmentStorage = attachmentStorage;
+        this.contentHashService = contentHashService;
     }
 
     public void validateSchema() {
@@ -176,34 +182,55 @@ public class DemoDataService {
                 JOIN zhi_shi_dian k ON k.id=h.zhi_shi_dian_id
                 WHERE k.ke_mu_id<>r.ke_mu_id OR k.yi_shan_chu=1
                 """));
-        expect("演示知识点", 9, count("SELECT COUNT(*) FROM zhi_shi_dian WHERE wan_zheng_lu_jing IN ('力学>运动和力>牛顿运动定律','电磁学>电场>电场强度','热学>分子动理论>温度和内能','化学基本概念>物质的量>摩尔计算','无机化学>元素化合物>氧化还原反应','化学反应原理>化学平衡>平衡移动','分子与细胞>细胞结构>细胞膜','遗传与进化>遗传规律>分离定律','稳态与调节>生命活动调节>激素调节')") );
+        Map<String, Integer> expectedLeafCoverage = Map.of("PHYSICS", 18, "CHEMISTRY", 16, "BIOLOGY", 21);
         expect("Demo90稳定基线", BASE_DEMO_QUESTION_COUNT,
-                count("SELECT COUNT(*) FROM ti_mu WHERE ti_gan LIKE '【演示】%' AND ti_gan NOT LIKE '【演示】变式：%'"));
+                count("SELECT COUNT(*) FROM ti_mu WHERE ti_gan LIKE '【演示】%' AND ti_gan NOT LIKE '【演示】变式：%' AND ti_gan NOT LIKE '【演示】覆盖：%'"));
         expect("审核通过变式题", DemoVariantQuestionBank.ACCEPTED_COUNT,
                 count("SELECT COUNT(*) FROM ti_mu WHERE ti_gan LIKE '【演示】变式：%'"));
+        expect("课程覆盖扩充题", DemoCurriculumQuestionBank.TOTAL_COUNT,
+                count("SELECT COUNT(*) FROM ti_mu WHERE ti_gan LIKE '【演示】覆盖：%'"));
         expect("最终演示题总数", FINAL_DEMO_QUESTION_COUNT, demoQuestionCount());
-        Map<String, Integer> subjectCounts = Map.of("PHYSICS", 40, "CHEMISTRY", 39, "BIOLOGY", 41);
+        Map<String, Integer> subjectCounts = Map.of("PHYSICS", 120, "CHEMISTRY", 120, "BIOLOGY", 120);
         for (String subject : List.of("PHYSICS", "CHEMISTRY", "BIOLOGY")) {
             expect(subject + "题目", subjectCounts.get(subject), count("SELECT COUNT(*) FROM ti_mu q JOIN ke_mu s ON s.id=q.ke_mu_id WHERE q.ti_gan LIKE '【演示】%' AND s.ke_mu_dai_ma=?", subject));
+            expect(subject + "叶子知识点覆盖", expectedLeafCoverage.get(subject), count("""
+                    SELECT COUNT(DISTINCT k.id) FROM ti_mu q
+                    JOIN ke_mu s ON s.id=q.ke_mu_id
+                    JOIN ti_mu_zhi_shi_dian qk ON qk.ti_mu_id=q.id AND qk.yi_shan_chu=0
+                    JOIN zhi_shi_dian k ON k.id=qk.zhi_shi_dian_id AND k.zhuang_tai='ACTIVE' AND k.yi_shan_chu=0
+                    WHERE q.ti_gan LIKE '【演示】%' AND s.ke_mu_dai_ma=?
+                    """, subject));
+            int fiveQuestionPoints = count("""
+                    SELECT COUNT(*) FROM (
+                        SELECT k.id FROM zhi_shi_dian k
+                        JOIN ti_mu_zhi_shi_dian qk ON qk.zhi_shi_dian_id=k.id AND qk.yi_shan_chu=0
+                        JOIN ti_mu q ON q.id=qk.ti_mu_id AND q.zhuang_tai='PUBLISHED' AND q.yi_shan_chu=0
+                        JOIN ke_mu s ON s.id=q.ke_mu_id
+                        WHERE q.ti_gan LIKE '【演示】%' AND s.ke_mu_dai_ma=?
+                          AND q.shi_yong_mo_shi='ONLINE_PRACTICE' AND q.shi_fou_ke_zi_dong_pan_fen=1
+                        GROUP BY k.id HAVING COUNT(DISTINCT q.id)>=5
+                    ) eligible_points
+                    """, subject);
+            if (fiveQuestionPoints < 3) {
+                throw new IllegalStateException(subject + "至少需要3个可稳定创建五题练习的知识点，实际" + fiveQuestionPoints);
+            }
             expect(subject + "难度覆盖", 3, count("SELECT COUNT(DISTINCT q.nan_du) FROM ti_mu q JOIN ke_mu s ON s.id=q.ke_mu_id WHERE q.ti_gan LIKE '【演示】%' AND s.ke_mu_dai_ma=?", subject));
             for (String type : List.of("SINGLE_CHOICE", "MULTIPLE_CHOICE", "FILL_BLANK")) {
-                if (count("SELECT COUNT(*) FROM ti_mu q JOIN ke_mu s ON s.id=q.ke_mu_id WHERE q.ti_gan LIKE '【演示】%' AND s.ke_mu_dai_ma=? AND q.ti_mu_lei_xing=?", subject, type) < 10) {
-                    throw new IllegalStateException(subject + type + " 少于Demo90稳定基线的10题");
-                }
+                int expected = "SINGLE_CHOICE".equals(type) ? 44 : 38;
+                expect(subject + type, expected, count("SELECT COUNT(*) FROM ti_mu q JOIN ke_mu s ON s.id=q.ke_mu_id WHERE q.ti_gan LIKE '【演示】%' AND s.ke_mu_dai_ma=? AND q.ti_mu_lei_xing=?", subject, type));
             }
             for (int difficulty : List.of(1, 2, 3)) {
-                if (count("SELECT COUNT(*) FROM ti_mu q JOIN ke_mu s ON s.id=q.ke_mu_id WHERE q.ti_gan LIKE '【演示】%' AND s.ke_mu_dai_ma=? AND q.nan_du=?", subject, difficulty) < 10) {
-                    throw new IllegalStateException(subject + "难度" + difficulty + " 少于Demo90稳定基线的10题");
-                }
+                int expected = difficulty == 2 ? 48 : 36;
+                expect(subject + "难度" + difficulty, expected, count("SELECT COUNT(*) FROM ti_mu q JOIN ke_mu s ON s.id=q.ke_mu_id WHERE q.ti_gan LIKE '【演示】%' AND s.ke_mu_dai_ma=? AND q.nan_du=?", subject, difficulty));
             }
         }
-        expect("每知识点至少10题", 9, count("""
+        expect("全部覆盖叶子至少三题", 55, count("""
                 SELECT COUNT(*) FROM (
                     SELECT k.id FROM zhi_shi_dian k
                     JOIN ti_mu_zhi_shi_dian qk ON qk.zhi_shi_dian_id=k.id AND qk.yi_shan_chu=0
                     JOIN ti_mu q ON q.id=qk.ti_mu_id AND q.yi_shan_chu=0
                     WHERE q.ti_gan LIKE '【演示】%' AND k.zhuang_tai='ACTIVE' AND k.yi_shan_chu=0
-                    GROUP BY k.id HAVING COUNT(DISTINCT q.id)>=10
+                    GROUP BY k.id HAVING COUNT(DISTINCT q.id)>=3
                 ) covered_points
                 """));
         expect("可练习题", FINAL_DEMO_QUESTION_COUNT, count("SELECT COUNT(*) FROM ti_mu q WHERE q.ti_gan LIKE '【演示】%' AND q.zhuang_tai='PUBLISHED' AND q.shi_yong_mo_shi='ONLINE_PRACTICE' AND q.shi_fou_ke_zi_dong_pan_fen=1 AND q.yi_shan_chu=0"));
@@ -277,6 +304,13 @@ public class DemoDataService {
                     OR EXISTS (SELECT 1 FROM ti_mu_jie_xi a WHERE a.ti_mu_id=q.id AND (a.jie_xi_nei_rong LIKE '%[[I%' OR a.jie_xi_nei_rong LIKE '%[[F%')))
                 """));
         expect("重复内容哈希", 0, count("SELECT COUNT(*)-COUNT(DISTINCT q.nei_rong_ha_xi) FROM ti_mu q WHERE q.ti_gan LIKE '【演示】%' AND q.yi_shan_chu=0"));
+        expect("重复标准化题干", 0, count("""
+                SELECT COUNT(*) FROM (
+                    SELECT REPLACE(REPLACE(REPLACE(LOWER(TRIM(q.ti_gan)),' ',''),'【演示】',''),'变式：','') normalized
+                    FROM ti_mu q WHERE q.ti_gan LIKE '【演示】%' AND q.yi_shan_chu=0
+                    GROUP BY normalized HAVING COUNT(*)>1
+                ) duplicate_stems
+                """));
         expect("三项来源", FINAL_DEMO_QUESTION_COUNT * 3, count("""
                 SELECT COUNT(*) FROM ti_mu_lai_yuan s JOIN ti_mu q ON q.id=s.ti_mu_id
                 WHERE q.ti_gan LIKE '【演示】%' AND s.lai_yuan_lei_xing='TEACHER_CREATED'
@@ -286,8 +320,8 @@ public class DemoDataService {
                 """));
         expect("审核轨迹", FINAL_DEMO_QUESTION_COUNT * 2, count("SELECT COUNT(*) FROM ti_mu_shen_he_ji_lu r JOIN ti_mu q ON q.id=r.ti_mu_id WHERE q.ti_gan LIKE '【演示】%' AND r.shen_he_dong_zuo IN ('SUBMITTED','APPROVED')"));
         for (String table : List.of("lian_xi_hui_hua", "lian_xi_ti_mu", "xue_sheng_da_ti", "xue_xi_jie_guo", "cuo_ti_ji_lu", "si_xin_hui_hua", "si_xin_xiao_xi")) expect(table + "初始记录", 0, count("SELECT COUNT(*) FROM " + table));
-        System.out.println("演示数据校验通过: 14账号、3班级、4教师、9学生、9任课关系、12高频考点、9知识点、"
-                + FINAL_DEMO_QUESTION_COUNT + "题、学习与私信记录为0");
+        System.out.println("演示数据校验通过: 14账号、3班级、4教师、9学生、9任课关系、12高频考点、55个叶子知识点、"
+                + FINAL_DEMO_QUESTION_COUNT + "题（物理/化学/生物各120）、学习与私信记录为0");
     }
 
     public static void guardDatabaseName(String database) {
@@ -368,31 +402,55 @@ public class DemoDataService {
     }
 
     private Map<String, Long> seedKnowledgePoints(Map<String, Long> subjects) {
-        Map<String, List<String>> paths = Map.of(
-                "PHYSICS", List.of("力学>运动和力>牛顿运动定律", "电磁学>电场>电场强度", "热学>分子动理论>温度和内能"),
-                "CHEMISTRY", List.of("化学基本概念>物质的量>摩尔计算", "无机化学>元素化合物>氧化还原反应", "化学反应原理>化学平衡>平衡移动"),
-                "BIOLOGY", List.of("分子与细胞>细胞结构>细胞膜", "遗传与进化>遗传规律>分离定律", "稳态与调节>生命活动调节>激素调节"));
-        var result = new java.util.HashMap<String, Long>();
-        for (var entry : paths.entrySet()) {
+        Map<String, LinkedHashSet<String>> leafPaths = new HashMap<>();
+        for (Question question : questions()) {
+            leafPaths.computeIfAbsent(question.subject(), ignored -> new LinkedHashSet<>()).add(question.knowledgePath());
+        }
+        var result = new HashMap<String, Long>();
+        for (String subject : List.of("PHYSICS", "CHEMISTRY", "BIOLOGY")) {
+            List<String> sortedLeaves = leafPaths.get(subject).stream().sorted().toList();
+            Map<String, Long> ids = new HashMap<>();
             int order = 1;
-            for (String path : entry.getValue()) {
-                Long existing = jdbc.query("SELECT id FROM zhi_shi_dian WHERE ke_mu_id=? AND wan_zheng_lu_jing=? AND yi_shan_chu=0",
-                        rs -> rs.next() ? rs.getLong(1) : null, required(subjects, entry.getKey()), path);
-                long id = existing == null
-                        ? insert("INSERT INTO zhi_shi_dian (ke_mu_id,zhi_shi_dian_ming_cheng,wan_zheng_lu_jing,ceng_ji,pai_xu,zhuang_tai) VALUES (?,?,?,?,?,'ACTIVE')",
-                                required(subjects, entry.getKey()), path.substring(path.lastIndexOf('>') + 1), path, 3, order++)
-                        : existing;
-                result.put(path, id);
+            for (String leaf : sortedLeaves) {
+                String[] segments = leaf.split(">");
+                StringBuilder path = new StringBuilder();
+                Long parentId = null;
+                for (int level = 0; level < segments.length; level++) {
+                    if (level > 0) path.append('>');
+                    path.append(segments[level]);
+                    String fullPath = path.toString();
+                    Long existing = jdbc.query("SELECT id FROM zhi_shi_dian WHERE ke_mu_id=? AND wan_zheng_lu_jing=?",
+                            rs -> rs.next() ? rs.getLong(1) : null, required(subjects, subject), fullPath);
+                    long id = existing == null
+                            ? insert("INSERT INTO zhi_shi_dian (ke_mu_id,fu_zhi_shi_dian_id,zhi_shi_dian_ming_cheng,wan_zheng_lu_jing,ceng_ji,pai_xu,zhuang_tai) VALUES (?,?,?,?,?,?,'ACTIVE')",
+                                    required(subjects, subject), parentId, segments[level], fullPath, level + 1, order++)
+                            : existing;
+                    if (existing != null) {
+                        jdbc.update("UPDATE zhi_shi_dian SET zhuang_tai='ACTIVE',yi_shan_chu=0 WHERE id=?", id);
+                    }
+                    ids.put(fullPath, id);
+                    parentId = id;
+                }
+                result.put(leaf, required(ids, leaf));
             }
         }
         return result;
     }
 
     private void seedQuestion(Question q, long subjectId, long pointId, long adminId) {
+        String stem = DEMO_STEM_PREFIX + q.stem() + ("PHYSICS-S1".equals(q.key()) ? "〔图片对象 I001〕" : "");
+        List<OptionContent> hashOptions = q.options().stream()
+                .map(option -> new OptionContent(option.label(), option.content())).toList();
+        String contentHash = contentHashService.calculate(stem, hashOptions);
+        String existingStem = jdbc.query("SELECT ti_gan FROM ti_mu WHERE ke_mu_id=? AND nei_rong_ha_xi=? AND yi_shan_chu=0",
+                rs -> rs.next() ? rs.getString(1) : null, subjectId, contentHash);
+        if (existingStem != null) {
+            throw new IllegalStateException("Demo题内容重复: " + q.key() + " 与题面“" + existingStem + "”冲突");
+        }
         long questionId = insert("""
                 INSERT INTO ti_mu (ke_mu_id,ti_mu_lei_xing,shi_yong_mo_shi,ti_gan,zheng_que_da_an,nan_du,nan_du_shuo_ming,shi_fou_ke_zi_dong_pan_fen,zhuang_tai,nei_rong_ha_xi)
                 VALUES (?,?,'ONLINE_PRACTICE',?,?,?,'本地演示数据难度分级',1,'PUBLISHED',?)
-                """, subjectId, q.type(), DEMO_STEM_PREFIX + q.stem() + ("PHYSICS-S1".equals(q.key()) ? "〔图片对象 I001〕" : ""), q.answer(), q.difficulty(), sha256(q.subject() + "|" + q.key() + "|" + q.stem()));
+                """, subjectId, q.type(), stem, q.answer(), q.difficulty(), contentHash);
         int optionOrder = 1;
         for (Option option : q.options()) jdbc.update("INSERT INTO ti_mu_xuan_xiang (ti_mu_id,xuan_xiang_biao_shi,xuan_xiang_nei_rong,shi_fou_zheng_que,pai_xu) VALUES (?,?,?,?,?)",
                 questionId, option.label(), option.content(), option.correct() ? 1 : 0, optionOrder++);
@@ -433,7 +491,9 @@ public class DemoDataService {
         jdbc.update("DELETE l FROM guan_li_cao_zuo_ri_zhi l JOIN yong_hu u ON u.id=l.cao_zuo_ren_yong_hu_id WHERE u.yong_hu_ming LIKE 'demo_%'");
         jdbc.update("DELETE ur FROM yong_hu_jiao_se ur JOIN yong_hu u ON u.id=ur.yong_hu_id WHERE u.yong_hu_ming LIKE 'demo_%'");
         jdbc.update("DELETE FROM yong_hu WHERE yong_hu_ming LIKE 'demo_%'");
-        jdbc.update("DELETE FROM zhi_shi_dian WHERE wan_zheng_lu_jing IN ('力学>运动和力>牛顿运动定律','电磁学>电场>电场强度','热学>分子动理论>温度和内能','化学基本概念>物质的量>摩尔计算','无机化学>元素化合物>氧化还原反应','化学反应原理>化学平衡>平衡移动','分子与细胞>细胞结构>细胞膜','遗传与进化>遗传规律>分离定律','稳态与调节>生命活动调节>激素调节') AND fu_zhi_shi_dian_id IS NULL");
+        demoKnowledgePaths().stream()
+                .sorted(Comparator.comparingInt(DemoDataService::pathDepth).reversed())
+                .forEach(path -> jdbc.update("DELETE FROM zhi_shi_dian WHERE wan_zheng_lu_jing=? AND id>9", path));
     }
 
     private String currentDatabase() {
@@ -469,12 +529,21 @@ public class DemoDataService {
         return value;
     }
 
-    private static String sha256(String value) {
-        try {
-            return HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(value.getBytes(StandardCharsets.UTF_8)));
-        } catch (Exception exception) {
-            throw new IllegalStateException("无法计算演示题哈希", exception);
+    private static Set<String> demoKnowledgePaths() {
+        LinkedHashSet<String> paths = new LinkedHashSet<>();
+        for (Question question : questions()) {
+            StringBuilder current = new StringBuilder();
+            for (String segment : question.knowledgePath().split(">")) {
+                if (!current.isEmpty()) current.append('>');
+                current.append(segment);
+                paths.add(current.toString());
+            }
         }
+        return paths;
+    }
+
+    private static int pathDepth(String path) {
+        return path.split(">").length;
     }
 
     private byte[] demoDiagram() {
@@ -520,6 +589,7 @@ public class DemoDataService {
         items.add(fill("BIOLOGY-F2", "BIOLOGY", "成对遗传因子在形成配子时彼此____。", "遗传与进化>遗传规律>分离定律", 3, "分离"));
         items.addAll(DemoQuestionBank.additionalQuestions());
         items.addAll(DemoVariantQuestionBank.acceptedQuestions());
+        items.addAll(DemoCurriculumQuestionBank.questions());
         return items;
     }
 
@@ -539,9 +609,19 @@ public class DemoDataService {
 
     record Question(String key, String subject, String type, String stem, String knowledgePath,
                     int difficulty, String answer, List<Option> options, String analysis) {
+        Question withStemPrefix(String prefix) {
+            return new Question(key, subject, type, prefix + stem, knowledgePath, difficulty, answer, options, analysis);
+        }
     }
 
     private record Option(String label, String content, boolean correct) {
+    }
+
+    static Question fill(String key, String subject, String stem, String point, int difficulty,
+            String accepted, String analysis) {
+        Question base = fill(key, subject, stem, point, difficulty, accepted);
+        return new Question(base.key(), base.subject(), base.type(), base.stem(), base.knowledgePath(),
+                base.difficulty(), base.answer(), base.options(), analysis.endsWith("。") ? analysis : analysis + "。");
     }
 
     private record DemoAttachment(String position, String marker, String relativePath, String hash) {

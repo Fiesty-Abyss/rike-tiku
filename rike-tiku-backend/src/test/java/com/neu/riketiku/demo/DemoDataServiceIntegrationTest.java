@@ -76,10 +76,26 @@ class DemoDataServiceIntegrationTest extends AdminQuestionIntegrationTestSupport
 
     @Test
     @Transactional
+    void reseedReactivatesCurriculumKnowledgePointsChangedByPreviousAcceptanceWork() {
+        demo.seed();
+        jdbc.update("UPDATE zhi_shi_dian SET zhuang_tai='DISABLED' WHERE ke_mu_id=1 AND wan_zheng_lu_jing='力学>运动学>匀变速直线运动'");
+
+        demo.seed();
+        demo.validateSeed();
+
+        assertThat(jdbc.queryForObject("""
+                SELECT COUNT(*) FROM zhi_shi_dian
+                WHERE ke_mu_id=1 AND wan_zheng_lu_jing='力学>运动学>匀变速直线运动'
+                  AND zhuang_tai='ACTIVE' AND yi_shan_chu=0
+                """, Integer.class)).isEqualTo(1);
+    }
+
+    @Test
+    @Transactional
     void demo90RemainsStableAndFinalBankAddsReviewedVariants() {
         demo.seed();
 
-        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM ti_mu WHERE ti_gan LIKE '【演示】%' AND ti_gan NOT LIKE '【演示】变式：%'", Integer.class))
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM ti_mu WHERE ti_gan LIKE '【演示】%' AND ti_gan NOT LIKE '【演示】变式：%' AND ti_gan NOT LIKE '【演示】覆盖：%'", Integer.class))
                 .isEqualTo(90);
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM ti_mu WHERE ti_gan LIKE '【演示】变式：%'", Integer.class))
                 .isEqualTo(DemoVariantQuestionBank.ACCEPTED_COUNT);
@@ -87,16 +103,16 @@ class DemoDataServiceIntegrationTest extends AdminQuestionIntegrationTestSupport
         for (String subject : List.of("PHYSICS", "CHEMISTRY", "BIOLOGY")) {
             assertThat(jdbc.queryForObject("""
                     SELECT COUNT(*) FROM ti_mu q JOIN ke_mu s ON s.id=q.ke_mu_id
-                    WHERE q.ti_gan LIKE '【演示】%' AND q.ti_gan NOT LIKE '【演示】变式：%' AND s.ke_mu_dai_ma=?
+                    WHERE q.ti_gan LIKE '【演示】%' AND q.ti_gan NOT LIKE '【演示】变式：%' AND q.ti_gan NOT LIKE '【演示】覆盖：%' AND s.ke_mu_dai_ma=?
                     """, Integer.class, subject)).isEqualTo(30);
             assertThat(jdbc.queryForList("""
                     SELECT COUNT(*) FROM ti_mu q JOIN ke_mu s ON s.id=q.ke_mu_id
-                    WHERE q.ti_gan LIKE '【演示】%' AND q.ti_gan NOT LIKE '【演示】变式：%' AND s.ke_mu_dai_ma=?
+                    WHERE q.ti_gan LIKE '【演示】%' AND q.ti_gan NOT LIKE '【演示】变式：%' AND q.ti_gan NOT LIKE '【演示】覆盖：%' AND s.ke_mu_dai_ma=?
                     GROUP BY q.ti_mu_lei_xing ORDER BY q.ti_mu_lei_xing
                     """, Integer.class, subject)).containsExactly(10, 10, 10);
             assertThat(jdbc.queryForList("""
                     SELECT COUNT(*) FROM ti_mu q JOIN ke_mu s ON s.id=q.ke_mu_id
-                    WHERE q.ti_gan LIKE '【演示】%' AND q.ti_gan NOT LIKE '【演示】变式：%' AND s.ke_mu_dai_ma=?
+                    WHERE q.ti_gan LIKE '【演示】%' AND q.ti_gan NOT LIKE '【演示】变式：%' AND q.ti_gan NOT LIKE '【演示】覆盖：%' AND s.ke_mu_dai_ma=?
                     GROUP BY q.nan_du ORDER BY q.nan_du
                     """, Integer.class, subject)).containsExactly(10, 10, 10);
             assertThat(jdbc.queryForList("""
@@ -104,10 +120,54 @@ class DemoDataServiceIntegrationTest extends AdminQuestionIntegrationTestSupport
                     JOIN ke_mu s ON s.id=q.ke_mu_id
                     JOIN ti_mu_zhi_shi_dian qk ON qk.ti_mu_id=q.id AND qk.yi_shan_chu=0
                     JOIN zhi_shi_dian k ON k.id=qk.zhi_shi_dian_id AND k.yi_shan_chu=0
-                    WHERE q.ti_gan LIKE '【演示】%' AND q.ti_gan NOT LIKE '【演示】变式：%' AND s.ke_mu_dai_ma=?
+                    WHERE q.ti_gan LIKE '【演示】%' AND q.ti_gan NOT LIKE '【演示】变式：%' AND q.ti_gan NOT LIKE '【演示】覆盖：%' AND s.ke_mu_dai_ma=?
                     GROUP BY k.id ORDER BY k.id
                     """, Integer.class, subject)).containsExactly(10, 10, 10);
         }
+    }
+
+    @Test
+    @Transactional
+    void curriculumExpansionHasExactSubjectTypeDifficultyCoverageAndOriginalRights() {
+        assertThat(DemoCurriculumQuestionBank.questions()).hasSize(240);
+        assertThat(DemoPhysicsCurriculumBank.questions()).hasSize(80);
+        assertThat(DemoChemistryCurriculumBank.questions()).hasSize(81);
+        assertThat(DemoBiologyCurriculumBank.questions()).hasSize(79);
+        demo.seed();
+
+        for (String subject : List.of("PHYSICS", "CHEMISTRY", "BIOLOGY")) {
+            assertThat(jdbc.queryForObject("""
+                    SELECT COUNT(*) FROM ti_mu q JOIN ke_mu s ON s.id=q.ke_mu_id
+                    WHERE q.ti_gan LIKE '【演示】%' AND s.ke_mu_dai_ma=?
+                    """, Integer.class, subject)).isEqualTo(120);
+            assertThat(jdbc.queryForList("""
+                    SELECT COUNT(*) FROM ti_mu q JOIN ke_mu s ON s.id=q.ke_mu_id
+                    WHERE q.ti_gan LIKE '【演示】%' AND s.ke_mu_dai_ma=?
+                    GROUP BY q.ti_mu_lei_xing ORDER BY q.ti_mu_lei_xing
+                    """, Integer.class, subject)).containsExactly(38, 38, 44);
+            assertThat(jdbc.queryForList("""
+                    SELECT COUNT(*) FROM ti_mu q JOIN ke_mu s ON s.id=q.ke_mu_id
+                    WHERE q.ti_gan LIKE '【演示】%' AND s.ke_mu_dai_ma=?
+                    GROUP BY q.nan_du ORDER BY q.nan_du
+                    """, Integer.class, subject)).containsExactly(36, 48, 36);
+        }
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM ti_mu WHERE ti_gan LIKE '【演示】覆盖：%'", Integer.class)).isEqualTo(240);
+        assertThat(jdbc.queryForObject("""
+                SELECT COUNT(DISTINCT k.id) FROM ti_mu q
+                JOIN ti_mu_zhi_shi_dian qk ON qk.ti_mu_id=q.id AND qk.yi_shan_chu=0
+                JOIN zhi_shi_dian k ON k.id=qk.zhi_shi_dian_id AND k.yi_shan_chu=0
+                WHERE q.ti_gan LIKE '【演示】%'
+                """, Integer.class)).isEqualTo(55);
+        assertThat(jdbc.queryForObject("""
+                SELECT COUNT(*) FROM ti_mu_lai_yuan s JOIN ti_mu q ON q.id=s.ti_mu_id
+                WHERE q.ti_gan LIKE '【演示】%' AND s.quan_li_yi_ju=? AND s.yi_shan_chu=0
+                """, Integer.class, DemoDataService.RIGHTS_BASIS)).isEqualTo(1080);
+        assertThat(jdbc.queryForObject("""
+                SELECT COUNT(*) FROM ti_mu q WHERE q.ti_gan LIKE '【演示】%'
+                  AND NOT EXISTS (SELECT 1 FROM ti_mu_jie_xi a WHERE a.ti_mu_id=q.id
+                    AND a.jie_xi_lei_xing='STANDARD' AND TRIM(a.jie_xi_nei_rong)<>''
+                    AND a.zhuang_tai='PUBLISHED' AND a.yi_shan_chu=0)
+                """, Integer.class)).isZero();
     }
 
     @Test
@@ -161,7 +221,7 @@ class DemoDataServiceIntegrationTest extends AdminQuestionIntegrationTestSupport
                 """, Integer.class)).isEqualTo(60);
 
         List<String> baselineSourceStems = jdbc.queryForList(
-                "SELECT ti_gan FROM ti_mu WHERE ti_gan LIKE '【演示】%' AND ti_gan NOT LIKE '【演示】变式：%'", String.class);
+                "SELECT ti_gan FROM ti_mu WHERE ti_gan LIKE '【演示】%' AND ti_gan NOT LIKE '【演示】变式：%' AND ti_gan NOT LIKE '【演示】覆盖：%'", String.class);
         HashSet<String> baselineStems = new HashSet<>();
         baselineSourceStems.forEach(stem -> assertThat(baselineStems.add(normalizeStem(stem)))
                 .as("Demo90内部重复: " + stem).isTrue());
@@ -223,6 +283,20 @@ class DemoDataServiceIntegrationTest extends AdminQuestionIntegrationTestSupport
             var session = practice.create(userId, new StudentPracticeDtos.CreateRequest(subjectId, null, null, null, 5));
             assertThat(session.questions()).hasSize(5);
             assertThat(session.questions()).allMatch(question -> !question.stem().contains("[[I") && !question.stem().contains("[[F"));
+            List<Long> eligibleKnowledgePoints = jdbc.queryForList("""
+                    SELECT k.id FROM zhi_shi_dian k
+                    JOIN ti_mu_zhi_shi_dian qk ON qk.zhi_shi_dian_id=k.id AND qk.yi_shan_chu=0
+                    JOIN ti_mu q ON q.id=qk.ti_mu_id AND q.zhuang_tai='PUBLISHED' AND q.yi_shan_chu=0
+                    WHERE k.ke_mu_id=? AND q.ti_gan LIKE '【演示】%'
+                    GROUP BY k.id HAVING COUNT(DISTINCT q.id)>=5 ORDER BY k.id LIMIT 3
+                    """, Long.class, subjectId);
+            assertThat(eligibleKnowledgePoints).hasSize(3);
+            for (long knowledgePointId : eligibleKnowledgePoints) {
+                var filtered = practice.create(userId,
+                        new StudentPracticeDtos.CreateRequest(subjectId, List.of(knowledgePointId), null, null, 5));
+                assertThat(filtered.questions()).hasSize(5).allSatisfy(question ->
+                        assertThat(question.knowledgePoints()).anyMatch(point -> point.id().equals(knowledgePointId)));
+            }
         }
     }
 
@@ -263,8 +337,9 @@ class DemoDataServiceIntegrationTest extends AdminQuestionIntegrationTestSupport
         String script = Files.readString(Path.of("..", "scripts", "demo-environment.ps1"), StandardCharsets.UTF_8);
         assertThat(script)
                 .contains("RIKE_TIKU_BACKEND_PORT", "RIKE_TIKU_CORS_ALLOWED_ORIGINS", "http://localhost:18081/api/v1",
-                        "'final-acceptance'", "'smoke-backend'", "$env:RIKE_TIKU_CAPTCHA_EXPOSE_TEST_CODE = 'false'",
-                        "$env:RIKE_TIKU_CAPTCHA_EXPOSE_TEST_CODE = 'true'")
+                        "'acceptance-prepare'", "'acceptance-backend'", "'acceptance-frontend'", "'smoke-backend'",
+                        "$env:RIKE_TIKU_CAPTCHA_EXPOSE_TEST_CODE = if ($ExposeTestCode) { 'true' } else { 'false' }",
+                        "npm run build", "npm run preview -- --host localhost --port 18080 --strictPort")
                 .doesNotContain("RIKE_TIKU_SERVER_PORT", "RIKE_TIKU_CORS_ALLOWED_ORIGIN =");
     }
 
@@ -298,6 +373,7 @@ class DemoDataServiceIntegrationTest extends AdminQuestionIntegrationTestSupport
         return Normalizer.normalize(stem, Normalizer.Form.NFKC)
                 .replace("【演示】", "")
                 .replaceFirst("^变式：", "")
+                .replaceFirst("^覆盖：", "")
                 .toLowerCase()
                 .replaceAll("[\\p{P}\\p{Z}\\s]+", "");
     }

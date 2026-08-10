@@ -14,10 +14,11 @@ PR #27 当前分支新增 V11 管理员操作日志表；当前 Demo 结构目�
 
 ```powershell
 $env:RIKE_TIKU_DB_PASSWORD = "你的本机MySQL密码"
-.\scripts\demo-environment.ps1 final-acceptance
+.\scripts\demo-environment.ps1 acceptance-prepare
 ```
 
-- `final-acceptance`：仅允许 `rike_tiku_demo`，依次重建、播种并校验最终人工验收数据，然后显示前后端启动命令。
+- `acceptance-prepare`：仅允许 `rike_tiku_demo`，依次重建、播种并校验最终人工验收数据。
+- `final-acceptance`：`acceptance-prepare` 的兼容入口，并显示前后端启动命令。
 - `create`：保留现有演示库，仅在不存在时创建并执行 V1–V11。
 - `reset`：删除并重建指定演示库，再执行 V1–V11；会清除该演示库的全部已有内容。
 - `seed`：清理旧演示数据后重建固定数据，重复执行结果稳定。
@@ -64,21 +65,21 @@ VITE_API_BASE_URL=http://localhost:18081/api/v1
 
 Vite 启动参数为 `--host localhost --port 18080`。
 
-也可以让脚本自动设置上述演示端口变量。在执行 `final-acceptance` 的原 PowerShell 中继续启动后端：
+最终人工验收不使用开发服务器。在执行 `acceptance-prepare` 的原 PowerShell 中启动后端：
 
 ```powershell
-.\scripts\demo-environment.ps1 backend
+.\scripts\demo-environment.ps1 acceptance-backend
 ```
 
 另开 PowerShell 启动前端（该动作不读取数据库密码）：
 
 ```powershell
-.\scripts\demo-environment.ps1 frontend
+.\scripts\demo-environment.ps1 acceptance-frontend
 ```
 
 前端地址为 `http://localhost:18080`，后端地址为 `http://localhost:18081`，CORS 只允许此前端地址。
 
-`backend` 为人工验收模式，明确设置 `RIKE_TIKU_CAPTCHA_EXPOSE_TEST_CODE=false`；浏览器必须识别页面当前图形验证码。
+`acceptance-backend` 明确设置 `RIKE_TIKU_CAPTCHA_EXPOSE_TEST_CODE=false`；浏览器必须识别页面当前图形验证码。`acceptance-frontend` 先用 `VITE_API_BASE_URL=http://localhost:18081/api/v1` 构建，再执行 `vite preview --host localhost --port 18080 --strictPort`，避免最终验收依赖 Vite dev server 的生命周期与 HMR 状态。
 
 机器 smoke 如需读取 `testCode`，必须在单独 PowerShell 临时启动：
 
@@ -111,15 +112,15 @@ Vite 启动参数为 `--host localhost --port 18080`。
 - 教师：保留 `DEMO_T001`；新增物理管理员、生物、化学三位场景教师。
 - 学生：保留 `DEMO_S001`；199 班固定 5 名、200 班固定 3 名，每人只有 STUDENT 和一个 ACTIVE 主班级。
 - 任课：保留原三条；新增物理、生物、化学教师各自对 199/200 的两条 ACTIVE 三元关系，共 9 条 ACTIVE。
-- 知识点：每科 3 个，共 9 个。
-- 题库：保留 Demo90 基线（物理、化学、生物各 30 道），另增加 30 道经审核的原创变式；最终共 120 道，物理 40、化学 39、生物 41。`PHYSICS-S1` 额外关联一张确定性原创 PNG，同时用于题干 QUESTION 和 STANDARD_ANALYSIS 图片显示验收。正文使用 `〔图片对象 I001〕` / `〔图片对象 I002〕`，附件表使用 `I001` / `I002` 对象 ID。
+- 知识点：覆盖 55 个叶子知识点，其中物理 18、化学 16、生物 21；完整矩阵见 `DEMO360_COVERAGE_MATRIX.xlsx`。
+- 题库：确定性 Demo360，物理、化学、生物各 120 道；三科均覆盖单选、多选、填空和简单、中等、困难三档。`PHYSICS-S1` 额外关联一张确定性原创 PNG，同时用于题干 QUESTION 和 STANDARD_ANALYSIS 图片显示验收。正文使用 `〔图片对象 I001〕` / `〔图片对象 I002〕`，附件表使用 `I001` / `I002` 对象 ID。
 - 高频考点：V8 的 `gao_pin_kao_dian` 仅绑定真实 `ren_ke_guan_xi_id`；199/200 班物理、化学、生物六条场景任课关系各预置 2 条，共 12 条 ACTIVE 自编纯文本考点。
 - 私信：V9 的两张表不预置聊天内容；浏览器验收消息可由 `reset` 清理，固定账号和组织关系保持可重复 seed。
 - 个人中心：V10 的简介和头像字段默认均为空，不在固定 seed 写入二进制头像；浏览器验收内容可由 `reset → seed` 完整清理。
 
-Demo90 和筛选变式均为项目原创的“本科毕业设计自编演示题”，不复制网络题原文；除 `PHYSICS-S1` 的确定性 PNG 验收对象外，其余题目保持无附件。题目均为 `PUBLISHED + ONLINE_PRACTICE` 自动判分题，STANDARD 解析为 `PUBLISHED`。QUESTION、ANSWER、STANDARD_ANALYSIS 三项来源均为 `TEACHER_CREATED + USER_PROVIDED`，并有 SUBMITTED、APPROVED 审核轨迹。
+Demo360 均为项目原创的“本科毕业设计自编演示题”，不复制网络题、高考真题或教材习题原文；除 `PHYSICS-S1` 的确定性 PNG 验收对象外，其余题目保持无附件。题目均为 `PUBLISHED + ONLINE_PRACTICE` 自动判分题，STANDARD 解析为 `PUBLISHED`。QUESTION、ANSWER、STANDARD_ANALYSIS 三项来源均为 `TEACHER_CREATED + USER_PROVIDED`，并有 SUBMITTED、APPROVED 审核轨迹。
 
-最终 120 题只服务独立演示环境。V3.0 没有规定名为 MVP30 的 Excel 必须整体正式入库；MVP30 原始文件不修改，继续作为结构化导入能力验证素材，仓库中的网络候选题也未因本轮扩充而变为 `PUBLISHED`。
+最终 360 题只服务独立演示环境。V3.0 没有规定名为 MVP30 的 Excel 必须整体正式入库；MVP30 原始文件不修改，继续作为结构化导入能力验证素材，仓库中的网络候选题也未因本轮扩充而变为 `PUBLISHED`。
 
 ## 清理与重建
 
