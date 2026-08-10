@@ -163,11 +163,54 @@ public class QuestionAdminService {
     private void validateSubject(Long subjectId) { if (count("SELECT COUNT(*) FROM ke_mu WHERE id=? AND zhuang_tai='ACTIVE' AND yi_shan_chu=0", subjectId) == 0) fail("SUBJECT_UNAVAILABLE", "科目不存在或已停用", HttpStatus.BAD_REQUEST); }
     private void validateKnowledgePoints(Long subjectId, List<Long> ids) { if (ids == null || ids.isEmpty()) fail("QUESTION_KNOWLEDGE_POINT_REQUIRED", "至少选择一个知识点", HttpStatus.BAD_REQUEST); if (new HashSet<>(ids).size() != ids.size() || count("SELECT COUNT(*) FROM zhi_shi_dian WHERE ke_mu_id=? AND zhuang_tai='ACTIVE' AND yi_shan_chu=0 AND id IN (" + placeholders(ids.size()) + ")", join(subjectId, ids)) != ids.size()) fail("QUESTION_KNOWLEDGE_POINT_INVALID", "知识点不存在、已停用或不属于当前科目", HttpStatus.BAD_REQUEST); }
     private void replaceChildren(Long id, QuestionDtos.Save request) {
-        jdbc.update("DELETE FROM ti_mu_xuan_xiang WHERE ti_mu_id=?", id); jdbc.update("DELETE FROM ti_mu_jie_xi WHERE ti_mu_id=?", id); jdbc.update("DELETE FROM ti_mu_zhi_shi_dian WHERE ti_mu_id=?", id); jdbc.update("DELETE FROM ti_mu_lai_yuan WHERE ti_mu_id=?", id);
-        int order = 1; for (QuestionDtos.Option option : request.options() == null ? List.<QuestionDtos.Option>of() : request.options()) jdbc.update("INSERT INTO ti_mu_xuan_xiang(ti_mu_id,xuan_xiang_biao_shi,xuan_xiang_nei_rong,shi_fou_zheng_que,pai_xu) VALUES (?,?,?,?,?)", id, option.label(), option.content(), option.correct(), order++);
-        jdbc.update("INSERT INTO ti_mu_jie_xi(ti_mu_id,jie_xi_lei_xing,jie_xi_nei_rong,ban_ben_hao,zhuang_tai) VALUES (?,'STANDARD',?,1,'DRAFT')", id, request.standardAnalysis());
-        order = 1; for (Long pointId : request.knowledgePointIds()) jdbc.update("INSERT INTO ti_mu_zhi_shi_dian(ti_mu_id,zhi_shi_dian_id,shi_fou_zhu_yao,pai_xu) VALUES (?,?,?,?)", id, pointId, order == 1, order++);
+        replaceOptions(id, request.options());
+        upsertStandardAnalysis(id, request.standardAnalysis());
+        jdbc.update("DELETE FROM ti_mu_zhi_shi_dian WHERE ti_mu_id=?", id); jdbc.update("DELETE FROM ti_mu_lai_yuan WHERE ti_mu_id=?", id);
+        int order = 1; for (Long pointId : request.knowledgePointIds()) jdbc.update("INSERT INTO ti_mu_zhi_shi_dian(ti_mu_id,zhi_shi_dian_id,shi_fou_zhu_yao,pai_xu) VALUES (?,?,?,?)", id, pointId, order == 1, order++);
         for (QuestionDtos.Source source : request.sources()) jdbc.update("INSERT INTO ti_mu_lai_yuan(ti_mu_id,nei_rong_lei_xing,lai_yuan_lei_xing,lai_yuan_ming_cheng,lai_yuan_di_zhi,nian_fen,di_qu,shi_juan_ming_cheng,ti_hao,quan_li_zhuang_tai,quan_li_yi_ju) VALUES (?,?,?,?,?,?,?,?,?,?,?)", id, source.contentType(), source.sourceType(), source.sourceName(), blank(source.sourceAddress()), source.year(), blank(source.region()), blank(source.paperName()), blank(source.questionNumber()), source.rightsStatus(), blank(source.rightsBasis()));
+    }
+
+    private void replaceOptions(Long questionId, List<QuestionDtos.Option> requestedOptions) {
+        List<QuestionDtos.Option> options = requestedOptions == null ? List.of() : requestedOptions;
+        List<ExistingOption> existing = jdbc.query("SELECT id,xuan_xiang_biao_shi FROM ti_mu_xuan_xiang WHERE ti_mu_id=? FOR UPDATE",
+                (rs, row) -> new ExistingOption(rs.getLong(1), rs.getString(2)), questionId);
+        Set<String> requestedLabels = new HashSet<>();
+        int order = 1;
+        for (QuestionDtos.Option option : options) {
+            requestedLabels.add(option.label());
+            ExistingOption current = existing.stream().filter(item -> item.label().equals(option.label())).findFirst().orElse(null);
+            if (current == null) {
+                jdbc.update("INSERT INTO ti_mu_xuan_xiang(ti_mu_id,xuan_xiang_biao_shi,xuan_xiang_nei_rong,shi_fou_zheng_que,pai_xu) VALUES (?,?,?,?,?)",
+                        questionId, option.label(), option.content(), option.correct(), order++);
+            } else {
+                jdbc.update("UPDATE ti_mu_xuan_xiang SET xuan_xiang_nei_rong=?,shi_fou_zheng_que=?,pai_xu=?,yi_shan_chu=0 WHERE id=?",
+                        option.content(), option.correct(), order++, current.id());
+            }
+        }
+        for (ExistingOption option : existing) {
+            if (requestedLabels.contains(option.label())) continue;
+            long activeAttachments = count("SELECT COUNT(*) FROM ti_mu_fu_jian WHERE ti_mu_xuan_xiang_id=? AND zhuang_tai='ACTIVE' AND yi_shan_chu=0", option.id());
+            if (activeAttachments > 0) {
+                fail("QUESTION_OPTION_ATTACHMENT_CONFLICT", "选项仍有关联附件，不能删除；请先删除附件或保留该选项", HttpStatus.CONFLICT);
+            }
+            long allAttachments = count("SELECT COUNT(*) FROM ti_mu_fu_jian WHERE ti_mu_xuan_xiang_id=?", option.id());
+            if (allAttachments > 0) {
+                jdbc.update("UPDATE ti_mu_xuan_xiang SET yi_shan_chu=1 WHERE id=?", option.id());
+            } else {
+                jdbc.update("DELETE FROM ti_mu_xuan_xiang WHERE id=?", option.id());
+            }
+        }
+    }
+
+    private void upsertStandardAnalysis(Long questionId, String content) {
+        Long existingId = jdbc.query("SELECT id FROM ti_mu_jie_xi WHERE ti_mu_id=? AND jie_xi_lei_xing='STANDARD' AND ban_ben_hao=1 FOR UPDATE",
+                (rs, row) -> rs.getLong(1), questionId).stream().findFirst().orElse(null);
+        if (existingId == null) {
+            jdbc.update("INSERT INTO ti_mu_jie_xi(ti_mu_id,jie_xi_lei_xing,jie_xi_nei_rong,ban_ben_hao,zhuang_tai) VALUES (?,'STANDARD',?,1,'DRAFT')",
+                    questionId, content);
+        } else {
+            jdbc.update("UPDATE ti_mu_jie_xi SET jie_xi_nei_rong=?,zhuang_tai='DRAFT',yi_shan_chu=0 WHERE id=?", content, existingId);
+        }
     }
     private void validateComplete(Long id) { if (count("SELECT COUNT(*) FROM ti_mu_jie_xi WHERE ti_mu_id=? AND jie_xi_lei_xing='STANDARD' AND yi_shan_chu=0", id) == 0 || count("SELECT COUNT(*) FROM ti_mu_zhi_shi_dian WHERE ti_mu_id=? AND yi_shan_chu=0", id) == 0 || count("SELECT COUNT(*) FROM ti_mu_lai_yuan WHERE ti_mu_id=? AND yi_shan_chu=0", id) != 3) fail("QUESTION_INCOMPLETE", "提交审核前必须补全解析、知识点和来源", HttpStatus.BAD_REQUEST); }
     private void validatePublishableSources(Long id) { validateComplete(id); if (count("SELECT COUNT(*) FROM ti_mu_lai_yuan WHERE ti_mu_id=? AND quan_li_zhuang_tai NOT IN ('AUTHORIZED','OPEN_LICENSE','PUBLIC_OFFICIAL','USER_PROVIDED') AND yi_shan_chu=0", id) > 0) fail("QUESTION_RIGHTS_UNAVAILABLE", "来源权利状态不允许发布", HttpStatus.CONFLICT); }
@@ -251,4 +294,5 @@ public class QuestionAdminService {
     private String placeholders(int count) { return String.join(",", java.util.Collections.nCopies(count, "?")); }
     private String blank(String value) { return value == null || value.isBlank() ? null : value.trim(); }
     private void fail(String code, String message, HttpStatus status) { throw new RenZhengYeWuYiChang(code, message, status); }
+    private record ExistingOption(long id, String label) { }
 }
