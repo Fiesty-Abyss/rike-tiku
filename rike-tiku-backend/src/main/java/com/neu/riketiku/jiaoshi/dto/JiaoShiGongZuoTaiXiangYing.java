@@ -9,6 +9,7 @@ public record JiaoShiGongZuoTaiXiangYing(
         String className,
         String grade,
         Long subjectId,
+        String subjectCode,
         String subjectName,
         String teacherName,
         int studentCount,

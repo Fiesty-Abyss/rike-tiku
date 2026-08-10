@@ -36,6 +36,8 @@ describe('登录页导航与首屏结构', () => {
     const homeLinks = wrapper.findAll('a[href="/"]')
     expect(homeLinks.length).toBeGreaterThanOrEqual(2)
     expect(wrapper.text()).toContain('返回首页')
+    expect(wrapper.text()).toContain('高中理科学习与教学管理')
+    expect(wrapper.text()).not.toContain('从清晰的练习开始')
     expect(wrapper.find('[data-test="login-form"]').exists()).toBe(true)
   })
 })

@@ -45,7 +45,7 @@ public class JiaoShiGaoPinKaoDianFuWu {
                 ORDER BY pai_xu,id
                 """, (rs, row) -> new KnowledgePointOption(rs.getLong(1), rs.getString(2), rs.getString(3)), scope.subjectId);
         return new JiaoShiGongZuoTaiXiangYing(scope.id, scope.classId, scope.className, scope.grade,
-                scope.subjectId, scope.subjectName, scope.teacherName, students.size(), students, points, knowledgePoints);
+                scope.subjectId, scope.subjectCode, scope.subjectName, scope.teacherName, students.size(), students, points, knowledgePoints);
     }
 
     @Transactional(readOnly = true)
@@ -122,7 +122,7 @@ public class JiaoShiGaoPinKaoDianFuWu {
 
     private Scope requireScope(long userId, long scopeId) {
         Scope scope = jdbc.query("""
-                SELECT r.id,r.ban_ji_id,b.ban_ji_ming_cheng,b.nian_ji,r.ke_mu_id,k.ke_mu_ming_cheng,j.xing_ming
+                SELECT r.id,r.ban_ji_id,b.ban_ji_ming_cheng,b.nian_ji,r.ke_mu_id,k.ke_mu_dai_ma,k.ke_mu_ming_cheng,j.xing_ming
                 FROM ren_ke_guan_xi r
                 JOIN jiao_shi_dang_an j ON j.id=r.jiao_shi_id
                 JOIN ban_ji b ON b.id=r.ban_ji_id
@@ -132,7 +132,7 @@ public class JiaoShiGaoPinKaoDianFuWu {
                   AND b.zhuang_tai='ACTIVE' AND b.yi_shan_chu=0
                   AND k.zhuang_tai='ACTIVE' AND k.yi_shan_chu=0
                 """, rs -> rs.next() ? new Scope(rs.getLong(1), rs.getLong(2), rs.getString(3), rs.getString(4),
-                rs.getLong(5), rs.getString(6), rs.getString(7)) : null, scopeId, userId);
+                rs.getLong(5), rs.getString(6), rs.getString(7), rs.getString(8)) : null, scopeId, userId);
         if (scope == null) {
             fail("TEACHING_SCOPE_FORBIDDEN", "任教关系不存在、已停用或不属于当前教师", HttpStatus.FORBIDDEN);
         }
@@ -205,6 +205,6 @@ public class JiaoShiGaoPinKaoDianFuWu {
     }
 
     private record Scope(long id, long classId, String className, String grade, long subjectId,
-            String subjectName, String teacherName) {
+            String subjectCode, String subjectName, String teacherName) {
     }
 }

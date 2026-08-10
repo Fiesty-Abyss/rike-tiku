@@ -6,6 +6,7 @@ import { fetchPracticeResult, type PracticeResult } from '../../api/student/prac
 import { formatPracticeAnswer } from './practiceAnswerFormatter'
 import type { ApiError } from '../../api/http'
 import QuestionContent from '../../components/question/QuestionContent.vue'
+import { subjectTheme } from '../../utils/subjectTheme'
 
 const route = useRoute()
 const router = useRouter()
@@ -17,6 +18,7 @@ const analysisExpanded = ref(true)
 const visibleQuestions = computed(() => result.value?.questions.filter(item => !onlyWrong.value || !item.correct) || [])
 const currentIndex = computed(() => Math.max(0, visibleQuestions.value.findIndex(item => item.question.practiceQuestionId === currentQuestionId.value)))
 const item = computed(() => visibleQuestions.value[currentIndex.value] || null)
+const environment = computed(() => subjectTheme(result.value?.subjectCode))
 
 function select(practiceQuestionId: number) {
   currentQuestionId.value = practiceQuestionId
@@ -61,7 +63,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <section class="student-page result-page" v-loading="loading">
+  <section class="student-page result-page" :data-subject="environment" v-loading="loading">
     <template v-if="result">
       <header class="result-summary">
         <div><span class="result-kicker">{{ result.subjectName }} · 本次练习</span><h1>{{ result.totalScore }} 分</h1><p>共 {{ result.totalCount }} 题，答对 {{ result.correctCount }} 题。</p></div>

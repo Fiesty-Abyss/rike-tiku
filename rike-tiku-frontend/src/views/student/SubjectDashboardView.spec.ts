@@ -57,6 +57,8 @@ describe('学生学科页掌握度与推荐', () => {
     expect(wrapper.text()).toContain('薄弱')
     expect(wrapper.text()).toContain('该知识点仍有未完成复习的错题。')
     expect(wrapper.find('.table-data').text()).toContain('WEAK')
+    expect(wrapper.attributes('data-subject')).toBe('physics')
+    expect(wrapper.find('.metric-fraction').attributes('aria-label')).toBe('已练习知识点 2 / 3')
   })
 
   it('开始巩固复用条件练习并预选学科、知识点和五题', async () => {

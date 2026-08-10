@@ -34,9 +34,11 @@ PR #26 已普通 merge，merge commit 为 `b992bffef07465665b371b7b707ca8814ec2d
 
 PR #27 较早机器门禁口径（2026-08-10）：后端 `mvn clean test` 123 个测试 0 失败、1 个 symbolic-link assumption skipped，`mvn clean package` PASS；前端 35 个文件 133/133、type-check、build、audit 0；当时 Demo `reset → seed → validate → smoke` PASS，Golden30 独立导入测试 PASS，业务题 120 道（物理 40、化学 39、生物 41）。该口径已由下方 Demo360 最终集成人工验收前机器准备结果取代，但保留为修正过程记录。
 
-PR #27 最终集成人工验收前机器准备（2026-08-10，最新）：后端最新全量 130 个测试，0 failure、0 error、1 个 symbolic-link assumption skipped，package PASS；前端 44 个文件、150/150，type-check、build、audit 0。Demo `acceptance-prepare → smoke` PASS，固定 Demo360 为物理/化学/生物各 120 道、55 个叶子知识点，另有 Topic18，总题量 378；PHYSICS-S1 两条图片附件文件与 SHA-256 回读通过。production-like preview 已完成 PUBLIC、ADMIN、TEACHER、STUDENT、ADMIN+TEACHER、物理中等多选、化学困难单选、生物简单填空、逐题结果、错题即时更新和 Topic18 机器浏览器主链，控制台 0 error / 0 warning；截图见 `docs/evidence/pr27-ui/`。最终人工环境的 CAPTCHA challenge 不含 `testCode`，但用户尚未完成修正后的真实 CAPTCHA 与视觉复验，因此 MA-017 继续保持 `IMPLEMENTED_AWAITING_FINAL_MANUAL_ACCEPTANCE`，上述结果不得记为人工 PASS。
+PR #27 最终集成人工验收前机器准备（2026-08-10，最新）：后端最新全量 130 个测试，0 failure、0 error、1 个 symbolic-link assumption skipped，package PASS；前端 47 个文件、160/160，type-check、build、audit 0。Demo `acceptance-prepare → smoke` PASS，固定 Demo360 为物理/化学/生物各 120 道、55 个叶子知识点，另有 Topic18，总题量 378；PHYSICS-S1 两条图片附件文件与 SHA-256 回读通过。production-like preview 已完成 PUBLIC、ADMIN、TEACHER、STUDENT、ADMIN+TEACHER、物理中等多选、化学困难单选、生物简单填空、逐题结果、错题即时更新和 Topic18 机器浏览器主链；第二轮又复验 Portal 精简、学生/教师三科学科环境、管理员中性环境以及 1280/390 科学排版，浏览器控制台未发现 error。截图见 `docs/evidence/pr27-ui/` 与 `docs/evidence/pr27-ui-round2/`。最终人工环境的 CAPTCHA challenge 不含 `testCode`，但用户尚未完成修正后的真实 CAPTCHA 与视觉复验，因此 MA-017 继续保持 `IMPLEMENTED_AWAITING_FINAL_MANUAL_ACCEPTANCE`，上述结果不得记为人工 PASS。
 
 用户最终集成人工验收反馈（2026-08-10）：用户发现管理员首页过空、筛选控件拥挤、教师忘记密码缺少管理员重置、题型提示不友好、结果页解析连续堆叠、知识点/类似练习闭环不足、错题按固定学科 ID 导致实时筛选错误、Demo 题型难度组合不足、高频考点知识点下拉显示 `0`、管理员上下文标题固定、学生导航双激活和重复错误 Toast，并要求 Topic18 与产品级视觉重设计。上述问题未隐藏，PR #27 一度恢复为 `APPROVE_WITH_CHANGES`；当前均已完成机器修正和回归，但仍等待用户在 testCode 关闭的最终环境复验，不能写为人工 PASS 或 `DONE_VERIFIED`。
+
+第二轮最终人工视觉反馈（2026-08-10）：用户认为主方向改善，但明确否定 Portal 的自我说明/宣传文案、缺乏学科意义的化学/生物装饰图形、只停留在局部 accent 的学科色，以及公式/上下标/化学式仍按普通字符串显示。PR #27 已按该反馈继续修正：Portal 做减法并删除 AI 规划区块；三科换成同一视觉语言的语义 SVG；学生和教师具体工作页由响应中的 `subjectCode` 驱动整页环境；代表性 Topic18 内容采用显式 TeX，旧纯文本继续兼容。上述仍属于实现与机器验证，不冒充用户复验 PASS。
 
 严重级别：`BLOCKER`、`HIGH`、`MEDIUM`、`LOW`、`UX`。
 

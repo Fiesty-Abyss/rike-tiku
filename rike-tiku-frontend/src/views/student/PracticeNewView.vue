@@ -11,6 +11,7 @@ import {
   type Subject,
 } from '../../api/student/practice'
 import type { ApiError } from '../../api/http'
+import { subjectTheme } from '../../utils/subjectTheme'
 
 const router = useRouter()
 const route = useRoute()
@@ -35,6 +36,7 @@ const availabilityKey = computed(() => JSON.stringify({
   referenceQuestionId: referenceQuestionId.value,
 }))
 const canCreate = computed(() => availableCount.value > 0 && form.count <= availableCount.value)
+const environment = computed(() => subjectTheme(subjects.value.find(item => item.id === form.subjectId)?.code || route.query.subjectCode))
 
 function message(error: unknown) {
   const api = error as ApiError
@@ -143,7 +145,7 @@ watch(availabilityKey, () => {
 </script>
 
 <template>
-  <section class="student-page practice-builder-page">
+  <section class="student-page practice-builder-page" :data-subject="environment">
     <div class="student-page-heading">
       <div><h1>{{ referenceQuestionId ? '练习类似题' : '创建自主练习' }}</h1><p>{{ referenceQuestionId ? '按同学科、共享知识点、同题型优先和相邻难度生成规则型练习。' : '仅从已发布、可自动判分的在线练习题中选择。' }}</p></div>
       <el-button @click="router.push('/student')">返回学习主页</el-button>

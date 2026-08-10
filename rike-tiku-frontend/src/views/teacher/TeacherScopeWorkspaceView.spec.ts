@@ -45,7 +45,7 @@ function mountView() {
 describe('教师班级学习情况', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    fetchWorkspace.mockResolvedValue({ teachingAssignmentId: 11, classId: 3, className: '199班', grade: '高三', subjectId: 1, subjectName: '物理', teacherName: '物理管理员教师', studentCount: 5, students: [], highFrequencyPoints: [], knowledgePoints: [{ id: 7, name: '牛顿运动定律', path: '力学>运动和力>牛顿运动定律' }] })
+    fetchWorkspace.mockResolvedValue({ teachingAssignmentId: 11, classId: 3, className: '199班', grade: '高三', subjectId: 1, subjectCode: 'PHYSICS', subjectName: '物理', teacherName: '物理管理员教师', studentCount: 5, students: [], highFrequencyPoints: [], knowledgePoints: [{ id: 7, name: '牛顿运动定律', path: '力学>运动和力>牛顿运动定律' }] })
     fetchLearning.mockResolvedValue({ teachingAssignmentId: 11, className: '199班', subjectId: 1, subjectName: '物理', students: [{ studentId: 8, studentNumber: 'DEMO_199_01', name: '199班学生01', grade: '高三', answeredCount: 8, correctCount: 5, accuracy: 62.5, weakKnowledgePointCount: 1, masteredKnowledgePointCount: 0 }] })
     fetchConversations.mockResolvedValue([])
   })
@@ -58,6 +58,24 @@ describe('教师班级学习情况', () => {
     expect(wrapper.text()).toContain('199班学生01')
     expect(wrapper.text()).toContain('62.5')
     expect(wrapper.text()).not.toContain('第1名')
+    expect(wrapper.attributes('data-subject')).toBe('physics')
+  })
+
+  it.each([
+    ['PHYSICS', 'physics'],
+    ['CHEMISTRY', 'chemistry'],
+    ['BIOLOGY', 'biology'],
+  ])('使用响应中的 subjectCode 解析 %s 教师环境', async (subjectCode, theme) => {
+    fetchWorkspace.mockResolvedValue({
+      teachingAssignmentId: 11, classId: 3, className: '199班', grade: '高三', subjectId: 1,
+      subjectCode, subjectName: subjectCode, teacherName: '演示教师', studentCount: 0,
+      students: [], highFrequencyPoints: [], knowledgePoints: [],
+    })
+
+    const wrapper = mountView()
+    await flushPromises()
+
+    expect(wrapper.attributes('data-subject')).toBe(theme)
   })
 
   it('消息接口失败时不阻塞班级工作台主数据', async () => {
