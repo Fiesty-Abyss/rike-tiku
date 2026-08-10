@@ -13,6 +13,7 @@ const scopes = ref<TeachingScope[]>([])
 const loading = ref(false)
 const passwordVisible = ref(false)
 const name = computed(() => auth.currentUser?.displayName || auth.currentUser?.username || '教师')
+const canSwitchRole = computed(() => auth.roles.length > 1)
 
 onMounted(async () => {
   loading.value = true
@@ -53,6 +54,7 @@ async function logout() {
         </el-button>
         <template #dropdown>
           <el-dropdown-menu>
+            <el-dropdown-item v-if="canSwitchRole" @click="router.push('/select-role')">切换身份</el-dropdown-item>
             <el-dropdown-item @click="router.push('/profile')">个人中心</el-dropdown-item>
             <el-dropdown-item @click="passwordVisible = true">修改密码</el-dropdown-item>
             <el-dropdown-item divided @click="logout">退出登录</el-dropdown-item>
