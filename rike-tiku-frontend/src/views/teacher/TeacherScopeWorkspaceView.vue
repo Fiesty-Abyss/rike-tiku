@@ -126,8 +126,9 @@ onMounted(() => void load())
 
 <template>
   <main class="workspace-page">
-    <header class="workspace-header">
-      <div>
+    <header class="workspace-header teacher-header">
+      <div class="teacher-header-context">
+        <router-link class="workspace-brand" to="/teacher">RIKE · 教师工作台</router-link>
         <h1>班级学科工作台</h1>
         <p v-if="workspace">{{ workspace.className }} · {{ workspace.subjectName }}</p>
       </div>

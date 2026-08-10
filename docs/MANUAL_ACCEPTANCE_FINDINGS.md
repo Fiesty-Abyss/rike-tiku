@@ -32,7 +32,9 @@ MA-017 机器证据更新（PR #26 独立审查修正后）：附件/权限/导�
 
 PR #26 已普通 merge，merge commit 为 `b992bffef07465665b371b7b707ca8814ec2d36d`。当前 `feat/non-ai-final-closure` 为最后一个非 AI 分支，PR #27 为最后一个非 AI Draft PR；机器实现完成后直接在该 PR 内修复最终审计发现，不创建 PR #28，也不开始 AI。MA-017、MA-018、MA-019、MA-020 涉及的最终浏览器视觉/CAPTCHA验收统一延期至非 AI 最终集成验收，未执行结果不写为人工 PASS。
 
-PR #27 最终机器门禁补充（2026-08-10）：后端 `mvn clean test` 123 个测试 0 失败、1 个 symbolic-link assumption skipped，`mvn clean package` PASS；前端 35 个文件 133/133、type-check、build、audit 0；Demo `reset → seed → validate → smoke` PASS，Golden30 独立导入测试 PASS，业务题 120 道（物理 40、化学 39、生物 41）。本轮同时修正题干附件变更后的共用内容 hash、附件文件/数据库事务回滚清理、管理员图片操作前的草稿文本持久化、班级写入与 SUCCESS 审计的事务一致性，以及题目编辑的附件外键稳定性：STANDARD 解析 ID 不再因普通保存而变更，OPTION 同 label 保留原行，删除活动 OPTION 附件引用返回 409。这些是机器证据，不代表最终人工 CAPTCHA/视觉验收已执行。
+PR #27 较早机器门禁口径（2026-08-10）：后端 `mvn clean test` 123 个测试 0 失败、1 个 symbolic-link assumption skipped，`mvn clean package` PASS；前端 35 个文件 133/133、type-check、build、audit 0；当时 Demo `reset → seed → validate → smoke` PASS，Golden30 独立导入测试 PASS，业务题 120 道（物理 40、化学 39、生物 41）。该口径已由下方 Demo360 最终集成人工验收前机器准备结果取代，但保留为修正过程记录。
+
+PR #27 最终集成人工验收前机器准备（2026-08-10）：后端最新全量 125 个测试，0 失败、0 错误、1 个 symbolic-link assumption skipped，package PASS；前端 36 个文件、135/135，type-check、build、audit 0。Demo `reset → seed → validate → smoke` PASS，固定 Demo360 为物理/化学/生物各 120 道、55 个叶子知识点；PHYSICS-S1 两条图片附件文件与 SHA-256 回读通过。production-like preview 已完成 PUBLIC、ADMIN、TEACHER、STUDENT、ADMIN+TEACHER 及三科真实练习机器浏览器主链，控制台 0 error / 0 warning。最终人工环境的 CAPTCHA challenge 不含 `testCode`，但用户尚未执行真实 CAPTCHA 与视觉验收，因此 MA-017 继续保持 `IMPLEMENTED_AWAITING_FINAL_MANUAL_ACCEPTANCE`，上述结果不得记为人工 PASS。
 
 严重级别：`BLOCKER`、`HIGH`、`MEDIUM`、`LOW`、`UX`。
 

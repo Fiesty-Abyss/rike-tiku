@@ -39,8 +39,9 @@ async function logout() {
 
 <template>
   <main class="workspace-page">
-    <header class="workspace-header">
-      <div>
+    <header class="workspace-header teacher-header">
+      <div class="teacher-header-context">
+        <router-link class="workspace-brand" to="/teacher">RIKE · 教师工作台</router-link>
         <h1>教师工作台</h1>
         <p>
           您好，{{ name }}
@@ -50,7 +51,7 @@ async function logout() {
       <el-dropdown>
         <el-button class="user-menu-button">
           <el-avatar :size="28" :src="auth.profileAvatar || undefined">{{ name.slice(0, 1) }}</el-avatar>
-          <span>账户设置</span>
+          <span>{{ name }} · 教师</span>
         </el-button>
         <template #dropdown>
           <el-dropdown-menu>

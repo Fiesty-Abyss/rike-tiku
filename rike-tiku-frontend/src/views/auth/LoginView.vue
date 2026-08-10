@@ -55,8 +55,13 @@ async function handleLogin(payload: {
       <div class="subject-line"><span>物理</span><span>化学</span><span>生物</span></div>
     </section>
     <section class="auth-panel" aria-labelledby="login-title">
+      <RouterLink class="auth-home-link" to="/">返回首页</RouterLink>
+      <RouterLink class="auth-brand" to="/" aria-label="返回 RIKE 公共首页">
+        <span aria-hidden="true">理科</span>
+        <strong>RIKE 学习辅助系统</strong>
+      </RouterLink>
       <h2 id="login-title">欢迎登录</h2>
-      <p class="auth-description">输入账号和密码后继续。</p>
+      <p class="auth-description">输入账号、密码和图形验证码后登录。</p>
       <LoginForm ref="loginForm" :loading="loading" :error-message="errorMessage" @submit="handleLogin" />
       <p class="login-note">忘记密码请联系管理员</p>
     </section>

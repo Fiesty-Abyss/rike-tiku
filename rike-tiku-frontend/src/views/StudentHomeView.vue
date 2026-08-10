@@ -71,7 +71,12 @@ async function logout() {
           <p>系统不会展示虚构的学习统计；请从真实可用的知识点、练习与错题记录开始。</p>
         </div>
         <div class="subject-cards">
-          <article v-for="subject in subjects" :key="subject.id" class="subject-card">
+          <article
+            v-for="subject in subjects"
+            :key="subject.id"
+            class="subject-card"
+            :class="`subject-card--${subject.code.toLowerCase()}`"
+          >
             <div>
               <span class="subject-code">{{ formatEnum(subject.code) }}学习</span>
               <h2>{{ subject.name }}</h2>

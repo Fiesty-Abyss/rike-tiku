@@ -4,6 +4,8 @@
 
 > PR #26 已普通 merge（merge commit `b992bffef07465665b371b7b707ca8814ec2d36d`）。当前工作分支为 `feat/non-ai-final-closure`；人工 CAPTCHA/浏览器验收延期至非 AI 最终集成验收，MA-017 仍为 `IMPLEMENTED_AWAITING_FINAL_MANUAL_ACCEPTANCE`。PR #27 是最后一个非 AI Draft PR，当前加入 V11 管理员操作日志、MA-020、管理员题目图片上传、来源权利补充 API、Golden30 正常导入闭环、菜单整理和多角色切换；Flyway V1–V11、27 张业务表；V1–V10 和 MVP30 原始 Excel 未修改。
 
+> PR #27 当前最终机器口径：后端 125 个测试，0 失败、0 错误、1 个符号链接 assumption skipped，package PASS；前端 36 个文件、135/135、type-check、build、audit 0。Demo360 为物理/化学/生物各 120 道，叶子知识点 18/16/21。UI/UX Foundation 和 production-like preview 机器浏览器主链已通过；最终人工后端不暴露 CAPTCHA `testCode`，真实 CAPTCHA/视觉验收仍由用户执行。
+
 更新时间：2026-08-10
 
 ## 1. 项目身份
@@ -59,11 +61,11 @@
 - 当前 MA-017 已完成机器实现：受控 PNG/JPEG 存储、3MB 与真实 MIME 校验、SHA-256 回读、附件归属权限、未提交 STANDARD_ANALYSIS 防泄露、管理员详情和学生练习/结果/错题 Blob 显示；状态为 `IMPLEMENTED_AWAITING_FINAL_MANUAL_ACCEPTANCE`。用户 CAPTCHA 和浏览器视觉验收延期至非 AI 最终集成验收，未验收前不关闭。
 - PR #26 独立审查修正已完成：正文 marker 保留 `〔图片对象 I001〕`，数据库 `dui_xiang_biao_shi` 只保存 `I001`；真实 QuestionImportService 导入链已覆盖 preview、confirm、受控 storage、管理员 HTTP 内容和学生提交前后权限。机器门禁和 Demo 最新结果记录在 `DEVELOPMENT_STATUS.md`，人工验收不属于 PR #26 merge gate。
 - 当前 Flyway：V1–V11，共 27 张业务表；V10 只增加 `yong_hu` 简介与头像字段，V11 只新增管理员操作日志表，V1–V10 未修改。
-- PR #27 当前机器实现已覆盖 MA-018、MA-020、管理员题目图片上传、来源权利补充、Golden30 正常导入闭环、正式菜单整理和多角色切换；本轮最终全量门禁为后端 123 个测试 0 失败、1 个 symbolic-link assumption skipped、package PASS，前端 35 个文件 133/133、type-check/build/audit 通过，Demo reset/seed/validate/smoke PASS。另已修正题干附件变更后的共用内容 hash、附件文件/数据库事务回滚清理、管理员草稿图片操作的未保存文字覆盖、班级 SUCCESS 审计事务一致性，以及题目编辑时的附件外键稳定性：STANDARD 原位更新保留解析 ID，OPTION 同 label 原位更新，活动附件引用的 OPTION 删除返回 409。Golden30 在独立测试库真实验证物理/化学/生物各 10 道从 preview、confirm 到审核发布和学生练习，原始候选文件与正式库均未被写入。
-- 独立 `rike_tiku_demo` 保留 Demo90 基线，并新增 30 道经筛选的项目原创变式，最终物理 40、化学 39、生物 41，共 120 道。V3.0 不要求名为 MVP30 的 Excel 整体正式入库；该原始文件保持不变，定位为结构化导入能力验证素材。
+- PR #27 当前机器实现已覆盖 MA-018、MA-020、管理员题目图片上传、来源权利补充、Golden30 正常导入闭环、正式菜单整理和多角色切换；最新全量门禁为后端 125 个测试 0 失败、0 错误、1 个 symbolic-link assumption skipped、package PASS，前端 36 个文件 135/135、type-check/build/audit 通过，Demo360 reset/seed/validate/smoke PASS。题干附件内容 hash、附件文件/数据库事务、草稿文字、班级 SUCCESS 审计和附件外键稳定性修正继续保持。Golden30 在独立测试库真实验证物理/化学/生物各 10 道从 preview、confirm 到审核发布和学生练习，原始候选文件与正式库均未被写入。
+- 独立 `rike_tiku_demo` 当前使用确定性 Demo360：物理、化学、生物各 120 道，覆盖 55 个叶子知识点；历史 Demo90/Demo120 口径仅用于说明先前 PR。V3.0 不要求名为 MVP30 的 Excel 整体正式入库；该原始文件保持不变，定位为结构化导入能力验证素材。
 - PR #17 已进入 `main`：新增管理员单学生分页、详情、事务新增、编辑启停、事务调班和密码重置；Demo 扩充为 14 账号、3 班级、4 教师、9 学生、9 条 ACTIVE 三元任课关系。
 - PR #18 合并后后端 87/87、前端 83/83，package、type-check、build、audit、Demo 脚本链均通过；真实浏览器高频考点权限验收保持通过。正式库污染检查包含 Demo90、场景账号、场景班级和高频考点，均为 0。
-- PR #19 已将 PR #15 历史滑块替换为默认隐藏的 4 位随机图形验证码并进入 `main`；后端使用 JDK 原生图片 API、两分钟内存 challenge 和一次性消费，前端首次操作只展开、第二次才登录。合并后后端 90/90、前端 91/91，package、type-check、build、audit 与 Demo 脚本链均通过，正式库四项污染检查均为 0。
+- PR #19 已将 PR #15 历史滑块替换为 4 位随机图形验证码并进入 `main`；后端使用 JDK 原生图片 API、两分钟内存 challenge 和一次性消费。PR #27 当前前端首次渲染即显示验证码，三项一次填写、一次登录，失败后刷新 challenge；最终人工环境响应不含 `testCode`。
 - PR #20 使用 REST polling 实现受 ACTIVE 三元任课关系和学生当前主班级约束的纯文本私信、未读和历史保留，已普通 merge。合并后后端 92/92、前端 100/100，package、type-check、build、audit 0、Demo 脚本链通过；双班级双向浏览器验收及 conversationId 越权隔离保持通过，MA-009 已关闭。
 - PR #21 已基于 V7 已提交自动判分答题、冻结知识点快照和错题状态实时计算掌握度并进入 `main`；当前学科全部 ACTIVE 知识点参与掌握度和总体统计，5 题推荐资格独立复用真实学生练习题池规则。题量不足不会隐藏历史掌握事实，也不会生成无法创建的推荐。推荐采用公开固定优先级并最多返回 3 项，教师学情查询继续受本人 ACTIVE 三元任课关系约束；无 V10。合并后后端 98/98、前端 29 文件 106/106，package、type-check、build、audit 0、Demo 链与正式库只读检查均通过；MA-014、MA-015 已关闭。
 - PR #22 已实现并普通 merge 三角色统一 `/profile`、本人资料/真实角色/业务档案只读展示、简介、MySQL 小头像和现有主动改密入口。所有 profile API 从 JWT 推导本人，不接收 userId/studentId/teacherId；首次登录必须先完成初始密码修改。合并后自动化为后端 102/102、前端 31 文件 117/117；Demo 脚本与浏览器验收通过，MA-006 已关闭。

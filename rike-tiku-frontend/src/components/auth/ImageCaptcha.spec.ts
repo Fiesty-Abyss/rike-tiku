@@ -35,6 +35,7 @@ describe('图形验证码组件', () => {
     expect(authApi.fetchCaptchaChallenge).toHaveBeenCalledWith(undefined)
     expect(wrapper.get('img').attributes('src')).toBe('data:image/png;base64,AAA')
     expect(wrapper.emitted('challenge')?.[0]).toEqual(['first'])
+    expect(wrapper.html()).not.toContain('testCode')
   })
 
   it('点击图片刷新时废弃旧 challenge 并清空输入', async () => {
