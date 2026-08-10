@@ -81,6 +81,29 @@ public class QuestionAdminService {
         return auditLog.audited("QUESTION", "UPDATE", id, "管理员修改题目内容", () -> updateInternal(id, request));
     }
 
+    @Transactional
+    public QuestionDtos.Detail updateSourceRights(Long id, QuestionDtos.SourceRightsUpdate request, Long actorId) {
+        return auditLog.audited("QUESTION", "UPDATE_SOURCE_RIGHTS", id, "管理员补充题目来源权利依据",
+                () -> updateSourceRightsInternal(id, request), result -> result.question().id());
+    }
+
+    private QuestionDtos.Detail updateSourceRightsInternal(Long id, QuestionDtos.SourceRightsUpdate request) {
+        String status = request.rightsStatus().trim();
+        String basis = request.rightsBasis().trim();
+        if (!Set.of("AUTHORIZED", "OPEN_LICENSE", "PUBLIC_OFFICIAL", "USER_PROVIDED", "COPYRIGHT_UNKNOWN", "RESTRICTED").contains(status)) {
+            fail("QUESTION_RIGHTS_STATUS_INVALID", "来源权利状态不受支持", HttpStatus.BAD_REQUEST);
+        }
+        if (PUBLISHABLE_RIGHTS.contains(status) && basis.isBlank()) {
+            fail("QUESTION_RIGHTS_BASIS_REQUIRED", "可发布权利状态必须填写权利依据", HttpStatus.BAD_REQUEST);
+        }
+        requireEditableReviewStatus(id);
+        if (count("SELECT COUNT(*) FROM ti_mu_lai_yuan WHERE ti_mu_id=? AND yi_shan_chu=0", id) != 3) {
+            fail("QUESTION_SOURCE_INCOMPLETE", "题目来源信息不完整", HttpStatus.BAD_REQUEST);
+        }
+        jdbc.update("UPDATE ti_mu_lai_yuan SET quan_li_zhuang_tai=?,quan_li_yi_ju=? WHERE ti_mu_id=? AND yi_shan_chu=0", status, basis, id);
+        return detailInternal(id);
+    }
+
     private QuestionDtos.Detail updateInternal(Long id, QuestionDtos.Save request) {
         requireStatus(id, "DRAFT"); validateRequest(request); validateSubject(request.subjectId()); validateKnowledgePoints(request.subjectId(), request.knowledgePointIds());
         String hash = calculateContentHash(request); rejectDuplicate(request.subjectId(), hash, id);
@@ -171,6 +194,11 @@ public class QuestionAdminService {
         return switch (status) { case "DRAFT" -> List.of("SUBMIT"); case "PENDING" -> List.of("APPROVE", "RETURN"); case "PUBLISHED" -> List.of("DISABLE"); case "DISABLED" -> List.of("REPUBLISH"); default -> List.of(); };
     }
     private void requireStatus(Long id, String expected) { String actual = jdbc.query("SELECT zhuang_tai FROM ti_mu WHERE id=? AND yi_shan_chu=0", rs -> rs.next() ? rs.getString(1) : null, id); if (actual == null) fail("QUESTION_NOT_FOUND", "题目不存在", HttpStatus.NOT_FOUND); if (!expected.equals(actual)) fail("QUESTION_STATUS_INVALID", "当前题目状态不允许此操作", HttpStatus.CONFLICT); }
+    private void requireEditableReviewStatus(Long id) {
+        String actual = jdbc.query("SELECT zhuang_tai FROM ti_mu WHERE id=? AND yi_shan_chu=0", rs -> rs.next() ? rs.getString(1) : null, id);
+        if (actual == null) fail("QUESTION_NOT_FOUND", "题目不存在", HttpStatus.NOT_FOUND);
+        if (!Set.of("DRAFT", "PENDING").contains(actual)) fail("QUESTION_STATUS_INVALID", "当前题目状态不允许修改来源权利", HttpStatus.CONFLICT);
+    }
     private void rejectDuplicate(Long subjectId, String hash, long excludedId) { if (count("SELECT COUNT(*) FROM ti_mu WHERE ke_mu_id=? AND nei_rong_ha_xi=? AND id<>? AND yi_shan_chu=0", subjectId, hash, excludedId) > 0) fail("QUESTION_DUPLICATE", "存在完全重复题目", HttpStatus.CONFLICT); }
     private String calculateContentHash(QuestionDtos.Save request) {
         try {
