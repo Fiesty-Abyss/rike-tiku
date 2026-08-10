@@ -20,6 +20,7 @@ public class JiaoShiGuanLiController {
     @GetMapping("/teachers/{id}") public JiaoShiXiangQingXiangYing get(@PathVariable Long id){return service.get(id);}
     @PostMapping("/teachers") public ResponseEntity<JiaoShiChuangJianXiangYing> create(@Valid @RequestBody JiaoShiChuangJianQingQiu request){return ResponseEntity.ok().cacheControl(CacheControl.noStore()).header("Pragma","no-cache").body(service.create(request));}
     @PutMapping("/teachers/{id}") public JiaoShiXiangYing update(@PathVariable Long id,@Valid @RequestBody JiaoShiXiuGaiQingQiu request){return service.update(id,request);}
+    @PostMapping("/teachers/{id}/reset-password") public ResponseEntity<JiaoShiMiMaChongZhiXiangYing> resetPassword(@PathVariable Long id){return ResponseEntity.ok().cacheControl(CacheControl.noStore()).header("Pragma","no-cache").body(service.resetPassword(id));}
     @GetMapping("/subjects") public List<KeMuXiangYing> subjects(){return service.subjects();}
     @GetMapping("/teachers/{teacherId}/teaching-assignments") public List<RenKeXiangYing> assignments(@PathVariable Long teacherId){return service.assignments(teacherId);}
     @PostMapping("/teachers/{teacherId}/teaching-assignments") public RenKeXiangYing createAssignment(@PathVariable Long teacherId,@Valid @RequestBody RenKeChuangJianQingQiu request){return service.createAssignment(teacherId,request);}

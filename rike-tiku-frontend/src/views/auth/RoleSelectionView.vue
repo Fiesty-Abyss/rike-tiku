@@ -1,12 +1,15 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../../stores/auth'
 import { formatEnum, roleHome } from '../../utils/formatters'
+import { useEntranceMotion } from '../../utils/entranceMotion'
 
 const router = useRouter()
 const auth = useAuthStore()
 const roles = computed(() => auth.roles)
+const root = ref<HTMLElement>()
+useEntranceMotion(root, '.role-select > *', 0.08)
 
 async function select(role: typeof roles.value[number]) {
   auth.selectRole(role)
@@ -15,7 +18,7 @@ async function select(role: typeof roles.value[number]) {
 </script>
 
 <template>
-  <main class="single-panel-page role-selection-page">
+  <main ref="root" class="single-panel-page role-selection-page">
     <section class="role-select">
       <RouterLink class="role-select-brand" to="/">
         <span aria-hidden="true">理科</span>

@@ -37,6 +37,18 @@ public class StudentPracticeController {
         return service.create(user.id(), request);
     }
 
+    @GetMapping("/practice-availability")
+    public StudentPracticeDtos.Availability availability(
+            @RequestParam Long subjectId,
+            @RequestParam(required = false) List<Long> knowledgePointIds,
+            @RequestParam(required = false) List<String> questionTypes,
+            @RequestParam(required = false) Integer difficulty,
+            @RequestParam(required = false) Long referenceQuestionId,
+            @AuthenticationPrincipal RenZhengYongHu user) {
+        return service.availability(user.id(), new StudentPracticeDtos.CreateRequest(
+                subjectId, knowledgePointIds, questionTypes, difficulty, 1, referenceQuestionId));
+    }
+
     @GetMapping("/practice-sessions/{id}")
     public StudentPracticeDtos.Session session(
             @PathVariable Long id,
@@ -61,8 +73,9 @@ public class StudentPracticeController {
 
     @GetMapping("/wrong-questions")
     public List<StudentPracticeDtos.WrongQuestionItem> wrongQuestions(
+            @RequestParam(required = false) String subjectCode,
             @AuthenticationPrincipal RenZhengYongHu user) {
-        return service.wrongQuestions(user.id());
+        return service.wrongQuestions(user.id(), subjectCode);
     }
 
     @GetMapping("/wrong-questions/{questionId}")

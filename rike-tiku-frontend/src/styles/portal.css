@@ -1,0 +1,166 @@
+.portal-page {
+  min-height: 100dvh;
+  overflow: clip;
+  color: var(--ink-primary);
+  background:
+    radial-gradient(ellipse at 74% 8%, oklch(91% 0.075 208 / 0.7), transparent 34rem),
+    linear-gradient(180deg, oklch(93% 0.045 218) 0, oklch(97% 0.02 204) 36rem, var(--canvas) 62rem);
+  font-family: var(--font-body);
+  line-height: 1.7;
+}
+
+.portal-page::before {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  content: "";
+  opacity: 0.24;
+  background-image: url("data:image/svg+xml,%3Csvg width='180' height='180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.08'/%3E%3C/svg%3E");
+}
+
+.portal-page > * { position: relative; z-index: 1; }
+.portal-nav, .portal-hero, .portal-section, .portal-entrance, .portal-footer { width: min(100% - 2rem, 76rem); margin-inline: auto; }
+
+.portal-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 5.25rem;
+  border-bottom: 1px solid oklch(78% 0.055 217 / 0.55);
+}
+.portal-wordmark { display: inline-flex; align-items: center; gap: 0.8rem; color: inherit; text-decoration: none; }
+.portal-wordmark > span:last-child { display: grid; line-height: 1.2; }
+.portal-wordmark strong { font: 750 1rem/1 var(--font-display); letter-spacing: 0.13em; }
+.portal-wordmark small { margin-top: 0.3rem; color: var(--ink-muted); font-size: 0.72rem; }
+.portal-mark { position: relative; width: 2.6rem; height: 2.6rem; border: 1px solid var(--glass-border); border-radius: 50%; background: var(--surface-glass); box-shadow: inset 0 1px var(--glass-highlight), var(--shadow-float); }
+.portal-mark::before, .portal-mark::after, .portal-mark i { position: absolute; content: ""; border: 1px solid var(--brand); border-radius: 50%; }
+.portal-mark::before { inset: 0.55rem; }
+.portal-mark::after { inset: 0.95rem 0.45rem; }
+.portal-mark i { inset: 0.45rem 0.95rem; }
+.portal-nav-status { display: flex; align-items: center; gap: 1rem; }
+.portal-nav-status > span, .portal-overline { color: var(--brand-deep); font-size: 0.7rem; font-weight: 760; letter-spacing: 0.14em; }
+.portal-nav-login { display: inline-grid; place-items: center; min-height: 2.75rem; padding-inline: 1.1rem; border: 1px solid var(--glass-border); border-radius: 999px; color: var(--ink-primary); background: var(--surface-glass); text-decoration: none; -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); }
+
+.portal-hero { display: grid; grid-template-columns: minmax(0, 1.08fr) minmax(22rem, 0.92fr); gap: clamp(2rem, 6vw, 6rem); align-items: center; min-height: min(48rem, calc(100dvh - 5.25rem)); padding-block: 5rem 6.5rem; }
+.portal-overline { margin: 0 0 1.2rem; }
+.portal-hero h1, .portal-section h2, .portal-entrance h2 { margin: 0; font-family: var(--font-display); letter-spacing: -0.045em; }
+.portal-hero h1 { max-width: 13ch; font-size: clamp(2.65rem, 5.2vw, 5.1rem); font-weight: 680; line-height: 1.08; }
+.portal-hero h1 span { color: var(--brand-deep); }
+.portal-subtitle { max-width: 39rem; margin: 1.65rem 0 0; color: var(--ink-secondary); font-size: clamp(1rem, 1.6vw, 1.22rem); }
+.portal-ai-boundary { max-width: 40rem; margin: 1rem 0 0; color: var(--ink-muted); font-size: 0.86rem; }
+.portal-ai-boundary strong { margin-right: 0.55rem; color: var(--brand-deep); }
+.portal-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 1.25rem; margin-top: 2rem; }
+.portal-primary-action, .portal-secondary-action { display: inline-flex; align-items: center; justify-content: center; min-height: 3.1rem; font-weight: 700; text-decoration: none; }
+.portal-primary-action { gap: 0.65rem; padding-inline: 1.35rem; border: 1px solid oklch(48% 0.12 225); border-radius: 999px; color: oklch(98% 0.006 210); background: var(--brand-deep); box-shadow: 0 0.75rem 1.8rem oklch(39% 0.1 230 / 0.2); }
+.portal-secondary-action { color: var(--brand-deep); text-decoration: underline; text-decoration-color: oklch(67% 0.08 218); text-underline-offset: 0.38rem; }
+
+.optical-instrument { position: relative; aspect-ratio: 1; border: 1px solid oklch(83% 0.055 210 / 0.65); border-radius: 46% 54% 48% 52% / 52% 46% 54% 48%; background: linear-gradient(145deg, oklch(100% 0 0 / 0.62), oklch(88% 0.07 208 / 0.26)); box-shadow: inset 1.5rem 1rem 3rem oklch(100% 0 0 / 0.52), inset -1.5rem -1.5rem 3.5rem oklch(62% 0.11 218 / 0.13), var(--shadow-aqua); -webkit-backdrop-filter: blur(18px); backdrop-filter: blur(18px); }
+.optical-instrument::before { position: absolute; inset: 8%; content: ""; border: 1px solid oklch(84% 0.06 214 / 0.7); border-radius: 50%; background: radial-gradient(circle at 40% 30%, oklch(100% 0 0 / 0.72), transparent 35%); }
+.horizon-line { position: absolute; right: -12%; bottom: 28%; left: -12%; height: 1px; background: linear-gradient(90deg, transparent, var(--brand), transparent); box-shadow: 0 0 1.5rem var(--brand); }
+.optical-orbit { position: absolute; inset: 19%; border: 1px solid oklch(60% 0.105 222 / 0.5); border-radius: 50%; }
+.orbit-one { transform: rotate(27deg) scaleY(0.48); }
+.orbit-two { transform: rotate(-43deg) scaleY(0.62); }
+.optical-core { position: absolute; inset: 35%; display: grid; place-content: center; border: 1px solid var(--glass-border); border-radius: 50%; text-align: center; background: oklch(97% 0.03 210 / 0.78); box-shadow: inset 0 1px var(--glass-highlight), 0 0.75rem 2.5rem oklch(46% 0.09 219 / 0.2); }
+.optical-core span { color: var(--brand-deep); font: 760 1.25rem/1 var(--font-display); letter-spacing: 0.16em; }
+.optical-core small { margin-top: 0.6rem; color: var(--ink-muted); font-size: 0.48rem; letter-spacing: 0.08em; }
+.instrument-label { position: absolute; color: var(--ink-muted); font: 650 0.62rem/1 var(--font-display); letter-spacing: 0.08em; }
+.label-a { top: 15%; left: 13%; } .label-b { right: 10%; top: 28%; } .label-c { bottom: 13%; left: 22%; }
+
+.portal-section { padding-block: clamp(5rem, 10vw, 9rem); border-top: 1px solid oklch(78% 0.055 217 / 0.48); }
+.portal-section h2, .portal-entrance h2 { max-width: 18ch; font-size: clamp(2rem, 4vw, 3.8rem); line-height: 1.12; }
+.portal-section-heading { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(18rem, 0.75fr); gap: 3rem; align-items: end; margin-bottom: 3.5rem; }
+.portal-section-heading .portal-overline { grid-column: 1 / -1; margin-bottom: -1.6rem; }
+.portal-section-heading > p:last-child, .portal-story-heading > p:last-child { margin: 0; color: var(--ink-muted); }
+
+.portal-story { display: grid; grid-template-columns: minmax(18rem, 0.76fr) minmax(0, 1.24fr); gap: clamp(3rem, 8vw, 7rem); }
+.portal-story-heading { align-self: start; position: sticky; top: 7rem; }
+.portal-story-heading h2 { max-width: 12ch; }
+.learning-current { margin: 0; padding: 0; list-style: none; }
+.learning-current li { display: grid; grid-template-columns: 3rem 1fr; gap: 1.25rem; padding: 1.65rem 0; border-top: 1px solid var(--glass-border); }
+.learning-current li:last-child { border-bottom: 1px solid var(--glass-border); }
+.learning-current > li > span { color: var(--brand); font: 750 0.78rem/1.6 var(--font-display); }
+.learning-current h3 { margin: 0; font: 680 1.35rem/1.3 var(--font-display); }
+.learning-current p { margin: 0.45rem 0 0; color: var(--ink-muted); }
+
+.science-compositions { display: grid; gap: 1rem; }
+.science-composition { position: relative; display: grid; grid-template-columns: minmax(15rem, 0.72fr) minmax(0, 1.28fr); min-height: 18rem; overflow: hidden; border: 1px solid var(--glass-border); border-radius: var(--radius-feature); background: var(--surface-solid); }
+.science-composition:nth-child(even) { grid-template-columns: minmax(0, 1.28fr) minmax(15rem, 0.72fr); }
+.science-composition:nth-child(even) .science-visual { order: 2; }
+.science-composition > div:last-child { align-self: center; padding: clamp(2rem, 5vw, 4rem); }
+.science-composition span { color: var(--subject-accent); font: 760 0.72rem/1 var(--font-display); letter-spacing: 0.14em; }
+.science-composition h3 { margin: 0.7rem 0; font: 680 clamp(2rem, 4vw, 3.6rem)/1 var(--font-display); }
+.science-composition p { max-width: 34rem; margin: 0; color: var(--ink-secondary); }
+.science-composition small { display: block; margin-top: 1.5rem; color: var(--ink-muted); }
+.science-physics { --subject-accent: var(--physics); --subject-wash: var(--physics-soft); }
+.science-chemistry { --subject-accent: var(--chemistry); --subject-wash: var(--chemistry-soft); }
+.science-biology { --subject-accent: var(--biology); --subject-wash: var(--biology-soft); }
+.science-visual { position: relative; min-height: 15rem; background: linear-gradient(145deg, var(--subject-wash), var(--surface-solid)); }
+.science-visual i { position: absolute; border: 1px solid color-mix(in oklch, var(--subject-accent), transparent 48%); }
+.science-physics i { inset: 24%; border-radius: 50%; transform: rotate(28deg) scaleY(0.42); }
+.science-physics i:nth-child(2) { transform: rotate(-34deg) scaleY(0.62); }
+.science-physics i:nth-child(3) { inset: 46%; border-radius: 50%; background: var(--subject-accent); box-shadow: 0 0 2rem color-mix(in oklch, var(--subject-accent), transparent 40%); }
+.science-chemistry i { width: 3.8rem; height: 3.8rem; transform: rotate(45deg); background: oklch(100% 0 0 / 0.35); }
+.science-chemistry i:nth-child(1) { top: 20%; left: 22%; }.science-chemistry i:nth-child(2) { top: 44%; left: 45%; width: 6rem; height: 6rem; }.science-chemistry i:nth-child(3) { right: 18%; bottom: 15%; width: 2.6rem; height: 2.6rem; }
+.science-biology i { width: 7rem; height: 4rem; border-radius: 70% 30% 70% 30%; }
+.science-biology i:nth-child(1) { top: 18%; left: 18%; transform: rotate(24deg); }.science-biology i:nth-child(2) { top: 43%; left: 43%; transform: rotate(-14deg); }.science-biology i:nth-child(3) { right: 12%; bottom: 12%; transform: rotate(48deg); }
+
+.role-runway { border-block: 1px solid var(--glass-border); }
+.role-runway article { display: grid; grid-template-columns: 4rem minmax(13rem, 0.75fr) minmax(0, 1.25fr); gap: 1.5rem; align-items: baseline; padding: 1.8rem 0; border-bottom: 1px solid var(--glass-border); }
+.role-runway article:last-child { border-bottom: 0; }
+.role-runway span { color: var(--brand); font: 700 1.2rem/1 var(--font-display); }
+.role-runway h3 { margin: 0; font: 680 1.3rem/1.3 var(--font-display); }
+.role-runway p { margin: 0; color: var(--ink-muted); }
+.boundary-section { display: grid; grid-template-columns: minmax(0, 1fr) minmax(18rem, 0.7fr); gap: 3rem; border-radius: var(--radius-feature); }
+.boundary-section p:last-child { align-self: end; color: var(--ink-muted); }
+
+.portal-entrance { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 3rem; align-items: end; padding-block: 7rem; border-top: 1px solid var(--glass-border); }
+.portal-entrance p:not(.portal-overline) { color: var(--ink-muted); }
+.entrance-horizon { position: absolute; right: -20vw; bottom: 2.5rem; left: -20vw; height: 1px; background: linear-gradient(90deg, transparent, var(--brand), transparent); box-shadow: 0 0 2rem var(--brand); }
+.portal-footer { display: flex; justify-content: space-between; gap: 1rem; padding-block: 1.5rem 2.5rem; color: var(--ink-muted); font-size: 0.72rem; letter-spacing: 0.05em; }
+
+.portal-primary-action, .portal-nav-login, .science-composition { transition: transform var(--duration-ui) var(--ease-aqua), border-color var(--duration-ui) var(--ease-aqua), box-shadow var(--duration-ui) var(--ease-aqua); }
+@media (hover: hover) and (pointer: fine) {
+  .portal-primary-action:hover, .portal-nav-login:hover { transform: translateY(-2px); }
+  .science-composition:hover { border-color: color-mix(in oklch, var(--subject-accent), transparent 25%); box-shadow: var(--shadow-float); transform: translateY(-2px); }
+}
+.portal-page a:focus-visible, .portal-page button:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 4px; }
+
+@media (max-width: 60rem) {
+  .portal-hero { grid-template-columns: 1fr; min-height: auto; }
+  .optical-instrument { width: min(30rem, 82vw); justify-self: center; }
+  .portal-story { grid-template-columns: 1fr; }
+  .portal-story-heading { position: static; }
+  .portal-section-heading { grid-template-columns: 1fr; gap: 1rem; }
+  .portal-section-heading .portal-overline { grid-column: auto; margin-bottom: 0; }
+}
+
+@media (max-width: 44rem) {
+  .portal-nav-status > span { display: none; }
+  .portal-hero { padding-block: 3.5rem 5rem; }
+  .portal-hero h1 { font-size: clamp(2.35rem, 12vw, 3.5rem); }
+  .science-composition, .science-composition:nth-child(even) { grid-template-columns: 1fr; }
+  .science-composition:nth-child(even) .science-visual { order: 0; }
+  .science-visual { min-height: 11rem; }
+  .role-runway article { grid-template-columns: 2.5rem 1fr; }
+  .role-runway p { grid-column: 2; }
+  .boundary-section, .portal-entrance { grid-template-columns: 1fr; }
+  .portal-entrance .portal-primary-action { justify-self: start; }
+  .portal-footer { flex-direction: column; }
+}
+
+@media (max-width: 26rem) {
+  .portal-nav, .portal-hero, .portal-section, .portal-entrance, .portal-footer { width: min(100% - 1.25rem, 76rem); }
+  .portal-wordmark small { display: none; }
+  .portal-nav-login { padding-inline: 0.85rem; }
+  .portal-actions { align-items: stretch; flex-direction: column; }
+  .portal-primary-action, .portal-secondary-action { width: 100%; }
+}
+
+@supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+  .portal-nav-login, .optical-instrument { background: oklch(96% 0.03 212 / 0.98); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .portal-page *, .portal-page *::before, .portal-page *::after { scroll-behavior: auto !important; animation: none !important; transition-duration: 1ms !important; }
+}

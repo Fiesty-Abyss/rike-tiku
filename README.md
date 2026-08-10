@@ -10,7 +10,7 @@
 
 ## 工程范围
 
-> PR #27 最新机器门禁：后端 125 个测试 0 失败、0 错误、1 个符号链接 assumption skipped，`mvn clean package` PASS；前端 36 个测试文件、135/135、type-check、build PASS，audit 0；Demo `reset → seed → validate → smoke` PASS，Golden30 导入闭环 PASS。最终 Demo360 为物理/化学/生物各 120 道，55 个叶子知识点；production-like preview 下 PUBLIC、ADMIN、TEACHER、STUDENT、多角色及三科真实练习机器浏览器主链通过，控制台 0 error / 0 warning。上述不是用户人工验收结果。
+> PR #27 最新机器门禁（2026-08-10）：后端 130 个测试，0 failure、0 error、1 个 Windows 符号链接 assumption skipped，`mvn clean package` PASS；前端 44 个测试文件、150/150 PASS，type-check、build PASS，audit 0。Demo `acceptance-prepare → smoke` PASS：普通练习 Demo360 为物理/化学/生物各 120 道、55 个叶子知识点，另有 `SUBJECTIVE + TOPIC_LEARNING` 的 Topic18，总题量 378。production-like preview 下 PUBLIC、ADMIN、TEACHER、STUDENT、多角色、三种指定练习组合、逐题结果和错题即时更新机器主链通过，控制台 0 error / 0 warning。上述不是用户人工 CAPTCHA 或视觉验收结果。
 
 - 学科：高中物理、化学、生物。
 - 题型：首版规划支持单选、多选、填空自动判分；综合大题只用于专题学习，不自动评分。
@@ -20,7 +20,7 @@
 ## 技术栈
 
 - 后端：Java 25、Maven、Spring Boot 4.1、Spring MVC、Spring Security、MyBatis-Plus、Flyway、MySQL、SpringDoc OpenAPI、JUnit 5。
-- 前端：Vue 3、TypeScript、Vite、Element Plus、Pinia、Vue Router、Axios。
+- 前端：Vue 3、TypeScript、Vite、Element Plus、Pinia、Vue Router、Axios；公共门户和少量关键入场动效使用 GSAP，完整支持 reduced motion。
 - 数据库：MySQL 8.4，业务表和字段使用 `pinyin_snake_case`。
 
 ## 目录
@@ -58,7 +58,7 @@ Flyway 是数据库结构的唯一建表和升级入口。已经执行的迁移�
 - 管理员 MVP30 题库导入：单文件 Excel 预检查、逐行错误、知识点精确匹配、来源文件追溯、附件对象精确映射与全批次确认入库；成功题目和 STANDARD 解析统一为 `PENDING`。已通过普通 merge 合并至 `main`（PR #12，合并提交 `f499f0c2e1e3b4637d22480868e94dbdacdcbaa0`）。纯 V1–V6 测试库预检查结果为物理 0/10、化学 1/10、生物 1/10；仅在测试事务预置 Excel 所需知识点后，附件专项结果为 2/10、1/10、6/10。随机临时库的真实 HTTP multipart 与浏览器回查结论为 `PASS_WITH_ENV_LIMITATION`；匿名临时题已清理，MVP30 原始 Excel 尚未确认入库。
 - 学生自主练习、自动判分与错题闭环已通过普通 merge 进入 `main`（PR #13，合并提交 `db04fbc9caeeb5e4eb003a45581e62e76dbab420`）：创建时冻结可安全校验的题集，提交整场答案后完成单选/多选/填空自动判分、结果与错题聚合；未提交前不返回标准答案或解析。当前分支补充了安全 PNG/JPEG 附件存储、权限访问和图片显示；正文保留 `〔图片对象 I001〕` / `〔公式对象 F107〕`，数据库附件表只保存 `I001` / `F107` 这样的对象 ID；PDF、公式和 ANSWER 附件仍不进入普通自动判分题池。
 
-已完成前端认证基础：三角色登录入口、Pinia认证状态、Bearer Token注入、会话恢复、首次改密、路由守卫、管理员业务页及学生三科学习工作台。PR #21 已将基于真实答题事实的知识点掌握度、规则推荐和教师班级学情查看普通 merge 进入 `main`；它是确定性规则统计，不属于 AI。尚未完成：AI Provider、AI 答疑、教师任务与考试。当前验收题库为确定性 Demo360：物理、化学、生物各 120 道；MVP30 是结构化导入能力验证素材，不等于最终演示内容。
+已完成前端认证基础：三角色登录入口、Pinia认证状态、Bearer Token注入、会话恢复、首次改密、路由守卫、管理员业务页及学生三科学习工作台。PR #21 已将基于真实答题事实的知识点掌握度、规则推荐和教师班级学情查看普通 merge 进入 `main`；它是确定性规则统计，不属于 AI。当前 PR #27 还补齐了真实管理员 Dashboard、教师密码重置、练习可用题数、中文题型规则、逐题结果、知识点与规则型类似练习、错题实时学科筛选和 Topic18 专题学习，并完成 `RIKE Aqua Liminal Future` 视觉基础。尚未完成：AI Provider、AI 答疑、教师任务与考试。当前验收题库为确定性 Demo360（物理、化学、生物各 120 道）+ Topic18；MVP30 是结构化导入能力验证素材，不等于最终演示内容。
 
 准确状态请以 [开发状态](docs/DEVELOPMENT_STATUS.md) 和 [AI交接](docs/AI_HANDOFF.md) 为准。
 

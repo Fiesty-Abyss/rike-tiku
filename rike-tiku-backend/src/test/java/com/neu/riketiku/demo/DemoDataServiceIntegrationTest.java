@@ -71,6 +71,7 @@ class DemoDataServiceIntegrationTest extends AdminQuestionIntegrationTestSupport
                 SELECT a.jie_xi_nei_rong FROM ti_mu_jie_xi a JOIN ti_mu q ON q.id=a.ti_mu_id
                 WHERE q.ti_gan LIKE '【演示】%' AND a.jie_xi_lei_xing='STANDARD'
                 """, String.class)).allSatisfy(analysis -> assertThat(analysis)
+                        .hasSizeGreaterThanOrEqualTo(18)
                         .doesNotContain("演示时可用其他选项构造错题", "正确答案为由"));
     }
 
@@ -150,6 +151,14 @@ class DemoDataServiceIntegrationTest extends AdminQuestionIntegrationTestSupport
                     WHERE q.ti_gan LIKE '【演示】%' AND s.ke_mu_dai_ma=?
                     GROUP BY q.nan_du ORDER BY q.nan_du
                     """, Integer.class, subject)).containsExactly(36, 48, 36);
+            assertThat(jdbc.queryForList("""
+                    SELECT COUNT(*) FROM ti_mu q JOIN ke_mu s ON s.id=q.ke_mu_id
+                    WHERE q.ti_gan LIKE '【演示】%' AND s.ke_mu_dai_ma=?
+                      AND q.zhuang_tai='PUBLISHED' AND q.shi_yong_mo_shi='ONLINE_PRACTICE'
+                      AND q.shi_fou_ke_zi_dong_pan_fen=1 AND q.yi_shan_chu=0
+                    GROUP BY q.ti_mu_lei_xing,q.nan_du
+                    ORDER BY q.ti_mu_lei_xing,q.nan_du
+                    """, Integer.class, subject)).hasSize(9).allMatch(count -> count >= 5);
         }
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM ti_mu WHERE ti_gan LIKE '【演示】覆盖：%'", Integer.class)).isEqualTo(240);
         assertThat(jdbc.queryForObject("""
@@ -309,6 +318,7 @@ class DemoDataServiceIntegrationTest extends AdminQuestionIntegrationTestSupport
 
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM yong_hu WHERE yong_hu_ming LIKE 'demo_%'", Integer.class)).isZero();
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM ti_mu WHERE ti_gan LIKE '【演示】%'", Integer.class)).isZero();
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM ti_mu WHERE ti_gan LIKE '【专题演示】%'", Integer.class)).isZero();
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM ti_mu", Integer.class)).isEqualTo(baselineQuestions);
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM ke_mu", Integer.class)).isEqualTo(3);
         assertThat(jdbc.queryForObject("SELECT MAX(CAST(version AS UNSIGNED)) FROM flyway_schema_history WHERE success=1", Integer.class)).isEqualTo(11);
