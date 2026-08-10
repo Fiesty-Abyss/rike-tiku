@@ -2,7 +2,7 @@
 
 > 2026-08-09 V3.0 非 AI 正式完工审计已由 PR #24 普通 merge（merge commit `bcfb2181af2197d2524a2df8ca64895e435a4857`）进入 `main`。结论为 REJECT，当前不能认证 100% DONE_VERIFIED。正式证据见 [V3_NON_AI_COMPLETION_AUDIT.md](V3_NON_AI_COMPLETION_AUDIT.md)。
 
-> PR #25 已普通 merge（merge commit `0559a4e4eba041dd74a7bcb7d4c9f2cd8b29e617`）并关闭 MA-016。当前接续分支为 `feat/question-attachment-rendering`；Flyway 仍为 V1–V10、26 张业务表。
+> PR #25 已普通 merge（merge commit `0559a4e4eba041dd74a7bcb7d4c9f2cd8b29e617`）并关闭 MA-016。其后历史接续分支 `feat/question-attachment-rendering` 已通过 PR #26 合并；V1–V10、26 张业务表是当时口径。
 
 > PR #26 已普通 merge（merge commit `b992bffef07465665b371b7b707ca8814ec2d36d`）。当前接续分支为 `feat/non-ai-final-closure`，PR #27 为最后一个非 AI Draft PR。当前分支已加入 V11 管理员操作日志、MA-020 空 body 4xx、管理员题目图片上传、来源权利补充 API、Golden30 正常导入闭环、菜单整理和多角色切换；Flyway 为 V1–V11、27 张业务表；V1–V10 未修改。
 
@@ -14,7 +14,7 @@
 - 根路径 `/` 已改为无需认证的公共门户，展示系统与学科介绍、当前非 AI 能力、学习闭环及统一 `/login` 入口；首屏明确运行时 AI 智能答疑尚未上线。现有登录、角色选择、首次改密和受保护路由守卫未改动。MA-016 已关闭。
 - V3.0 未指定名为 MVP30 的 Excel 必须整体正式入库；它要求 30 题 MVP 验证导入、审核、发布、查询和附件显示闭环，并强调少量高质量题目。MVP30 因此保留为结构化导入能力验证素材，原始文件不修改。
 - 三角色共用 `/profile`，本人身份从 JWT 推导；页面展示真实账号角色及学生/教师档案，只允许维护 500 字简介和本人头像，并复用现有主动修改密码流程。
-- 登录页当前使用两分钟有效、内存保存、一次性消费的 4 位随机图形验证码；验证码默认隐藏，首次登录操作只展开，第二次才认证。PR #15 滑块仅为历史实现。
+- 登录页当前使用两分钟有效、内存保存、一次性消费的 4 位随机图形验证码；登录页首次渲染即加载验证码，用户名、密码、验证码一次填写并一次提交，失败后自动刷新 challenge。PR #15 滑块和 PR #19 的二阶段交互仅为历史实现。
 - 管理员单学生管理已实现分页筛选、详情与班级历史、事务新增、编辑与启停、事务调班和一次性密码重置；Excel 批量导入入口继续独立保留。
 - 学生自主练习、自动判分、结果、错题闭环、实时知识点掌握度、固定规则推荐和教师班级学情查看均已进入 `main`。掌握度与推荐是确定性规则统计，不属于 AI；AI、教师任务、组卷考试和主观题评分仍未实现。
 - MA-017 当前已完成机器实现：图片附件仅接受受控路径下真实 PNG/JPEG，3MB 内、扩展名/MIME 一致并按 SHA-256 回读；管理员题目详情和学生练习题面、结果、错题通过带 JWT 的 Blob 请求显示，创建中会话拒绝 STANDARD_ANALYSIS，缺失/损坏/403/404 显示占位。正文继续使用完整 marker（如 `〔图片对象 I001〕`），`ti_mu_fu_jian.dui_xiang_biao_shi` 统一只保存对象 ID（如 `I001`/`F107`），前后端解析正文后按对象 ID 匹配。当前状态为 `IMPLEMENTED_AWAITING_FINAL_MANUAL_ACCEPTANCE`。
@@ -23,8 +23,10 @@
 - MA-020 已机器修复：练习提交空 body 和不可解析 body 均由全局异常处理返回 `400 INVALID_REQUEST`，正常提交/判分回归不变。
 - MA-019 已加入独立 `Golden30ImportIntegrationTest`：复用现有三科清洗候选素材，在独立测试数据库真实走 preview → confirm → 来源权利补充 → 审核发布 → 查询 → 题池 → 学生提交/标准解析；物理 10、化学 10、生物 10，29 道固定答案题进入自动练习，1 道主观题保留为专题学习题。原始 MVP30 文件未修改，正式库未写入。
 - 管理员题目页已支持草稿题干/标准解析 PNG/JPEG 上传、预览、替换和删除，复用 PR #26 受控存储；正式菜单已将“批量导入题目”并入题库入口、将学生 Excel 导入并入学生管理，并为多角色账号增加“切换身份”。
-- PR #27 当前机器专项：MA-020、管理员图片上传、Golden30、导入回归和日志权限专项均通过；最终全量已复跑：前端 35 个文件、133/133、type-check、build、audit 0。MA-017 仍为 `IMPLEMENTED_AWAITING_FINAL_MANUAL_ACCEPTANCE`。
-- PR #27 最终机器门禁补充：后端 `mvn clean test` 为 123 个测试 0 失败、1 个 symbolic-link assumption skipped，`mvn clean package` PASS；前端为 35 个文件、133/133 PASS，type-check、build PASS，audit 0；Demo `reset → seed → validate → smoke` PASS，Golden30 独立导入测试 PASS。PR #26 合并前的 112/127、PR #27 修正前的 117/129 和 121/133 是历史口径，不覆盖本轮最终复跑结果。另补齐题干附件变更后的内容 hash、附件文件/数据库事务回滚清理、管理员草稿图片上传时的未保存文本保护、班级写入与 SUCCESS 审计的事务一致性，以及草稿更新对 STANDARD 解析和 OPTION 附件外键的稳定保持：STANDARD 原位更新，OPTION 同 label 原位更新，活动 OPTION 附件的删除明确返回 409。MA-017 仍为 `IMPLEMENTED_AWAITING_FINAL_MANUAL_ACCEPTANCE`。
+- PR #27 当前机器专项：MA-020、管理员图片上传、Golden30、导入回归和日志权限专项均通过；最新前端全量为 36 个文件、135/135，type-check、build、audit 0。MA-017 仍为 `IMPLEMENTED_AWAITING_FINAL_MANUAL_ACCEPTANCE`。
+- PR #27 最新最终机器门禁：后端 `mvn clean test` 为 125 个测试，0 失败、0 错误、1 个 symbolic-link assumption skipped，`mvn clean package` PASS；前端 36 个文件、135/135 PASS，type-check、build PASS，audit 0；Demo `reset → seed → validate → smoke` PASS，Golden30 独立导入测试 PASS。Demo360 固定为物理/化学/生物各 120 道，叶子知识点 18/16/21；每科题型分布 44/38/38、难度分布 36/48/36。PR #26 合并前的 112/127、PR #27 早期的 123/133 是历史口径，不覆盖本轮最终复跑结果。题干附件内容 hash、文件/数据库事务回滚、草稿文本保护、SUCCESS 审计事务和附件外键稳定性修正继续保持。
+- PR #27 已完成 AI 前最后一次 UI/UX Foundation：公共门户、登录/角色选择、三角色工作台、题库与组织管理、练习/结果/错题、私信和个人中心共享统一的品牌、排版、间距、焦点、反馈、响应式与 reduced-motion 基线；登录页提供明确返回首页路径。机器浏览器在 production-like preview 下完成 PUBLIC、ADMIN、TEACHER、STUDENT、ADMIN+TEACHER 和三科真实练习主链，控制台 0 error / 0 warning。该结果不等于用户人工 CAPTCHA/视觉验收。
+- 最终人工环境使用 `acceptance-backend` + `acceptance-frontend`：后端连接 `rike_tiku_demo:18081` 且 challenge JSON 不含 `testCode`；前端先 build 再以 strict-port Vite preview 运行于 18080。先前动态模块失败的真实根因是旧浏览器页面仍引用已停止的 Vite dev server（`ERR_CONNECTION_REFUSED`），不是 lazy import 源码错误。
 - Flyway：V1–V11，共 27 张业务表；V11 只新增管理员操作日志表，V1–V10 未修改。
 - 教师工作台已支持按本人 ACTIVE 三元任课关系读取班级、科目、学生名单和高频考点，并支持新增、编辑、启停及排序；学生端按本人有效主班级和学科只读取对应 ACTIVE 高频考点。
 - PR #20 已实现受 ACTIVE 三元任课关系和学生当前主班级约束的师生纯文本私信；发送身份取自 JWT，支持会话、未读、已读、7 秒轮询和失效关系历史保留，不含 WebSocket、附件、群聊或管理员审计。
@@ -65,7 +67,7 @@
 - PR #19 浏览器验收保持 PASS（仅 `rike_tiku_demo`）：验证码默认隐藏、错误后中文提示并自动换图、图片/文字刷新、三个单角色直达、多角色选择、退出重登均通过；控制台 0 error。
 - PR #18 合并后后端：`mvn clean test` 87/87 PASS；`mvn clean package` 87/87 PASS，并成功生成可执行 JAR。
 - PR #18 合并后前端：`npm test` 83/83 PASS；`npm run type-check` PASS；`npm run build` PASS（保留既有大 chunk 提示）；`npm audit --omit=dev` 为 0 vulnerabilities。
-- `rike_tiku_demo` 当前 seed 目标：V1–V10、26 张业务表，固定状态为 14 账号、3 班级、4 教师、9 学生、9 条 ACTIVE 任课关系、保留的 Demo90 基线、30 道筛选变式（最终 120 题）和 12 条 ACTIVE 高频考点；固定 seed 不预置私信、简介或头像。
+- `rike_tiku_demo` 当前 seed 目标：V1–V11、27 张业务表，固定状态为 14 账号、3 班级、4 教师、9 学生、9 条 ACTIVE 任课关系、12 条 ACTIVE 高频考点、55 个叶子知识点和 Demo360（物理/化学/生物各 120 道）；固定 seed 不预置练习、错题、私信、操作日志、简介或头像。
 - PR #19 历史阶段 Demo `reset → seed → validate → smoke` PASS；当时正式 `rike_tiku` 的 Demo90、场景账号、场景班级、高频考点均为 0。当前正式库基线已为 Flyway V9。
 - PR #18 真实浏览器 PASS（仅 `rike_tiku_demo`）：物理教师进入 199/200 工作台，查看 5/3 名学生，新增、编辑、停用、启用高频考点；生物教师仅见 199/200 生物，化学教师仅见 199/200 化学；199/200 学生分别只读取本班物理 ACTIVE 考点；控制台 error 日志为空。临时验收考点已由 reset/seed 清理。
 - 合并前门禁使用全新随机临时库完整迁移 V1–V9；临时库与正式 `rike_tiku` 的 V9 script 均为 `V9__create_teacher_student_message_tables.sql`、checksum 均为 `1192958817`、success 均为 1。MA-013 导致正式库提前执行的 V9 现已与 main 正式基线一致，两张结构表不再描述为业务数据污染；测试隔离修复保持有效，MA-013 已关闭。
@@ -78,7 +80,7 @@
 - 显式 PowerShell 工具创建、重置、播种、校验和清理独立 `rike_tiku_demo`，正常应用启动不会自动写入演示数据。
 - 保留原三角色 smoke 账号和 `DEMO_CLASS_01`，并新增 199/200 两班、三位场景教师和八名固定场景学生；共 14 账号、3 班级、4 教师、9 学生、9 条 ACTIVE 三元任课关系。
 - PR #16 已将题库扩充为 Demo90：90 道项目原创自编、无附件、可自动判分的 `PUBLISHED` 演示题；每科 30 道，每科三题型、三档难度、三个演示知识点各 10 道，来源权利状态为 `USER_PROVIDED`，审核轨迹完整。可见化学符号和科学计数法使用稳定 Unicode，STANDARD 解析不包含演示操作说明。
-- PR #23 保留上述 Demo90 不重写，并从物理、化学、生物各 18 个原创候选中接受 10、9、11 道变式；最终当前题量为物理 40、化学 39、生物 41，共 120 道。候选审核与最终分布见 `FINAL_DEMO_QUESTION_BANK.md`、`DEMO_VARIANT_QUESTION_REVIEW.md`。
+- PR #23 当时保留 Demo90，并从物理、化学、生物各 18 个原创候选中接受 10、9、11 道变式，形成历史 Demo120。当前 PR #27 的最终验收库已扩充为 Demo360；PR #23 候选审核历史仍见 `FINAL_DEMO_QUESTION_BANK.md`、`DEMO_VARIANT_QUESTION_REVIEW.md`。
 - 本轮不修改 V1–V7，不写正式 `rike_tiku`，不修改 MVP30 原始 Excel。
 - 历史 PR #14 合并后回归：后端 74/74、`mvn clean package` PASS；前端 68/68、类型检查和构建 PASS；`npm audit` 为 0 vulnerabilities。
 - 真实脚本链 `reset → seed → validate → clean → reset → seed` PASS，末次 seed 后演示库保持待人工验收状态；正式库演示账号、演示题和 V7 五张学习表均为 0。
@@ -110,7 +112,7 @@ MA-017 已完成机器实现，当前状态为 `IMPLEMENTED_AWAITING_FINAL_MANUA
 
 附件对象标识规范：正文保留 `〔图片对象 I001〕`、`〔公式对象 F107〕`；Excel 导入和历史数据写入 `dui_xiang_biao_shi` 的是 `I001`、`F107`，不是带括号的完整正文 marker。管理员详情、学生题池校验和 `QuestionContent` 均先从正文提取对象 ID，再按位置和对象 ID 匹配。`QuestionAttachmentStorage` 还会拒绝 storage 根目录、父目录、中间目录或最终文件路径上的符号链接；当前 Windows 无创建符号链接权限，因此对应 JUnit 用例按 assumption 明确跳过，未伪造 PASS。
 
-用户最终集成人工验收通过后，统一更新附件、权限和视觉证据并关闭 MA-017；在此之前不得把 MA-017 写成 `DONE_VERIFIED`。PR #26 的人工验收延期不阻止其在机器证据有效且文档准确后普通 merge。MA-018、MA-019、MA-020 和 AI 按项目顺序推进。
+用户最终集成人工验收通过后，在同一 PR #27 补充附件、权限、验证码和视觉证据，再统一更新非 AI 状态；在此之前不得把 MA-017 或整体非 AI 写成 `DONE_VERIFIED`。PR #27 保持 Draft，不创建 PR #28，不开始 AI。
 
 ## 非 AI 工程基础完成门槛
 

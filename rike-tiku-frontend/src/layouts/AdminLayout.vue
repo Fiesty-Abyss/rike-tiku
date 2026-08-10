@@ -26,7 +26,7 @@ async function logout() {
         <span class="admin-brand-mark">RL</span>
         <span>理科学习辅助系统<small>ADMIN CONSOLE</small></span>
       </router-link>
-      <el-menu class="admin-menu" router :default-active="$route.path">
+      <el-menu class="admin-menu" router :default-active="$route.path" aria-label="管理员工作区导航">
         <el-menu-item index="/admin"><span>工作台</span></el-menu-item>
         <el-menu-item index="/admin/classes"><span>班级管理</span></el-menu-item>
         <el-menu-item index="/admin/teachers"><span>教师与任课关系</span></el-menu-item>
@@ -37,7 +37,7 @@ async function logout() {
     </el-aside>
     <el-container>
       <el-header class="admin-topbar">
-        <div><strong>教学组织管理</strong><span>管理员专用</span></div>
+        <div class="admin-context"><strong>教学组织管理</strong><span>管理员工作台</span></div>
         <el-dropdown trigger="click">
           <el-button text class="user-menu-button"><el-avatar :size="28" :src="authStore.profileAvatar || undefined">{{ userName.slice(0, 1) }}</el-avatar><span>{{ userName }} · 管理员</span></el-button>
           <template #dropdown><el-dropdown-menu><el-dropdown-item v-if="canSwitchRole" @click="router.push('/select-role')">切换身份</el-dropdown-item><el-dropdown-item @click="router.push('/profile')">个人中心</el-dropdown-item><el-dropdown-item @click="passwordVisible=true">修改密码</el-dropdown-item><el-dropdown-item divided @click="logout">退出登录</el-dropdown-item></el-dropdown-menu></template>

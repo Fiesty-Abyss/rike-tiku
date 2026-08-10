@@ -1,0 +1,71 @@
+/* Hallmark · genre: modern-minimal · macrostructure: Workbench · theme: incumbent-cool-cobalt · enrichment: none · nav: role-workbench */
+:root {
+  --color-paper: oklch(97.5% 0.008 248);
+  --color-paper-strong: oklch(95% 0.018 247);
+  --color-surface: oklch(99% 0.005 248);
+  --color-surface-subtle: oklch(96.5% 0.014 248);
+  --color-ink: oklch(24% 0.035 249);
+  --color-ink-soft: oklch(39% 0.034 249);
+  --color-muted: oklch(52% 0.026 249);
+  --color-rule: oklch(86% 0.022 248);
+  --color-rule-strong: oklch(74% 0.046 248);
+  --color-accent: oklch(48% 0.145 251);
+  --color-accent-hover: oklch(40% 0.125 251);
+  --color-accent-soft: oklch(93% 0.028 250);
+  --color-accent-ink: oklch(98% 0.008 248);
+  --color-focus: oklch(58% 0.19 251);
+  --color-success: oklch(49% 0.115 158);
+  --color-success-soft: oklch(95% 0.025 158);
+  --color-warning: oklch(55% 0.12 72);
+  --color-warning-soft: oklch(96% 0.03 82);
+  --color-danger: oklch(52% 0.16 25);
+  --color-danger-soft: oklch(96% 0.025 25);
+  --color-graphite: oklch(25% 0.035 249);
+  --color-graphite-soft: oklch(32% 0.04 249);
+  --color-graphite-muted: oklch(76% 0.03 248);
+  --color-physics: oklch(48% 0.145 251);
+  --color-chemistry: oklch(48% 0.095 190);
+  --color-biology: oklch(49% 0.105 148);
+
+  --font-display: "Microsoft YaHei UI", "Segoe UI Variable Display", sans-serif;
+  --font-body: "PingFang SC", "Microsoft YaHei", sans-serif;
+  --font-brand: "Segoe UI Variable Display", "Microsoft YaHei UI", sans-serif;
+
+  --space-3xs: 0.125rem;
+  --space-2xs: 0.25rem;
+  --space-xs: 0.5rem;
+  --space-sm: 0.75rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2.5rem;
+  --space-2xl: 4rem;
+  --space-3xl: 6rem;
+
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-md: 1.25rem;
+  --text-lg: 1.5625rem;
+  --text-xl: 1.953rem;
+  --text-2xl: 2.441rem;
+
+  --radius-control: 0.5rem;
+  --radius-panel: 0.875rem;
+  --radius-large: 1rem;
+  --shadow-raised: 0 0.75rem 2rem oklch(24% 0.035 249 / 0.07);
+
+  --dur-micro: 120ms;
+  --dur-short: 220ms;
+  --dur-long: 420ms;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in: cubic-bezier(0.7, 0, 0.84, 0);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+
+  --z-base: 1;
+  --z-raised: 10;
+  --z-dropdown: 100;
+  --z-sticky: 200;
+  --z-modal: 400;
+  --z-toast: 500;
+  --z-tooltip: 600;
+}

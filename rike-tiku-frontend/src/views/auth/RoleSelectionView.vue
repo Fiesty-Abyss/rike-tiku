@@ -15,8 +15,12 @@ async function select(role: typeof roles.value[number]) {
 </script>
 
 <template>
-  <main class="single-panel-page">
+  <main class="single-panel-page role-selection-page">
     <section class="role-select">
+      <RouterLink class="role-select-brand" to="/">
+        <span aria-hidden="true">理科</span>
+        <strong>RIKE 学习辅助系统</strong>
+      </RouterLink>
       <h1>选择本次进入的身份</h1>
       <p>一个账号可以拥有多个角色。仅可选择账号实际拥有的角色，后端权限仍以数据库为准。</p>
       <div class="role-choices">

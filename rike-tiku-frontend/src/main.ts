@@ -9,6 +9,7 @@ import App from './App.vue'
 import router from './router'
 import { setAuthenticationErrorHandler } from './api/http'
 import { useAuthStore } from './stores/auth'
+import '../tokens.css'
 import './style.css'
 
 const app = createApp(App)

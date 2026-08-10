@@ -24,7 +24,6 @@ const ElForm = defineComponent({
   setup(_, { expose }) {
     expose({
       validate: () => Promise.resolve(true),
-      validateField: () => Promise.resolve(true),
     })
   },
   template: '<form><slot /></form>',
@@ -64,21 +63,16 @@ async function submitForm(wrapper: ReturnType<typeof mountForm>) {
 describe('登录表单验证码交互', () => {
   beforeEach(() => refreshCaptcha.mockReset())
 
-  it('初始不显示验证码，第一次提交只展开验证码', async () => {
+  it('首次渲染即显示验证码并由子组件自动取得 challenge', async () => {
     const wrapper = mountForm()
-    await enterCredentials(wrapper)
-    expect(wrapper.find('[data-test="captcha"]').exists()).toBe(false)
-
-    await submitForm(wrapper)
+    await flushPromises()
 
     expect(wrapper.find('[data-test="captcha"]').exists()).toBe(true)
-    expect(wrapper.emitted('submit')).toBeUndefined()
   })
 
-  it('第二次提交携带 challengeId 和 captchaCode', async () => {
+  it('填写三项后一次提交即携带 challengeId 和 captchaCode', async () => {
     const wrapper = mountForm()
     await enterCredentials(wrapper)
-    await submitForm(wrapper)
     await wrapper.get('[data-test="captcha"]').setValue('aB7k')
     await submitForm(wrapper)
 
@@ -93,11 +87,21 @@ describe('登录表单验证码交互', () => {
   it('登录失败后的刷新入口会刷新验证码而不清空账号', async () => {
     const wrapper = mountForm()
     await enterCredentials(wrapper)
-    await submitForm(wrapper)
+    await wrapper.get('[data-test="captcha"]').setValue('aB7k')
 
     wrapper.vm.refreshCaptcha()
 
     expect(refreshCaptcha).toHaveBeenCalledOnce()
     expect(wrapper.get('input[placeholder="请输入用户名"]').element.value).toBe('demo_student')
+    expect(wrapper.get('input[placeholder="请输入密码"]').element.value).toBe('a1234567')
+  })
+
+  it('表单 Enter 提交与登录按钮使用同一流程', async () => {
+    const wrapper = mountForm()
+    await enterCredentials(wrapper)
+    await wrapper.get('[data-test="captcha"]').setValue('Enter9')
+    await submitForm(wrapper)
+
+    expect(wrapper.emitted('submit')).toHaveLength(1)
   })
 })

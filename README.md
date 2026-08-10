@@ -4,13 +4,13 @@
 
 > 当前仓库处于分阶段开发中，不代表完整系统已经完成或投入真实学校使用。
 
-> 2026-08-09 V3.0 非 AI 正式完工审计结论为 **REJECT**。PR #25 已合并并关闭公共门户 MA-016；MA-017 附件真实显示的机器部分已完成，状态为 `IMPLEMENTED_AWAITING_FINAL_MANUAL_ACCEPTANCE`。用户 CAPTCHA 与浏览器视觉验收延期至非 AI 最终集成验收；管理员高风险操作日志和 30 道合法样例完整导入发布显示闭环仍是 A 层硬缺口，因此当前仍不得标记为 100% DONE_VERIFIED，也不得开始 AI。详见 [V3.0 非 AI 完工审计](docs/V3_NON_AI_COMPLETION_AUDIT.md)。
+> 2026-08-09 V3.0 非 AI 正式完工审计的 **REJECT** 结论作为历史快照保留。PR #27 已完成该快照中 MA-018、MA-019、MA-020 的机器侧修正，并将 MA-017 保持为 `IMPLEMENTED_AWAITING_FINAL_MANUAL_ACCEPTANCE`。当前仍不得标记为 100% `DONE_VERIFIED`，也不得开始 AI；需等待用户完成最后一次真实 CAPTCHA 与浏览器视觉验收。详见 [V3.0 非 AI 完工审计](docs/V3_NON_AI_COMPLETION_AUDIT.md)。
 
 > 当前接续分支为 `feat/non-ai-final-closure`。PR #26 已以 merge commit `b992bffef07465665b371b7b707ca8814ec2d36d` 普通合并；人工 CAPTCHA/浏览器验收仍统一延期至非 AI 最终集成验收，未执行的人工结果不写为 PASS。PR #27 是最后一个非 AI Draft PR，当前机器实现已覆盖 MA-018、MA-020、Golden30 正常导入闭环、管理员题目图片上传、菜单整理和多角色切换；本分支新增 Flyway V11，业务表为 27 张，仍不得开始 AI。
 
 ## 工程范围
 
-> PR #27 最终机器门禁已通过：后端 123 个测试 0 失败、1 个符号链接 assumption skipped，package PASS；前端 35 个测试文件、133/133、type-check、build PASS，audit 0；Demo reset/seed/validate/smoke PASS，Golden30 导入闭环 PASS，120 道业务题分布为物理 40、化学 39、生物 41。草稿编辑会原位保留已被附件引用的 STANDARD 解析与同 label OPTION 行，不能删除活动 OPTION 附件时返回 409。人工 CAPTCHA/浏览器视觉验收仍统一延期，未执行结果不写为人工 PASS。
+> PR #27 最新机器门禁：后端 125 个测试 0 失败、0 错误、1 个符号链接 assumption skipped，`mvn clean package` PASS；前端 36 个测试文件、135/135、type-check、build PASS，audit 0；Demo `reset → seed → validate → smoke` PASS，Golden30 导入闭环 PASS。最终 Demo360 为物理/化学/生物各 120 道，55 个叶子知识点；production-like preview 下 PUBLIC、ADMIN、TEACHER、STUDENT、多角色及三科真实练习机器浏览器主链通过，控制台 0 error / 0 warning。上述不是用户人工验收结果。
 
 - 学科：高中物理、化学、生物。
 - 题型：首版规划支持单选、多选、填空自动判分；综合大题只用于专题学习，不自动评分。
@@ -58,7 +58,7 @@ Flyway 是数据库结构的唯一建表和升级入口。已经执行的迁移�
 - 管理员 MVP30 题库导入：单文件 Excel 预检查、逐行错误、知识点精确匹配、来源文件追溯、附件对象精确映射与全批次确认入库；成功题目和 STANDARD 解析统一为 `PENDING`。已通过普通 merge 合并至 `main`（PR #12，合并提交 `f499f0c2e1e3b4637d22480868e94dbdacdcbaa0`）。纯 V1–V6 测试库预检查结果为物理 0/10、化学 1/10、生物 1/10；仅在测试事务预置 Excel 所需知识点后，附件专项结果为 2/10、1/10、6/10。随机临时库的真实 HTTP multipart 与浏览器回查结论为 `PASS_WITH_ENV_LIMITATION`；匿名临时题已清理，MVP30 原始 Excel 尚未确认入库。
 - 学生自主练习、自动判分与错题闭环已通过普通 merge 进入 `main`（PR #13，合并提交 `db04fbc9caeeb5e4eb003a45581e62e76dbab420`）：创建时冻结可安全校验的题集，提交整场答案后完成单选/多选/填空自动判分、结果与错题聚合；未提交前不返回标准答案或解析。当前分支补充了安全 PNG/JPEG 附件存储、权限访问和图片显示；正文保留 `〔图片对象 I001〕` / `〔公式对象 F107〕`，数据库附件表只保存 `I001` / `F107` 这样的对象 ID；PDF、公式和 ANSWER 附件仍不进入普通自动判分题池。
 
-已完成前端认证基础：三角色登录入口、Pinia认证状态、Bearer Token注入、会话恢复、首次改密、路由守卫、管理员业务页及学生三科学习工作台。PR #21 已将基于真实答题事实的知识点掌握度、规则推荐和教师班级学情查看普通 merge 进入 `main`；它是确定性规则统计，不属于 AI。尚未完成：AI Provider、AI 答疑、教师任务与考试。当前最终演示题库为保留 Demo90 加 30 道筛选变式，共 120 道；MVP30 是结构化导入能力验证素材，不等于最终演示内容。
+已完成前端认证基础：三角色登录入口、Pinia认证状态、Bearer Token注入、会话恢复、首次改密、路由守卫、管理员业务页及学生三科学习工作台。PR #21 已将基于真实答题事实的知识点掌握度、规则推荐和教师班级学情查看普通 merge 进入 `main`；它是确定性规则统计，不属于 AI。尚未完成：AI Provider、AI 答疑、教师任务与考试。当前验收题库为确定性 Demo360：物理、化学、生物各 120 道；MVP30 是结构化导入能力验证素材，不等于最终演示内容。
 
 准确状态请以 [开发状态](docs/DEVELOPMENT_STATUS.md) 和 [AI交接](docs/AI_HANDOFF.md) 为准。
 
@@ -67,17 +67,17 @@ Flyway 是数据库结构的唯一建表和升级入口。已经执行的迁移�
 `main` 已通过 PR #14（普通 merge `4ffbcbda66f26e7390192985ce179f30d3a6b664`）提供显式执行的独立演示库工具。它默认操作 `rike_tiku_demo`，拒绝操作 `rike_tiku` 及 MySQL 系统库，不会在应用正常启动时自动写入数据。准备好 `RIKE_TIKU_DB_PASSWORD` 后，一条命令完成最终验收库的重建、播种和校验：
 
 ```powershell
-.\scripts\demo-environment.ps1 final-acceptance
+.\scripts\demo-environment.ps1 acceptance-prepare
 ```
 
 最终验收账号为 `demo_admin`、`demo_199_01`、`demo_teacher`、`demo_physics_admin`，本地演示密码均为 `a1234567`；数据库仅保存 BCrypt 摘要。分别启动前后端：
 
 ```powershell
-.\scripts\demo-environment.ps1 backend
-.\scripts\demo-environment.ps1 frontend
+.\scripts\demo-environment.ps1 acceptance-backend
+.\scripts\demo-environment.ps1 acceptance-frontend
 ```
 
-详细安全边界与操作说明见 [演示环境说明](docs/DEMO_ENVIRONMENT.md)，人工检查步骤见 [人工验收清单](docs/MANUAL_ACCEPTANCE_CHECKLIST.md)。
+`acceptance-frontend` 会先按 `VITE_API_BASE_URL=http://localhost:18081/api/v1` 构建，再以 Vite preview 在 18080 提供 production-like 验收页面；不使用开发服务器。`acceptance-backend` 固定连接 `rike_tiku_demo`，并关闭 CAPTCHA `testCode`。详细安全边界与操作说明见 [演示环境说明](docs/DEMO_ENVIRONMENT.md)，人工检查步骤见 [人工验收清单](docs/MANUAL_ACCEPTANCE_CHECKLIST.md)。
 
 使用 IDEA 直接启动时必须在运行配置增加 `RIKE_TIKU_DB_NAME=rike_tiku_demo`；否则后端默认连接正式开发库 `rike_tiku`，其中不存在演示账号。默认端口方案的前端 API 地址为 `http://localhost:8081/api/v1`。脚本的 `backend` 动作关闭 CAPTCHA `testCode`，供真实浏览器验收；机器 smoke 使用独立的 `smoke-backend` 动作。
 

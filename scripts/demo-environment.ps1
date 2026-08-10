@@ -1,6 +1,6 @@
 ﻿param(
     [Parameter(Position = 0)]
-    [ValidateSet('create', 'reset', 'seed', 'validate', 'clean', 'final-acceptance', 'backend', 'smoke-backend', 'frontend', 'smoke', 'login-check')]
+    [ValidateSet('create', 'reset', 'seed', 'validate', 'clean', 'final-acceptance', 'acceptance-prepare', 'backend', 'acceptance-backend', 'smoke-backend', 'frontend', 'acceptance-frontend', 'smoke', 'login-check')]
     [string]$Action = 'validate',
     [string]$Database = 'rike_tiku_demo'
 )
@@ -19,7 +19,7 @@ $frontendRoot = Join-Path $repoRoot 'rike-tiku-frontend'
 $dbHost = if ($env:RIKE_TIKU_DB_HOST) { $env:RIKE_TIKU_DB_HOST } else { 'localhost' }
 $dbPort = if ($env:RIKE_TIKU_DB_PORT) { $env:RIKE_TIKU_DB_PORT } else { '3306' }
 $dbUser = if ($env:RIKE_TIKU_DB_USERNAME) { $env:RIKE_TIKU_DB_USERNAME } else { 'root' }
-$databaseActions = @('create', 'reset', 'seed', 'validate', 'clean', 'final-acceptance', 'backend', 'smoke-backend', 'smoke', 'login-check')
+$databaseActions = @('create', 'reset', 'seed', 'validate', 'clean', 'final-acceptance', 'acceptance-prepare', 'backend', 'acceptance-backend', 'smoke-backend', 'smoke', 'login-check')
 if ($databaseActions -contains $Action -and -not $env:RIKE_TIKU_DB_PASSWORD) {
     throw '请先在当前PowerShell设置 RIKE_TIKU_DB_PASSWORD。脚本不会读取或提交明文数据库密码。'
 }
@@ -68,6 +68,25 @@ function Assert-FinalAcceptanceConfiguration {
         throw '最终人工验收端口配置必须为前端18080、后端18081。'
     }
     Write-Host '最终验收配置检查: PASS (rike_tiku_demo / frontend 18080 / backend 18081)' -ForegroundColor Green
+}
+
+function Start-DemoBackend([bool]$ExposeTestCode) {
+    Assert-FinalAcceptanceConfiguration
+    $env:RIKE_TIKU_DB_NAME = $Database
+    $env:RIKE_TIKU_BACKEND_PORT = '18081'
+    $env:RIKE_TIKU_CORS_ALLOWED_ORIGINS = 'http://localhost:18080'
+    $env:RIKE_TIKU_CAPTCHA_EXPOSE_TEST_CODE = if ($ExposeTestCode) { 'true' } else { 'false' }
+    Write-Host "当前目标数据库: $Database"
+    Write-Host "后端地址: $backendUrl"
+    Write-Host "允许的前端地址: $frontendUrl"
+    if ($ExposeTestCode) {
+        Write-Host '仅供脚本机器 smoke：CAPTCHA testCode已临时暴露，不得用于人工浏览器验收。' -ForegroundColor Yellow
+    } else {
+        Write-Host '人工验收模式：CAPTCHA testCode未暴露，请在页面识别真实验证码。' -ForegroundColor Yellow
+        Write-Host '验收账号: demo_admin / demo_199_01 / demo_teacher / demo_physics_admin。' -ForegroundColor Yellow
+    }
+    Push-Location $backendRoot
+    try { & mvn spring-boot:run } finally { Pop-Location }
 }
 
 function Invoke-LoginSmoke([string]$Username, [string]$Role) {
@@ -146,33 +165,21 @@ switch ($Action) {
         Invoke-DemoTool 'seed'
         Invoke-DemoTool 'validate'
         Write-Host '最终人工验收数据准备完成。请在当前PowerShell启动后端：' -ForegroundColor Green
-        Write-Host '.\scripts\demo-environment.ps1 backend'
+        Write-Host '.\scripts\demo-environment.ps1 acceptance-backend'
         Write-Host '另开PowerShell启动前端：'
-        Write-Host '.\scripts\demo-environment.ps1 frontend'
+        Write-Host '.\scripts\demo-environment.ps1 acceptance-frontend'
         Write-Host "浏览器入口: $frontendUrl"
     }
-    'backend' {
-        $env:RIKE_TIKU_DB_NAME = $Database
-        $env:RIKE_TIKU_BACKEND_PORT = '18081'
-        $env:RIKE_TIKU_CORS_ALLOWED_ORIGINS = 'http://localhost:18080'
-        $env:RIKE_TIKU_CAPTCHA_EXPOSE_TEST_CODE = 'false'
-        Write-Host "当前目标数据库: $Database"
-        Write-Host "后端地址: $backendUrl"
-        Write-Host "允许的前端地址: $frontendUrl"
-        Write-Host '人工验收模式：CAPTCHA testCode未暴露，请在页面识别真实验证码。' -ForegroundColor Yellow
-        Write-Host '验收账号: demo_admin / demo_199_01 / demo_teacher / demo_physics_admin。' -ForegroundColor Yellow
-        Push-Location $backendRoot
-        try { & mvn spring-boot:run } finally { Pop-Location }
+    'acceptance-prepare' {
+        Assert-FinalAcceptanceConfiguration
+        Reset-DemoDatabase
+        Invoke-DemoTool 'seed'
+        Invoke-DemoTool 'validate'
+        Write-Host '最终验收数据准备完成。' -ForegroundColor Green
     }
-    'smoke-backend' {
-        $env:RIKE_TIKU_DB_NAME = $Database
-        $env:RIKE_TIKU_BACKEND_PORT = '18081'
-        $env:RIKE_TIKU_CORS_ALLOWED_ORIGINS = 'http://localhost:18080'
-        $env:RIKE_TIKU_CAPTCHA_EXPOSE_TEST_CODE = 'true'
-        Write-Host '仅供脚本机器 smoke：CAPTCHA testCode已临时暴露，不得用于人工浏览器验收。' -ForegroundColor Yellow
-        Push-Location $backendRoot
-        try { & mvn spring-boot:run } finally { Pop-Location }
-    }
+    'backend' { Start-DemoBackend $false }
+    'acceptance-backend' { Start-DemoBackend $false }
+    'smoke-backend' { Start-DemoBackend $true }
     'frontend' {
         $env:VITE_API_BASE_URL = 'http://localhost:18081/api/v1'
         Write-Host "前端地址: $frontendUrl"
@@ -180,6 +187,17 @@ switch ($Action) {
         Write-Host '演示账号: demo_admin / demo_teacher / demo_student，固定密码仅限本地demo库。' -ForegroundColor Yellow
         Push-Location $frontendRoot
         try { & npm run dev -- --host localhost --port 18080 } finally { Pop-Location }
+    }
+    'acceptance-frontend' {
+        Assert-FinalAcceptanceConfiguration
+        $env:VITE_API_BASE_URL = 'http://localhost:18081/api/v1'
+        Write-Host '正在构建 production-like 验收前端。' -ForegroundColor Cyan
+        Push-Location $frontendRoot
+        try {
+            & npm run build
+            if ($LASTEXITCODE -ne 0) { throw "前端构建失败，退出码: $LASTEXITCODE" }
+            & npm run preview -- --host localhost --port 18080 --strictPort
+        } finally { Pop-Location }
     }
     'smoke' { Invoke-SmokeCheck }
     'login-check' { Invoke-SmokeCheck }
