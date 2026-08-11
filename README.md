@@ -4,9 +4,13 @@
 
 > 当前仓库处于分阶段开发中，不代表完整系统已经完成或投入真实学校使用。
 
-> 2026-08-09 V3.0 非 AI 正式完工审计结论为 **REJECT**。PR #25 已合并并关闭公共门户 MA-016；MA-017 附件真实显示的机器部分已完成，状态为 `IMPLEMENTED_AWAITING_FINAL_MANUAL_ACCEPTANCE`。用户 CAPTCHA 与浏览器视觉验收延期至非 AI 最终集成验收；管理员高风险操作日志和 30 道合法样例完整导入发布显示闭环仍是 A 层硬缺口，因此当前仍不得标记为 100% DONE_VERIFIED，也不得开始 AI。详见 [V3.0 非 AI 完工审计](docs/V3_NON_AI_COMPLETION_AUDIT.md)。
+> 2026-08-09 V3.0 非 AI 正式完工审计的 **REJECT** 结论作为历史快照保留。PR #27 已完成 MA-017 至 MA-026，用户已完成最后一次真实 CAPTCHA 与浏览器复验，全部问题正式关闭，非 AI A 层标记为 `DONE_VERIFIED`。PR #27 是最后一个普通非 AI 工程 PR；AI Provider Core 将从其合并后的最新 `main` 另行开始。详见 [V3.0 非 AI 完工审计](docs/V3_NON_AI_COMPLETION_AUDIT.md)。
+
+> PR #26 已以 merge commit `b992bffef07465665b371b7b707ca8814ec2d36d` 普通合并；PR #27 的机器测试、机器浏览器证据与用户人工浏览器复验已分别记录。PR #27 是最后一个普通非 AI 工程 PR，当前实现包含 V11 管理员日志、Golden30 正常导入闭环、管理员题目图片上传、菜单整理、多角色切换、Round 4 Aqua Future 视觉和三角色工作台；本阶段不包含运行时 AI。
 
 ## 工程范围
+
+> PR #27 当前前端机器门禁（2026-08-11）：50 个测试文件、174/174 PASS，type-check、build PASS，audit 0；Vite main chunk 797.43 kB（gzip 254.25 kB）warning 如实保留。Round 4 未修改后端 Java、API contract、Flyway 或数据库，所以未机械重跑 Maven；最近一次后端执行仍为 133 tests、0 failure、0 error、1 个 Windows 符号链接 assumption skipped 与 package PASS。最近 Demo `acceptance-prepare → validate → smoke` PASS：三科普通题各 120，另有 Topic18，总题量 378。Round 4 机器证据不能替代用户人工 CAPTCHA 或视觉验收。
 
 - 学科：高中物理、化学、生物。
 - 题型：首版规划支持单选、多选、填空自动判分；综合大题只用于专题学习，不自动评分。
@@ -16,7 +20,7 @@
 ## 技术栈
 
 - 后端：Java 25、Maven、Spring Boot 4.1、Spring MVC、Spring Security、MyBatis-Plus、Flyway、MySQL、SpringDoc OpenAPI、JUnit 5。
-- 前端：Vue 3、TypeScript、Vite、Element Plus、Pinia、Vue Router、Axios。
+- 前端：Vue 3、TypeScript、Vite、Element Plus、Pinia、Vue Router、Axios；公共 Portal 使用 GSAP / ScrollTrigger 实现连续滚动叙事，移动端与 reduced motion 提供完整降级。
 - 数据库：MySQL 8.4，业务表和字段使用 `pinyin_snake_case`。
 
 ## 目录
@@ -54,30 +58,28 @@ Flyway 是数据库结构的唯一建表和升级入口。已经执行的迁移�
 - 管理员 MVP30 题库导入：单文件 Excel 预检查、逐行错误、知识点精确匹配、来源文件追溯、附件对象精确映射与全批次确认入库；成功题目和 STANDARD 解析统一为 `PENDING`。已通过普通 merge 合并至 `main`（PR #12，合并提交 `f499f0c2e1e3b4637d22480868e94dbdacdcbaa0`）。纯 V1–V6 测试库预检查结果为物理 0/10、化学 1/10、生物 1/10；仅在测试事务预置 Excel 所需知识点后，附件专项结果为 2/10、1/10、6/10。随机临时库的真实 HTTP multipart 与浏览器回查结论为 `PASS_WITH_ENV_LIMITATION`；匿名临时题已清理，MVP30 原始 Excel 尚未确认入库。
 - 学生自主练习、自动判分与错题闭环已通过普通 merge 进入 `main`（PR #13，合并提交 `db04fbc9caeeb5e4eb003a45581e62e76dbab420`）：创建时冻结可安全校验的题集，提交整场答案后完成单选/多选/填空自动判分、结果与错题聚合；未提交前不返回标准答案或解析。当前分支补充了安全 PNG/JPEG 附件存储、权限访问和图片显示；正文保留 `〔图片对象 I001〕` / `〔公式对象 F107〕`，数据库附件表只保存 `I001` / `F107` 这样的对象 ID；PDF、公式和 ANSWER 附件仍不进入普通自动判分题池。
 
-已完成前端认证基础：三角色登录入口、Pinia认证状态、Bearer Token注入、会话恢复、首次改密、路由守卫、管理员业务页及学生三科学习工作台。PR #21 已将基于真实答题事实的知识点掌握度、规则推荐和教师班级学情查看普通 merge 进入 `main`；它是确定性规则统计，不属于 AI。尚未完成：AI Provider、AI 答疑、教师任务与考试。当前最终演示题库为保留 Demo90 加 30 道筛选变式，共 120 道；MVP30 是结构化导入能力验证素材，不等于最终演示内容。
+已完成前端认证基础：三角色登录入口、Pinia认证状态、Bearer Token注入、会话恢复、首次改密、路由守卫、管理员业务页及学生三科学习工作台。PR #21 已将基于真实答题事实的知识点掌握度、规则推荐和教师班级学情查看普通 merge 进入 `main`；它是确定性规则统计，不属于 AI。PR #27 已补齐管理员 Dashboard、教师密码重置、练习可用题数、中文题型规则、逐题结果、知识点与规则型类似练习、错题实时学科筛选、Topic18、冻结选项内容、结构化解析、显式 accepted answers 和 Round 4 Aqua Future 视觉。非 AI A 层已由用户最终复验并标记 `DONE_VERIFIED`。下一阶段仅建立 `feat/ai-provider-core` 入口，尚未开始 AI Provider、AI 答疑、教师任务或考试。当前验收题库为确定性 Demo360（三科各 120）+ Topic18；MVP30 是结构化导入能力验证素材，不等于最终演示内容。
 
 准确状态请以 [开发状态](docs/DEVELOPMENT_STATUS.md) 和 [AI交接](docs/AI_HANDOFF.md) 为准。
 
 ## 本地演示验收环境
 
-`main` 已通过 PR #14（普通 merge `4ffbcbda66f26e7390192985ce179f30d3a6b664`）提供显式执行的独立演示库工具。它默认操作 `rike_tiku_demo`，拒绝操作 `rike_tiku` 及 MySQL 系统库，不会在应用正常启动时自动写入数据。准备好 `RIKE_TIKU_DB_PASSWORD` 后执行：
+`main` 已通过 PR #14（普通 merge `4ffbcbda66f26e7390192985ce179f30d3a6b664`）提供显式执行的独立演示库工具。它默认操作 `rike_tiku_demo`，拒绝操作 `rike_tiku` 及 MySQL 系统库，不会在应用正常启动时自动写入数据。准备好 `RIKE_TIKU_DB_PASSWORD` 后，一条命令完成最终验收库的重建、播种和校验：
 
 ```powershell
-.\scripts\demo-environment.ps1 reset
-.\scripts\demo-environment.ps1 seed
-.\scripts\demo-environment.ps1 validate
+.\scripts\demo-environment.ps1 acceptance-prepare
 ```
 
-演示账号为 `demo_admin`、`demo_teacher`、`demo_student`，本地演示密码均为 `a1234567`；数据库仅保存 BCrypt 摘要。分别启动前后端：
+最终验收账号为 `demo_admin`、`demo_199_01`、`demo_teacher`、`demo_physics_admin`，本地演示密码均为 `a1234567`；数据库仅保存 BCrypt 摘要。分别启动前后端：
 
 ```powershell
-.\scripts\demo-environment.ps1 backend
-.\scripts\demo-environment.ps1 frontend
+.\scripts\demo-environment.ps1 acceptance-backend
+.\scripts\demo-environment.ps1 acceptance-frontend
 ```
 
-详细安全边界与操作说明见 [演示环境说明](docs/DEMO_ENVIRONMENT.md)，人工检查步骤见 [人工验收清单](docs/MANUAL_ACCEPTANCE_CHECKLIST.md)。
+`acceptance-frontend` 会先按 `VITE_API_BASE_URL=http://localhost:18081/api/v1` 构建，再以 Vite preview 在 18080 提供 production-like 验收页面；不使用开发服务器。`acceptance-backend` 固定连接 `rike_tiku_demo`，并关闭 CAPTCHA `testCode`。详细安全边界与操作说明见 [演示环境说明](docs/DEMO_ENVIRONMENT.md)，人工检查步骤见 [人工验收清单](docs/MANUAL_ACCEPTANCE_CHECKLIST.md)。
 
-使用 IDEA 直接启动时必须在运行配置增加 `RIKE_TIKU_DB_NAME=rike_tiku_demo`；否则后端默认连接正式开发库 `rike_tiku`，其中不存在演示账号。默认端口方案的前端 API 地址为 `http://localhost:8081/api/v1`。脚本演示端口方案可在服务启动后执行 `.\scripts\demo-environment.ps1 smoke` 验证健康状态和三角色登录。
+使用 IDEA 直接启动时必须在运行配置增加 `RIKE_TIKU_DB_NAME=rike_tiku_demo`；否则后端默认连接正式开发库 `rike_tiku`，其中不存在演示账号。默认端口方案的前端 API 地址为 `http://localhost:8081/api/v1`。脚本的 `backend` 动作关闭 CAPTCHA `testCode`，供真实浏览器验收；机器 smoke 使用独立的 `smoke-backend` 动作。
 
 历史 PR #14 自动化验证为后端 74/74、前端 68/68，后端打包、前端类型检查与构建均通过，`npm audit` 为 0 vulnerabilities；真实脚本链及三角色 HTTP smoke 已通过。PR #15 已普通 merge 进入 `main`（merge commit `12d636fde4afa198edc78eb0c295f5b88c8e3456`）：当时统一登录使用服务端短时一次性滑块验证，并提供中文化、学生三科工作台、教师任教范围和主动改密。PR #15 合并后回归为后端 79/79、前端 72/72；该滑块只属于历史实现，已由 PR #19 的随机图形验证码替换。
 
@@ -190,4 +192,4 @@ npm run build
 
 ## 下一阶段
 
-PR #25 已普通 merge（merge commit `0559a4e4eba041dd74a7bcb7d4c9f2cd8b29e617`）进入 `main`，关闭 MA-016；V3.0 非 AI 正式完工审计结论仍为 REJECT。MA-017 题目附件真实存储、访问与显示的机器实现已完成，状态为等待非 AI 最终集成人工验收；DeepSeek、GLM 和运行时 AI 能力仍未实现。
+PR #25 已普通 merge（merge commit `0559a4e4eba041dd74a7bcb7d4c9f2cd8b29e617`）进入 `main`，关闭 MA-016；V3.0 非 AI 正式完工审计结论仍作为历史 REJECT 保留。当前 PR #27 继续 Draft；MA-017 等待最终集成人工验收，MA-021 至 MA-026 等待用户复验。通过前不得标记 `DONE_VERIFIED`；DeepSeek、GLM 和运行时 AI 能力仍未实现。

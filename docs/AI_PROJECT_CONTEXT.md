@@ -2,9 +2,17 @@
 
 > 2026-08-09 V3.0 非 AI 正式完工审计已确认当时不是 100% DONE_VERIFIED。PR #25 已合并关闭公共门户 MA-016，MA-017 后续已实现安全图片附件显示；管理员高风险操作日志与 30 道合法样例完整闭环仍是 A 层硬缺口。历史审计结论保持 REJECT；见 [V3_NON_AI_COMPLETION_AUDIT.md](V3_NON_AI_COMPLETION_AUDIT.md)。
 
-> 当前工作分支为 `feat/question-attachment-rendering`，base 为 `b967ce68027fe9776ca08f8d7547c0c5b2b0fbbf`。PR #25 已普通 merge（merge commit `0559a4e4eba041dd74a7bcb7d4c9f2cd8b29e617`）。Flyway V1–V10、26 张业务表；公共门户轮未新增迁移、未修改后端业务或 MVP30 原始 Excel。
+> PR #26 已普通 merge（merge commit `b992bffef07465665b371b7b707ca8814ec2d36d`）。当前工作分支为 `feat/non-ai-final-closure`；用户已完成最终 acceptance 人工 CAPTCHA/浏览器验收，MA-017 至 MA-026 均已关闭。PR #27 是最后一个普通非 AI 工程 PR，加入了 V11 管理员操作日志、MA-020、管理员题目图片上传、来源权利补充 API、Golden30 正常导入闭环、菜单整理和多角色切换；Flyway V1–V11、27 张业务表；V1–V10 和 MVP30 原始 Excel 未修改。
 
-更新时间：2026-08-09
+> PR #27 最终机器口径：Round 4 为 50/50 文件、174/174 测试，type-check、build、audit 0；Vite main chunk 797.43 kB（gzip 254.25 kB）warning 保留。用户最终人工复验已完成，且与机器测试、机器浏览器证据分开记录。Demo360 为三科各 120 道，另有 Topic18，总题量 378。
+
+> 第二轮视觉复验是历史过程：Portal 当时去宣传化并删除 AI 规划区，三科入口采用语义 SVG，学生/教师学科环境由稳定 `subjectCode` 驱动，显式 TeX 由受控 KaTeX DOM renderer 输出 HTML+MathML。唯一主题名仍为 `mizuiro-aero`。
+
+> 第三轮 MA-021 至 MA-025 已完成机器修正并统一为 `FIXED_AWAITING_USER_RETEST`。Portal、完整冻结答案、Demo360/Topic18 STANDARD 解析和 accepted answers 判分均在既有模块化单体与 V1–V11 内完成；AI 仍未开始。
+
+> 第三轮视觉人工验收随后失败并新增 MA-026。Round 4 以 `RIKE Aqua Future`、四张原创 WebP、Portal 六场景、Physics pin+scrub、学科环境转场、Aqua Auth 与三角色工作台完成机器修正；用户最终复验后 MA-026 已关闭，非 AI A 层正式为 `DONE_VERIFIED`。PR #27 是最后一个普通非 AI 工程 PR，AI 未开始。
+
+更新时间：2026-08-11
 
 ## 1. 项目身份
 
@@ -54,15 +62,16 @@
 ## 5. 当前实现状态
 
 - 状态：题库、账号、教学组织、学生练习闭环、教师班级学科工作台、高频考点、师生私信、非 AI 掌握度与确定性规则推荐、三角色个人中心均已进入 `main`。
-- 当前分支：`feat/question-attachment-rendering`；PR #25 已合并，公共门户已进入 `main`。
-- 公共根路径 `/` 已实现无需认证的门户，包含系统/功能/三科/题型/学习闭环/角色介绍和统一 `/login` 入口，且首屏明确运行时 AI 尚未上线。自动化、三角色 Demo 浏览器、登录态与刷新、响应式及控制台证据均通过，MA-016 已关闭。
-- 当前 MA-017 已完成机器实现：受控 PNG/JPEG 存储、3MB 与真实 MIME 校验、SHA-256 回读、附件归属权限、未提交 STANDARD_ANALYSIS 防泄露、管理员详情和学生练习/结果/错题 Blob 显示；状态为 `IMPLEMENTED_AWAITING_FINAL_MANUAL_ACCEPTANCE`。用户 CAPTCHA 和浏览器视觉验收延期至非 AI 最终集成验收，未验收前不关闭。
+- 当前分支：`feat/non-ai-final-closure`；PR #26 已合并，公共门户和附件机器实现已进入 `main`。
+- 公共根路径 `/` 已实现无需认证的门户。Round 4 使用 Hero、Physics、Chemistry、Biology、Learning Loop、Entrance 六场景表达系统事实、三科学科、3 / 360 / 18 和统一 `/login`，不写运行时 AI 宣传或虚构指标；MA-016 仍为已关闭。
+- 当前 MA-017 已关闭：受控 PNG/JPEG 存储、3MB 与真实 MIME 校验、SHA-256 回读、附件归属权限、未提交 STANDARD_ANALYSIS 防泄露、管理员详情和学生练习/结果/错题 Blob 显示均已通过机器门禁与用户最终人工复验。
 - PR #26 独立审查修正已完成：正文 marker 保留 `〔图片对象 I001〕`，数据库 `dui_xiang_biao_shi` 只保存 `I001`；真实 QuestionImportService 导入链已覆盖 preview、confirm、受控 storage、管理员 HTTP 内容和学生提交前后权限。机器门禁和 Demo 最新结果记录在 `DEVELOPMENT_STATUS.md`，人工验收不属于 PR #26 merge gate。
-- 当前 Flyway：V1–V10，共 26 张业务表；V10 只增加 `yong_hu` 简介与头像字段，V1–V9 不修改。
-- 独立 `rike_tiku_demo` 保留 Demo90 基线，并新增 30 道经筛选的项目原创变式，最终物理 40、化学 39、生物 41，共 120 道。V3.0 不要求名为 MVP30 的 Excel 整体正式入库；该原始文件保持不变，定位为结构化导入能力验证素材。
+- 当前 Flyway：V1–V11，共 27 张业务表；V10 只增加 `yong_hu` 简介与头像字段，V11 只新增管理员操作日志表，V1–V10 未修改。
+- PR #27 当前机器实现已覆盖 MA-018、MA-020、管理员题目图片上传、来源权利补充、Golden30 正常导入闭环、正式菜单整理和多角色切换，并根据用户反馈补齐 Dashboard、教师密码重置、练习可用题数、逐题结果、知识点与类似练习、错题实时过滤和 Topic18。第三轮 MA-021 至 MA-025 的内联掌握比例、冻结完整答案、Demo 246 道选择题逐项解析、Topic18 安全分段和显式 accepted answers 数值等价全部保留。Round 3 视觉人工验收失败后，Round 4 MA-026 以 `RIKE Aqua Future` 重建设计 token、材料、排版、共享导航、Portal/Auth、Student/Teacher/Admin 视觉，并加入四张原创 Aqua WebP、连续 scrub、Physics pinned scene、pointer feedback、mobile/reduced-motion 降级。当前前端门禁为 50/50 文件、174/174 测试、type-check/build/audit 通过，main chunk 797.43 kB（gzip 254.25 kB）warning 未隐藏。用户已完成最终人工复验，MA-017 至 MA-026 均已关闭，非 AI A 层为 `DONE_VERIFIED`；AI 未开始。
+- 独立 `rike_tiku_demo` 当前使用确定性 Demo360：物理、化学、生物各 120 道，覆盖 55 个叶子知识点；另有 Topic18（每科 6 道），总题量 378。历史 Demo90/Demo120 口径仅用于说明先前 PR。V3.0 不要求名为 MVP30 的 Excel 整体正式入库；该原始文件保持不变，定位为结构化导入能力验证素材。
 - PR #17 已进入 `main`：新增管理员单学生分页、详情、事务新增、编辑启停、事务调班和密码重置；Demo 扩充为 14 账号、3 班级、4 教师、9 学生、9 条 ACTIVE 三元任课关系。
 - PR #18 合并后后端 87/87、前端 83/83，package、type-check、build、audit、Demo 脚本链均通过；真实浏览器高频考点权限验收保持通过。正式库污染检查包含 Demo90、场景账号、场景班级和高频考点，均为 0。
-- PR #19 已将 PR #15 历史滑块替换为默认隐藏的 4 位随机图形验证码并进入 `main`；后端使用 JDK 原生图片 API、两分钟内存 challenge 和一次性消费，前端首次操作只展开、第二次才登录。合并后后端 90/90、前端 91/91，package、type-check、build、audit 与 Demo 脚本链均通过，正式库四项污染检查均为 0。
+- PR #19 已将 PR #15 历史滑块替换为 4 位随机图形验证码并进入 `main`；后端使用 JDK 原生图片 API、两分钟内存 challenge 和一次性消费。PR #27 当前前端首次渲染即显示验证码，三项一次填写、一次登录，失败后刷新 challenge；最终人工环境响应不含 `testCode`。
 - PR #20 使用 REST polling 实现受 ACTIVE 三元任课关系和学生当前主班级约束的纯文本私信、未读和历史保留，已普通 merge。合并后后端 92/92、前端 100/100，package、type-check、build、audit 0、Demo 脚本链通过；双班级双向浏览器验收及 conversationId 越权隔离保持通过，MA-009 已关闭。
 - PR #21 已基于 V7 已提交自动判分答题、冻结知识点快照和错题状态实时计算掌握度并进入 `main`；当前学科全部 ACTIVE 知识点参与掌握度和总体统计，5 题推荐资格独立复用真实学生练习题池规则。题量不足不会隐藏历史掌握事实，也不会生成无法创建的推荐。推荐采用公开固定优先级并最多返回 3 项，教师学情查询继续受本人 ACTIVE 三元任课关系约束；无 V10。合并后后端 98/98、前端 29 文件 106/106，package、type-check、build、audit 0、Demo 链与正式库只读检查均通过；MA-014、MA-015 已关闭。
 - PR #22 已实现并普通 merge 三角色统一 `/profile`、本人资料/真实角色/业务档案只读展示、简介、MySQL 小头像和现有主动改密入口。所有 profile API 从 JWT 推导本人，不接收 userId/studentId/teacherId；首次登录必须先完成初始密码修改。合并后自动化为后端 102/102、前端 31 文件 117/117；Demo 脚本与浏览器验收通过，MA-006 已关闭。

@@ -143,6 +143,18 @@ class RenZhengJiChengTest {
     }
 
     @Test
+    void adminOperationLogQueryIsRestrictedToActiveAdmin() throws Exception {
+        String adminToken = token(login("operation_log_admin", "AdminPass1", "ADMIN", false));
+        String studentToken = token(login("operation_log_student", "StudentPass1", "STUDENT", false));
+        String initialAdminToken = token(login("operation_log_initial_admin", "AdminPass1", "ADMIN", true));
+
+        assertError(get("/api/v1/admin/operation-logs?page=1&size=10", null), 401, "UNAUTHENTICATED");
+        assertError(get("/api/v1/admin/operation-logs?page=1&size=10", studentToken), 403, "ACCESS_DENIED");
+        assertError(get("/api/v1/admin/operation-logs?page=1&size=10", initialAdminToken), 403, "MUST_CHANGE_PASSWORD");
+        assertThat(get("/api/v1/admin/operation-logs?page=1&size=10", adminToken).status()).isEqualTo(200);
+    }
+
+    @Test
     void studentPracticeEndpointsRequireActiveStudentRoleAndProfile() throws Exception {
         long studentId = insertUser("practice_student", "StudentPass1", false, "ENABLED", "STUDENT");
         insertStudentProfile(studentId, "练习学生");
@@ -200,6 +212,23 @@ class RenZhengJiChengTest {
         assertThat(submitted.status()).isEqualTo(200);
         assertThat(submitted.body()).contains("correctAnswer", "standardAnalysis");
         assertThat(get("/api/v1/student/practice-sessions/" + sessionId.longValue() + "/result", accessToken).status()).isEqualTo(200);
+    }
+
+    @Test
+    void emptyOrUnreadablePracticeSubmitBodyReturnsBadRequest() throws Exception {
+        long userId = insertUser("practice_empty_body", "StudentPass1", false, "ENABLED", "STUDENT");
+        insertStudentProfile(userId, "空请求体学生");
+        insertPublishedPracticeQuestion();
+        String accessToken = token(login("practice_empty_body", "StudentPass1", "STUDENT"));
+
+        Number sessionId = JsonPath.read(post("/api/v1/student/practice-sessions", """
+                {"subjectId":1,"questionTypes":["SINGLE_CHOICE"],"count":1}
+                """, accessToken).body(), "$.id");
+
+        assertError(post("/api/v1/student/practice-sessions/" + sessionId.longValue() + "/submit", "", accessToken),
+                400, "INVALID_REQUEST");
+        assertError(post("/api/v1/student/practice-sessions/" + sessionId.longValue() + "/submit", "not-json", accessToken),
+                400, "INVALID_REQUEST");
     }
 
     @Test

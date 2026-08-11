@@ -4,6 +4,7 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import { useRouter } from 'vue-router'
 import { fetchTeachingScopes, type TeachingScope } from '../api/teacher'
 import ChangePasswordDialog from '../components/auth/ChangePasswordDialog.vue'
+import AquaBrand from '../components/layout/AquaBrand.vue'
 import { useAuthStore } from '../stores/auth'
 import { formatEnum } from '../utils/formatters'
 
@@ -13,6 +14,7 @@ const scopes = ref<TeachingScope[]>([])
 const loading = ref(false)
 const passwordVisible = ref(false)
 const name = computed(() => auth.currentUser?.displayName || auth.currentUser?.username || '教师')
+const canSwitchRole = computed(() => auth.roles.length > 1)
 
 onMounted(async () => {
   loading.value = true
@@ -38,8 +40,9 @@ async function logout() {
 
 <template>
   <main class="workspace-page">
-    <header class="workspace-header">
-      <div>
+    <header class="workspace-header teacher-header">
+      <div class="teacher-header-context">
+        <AquaBrand class="workspace-brand-aqua" to="/teacher" subtitle="教师科学工作台" compact />
         <h1>教师工作台</h1>
         <p>
           您好，{{ name }}
@@ -49,10 +52,11 @@ async function logout() {
       <el-dropdown>
         <el-button class="user-menu-button">
           <el-avatar :size="28" :src="auth.profileAvatar || undefined">{{ name.slice(0, 1) }}</el-avatar>
-          <span>账户设置</span>
+          <span>{{ name }} · 教师</span>
         </el-button>
         <template #dropdown>
           <el-dropdown-menu>
+            <el-dropdown-item v-if="canSwitchRole" @click="router.push('/select-role')">切换身份</el-dropdown-item>
             <el-dropdown-item @click="router.push('/profile')">个人中心</el-dropdown-item>
             <el-dropdown-item @click="passwordVisible = true">修改密码</el-dropdown-item>
             <el-dropdown-item divided @click="logout">退出登录</el-dropdown-item>
@@ -68,39 +72,29 @@ async function logout() {
         </div>
         <el-button type="primary" plain @click="router.push('/messages')">消息</el-button>
       </div>
-      <el-table
-        v-loading="loading"
-        :data="scopes"
-        class="data-table"
-        empty-text="当前没有可展示的任教范围。"
-      >
-        <el-table-column prop="className" label="班级" />
-        <el-table-column prop="grade" label="年级" />
-        <el-table-column prop="subjectName" label="科目" />
-        <el-table-column label="主任课">
-          <template #default="{ row }">{{ row.homeroomSubject ? '是' : '否' }}</template>
-        </el-table-column>
-        <el-table-column label="状态">
-          <template #default="{ row }"><el-tag>{{ formatEnum(row.teachingStatus) }}</el-tag></template>
-        </el-table-column>
-        <el-table-column label="操作" width="150">
-          <template #default="{ row }">
-            <el-button
-              v-if="row.teachingStatus === 'ACTIVE'"
-              link
-              type="primary"
-              @click="router.push(`/teacher/scopes/${row.teachingAssignmentId}`)"
-            >进入工作台</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
+      <div v-loading="loading" class="teacher-scope-grid">
+        <article
+          v-for="scope in scopes"
+          :key="scope.teachingAssignmentId"
+          class="teacher-scope-card"
+          :class="`teacher-scope-card--${scope.subjectCode.toLowerCase()}`"
+          :data-subject="scope.subjectCode.toLowerCase()"
+        >
+          <span class="teacher-scope-ambient" aria-hidden="true"></span>
+          <div class="teacher-scope-route"><span>{{ scope.grade }}</span><i></i><span>{{ scope.subjectName }}</span></div>
+          <div><h3>{{ scope.className }}</h3><p>{{ scope.homeroomSubject ? '主任课教师' : '任课教师' }} · {{ formatEnum(scope.teachingStatus) }}</p></div>
+          <el-button v-if="scope.teachingStatus === 'ACTIVE'" type="primary" plain @click="router.push(`/teacher/scopes/${scope.teachingAssignmentId}`)">进入班级学科工作台</el-button>
+          <el-tag v-else type="info">当前范围不可进入</el-tag>
+        </article>
+        <el-empty v-if="!loading && !scopes.length" description="当前没有可展示的任教范围。" />
+      </div>
       <el-alert
         class="teacher-roadmap"
-        title="后续建设说明"
+        title="当前工作边界"
         type="info"
         :closable="false"
         show-icon
-        description="本页提供班级学科工作台与师生私信；成绩统计、练习统计、任务发布和考试尚未实现。"
+        description="本页提供任教范围、学生练习学情、高频考点与师生私信；任务发布和考试不属于当前版本。"
       />
     </section>
     <ChangePasswordDialog v-model="passwordVisible" />

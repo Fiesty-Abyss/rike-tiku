@@ -2,19 +2,27 @@
 
 > 2026-08-09 V3.0 非 AI 正式完工审计结论为 REJECT。历史审计快照识别出 4 个 A 层硬缺口；其中公共门户 MA-016 已在 `feat/public-portal` 完成并验证，剩余附件真实显示、管理员高风险操作日志、30 道合法样例完整导入发布显示闭环仍阻止开始 AI。完整原始证据见 [V3_NON_AI_COMPLETION_AUDIT.md](V3_NON_AI_COMPLETION_AUDIT.md)。
 
-> 当前接续分支：`feat/question-attachment-rendering`，base 为 `b967ce68027fe9776ca08f8d7547c0c5b2b0fbbf`。PR #25 已普通 merge（merge commit `0559a4e4eba041dd74a7bcb7d4c9f2cd8b29e617`），关闭 MA-016；当前 Flyway V1–V10、26 张业务表。
+> 历史接续分支 `feat/question-attachment-rendering` 已通过 PR #26 普通合并；其 V1–V10、26 张业务表口径仅属于当时基线。
 
-更新时间：2026-08-09
+> 当前接续分支：`feat/non-ai-final-closure`，从 PR #26 merge commit `b992bffef07465665b371b7b707ca8814ec2d36d` 创建。PR #26 已普通 merge；PR #27 已完成用户最终人工复验，MA-017 至 MA-026 均已关闭。PR #27 是最后一个普通非 AI 工程 PR，已加入 V11 管理员操作日志、MA-020、管理员图片上传、来源权利更新、Golden30 正常导入闭环、菜单整理和多角色切换；Flyway V1–V11、27 张业务表，V1–V10 不得修改。
+
+> PR #27 最终机器准备：Demo360 为物理/化学/生物各 120 道、55 个叶子知识点，另含 Topic18，总题量 378。Round 4 前端为 50/50 文件、174/174 测试，type-check、build、audit 0；build 保留 main chunk 797.43 kB（gzip 254.25 kB）warning。用户已在 CAPTCHA testCode 关闭的 acceptance 环境完成最终人工浏览器复验；机器测试、机器浏览器和用户人工结果已分开记录。
+
+> 第三轮 MA-021 至 MA-025 的机器修正包括：五章 Portal 与三张原创静态 WebP、内联掌握比例、冻结完整答案、Demo360 选择题逐项 STANDARD 解析、Topic18 安全分段以及显式 accepted answers 等价判分。没有新增 Flyway、运行时 AI 或通用表达式求值。
+
+> 第三轮视觉随后被用户人工判定失败并新增 MA-026。Round 4 已用 `RIKE Aqua Future`、四张原创 Aqua WebP、六场景 Portal、Physics pin+scrub、学科环境 transition、Aqua Auth/Workspace、移动端和 reduced-motion 降级完成机器修正；用户最终复验后 MA-026 已关闭，非 AI A 层正式为 `DONE_VERIFIED`。PR #27 是最后一个普通非 AI 工程 PR，AI 仍未开始。
+
+更新时间：2026-08-11
 
 ## 当前状态
 
 PR #10 至 PR #22 均已普通 merge；PR #22 merge commit 为 `67b7bd7239e2ac1de3ad8c71b82b6d0a79162d3b`，远程 `feat/personal-center` 已删除。
 
-PR #19 已用 JDK 原生生成的 4 位随机 PNG 图形验证码替换 PR #15 历史滑块并进入 `main`。登录页默认不显示验证码；首次点击/Enter 只展开，第二次才提交。challenge 在内存保存两分钟并一次性消费，不新增 Redis、第三方依赖、数据库表或 Flyway。
+PR #19 已用 JDK 原生生成的 4 位随机 PNG 图形验证码替换 PR #15 历史滑块并进入 `main`。当前 PR #27 登录页首次渲染即自动获取并显示 challenge，用户名、密码和验证码一次填写、一次提交；失败后刷新验证码。challenge 仍在内存保存两分钟并一次性消费，不新增 Redis、第三方依赖、数据库表或 Flyway。
 
-V7 的学生练习、正式答题、结果和错题聚合模型已进入 `main`。PR #18 新增 V8 高频考点表，PR #20 新增 V9 两张私信表，PR #22 新增只 ALTER `yong_hu` 的 V10；当前 Flyway 为 V1–V10，共 26 张业务表，MVP30 原始 Excel 未改动。历史 PR #13 自动化为后端 68/68、前端 68/68；PR #15 合并后自动化为后端 79/79、前端 72/72，打包、类型检查、构建、依赖审计与完整浏览器验收均已通过。
+V7 的学生练习、正式答题、结果和错题聚合模型已进入 `main`。PR #18 新增 V8 高频考点表，PR #20 新增 V9 两张私信表，PR #22 新增只 ALTER `yong_hu` 的 V10；PR #27 当前新增 V11 管理员操作日志表，Flyway 为 V1–V11，共 27 张业务表，MVP30 原始 Excel 未改动。历史 PR #13 自动化为后端 68/68、前端 68/68；PR #15 合并后自动化为后端 79/79、前端 72/72，打包、类型检查、构建、依赖审计与完整浏览器验收均已通过。
 
-`main` 中的 `rike_tiku_demo` 显式重建工具保留原 smoke 数据，并形成 199/200 双班级场景：14 账号、3 班级、4 教师、9 学生、9 条 ACTIVE 三元任课关系及 Demo90。PR #23 保留 Demo90，并从 54 个原创候选中筛选 30 道变式，当前目标总题量 120；PR #18 的 12 条 ACTIVE 高频考点保持不变。演示数据不使用 Flyway 承载，不公开 seed 接口，也不在正常启动时执行。
+`rike_tiku_demo` 显式重建工具保留 199/200 双班级场景：14 账号、3 班级、4 教师、9 学生、9 条 ACTIVE 三元任课关系和 12 条 ACTIVE 高频考点。PR #27 的当前验收目标为确定性 Demo360：物理、化学、生物各 120 道、55 个叶子知识点，并额外提供每科 6 道 `TOPIC_LEARNING` 综合题，总题量 378。演示数据不使用 Flyway 承载，不公开 seed 接口，也不在正常启动时执行。
 
 Demo90 与 PR #23 筛选变式均是项目原创演示内容。V3.0 没有规定名为 MVP30 的 Excel 必须整体正式入库；MVP30 原始文件保持不变，定位为 PR #12 已验证的结构化导入能力素材。开发阶段由 Codex 辅助制作候选不等于系统实现运行时 AI 出题。
 
@@ -42,7 +50,11 @@ PR #23 浏览器仅操作 `rike_tiku_demo`：物理 3、化学 3、生物 4 道�
 
 `feat/public-portal` 将根路径 `/` 从重定向登录改为无需认证的正式公共门户，复用唯一 `/login` 入口且不改认证协议或守卫。门户包含系统名称、副标题、三科介绍、单选/多选/填空题型边界、非 AI 功能介绍、六步学习闭环和三角色说明；首屏及能力区均明确运行时 AI 尚未上线。前端 32 文件 122/122、type-check、build、audit 0 通过；后端回归及 package 为 105/105。独立 Demo 的 reset/seed/validate/smoke、三角色真实登录、登录态/未登录态门户刷新和常见宽度复验均通过；控制台 0 error、0 warning，最终 Demo 已恢复固定 120 题。MA-016 已关闭，MA-017 至 MA-020 未改动。
 
-当前 MA-017 机器证据已完成：后端附件/权限/HTTP/导入/题池专项 27 个，26 PASS、1 个符号链接权限 assumption skipped；`mvn clean test` 112 个测试 0 失败、1 个符号链接权限 assumption skipped，`mvn clean package` PASS；前端附件专项 4/4、`npm test` 127/127 PASS，type-check、build PASS，`npm audit --omit=dev` 为 0 vulnerabilities。独立 `rike_tiku_demo` 的 `reset → seed → validate → smoke` PASS，Demo 题库为物理 40、化学 39、生物 41，共 120 道；PHYSICS-S1 两条附件记录实际文件/hash 回读通过。当前状态为 `IMPLEMENTED_AWAITING_FINAL_MANUAL_ACCEPTANCE`。用户 CAPTCHA 和浏览器视觉验收根据新策略延期至非 AI 最终集成验收，不属于 PR #26 的 merge gate。
+PR #26 的 MA-017 机器证据为：后端附件/权限/HTTP/导入/题池专项 27 个，26 PASS、1 个符号链接权限 assumption skipped；`mvn clean test` 112 个测试 0 失败、1 个符号链接权限 assumption skipped，`mvn clean package` PASS；前端附件专项 4/4、`npm test` 127/127 PASS，type-check、build PASS，`npm audit --omit=dev` 为 0 vulnerabilities。当时 Demo 题库为物理 40、化学 39、生物 41，共 120 道；当前验收库已由 PR #27 扩充为 Demo360。PHYSICS-S1 两条附件记录实际文件/hash 回读继续通过。状态仍为 `IMPLEMENTED_AWAITING_FINAL_MANUAL_ACCEPTANCE`。
+
+PR #27 当前机器收口已完成主要实现：V11 管理员高风险操作日志及 ADMIN 查询页面、空提交体 4xx、草稿题干/标准解析图片上传/替换/删除、来源权利补充 API、Golden30 的真实 preview → confirm → 权利补充 → 审核 → 发布 → 查询 → 学生练习闭环、题库/学生菜单整理和多角色“切换身份”均已进入当前分支。Golden30 独立测试验证物理 10、化学 10、生物 10，共 30 道已发布题，其中 29 道固定答案题可进入自动练习，1 道主观题按现有设计保留为专题学习题；原始候选 Excel 未修改，正式库未写入。第三轮五项机器修正继续保留：内联掌握比例、历史冻结完整选项展示与 Demo360 246 道选择题逐项解析、Topic18 全部结构化解析及安全排版、BV-06 显式 accepted answers 等价判分。Round 3 视觉人工验收失败后，Round 4 又以 `RIKE Aqua Future` 重建设计系统、Portal/Auth 和三角色工作台，MA-026 已完成机器修正。当前前端门禁为 50/50 文件、174/174 测试、type-check/build/audit 通过，main chunk 797.43 kB（gzip 254.25 kB）warning 保留；本轮未修改后端，故未重跑 Maven，第三轮后端 133/0/0/1 skipped 与 package PASS 作为最近执行事实保留。Demo360 + Topic18 最近一次 `acceptance-prepare → validate → smoke` PASS。Round 3 与 Round 4 机器证据分别位于 `docs/evidence/pr27-ui-round3/`、`docs/evidence/pr27-ui-round4/`，均不替代用户验收。PR #27 保持 Draft，MA-017 及 MA-021 至 MA-026 仍等待用户最终复验；AI 未开始。
+
+第二轮视觉反馈在同一 PR 内继续收敛：Portal 由长叙事减为四段事实入口，删除 AI 规划和解释设计的文案；三科视觉改为原创语义 SVG；学生与教师具体工作页统一由 `subjectCode` 解析学科环境，教师 workspace DTO 因此最小补充 `subjectCode`；管理员保持 neutral。科学排版只接受显式 `\\(...\\)` / `\\[...\\]`，通过 KaTeX DOM API 安全输出，普通 `/` 与旧题纯文本不自动猜测；Topic18 代表题已渐进迁移。该轮证据位于 `docs/evidence/pr27-ui-round2/`，仍须用户最终复验。
 
 ## 继续时必须保持
 
@@ -73,7 +85,9 @@ PR #23 浏览器仅操作 `rike_tiku_demo`：物理 3、化学 3、生物 4 道�
 - [个人中心前端](PERSONAL_CENTER_FRONTEND.md)
 - [最终演示题库](FINAL_DEMO_QUESTION_BANK.md)
 - [变式候选审核记录](DEMO_VARIANT_QUESTION_REVIEW.md)
+- [Round 4 设计规范](../DESIGN.md)
+- [Round 4 UI/UX Foundation](UI_UX_FOUNDATION.md)
 
 ## 当前下一步
 
-MA-017 机器实现已完成，状态为 `IMPLEMENTED_AWAITING_FINAL_MANUAL_ACCEPTANCE`。用户 CAPTCHA、ADMIN/STUDENT/TEACHER/多角色浏览器验收统一延期至非 AI 最终集成验收，不属于 PR #26 的 merge gate；最终通过后再关闭 MA-017。PR #26 合并后创建最后一个非 AI 分支 `feat/non-ai-final-closure`，在同一 PR 内完成 MA-018、MA-020、MA-019、管理员图片上传、菜单整理、多角色切换和最终非 AI 审计。
+PR #27 用户人工复验已通过，封板动作是 ordinary merge；合并后同步最新 `main`，删除 `feat/non-ai-final-closure`，再创建干净的 `feat/ai-provider-core`。下一轮只实施 Fake/Test Provider、配置模型、超时、一次有限重试、降级和基础调用日志；不索取 API Key，不创建 PR #28，不在本轮修改 AI 代码。

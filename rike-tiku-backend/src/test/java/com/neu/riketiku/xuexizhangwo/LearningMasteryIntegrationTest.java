@@ -284,7 +284,7 @@ class LearningMasteryIntegrationTest extends AdminQuestionIntegrationTestSupport
                 SELECT k.id FROM zhi_shi_dian k
                 JOIN ti_mu_zhi_shi_dian qk ON qk.zhi_shi_dian_id=k.id AND qk.yi_shan_chu=0
                 JOIN ti_mu q ON q.id=qk.ti_mu_id AND q.ti_gan LIKE '【演示】%'
-                WHERE k.ke_mu_id=? GROUP BY k.id ORDER BY k.id LIMIT 1 OFFSET
+                WHERE k.ke_mu_id=? GROUP BY k.id HAVING COUNT(DISTINCT q.id)>=5 ORDER BY k.id LIMIT 1 OFFSET
                 """ + " " + offset, Long.class, subjectId);
     }
 

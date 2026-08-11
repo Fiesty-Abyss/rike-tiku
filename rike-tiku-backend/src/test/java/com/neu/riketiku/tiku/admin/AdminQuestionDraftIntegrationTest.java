@@ -75,6 +75,45 @@ class AdminQuestionDraftIntegrationTest extends AdminQuestionIntegrationTestSupp
         assertThatThrownBy(() -> service.update(created.question().id(), changed)).isInstanceOf(RenZhengYeWuYiChang.class).hasMessageContaining("状态");
     }
 
+    @Test @Transactional
+    void preservesOptionRowsReferencedByAttachmentsAndRejectsTheirRemoval() {
+        var created = service.create(request("SINGLE_CHOICE", "ONLINE_PRACTICE", true, "AUTHORIZED"));
+        long questionId = created.question().id();
+        long optionAId = jdbc.queryForObject("SELECT id FROM ti_mu_xuan_xiang WHERE ti_mu_id=? AND xuan_xiang_biao_shi='A'", Long.class, questionId);
+        jdbc.update("""
+                INSERT INTO ti_mu_fu_jian(ti_mu_id,ti_mu_xuan_xiang_id,guan_lian_wei_zhi,fu_jian_lei_xing,
+                    yuan_shi_wen_jian_ming,xiang_dui_lu_jing,nei_rong_ha_xi,pai_xu,zhuang_tai)
+                VALUES (?,?,'OPTION','IMAGE','option.png','test/option.png',?,1,'ACTIVE')
+                """, questionId, optionAId, "0".repeat(64));
+
+        var original = requestFrom(created);
+        var revised = new QuestionDtos.Save(original.subjectId(), original.questionType(), original.usageMode(), original.stem(),
+                original.correctAnswer(), original.difficulty(), original.difficultyDescription(), original.autoGradable(),
+                List.of(new QuestionDtos.Option("A", "更新后的选项A", true), new QuestionDtos.Option("B", "更新后的选项B", false)),
+                original.standardAnalysis(), original.knowledgePointIds(), original.sources());
+        service.update(questionId, revised);
+        assertThat(jdbc.queryForObject("SELECT id FROM ti_mu_xuan_xiang WHERE ti_mu_id=? AND xuan_xiang_biao_shi='A'", Long.class, questionId))
+                .isEqualTo(optionAId);
+        assertThat(jdbc.queryForObject("SELECT ti_mu_xuan_xiang_id FROM ti_mu_fu_jian WHERE ti_mu_id=? AND guan_lian_wei_zhi='OPTION'", Long.class, questionId))
+                .isEqualTo(optionAId);
+
+        var removal = new QuestionDtos.Save(revised.subjectId(), revised.questionType(), revised.usageMode(), revised.stem(),
+                "{\"schemaVersion\":1,\"type\":\"SINGLE_CHOICE\",\"optionLabels\":[\"B\"]}", revised.difficulty(), revised.difficultyDescription(), revised.autoGradable(),
+                List.of(new QuestionDtos.Option("B", "更新后的选项B", true), new QuestionDtos.Option("C", "新增选项C", false)),
+                revised.standardAnalysis(), revised.knowledgePointIds(), revised.sources());
+        assertThatThrownBy(() -> service.update(questionId, removal))
+                .isInstanceOfSatisfying(RenZhengYeWuYiChang.class, error -> {
+                    assertThat(error.getCode()).isEqualTo("QUESTION_OPTION_ATTACHMENT_CONFLICT");
+                    assertThat(error.getStatus()).isEqualTo(org.springframework.http.HttpStatus.CONFLICT);
+                });
+    }
+
+    private QuestionDtos.Save requestFrom(QuestionDtos.Detail detail) {
+        return new QuestionDtos.Save(1L, detail.question().questionType(), detail.question().usageMode(), detail.stem(),
+                detail.correctAnswer(), detail.question().difficulty(), "测试", detail.question().autoGradable(), detail.options(),
+                detail.standardAnalysis(), detail.knowledgePoints().stream().map(QuestionDtos.KnowledgePoint::id).toList(), detail.sources());
+    }
+
     private QuestionDtos.Save request(String type, String mode, boolean firstCorrect, String rights) {
         String suffix = UUID.randomUUID().toString();
         Long pointId = jdbc.queryForObject("SELECT id FROM zhi_shi_dian WHERE ke_mu_id=1 AND zhuang_tai='ACTIVE' LIMIT 1", Long.class);

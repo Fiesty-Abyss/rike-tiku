@@ -3,12 +3,14 @@ import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 import { ElMessage } from 'element-plus'
 import { useRoute, useRouter } from 'vue-router'
 import { fetchMessages, markConversationRead, sendMessage, type MessagePage } from '../../api/messages'
+import AquaBrand from '../../components/layout/AquaBrand.vue'
 import { useAuthStore } from '../../stores/auth'
 import { startMessagePolling } from './messagePolling'
 
 const route = useRoute()
 const router = useRouter()
 const auth = useAuthStore()
+const isTeacher = computed(() => auth.activeRole === 'TEACHER')
 const conversationId = computed(() => Number(route.params.id))
 const page = ref<MessagePage | null>(null)
 const content = ref('')
@@ -70,8 +72,9 @@ onBeforeUnmount(() => stopPolling?.())
 
 <template>
   <main class="workspace-page message-page">
-    <header class="workspace-header">
+    <header class="workspace-header shared-workspace-header">
       <div>
+        <AquaBrand class="workspace-brand-aqua" :to="isTeacher ? '/teacher' : '/student'" :subtitle="isTeacher ? '教师科学工作台' : '学生科学工作台'" compact />
         <h1 v-if="page">{{ page.conversation.subjectName }} · {{ page.conversation.peerName }}</h1>
         <p v-if="page">{{ page.conversation.className }} · {{ page.conversation.canSend ? '教学关系有效' : '历史会话，只读' }}</p>
       </div>

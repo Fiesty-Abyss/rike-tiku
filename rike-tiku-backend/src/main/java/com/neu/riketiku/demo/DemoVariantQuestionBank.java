@@ -136,7 +136,7 @@ final class DemoVariantQuestionBank {
                 "Aa产生A、a两种数量相近的配子，aa只产生a配子，因此后代Aa与aa及相应表现型均约为1:1"));
         items.add(fill("BV-06", "BIOLOGY",
                 "变式：在完全显性条件下，AA与Aa杂交，后代为AA的概率是____。",
-                segregation, 2, "1/2", "AA亲本只产生A配子，Aa亲本产生A和a两类配子，因此后代AA与Aa各占1/2。"));
+                segregation, 2, List.of("1/2", "0.5", "50%", "50％"), "AA亲本只产生A配子，Aa亲本产生A和a两类配子，因此后代AA与Aa各占1/2。"));
         items.add(DemoDataService.choice("BV-07", "BIOLOGY", "SINGLE_CHOICE",
                 "变式：不考虑突变和配子选择，基因型Aa的个体产生A、a两类配子的比例通常是多少？",
                 segregation, 1, List.of("1:1", "3:1", "1:2", "全部为A"), Set.of("A"),
@@ -164,5 +164,10 @@ final class DemoVariantQuestionBank {
         DemoDataService.Question base = DemoDataService.fill(key, subject, stem, point, difficulty, accepted);
         return new DemoDataService.Question(base.key(), base.subject(), base.type(), base.stem(), base.knowledgePath(),
                 base.difficulty(), base.answer(), base.options(), analysis);
+    }
+
+    private static DemoDataService.Question fill(String key, String subject, String stem, String point,
+            int difficulty, List<String> accepted, String analysis) {
+        return DemoDataService.fill(key, subject, stem, point, difficulty, accepted, analysis);
     }
 }
