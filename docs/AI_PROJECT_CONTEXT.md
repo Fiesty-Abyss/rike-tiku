@@ -1,5 +1,9 @@
 # 跨AI项目上下文
 
+> PR #28 在 `feat/ai-provider-core` 建立统一 AI Provider 基础层。Provider Core 为 `DONE_VERIFIED`；学生错因分析、当前题目有限多轮答疑、候选题生成均为 `NOT_STARTED`。V12 新增一张脱敏 AI 调用日志表，当前结构为 V1–V12、28 张业务表，V1–V11 未修改。
+
+> 自动化只使用确定性 Fake 与本地 HTTP stub，不使用真实 API Key或外部网络。真实 DeepSeek Provider 默认关闭，当前默认模型 `deepseek-v4-flash` 来自 2026-08-11 官方文档核对；启用前仍应复核模型有效性。
+
 > 2026-08-09 V3.0 非 AI 正式完工审计已确认当时不是 100% DONE_VERIFIED。PR #25 已合并关闭公共门户 MA-016，MA-017 后续已实现安全图片附件显示；管理员高风险操作日志与 30 道合法样例完整闭环仍是 A 层硬缺口。历史审计结论保持 REJECT；见 [V3_NON_AI_COMPLETION_AUDIT.md](V3_NON_AI_COMPLETION_AUDIT.md)。
 
 > PR #26 已普通 merge（merge commit `b992bffef07465665b371b7b707ca8814ec2d36d`）。当前工作分支为 `feat/non-ai-final-closure`；用户已完成最终 acceptance 人工 CAPTCHA/浏览器验收，MA-017 至 MA-026 均已关闭。PR #27 是最后一个普通非 AI 工程 PR，加入了 V11 管理员操作日志、MA-020、管理员题目图片上传、来源权利补充 API、Golden30 正常导入闭环、菜单整理和多角色切换；Flyway V1–V11、27 张业务表；V1–V10 和 MVP30 原始 Excel 未修改。
