@@ -5,6 +5,7 @@ import { ElMessage } from 'element-plus'
 import { fetchTopic, fetchTopics, type TopicDetail, type TopicItem } from '../../api/student/topicLearning'
 import type { ApiError } from '../../api/http'
 import ScientificText from '../../components/question/ScientificText.vue'
+import StandardAnalysis from '../../components/question/StandardAnalysis.vue'
 import { subjectTheme } from '../../utils/subjectTheme'
 
 const route = useRoute()
@@ -51,7 +52,7 @@ onMounted(async()=>{await loadList();await loadDetail()})
       <aside class="topic-index"><section v-for="group in grouped" :key="group.value"><h2>{{ group.label }}</h2><button v-for="item in group.items" :key="item.id" type="button" :class="{active:item.id===detail?.id}" @click="openTopic(item)"><span>{{ item.title }}</span><small>{{ difficultyLabel(item.difficulty) }} · {{ item.knowledgePoints[0]?.name }}</small></button></section></aside>
       <main class="topic-reader">
         <el-empty v-if="!detail" description="从左侧选择一道综合题开始阅读。" />
-        <article v-else><header><span>{{ detail.subjectName }} · {{ difficultyLabel(detail.difficulty) }}</span><h2>{{ detail.title }}</h2></header><div class="topic-material"><h3>材料与问题</h3><ScientificText :content="detail.material" /></div><div class="knowledge-chip-row"><span>关联知识点</span><el-button v-for="point in detail.knowledgePoints" :key="point.id" class="knowledge-chip" round plain @click="openKnowledgePoint(point.id)">{{ point.path }}</el-button></div><el-button v-if="!analysisVisible" type="primary" class="topic-reveal" @click="analysisVisible=true">查看标准解析</el-button><transition name="analysis-reveal"><section v-if="analysisVisible" class="topic-analysis"><div class="section-title-row"><div><h3>标准解析</h3><p>按条件、依据和结论逐步展开。</p></div><el-button link @click="analysisVisible=false">收起</el-button></div><ScientificText :content="detail.standardAnalysis" /><el-button v-if="detail.knowledgePoints[0]" type="primary" plain @click="practiceKnowledgePoint(detail.knowledgePoints[0].id)">练习相关知识点</el-button></section></transition></article>
+        <article v-else><header><span>{{ detail.subjectName }} · {{ difficultyLabel(detail.difficulty) }}</span><h2>{{ detail.title }}</h2></header><div class="topic-material"><h3>材料与问题</h3><ScientificText :content="detail.material" /></div><div class="knowledge-chip-row"><span>关联知识点</span><el-button v-for="point in detail.knowledgePoints" :key="point.id" class="knowledge-chip" round plain @click="openKnowledgePoint(point.id)">{{ point.path }}</el-button></div><el-button v-if="!analysisVisible" type="primary" class="topic-reveal" @click="analysisVisible=true">查看标准解析</el-button><transition name="analysis-reveal"><section v-if="analysisVisible" class="topic-analysis"><div class="section-title-row"><div><h3>标准解析</h3><p>按条件、依据和结论逐步展开。</p></div><el-button link @click="analysisVisible=false">收起</el-button></div><StandardAnalysis :content="detail.standardAnalysis" /><el-button v-if="detail.knowledgePoints[0]" type="primary" plain @click="practiceKnowledgePoint(detail.knowledgePoints[0].id)">练习相关知识点</el-button></section></transition></article>
       </main>
     </div>
   </section>

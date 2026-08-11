@@ -181,6 +181,45 @@ class DemoDataServiceIntegrationTest extends AdminQuestionIntegrationTestSupport
 
     @Test
     @Transactional
+    void everyDemoChoiceAnalysisCoversEveryActiveOptionAndEveryTopicHasReadableSections() {
+        demo.seed();
+        demo.validateSeed();
+
+        List<Long> choiceIds = jdbc.queryForList("""
+                SELECT q.id FROM ti_mu q WHERE q.ti_gan LIKE '【演示】%'
+                  AND q.ti_mu_lei_xing IN ('SINGLE_CHOICE','MULTIPLE_CHOICE') AND q.yi_shan_chu=0
+                ORDER BY q.id
+                """, Long.class);
+        assertThat(choiceIds).hasSize(246);
+        HashSet<String> uniqueAnalyses = new HashSet<>();
+        for (long questionId : choiceIds) {
+            String analysis = jdbc.queryForObject("""
+                    SELECT jie_xi_nei_rong FROM ti_mu_jie_xi
+                    WHERE ti_mu_id=? AND jie_xi_lei_xing='STANDARD' AND yi_shan_chu=0
+                    """, String.class, questionId);
+            assertThat(analysis).contains("结论：选择 ", "关键依据：", "易错点：")
+                    .doesNotContain("根据基本概念可知答案为", "A 正确，其他错误")
+                    .hasSizeGreaterThan(160);
+            jdbc.query("""
+                    SELECT xuan_xiang_biao_shi,xuan_xiang_nei_rong FROM ti_mu_xuan_xiang
+                    WHERE ti_mu_id=? AND yi_shan_chu=0 ORDER BY pai_xu,id
+                    """, rs -> {
+                while (rs.next()) assertThat(analysis).contains(rs.getString(1) + ". " + rs.getString(2) + "：");
+                return null;
+            }, questionId);
+            assertThat(uniqueAnalyses.add(analysis)).as("questionId=" + questionId).isTrue();
+        }
+
+        List<String> topics = DemoTopicQuestionBank.questions().stream()
+                .map(DemoTopicQuestionBank.TopicQuestion::analysis).toList();
+        assertThat(topics).hasSize(18).allSatisfy(analysis -> {
+            assertThat(analysis).contains("解题思路\n", "步骤 1：", "\n\n结论\n", "\n\n易错点\n");
+            assertThat(analysis.lines().map(String::trim).filter(line -> !line.isBlank()).count()).isGreaterThanOrEqualTo(7);
+        });
+    }
+
+    @Test
+    @Transactional
     void acceptedVariantsPassStructureRightsReviewAndDuplicateChecks() {
         assertThat(DemoVariantQuestionBank.CANDIDATE_COUNT).isEqualTo(54);
         assertThat(DemoVariantQuestionBank.ACCEPTED_COUNT).isEqualTo(30);

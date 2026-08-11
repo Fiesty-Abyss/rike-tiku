@@ -224,6 +224,7 @@ h1 {
 .mastery-counts div { padding:10px 16px; border-top:1px solid var(--border); }
 .mastery-counts div:nth-child(-n+3) { border-top:0; }
 .mastery-counts dd { margin:5px 0 0; color:var(--primary-deep); font-size:18px; font-weight:700; }
+.mastery-inline-ratio { display:inline; font-variant-numeric:tabular-nums; white-space:nowrap; }
 .recommendation-list { display:grid; }
 .recommendation-list article { display:flex; align-items:center; justify-content:space-between; gap:24px; padding:17px 2px; border-top:1px solid var(--border); }
 .recommendation-list article:first-child { border-top:0; }

@@ -39,8 +39,9 @@
   --subject-accent-deep: oklch(43% 0.145 253);
   --subject-soft: var(--physics-soft);
   background:
-    radial-gradient(ellipse at 82% 5rem, oklch(79% 0.105 242 / .46), transparent 27rem),
-    linear-gradient(160deg, oklch(92% 0.055 239), var(--canvas) 32rem, oklch(96% .025 215));
+    linear-gradient(108deg, transparent 0 64%, oklch(67% .12 244 / .08) 64.1% 64.3%, transparent 64.4%),
+    radial-gradient(ellipse at 82% 4rem, oklch(76% 0.11 242 / .38), transparent 30rem),
+    linear-gradient(164deg, oklch(91% 0.052 239), oklch(97% .014 224) 42rem, oklch(95% .026 215));
 }
 
 .student-shell:has([data-subject="chemistry"]) {
@@ -48,8 +49,9 @@
   --subject-accent-deep: oklch(45% 0.075 296);
   --subject-soft: var(--chemistry-soft);
   background:
-    radial-gradient(ellipse at 80% 6rem, oklch(82% 0.075 289 / .5), transparent 28rem),
-    linear-gradient(160deg, oklch(93% 0.043 292), var(--canvas) 32rem, oklch(97% .02 226));
+    radial-gradient(circle at 87% 13rem, transparent 0 5.8rem, oklch(65% .07 295 / .09) 5.9rem 6.05rem, transparent 6.15rem),
+    linear-gradient(96deg, transparent 0 78%, oklch(73% .07 292 / .09) 78.1% 78.3%, transparent 78.4%),
+    linear-gradient(164deg, oklch(93% 0.035 292), oklch(98% .012 270) 40rem, oklch(96% .02 225));
 }
 
 .student-shell:has([data-subject="biology"]) {
@@ -57,8 +59,10 @@
   --subject-accent-deep: oklch(40% 0.09 163);
   --subject-soft: var(--biology-soft);
   background:
-    radial-gradient(ellipse at 80% 6rem, oklch(79% 0.09 170 / .42), transparent 28rem),
-    linear-gradient(160deg, oklch(92% 0.05 164), var(--canvas) 32rem, oklch(96% .027 185));
+    linear-gradient(132deg, transparent 0 69%, oklch(55% .09 164 / .07) 69.1% 69.25%, transparent 69.35%),
+    linear-gradient(48deg, transparent 0 81%, oklch(60% .08 158 / .06) 81.1% 81.25%, transparent 81.35%),
+    radial-gradient(ellipse at 84% 7rem, oklch(76% 0.09 169 / .34), transparent 29rem),
+    linear-gradient(164deg, oklch(91% 0.045 164), oklch(98% .014 175) 40rem, oklch(95% .028 185));
 }
 
 .student-shell:has([data-subject]) .student-header {
@@ -69,17 +73,29 @@
   backdrop-filter: blur(24px) saturate(132%);
 }
 
-.student-page[data-subject] { position: relative; }
+.student-page[data-subject] { position: relative; isolation: isolate; }
+.student-page[data-subject]::before {
+  position: absolute;
+  z-index: -1;
+  top: -2.5rem;
+  right: 0;
+  width: min(34vw, 24rem);
+  height: 10rem;
+  border-top: 1px solid color-mix(in oklch, var(--subject-accent), transparent 58%);
+  border-radius: 50%;
+  opacity: .72;
+  content: "";
+  transform: rotate(-8deg);
+}
 .student-page[data-subject] .student-page-heading,
 .student-page[data-subject] .practice-progress,
 .student-page[data-subject] .result-summary {
   padding: 1.35rem 1.5rem;
-  border: 1px solid color-mix(in oklch, var(--subject-accent), transparent 70%);
-  border-radius: var(--radius-feature);
-  background: color-mix(in oklch, var(--subject-soft) 58%, transparent);
-  box-shadow: inset 1px 1px oklch(100% 0 0 / .82), 0 1.1rem 3rem color-mix(in oklch, var(--subject-accent), transparent 91%);
-  -webkit-backdrop-filter: blur(24px) saturate(128%);
-  backdrop-filter: blur(24px) saturate(128%);
+  border: 0;
+  border-top: 1px solid color-mix(in oklch, var(--subject-accent), transparent 42%);
+  border-radius: 0;
+  background: linear-gradient(90deg, color-mix(in oklch, var(--subject-soft) 80%, white), color-mix(in oklch, var(--subject-soft) 28%, transparent) 64%, transparent);
+  box-shadow: none;
 }
 
 .student-page[data-subject] .practice-question,
@@ -101,13 +117,13 @@
 }
 
 .workspace-page[data-subject="physics"] {
-  background: radial-gradient(ellipse at 82% 7rem, oklch(77% .1 241 / .4), transparent 30rem), linear-gradient(165deg, oklch(92% .052 239), var(--canvas) 32rem);
+  background: linear-gradient(110deg, transparent 0 72%, oklch(62% .12 245 / .08) 72.1% 72.3%, transparent 72.4%), radial-gradient(ellipse at 84% 7rem, oklch(77% .1 241 / .35), transparent 30rem), linear-gradient(165deg, oklch(92% .052 239), var(--canvas) 32rem);
 }
 .workspace-page[data-subject="chemistry"] {
-  background: radial-gradient(ellipse at 82% 7rem, oklch(80% .075 289 / .42), transparent 30rem), linear-gradient(165deg, oklch(93% .043 292), var(--canvas) 32rem);
+  background: radial-gradient(circle at 86% 12rem, transparent 0 6rem, oklch(62% .07 292 / .09) 6.05rem 6.2rem, transparent 6.3rem), radial-gradient(ellipse at 82% 7rem, oklch(80% .075 289 / .36), transparent 30rem), linear-gradient(165deg, oklch(93% .043 292), var(--canvas) 32rem);
 }
 .workspace-page[data-subject="biology"] {
-  background: radial-gradient(ellipse at 82% 7rem, oklch(78% .09 169 / .38), transparent 30rem), linear-gradient(165deg, oklch(92% .048 164), var(--canvas) 32rem);
+  background: linear-gradient(132deg, transparent 0 76%, oklch(53% .09 164 / .07) 76.1% 76.3%, transparent 76.4%), radial-gradient(ellipse at 82% 7rem, oklch(78% .09 169 / .34), transparent 30rem), linear-gradient(165deg, oklch(92% .048 164), var(--canvas) 32rem);
 }
 
 .workspace-page[data-subject] .workspace-header {

@@ -3,9 +3,10 @@ import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { fetchPracticeResult, type PracticeResult } from '../../api/student/practice'
-import { formatPracticeAnswer } from './practiceAnswerFormatter'
 import type { ApiError } from '../../api/http'
 import QuestionContent from '../../components/question/QuestionContent.vue'
+import AnswerDisplay from '../../components/question/AnswerDisplay.vue'
+import StandardAnalysis from '../../components/question/StandardAnalysis.vue'
 import { subjectTheme } from '../../utils/subjectTheme'
 
 const route = useRoute()
@@ -77,9 +78,9 @@ onMounted(async () => {
       <article :key="item.question.practiceQuestionId" class="result-focus" :class="item.correct ? 'is-correct' : 'is-wrong'">
         <div class="result-focus-heading"><el-tag :type="item.correct ? 'success' : 'danger'">{{ item.correct ? '回答正确' : '需要复习' }}</el-tag><span>第 {{ item.question.order }} 题</span></div>
         <h2><QuestionContent :content="item.question.stem" :attachments="item.question.attachments" position="QUESTION" /></h2>
-        <div class="answer-comparison"><div><span>你的答案</span><strong>{{ formatPracticeAnswer(item.question.questionType, item.studentAnswer) }}</strong></div><div><span>正确答案</span><strong>{{ formatPracticeAnswer(item.question.questionType, item.correctAnswer) }}</strong></div></div>
+        <div class="answer-comparison"><div><span>你的答案</span><AnswerDisplay :question-type="item.question.questionType" :value="item.studentAnswer" :options="item.question.options" :attachments="item.question.attachments" /></div><div><span>正确答案</span><AnswerDisplay :question-type="item.question.questionType" :value="item.correctAnswer" :options="item.question.options" :attachments="item.question.attachments" /></div></div>
         <div class="knowledge-chip-row"><span>知识点</span><el-button v-for="point in item.question.knowledgePoints" :key="point.id" class="knowledge-chip" round plain @click="openKnowledgePoint(point.id)">{{ point.path }}</el-button></div>
-        <section class="analysis-panel"><button type="button" class="analysis-toggle" :aria-expanded="analysisExpanded" @click="analysisExpanded = !analysisExpanded"><span>标准解析</span><span>{{ analysisExpanded ? '收起' : '展开' }}</span></button><div v-show="analysisExpanded" class="analysis-content"><QuestionContent :content="item.standardAnalysis" :attachments="item.question.attachments" position="STANDARD_ANALYSIS" /></div></section>
+        <section class="analysis-panel"><button type="button" class="analysis-toggle" :aria-expanded="analysisExpanded" @click="analysisExpanded = !analysisExpanded"><span>标准解析</span><span>{{ analysisExpanded ? '收起' : '展开' }}</span></button><div v-show="analysisExpanded" class="analysis-content"><StandardAnalysis :content="item.standardAnalysis" :attachments="item.question.attachments" /></div></section>
         <div class="result-next-actions"><el-button :disabled="currentIndex === 0" @click="move(-1)">上一题</el-button><el-button type="primary" plain @click="similarPractice">练习类似题</el-button><el-button :disabled="currentIndex >= visibleQuestions.length - 1" @click="move(1)">下一题</el-button></div>
       </article>
       </Transition>

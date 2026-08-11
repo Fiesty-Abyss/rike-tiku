@@ -6,7 +6,6 @@ import { createPracticeSession, fetchPracticeOptions, type Subject } from '../..
 import { fetchStudentHighFrequencyPoints, type StudentHighFrequencyPoint } from '../../api/student/highFrequency'
 import { fetchStudentLearningSummary, type MasteryLevel, type StudentLearningSummary } from '../../api/student/learningMastery'
 import type { ApiError } from '../../api/http'
-import MetricFraction from '../../components/MetricFraction.vue'
 import { subjectTheme } from '../../utils/subjectTheme'
 const route = useRoute()
 const router = useRouter()
@@ -128,7 +127,7 @@ onMounted(() => void load())
           <small>{{ learningSummary.overall.totalCorrectCount }} / {{ learningSummary.overall.totalAnsweredCount }} 题答对</small>
         </div>
         <dl class="mastery-counts">
-          <div><dt>已练习知识点</dt><dd><MetricFraction :numerator="learningSummary.overall.practicedKnowledgePointCount" :denominator="learningSummary.overall.totalKnowledgePointCount" :label="`已练习知识点 ${learningSummary.overall.practicedKnowledgePointCount} / ${learningSummary.overall.totalKnowledgePointCount}`" /></dd></div>
+          <div><dt>已练习知识点</dt><dd><span class="mastery-inline-ratio" role="text" :aria-label="`已练习知识点 ${learningSummary.overall.practicedKnowledgePointCount} / ${learningSummary.overall.totalKnowledgePointCount}`">{{ learningSummary.overall.practicedKnowledgePointCount }} / {{ learningSummary.overall.totalKnowledgePointCount }}</span></dd></div>
           <div><dt>已掌握</dt><dd>{{ learningSummary.overall.masteredKnowledgePointCount }}</dd></div>
           <div><dt>巩固中</dt><dd>{{ learningSummary.overall.improvingKnowledgePointCount }}</dd></div>
           <div><dt>薄弱</dt><dd>{{ learningSummary.overall.weakKnowledgePointCount }}</dd></div>

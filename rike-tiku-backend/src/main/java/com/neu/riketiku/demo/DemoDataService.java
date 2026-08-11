@@ -10,6 +10,7 @@ import java.time.Year;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -271,6 +272,7 @@ public class DemoDataService {
                 WHERE q.ti_gan LIKE '【专题演示】%' AND a.jie_xi_lei_xing='STANDARD'
                   AND a.zhuang_tai='PUBLISHED' AND a.yi_shan_chu=0 AND CHAR_LENGTH(TRIM(a.jie_xi_nei_rong))>=80
                 """));
+        validateStructuredTopicAnalyses();
         expect("完整可冻结题", FINAL_DEMO_QUESTION_COUNT, count("""
                 SELECT COUNT(*) FROM ti_mu q
                 WHERE q.ti_gan LIKE '【演示】%' AND q.zhuang_tai='PUBLISHED'
@@ -304,6 +306,7 @@ public class DemoDataService {
                     OR JSON_LENGTH(JSON_EXTRACT(q.zheng_que_da_an,'$.blanks[0].acceptedAnswers'))<1)
                 """));
         expect("PUBLISHED标准解析", FINAL_DEMO_QUESTION_COUNT, count("SELECT COUNT(*) FROM ti_mu_jie_xi a JOIN ti_mu q ON q.id=a.ti_mu_id WHERE q.ti_gan LIKE '【演示】%' AND a.jie_xi_lei_xing='STANDARD' AND a.ban_ben_hao=1 AND a.zhuang_tai='PUBLISHED' AND a.yi_shan_chu=0"));
+        validateChoiceAnalyses();
         List<String> lowQualityAnalyses = jdbc.queryForList("""
                 SELECT CONCAT(q.id, ':', a.jie_xi_nei_rong) FROM ti_mu_jie_xi a JOIN ti_mu q ON q.id=a.ti_mu_id
                 WHERE q.ti_gan LIKE '【演示】%' AND a.jie_xi_lei_xing='STANDARD'
@@ -492,6 +495,58 @@ public class DemoDataService {
             }
         }
         return result;
+    }
+
+    private void validateChoiceAnalyses() {
+        List<ChoiceAnalysis> choices = jdbc.query("""
+                SELECT q.id,a.jie_xi_nei_rong FROM ti_mu q
+                JOIN ti_mu_jie_xi a ON a.ti_mu_id=q.id AND a.jie_xi_lei_xing='STANDARD' AND a.yi_shan_chu=0
+                WHERE q.ti_gan LIKE '【演示】%' AND q.ti_mu_lei_xing IN ('SINGLE_CHOICE','MULTIPLE_CHOICE')
+                  AND q.zhuang_tai='PUBLISHED' AND q.yi_shan_chu=0
+                ORDER BY q.id
+                """, (rs, row) -> new ChoiceAnalysis(rs.getLong(1), rs.getString(2)));
+        if (choices.size() != 246) {
+            throw new IllegalStateException("Demo360选择题数量不符: " + choices.size());
+        }
+        Set<String> unique = new HashSet<>();
+        for (ChoiceAnalysis choice : choices) {
+            if (choice.analysis().length() < 160
+                    || !choice.analysis().contains("结论：选择 ")
+                    || !choice.analysis().contains("关键依据：")
+                    || !choice.analysis().contains("易错点：")
+                    || choice.analysis().contains("根据基本概念可知答案为")
+                    || choice.analysis().contains("A 正确，其他错误")) {
+                throw new IllegalStateException("Demo选择题解析结构不完整: " + choice.questionId());
+            }
+            List<OptionText> options = jdbc.query("""
+                    SELECT xuan_xiang_biao_shi,xuan_xiang_nei_rong FROM ti_mu_xuan_xiang
+                    WHERE ti_mu_id=? AND yi_shan_chu=0 ORDER BY pai_xu,id
+                    """, (rs, row) -> new OptionText(rs.getString(1), rs.getString(2)), choice.questionId());
+            if (options.isEmpty() || options.stream().anyMatch(option ->
+                    !choice.analysis().contains(option.label() + ". " + option.content() + "："))) {
+                throw new IllegalStateException("Demo选择题解析未逐项覆盖活动选项: " + choice.questionId());
+            }
+            unique.add(choice.analysis());
+        }
+        if (unique.size() != choices.size()) {
+            throw new IllegalStateException("Demo选择题存在完全重复解析");
+        }
+    }
+
+    private void validateStructuredTopicAnalyses() {
+        List<String> analyses = jdbc.queryForList("""
+                SELECT a.jie_xi_nei_rong FROM ti_mu q
+                JOIN ti_mu_jie_xi a ON a.ti_mu_id=q.id AND a.jie_xi_lei_xing='STANDARD' AND a.yi_shan_chu=0
+                WHERE q.ti_gan LIKE '【专题演示】%' AND q.zhuang_tai='PUBLISHED' AND q.yi_shan_chu=0
+                ORDER BY q.id
+                """, String.class);
+        if (analyses.size() != DemoTopicQuestionBank.TOTAL_COUNT || analyses.stream().anyMatch(analysis -> {
+            long nonEmptyLines = analysis.lines().map(String::trim).filter(line -> !line.isBlank()).count();
+            return nonEmptyLines < 7 || !analysis.contains("解题思路\n") || !analysis.contains("步骤 1：")
+                    || !analysis.contains("\n\n结论\n") || !analysis.contains("\n\n易错点\n");
+        })) {
+            throw new IllegalStateException("Topic18 标准解析没有全部采用多段结构");
+        }
     }
 
     private void seedQuestion(Question q, long subjectId, long pointId, long adminId) {
@@ -719,13 +774,70 @@ public class DemoDataService {
         List<String> labels = List.of("A", "B", "C", "D");
         for (int index = 0; index < labels.size(); index++) options.add(new Option(labels.get(index), contents.get(index), correct.contains(labels.get(index))));
         String answer = "{\"schemaVersion\":1,\"type\":\"" + type + "\",\"optionLabels\":[" + correct.stream().sorted().map(label -> "\"" + label + "\"").reduce((a, b) -> a + "," + b).orElse("") + "]}";
-        return new Question(key, subject, type, stem, point, difficulty, answer, options, explanation + "。");
+        return new Question(key, subject, type, stem, point, difficulty, answer, options,
+                choiceExplanation(subject, contents, correct, explanation));
+    }
+
+    private static String choiceExplanation(String subject, List<String> contents, Set<String> correct, String explanation) {
+        List<String> labels = List.of("A", "B", "C", "D");
+        String conclusion = correct.stream().sorted().collect(java.util.stream.Collectors.joining("、"));
+        String correctStatements = java.util.stream.IntStream.range(0, labels.size())
+                .filter(index -> correct.contains(labels.get(index)))
+                .mapToObj(contents::get)
+                .collect(java.util.stream.Collectors.joining("；"));
+        String basis = terminal(explanation);
+        StringBuilder result = new StringBuilder("结论：选择 ").append(conclusion).append("。\n\n");
+        for (int index = 0; index < labels.size(); index++) {
+            String label = labels.get(index);
+            String content = contents.get(index);
+            result.append(label).append(". ").append(content).append("：");
+            if (correct.contains(label)) {
+                result.append("正确。").append(basis).append("因此该项给出的“")
+                        .append(content).append("”符合题干条件。");
+            } else if (content.matches(".*(全部|一定|始终|停止|完全|只需要|只能|不会|无关|无限).*")) {
+                result.append("错误。").append(basis).append("题干只能支持“")
+                        .append(correctStatements).append("”，不能推出该项的绝对判断“")
+                        .append(content).append("”。");
+            } else if (content.matches(".*[0-9０-９].*")) {
+                result.append("错误。").append(basis).append("按题干数据和上述关系应得到“")
+                        .append(correctStatements).append("”，不是该项的“").append(content).append("”。");
+            } else {
+                result.append("错误。").append(basis).append("由此可得“")
+                        .append(correctStatements).append("”，而该项所述“").append(content)
+                        .append("”颠倒、遗漏或超出了题干所给的条件。");
+            }
+            result.append("\n");
+        }
+        result.append("\n关键依据：").append(basis).append("\n\n易错点：")
+                .append(switch (subject) {
+                    case "PHYSICS" -> "先确定研究对象、方向和适用规律，再核对量纲与条件，不能只凭关键词选项。";
+                    case "CHEMISTRY" -> "先核对物质、条件、反应或实验边界，再判断每个选项，不能把相近概念互换。";
+                    case "BIOLOGY" -> "先限定材料、对象和生理或遗传条件，再逐项判断，不能把可能性写成必然性。";
+                    default -> "逐项核对题干条件与结论，避免只记选项字母。";
+                });
+        return result.toString();
+    }
+
+    private static String terminal(String value) {
+        String normalized = value.trim();
+        return normalized.endsWith("。") || normalized.endsWith("；") ? normalized : normalized + "。";
     }
 
     static Question fill(String key, String subject, String stem, String point, int difficulty, String accepted) {
-        String answer = "{\"schemaVersion\":1,\"type\":\"FILL_BLANK\",\"blanks\":[{\"index\":1,\"acceptedAnswers\":[\"" + accepted + "\"],\"caseSensitive\":false}]}";
+        return fill(key, subject, stem, point, difficulty, List.of(accepted));
+    }
+
+    static Question fill(String key, String subject, String stem, String point, int difficulty, List<String> accepted) {
+        if (accepted.isEmpty()) throw new IllegalArgumentException("填空题至少需要一个可接受答案");
+        String acceptedJson = accepted.stream().map(DemoDataService::jsonString)
+                .collect(java.util.stream.Collectors.joining(","));
+        String answer = "{\"schemaVersion\":1,\"type\":\"FILL_BLANK\",\"blanks\":[{\"index\":1,\"acceptedAnswers\":[" + acceptedJson + "],\"caseSensitive\":false}]}";
         return new Question(key, subject, "FILL_BLANK", stem, point, difficulty, answer, List.of(),
-                fillExplanation(subject, stem, point, accepted));
+                fillExplanation(subject, stem, point, accepted.getFirst()));
+    }
+
+    private static String jsonString(String value) {
+        return "\"" + value.replace("\\", "\\\\").replace("\"", "\\\"") + "\"";
     }
 
     private static String fillExplanation(String subject, String stem, String point, String accepted) {
@@ -789,6 +901,19 @@ public class DemoDataService {
                 base.difficulty(), base.answer(), base.options(), analysis.endsWith("。") ? analysis : analysis + "。");
     }
 
+    static Question fill(String key, String subject, String stem, String point, int difficulty,
+            List<String> accepted, String analysis) {
+        Question base = fill(key, subject, stem, point, difficulty, accepted);
+        return new Question(base.key(), base.subject(), base.type(), base.stem(), base.knowledgePath(),
+                base.difficulty(), base.answer(), base.options(), analysis.endsWith("。") ? analysis : analysis + "。");
+    }
+
     private record DemoAttachment(String position, String marker, String relativePath, String hash) {
+    }
+
+    private record ChoiceAnalysis(long questionId, String analysis) {
+    }
+
+    private record OptionText(String label, String content) {
     }
 }

@@ -292,6 +292,47 @@ class StudentPracticeIntegrationTest extends AdminQuestionIntegrationTestSupport
 
     @Test
     @Transactional
+    void historicalResultAndWrongDetailKeepSessionOptionSnapshotAfterQuestionChanges() {
+        long userId = student("frozen_options");
+        long questionId = question("SINGLE_CHOICE", "PUBLISHED", 1, "A");
+        var correctSession = service.create(userId, new StudentPracticeDtos.CreateRequest(1L, null, List.of("SINGLE_CHOICE"), null, 1));
+        jdbc.update("UPDATE ti_mu_xuan_xiang SET xuan_xiang_nei_rong='题库后来修改的内容' WHERE ti_mu_id=? AND xuan_xiang_biao_shi='A'", questionId);
+        var correctAnswer = new StudentPracticeDtos.Answer(correctSession.questions().getFirst().practiceQuestionId(),
+                JsonNodeFactory.instance.textNode("A"), 1);
+        var result = service.submit(userId, correctSession.id(), new StudentPracticeDtos.SubmitRequest(List.of(correctAnswer)));
+        assertThat(result.questions().getFirst().question().options())
+                .extracting(StudentPracticeDtos.Option::content).contains("选项A").doesNotContain("题库后来修改的内容");
+
+        var wrongSession = service.create(userId, new StudentPracticeDtos.CreateRequest(1L, null, List.of("SINGLE_CHOICE"), null, 1));
+        var wrongAnswer = new StudentPracticeDtos.Answer(wrongSession.questions().getFirst().practiceQuestionId(),
+                JsonNodeFactory.instance.textNode("B"), 1);
+        service.submit(userId, wrongSession.id(), new StudentPracticeDtos.SubmitRequest(List.of(wrongAnswer)));
+        jdbc.update("UPDATE ti_mu_xuan_xiang SET xuan_xiang_nei_rong='再次修改的内容' WHERE ti_mu_id=? AND xuan_xiang_biao_shi='A'", questionId);
+        assertThat(service.wrongQuestion(userId, questionId).options())
+                .extracting(StudentPracticeDtos.Option::content).contains("题库后来修改的内容").doesNotContain("再次修改的内容");
+    }
+
+    @Test
+    @Transactional
+    void gradesOnlyExplicitFractionDecimalAndPercentVariantsAsEquivalent() {
+        long userId = student("numeric_variants");
+        long questionId = question("FILL_BLANK", "PUBLISHED", 1, "填空答案");
+        jdbc.update("UPDATE ti_mu SET zheng_que_da_an=? WHERE id=?", """
+                {"schemaVersion":1,"type":"FILL_BLANK","blanks":[
+                  {"index":1,"acceptedAnswers":["1/2","0.5","50%","50％"],"caseSensitive":false}
+                ]}
+                """, questionId);
+
+        for (String accepted : List.of("1/2", "0.5", "50%", "50％", " 1/2 ", " 0.5 ", " 50% ", " 50％ ")) {
+            assertThat(submitFill(userId, accepted)).as(accepted).isEqualTo(1);
+        }
+        for (String rejected : List.of("50", "5%", "0.05", "1/3", "", "0.5 mol/L")) {
+            assertThat(submitFill(userId, rejected)).as(rejected).isZero();
+        }
+    }
+
+    @Test
+    @Transactional
     void reportsAvailabilityAndCreatesRuleBasedSimilarPracticeWithoutCurrentQuestion() {
         long userId = student("similar");
         long point = uniqueKnowledgePoint();
@@ -380,6 +421,13 @@ class StudentPracticeIntegrationTest extends AdminQuestionIntegrationTestSupport
         long point = jdbc.queryForObject("SELECT id FROM zhi_shi_dian WHERE ke_mu_id=1 AND zhuang_tai='ACTIVE' LIMIT 1", Long.class);
         jdbc.update("INSERT INTO ti_mu_zhi_shi_dian(ti_mu_id,zhi_shi_dian_id,shi_fou_zhu_yao,pai_xu) VALUES (?,?,1,1)", id, point);
         return id;
+    }
+
+    private int submitFill(long userId, String value) {
+        var session = service.create(userId, new StudentPracticeDtos.CreateRequest(1L, null, List.of("FILL_BLANK"), null, 1));
+        var answer = new StudentPracticeDtos.Answer(session.questions().getFirst().practiceQuestionId(),
+                JsonNodeFactory.instance.arrayNode().add(value), 1);
+        return service.submit(userId, session.id(), new StudentPracticeDtos.SubmitRequest(List.of(answer))).correctCount();
     }
 
     private long questionForSubject(long subjectId, String type, int difficulty) {
