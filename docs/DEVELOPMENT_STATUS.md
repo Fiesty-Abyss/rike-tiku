@@ -1,6 +1,6 @@
 # 开发状态
 
-> 2026-08-11 PR #29 学生 AI 学习主链：`DONE_VERIFIED`（学生 AI/V13/Provider 请求映射专项与前端专项；最终全量留 PR #31）。已实现绑定正式答题事实的错因分析、成功结果复用、最多一次 JSON correction、当前题最多 8 轮答疑、严格 JWT 学生所有权、Prompt 数据隔离、失败时 STANDARD 降级，以及结果页/错题页入口。Flyway 为 V1–V13、31 张业务表；V1–V12 未修改。候选题生成仍为 `NOT_STARTED`。
+> 2026-08-11 PR #29 学生 AI 学习主链：`REAL_PROVIDER_SMOKE_PENDING`。Mock/随机临时 MySQL 专项已覆盖分析、复用、一次 JSON correction、当前题最多 8 轮答疑、严格所有权、Prompt 数据隔离和 STANDARD 降级；集中修正轮进一步保证错题进入 REVIEWING/MASTERED 后，AI 仍按当前学生、题目、错误标记及已提交练习查询最近一次错误正式答题事实，而“最近答案”继续保持现有最新作答语义。当前 Codex 进程未继承轮换后的 Key，真实 DeepSeek smoke 未执行，故不得标为 `DONE_VERIFIED`。Flyway 保持 V1–V13、31 张业务表；V1–V13 均未在修正轮修改。候选题生成仍为 `NOT_STARTED`。
 
 > 2026-08-11 PR #28 `AiModelProvider Core`：`DONE_VERIFIED`（Provider 专项与 package 门禁）。已实现统一 Provider 契约、确定性 Fake、DeepSeek OpenAI-compatible HTTP Provider、连接/请求超时、最多一次临时失败重试、有限错误分类、受控降级和 V12 脱敏调用日志。AI 默认关闭，自动化不需要真实 Key。学生错因分析、多轮答疑、候选题生成和前端 AI 页面仍为 `NOT_STARTED`；完整全量回归留到 PR #31。
 
@@ -18,7 +18,7 @@
 
 - 当前分支：`feat/ai-student-learning-core`；基线为 PR #28 ordinary merge commit `54c1669b3113086a2fb22e756e0656ea8cb751c8`。
 - Flyway：V1–V13，共 31 张业务表；V13 新增 `ai_cuo_ti_fen_xi`、`ai_hui_hua`、`ai_xiao_xi`，V1–V12 未修改。
-- Provider Core：`DONE_VERIFIED`。学生 AI 主链：`DONE_VERIFIED`。候选题生成：`NOT_STARTED`。
+- Provider Core：`DONE_VERIFIED`。学生 AI 主链：`REAL_PROVIDER_SMOKE_PENDING`。候选题生成：`NOT_STARTED`。
 
 - 当前分支：`feat/non-ai-final-closure`；PR #26 已合并，公共门户和附件机器实现已进入 `main`；PR #27 已完成最终人工验收，准备 ordinary merge 封板。
 - 根路径 `/` 是无需认证的公共门户。Round 4 以 Hero、Physics、Chemistry、Biology、Learning Loop、Entrance 六场景组织真实产品内容，保留 3 / 360 / 18 与统一 `/login`，不写 AI 宣传或虚构指标；登录、角色选择、首次改密和受保护路由守卫的业务行为未改动。MA-016 已关闭。

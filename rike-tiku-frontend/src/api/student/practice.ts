@@ -10,7 +10,7 @@ export interface PracticeSession { id:number; subjectId:number; subjectCode:stri
 export interface PracticeResultQuestion { answerFactId:number; question:PracticeQuestion; studentAnswer:unknown; correctAnswer:unknown; standardAnalysis:string; correct:boolean; score:number }
 export interface PracticeResult { sessionId:number; subjectId:number; subjectCode:string; subjectName:string; totalCount:number; correctCount:number; totalScore:number; submittedAt:string; questions:PracticeResultQuestion[] }
 export interface WrongQuestion { questionId:number; subjectCode:string; subjectName:string; questionType:QuestionType; stemSummary:string; errorCount:number; consecutiveCorrectCount:number; status:'NEW'|'REVIEWING'|'MASTERED'; lastWrongAt:string }
-export interface WrongQuestionDetail { answerFactId:number; wrongQuestion:WrongQuestion; stem:string; options:Option[]; latestStudentAnswer:unknown; correctAnswer:unknown; standardAnalysis:string; knowledgePoints:KnowledgePoint[]; attachments:Attachment[] }
+export interface WrongQuestionDetail { aiAnalysisAnswerFactId:number; wrongQuestion:WrongQuestion; stem:string; options:Option[]; latestStudentAnswer:unknown; correctAnswer:unknown; standardAnalysis:string; knowledgePoints:KnowledgePoint[]; attachments:Attachment[] }
 export interface CreatePracticeRequest { subjectId:number; knowledgePointIds?:number[]; questionTypes?:QuestionType[]; difficulty?:number; count:number; referenceQuestionId?:number }
 export type PracticeAvailabilityRequest = Omit<CreatePracticeRequest, 'count'>
 export interface SubmitPracticeRequest { answers:Array<{practiceQuestionId:number;answer:unknown;elapsedSeconds?:number}> }
