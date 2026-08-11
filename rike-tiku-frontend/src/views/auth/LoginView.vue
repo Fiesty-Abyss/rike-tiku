@@ -2,8 +2,10 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import type { ApiError } from '../../api/http'
+import aquaWorld from '../../assets/aqua/rike-aqua-world.webp'
 import { resolvePostLoginPath } from '../../auth/postLoginRoute'
 import LoginForm from '../../components/auth/LoginForm.vue'
+import AquaBrand from '../../components/layout/AquaBrand.vue'
 import { useAuthStore } from '../../stores/auth'
 import { useEntranceMotion } from '../../utils/entranceMotion'
 
@@ -13,7 +15,7 @@ const loading = ref(false)
 const errorMessage = ref('')
 const loginForm = ref<InstanceType<typeof LoginForm>>()
 const root = ref<HTMLElement>()
-useEntranceMotion(root, '.auth-introduction > *, .auth-panel > *', 0.06)
+useEntranceMotion(root, '.auth-world-copy, .auth-optic, .auth-panel', 0.08)
 
 const messages: Record<string, string> = {
   INVALID_CREDENTIALS: '用户名或密码错误，请重新输入。',
@@ -52,17 +54,20 @@ async function handleLogin(payload: {
 <template>
   <main ref="root" class="auth-page">
     <section class="auth-introduction" aria-label="系统说明">
-      <p class="school-mark">RIKE · LEARNING</p>
-      <h1>高中理科学习与教学管理</h1>
-      <p>使用管理员发放的账号进入物理、化学、生物工作区。</p>
-      <div class="subject-line"><span>物理</span><span>化学</span><span>生物</span></div>
+      <img class="auth-world" :src="aquaWorld" width="1586" height="992" loading="eager" fetchpriority="high" decoding="async" alt="清水与日光中的 RIKE 透明科学仪器世界" />
+      <span class="auth-caustics" aria-hidden="true"></span>
+      <div class="auth-world-copy">
+        <p class="school-mark">RIKE AQUA FUTURE</p>
+        <h1>进入你的<br />科学工作台</h1>
+        <p class="auth-product-truth">高中理科学习与教学管理</p>
+        <p>物理的场与波、化学的变化、生物的生命系统，共用一套可复验的学习事实。</p>
+        <div class="subject-line" aria-label="支持学科"><span>FIELD</span><span>EQUILIBRIUM</span><span>LIFE</span></div>
+      </div>
+      <div class="auth-optic" aria-hidden="true"><i></i><b></b></div>
     </section>
-    <section class="auth-panel" aria-labelledby="login-title">
+    <section class="auth-panel aero-glass-heavy" aria-labelledby="login-title">
       <RouterLink class="auth-home-link" to="/">返回首页</RouterLink>
-      <RouterLink class="auth-brand" to="/" aria-label="返回 RIKE 公共首页">
-        <span aria-hidden="true">理科</span>
-        <strong>RIKE 学习辅助系统</strong>
-      </RouterLink>
+      <AquaBrand class="auth-brand" subtitle="安全登录入口" />
       <h2 id="login-title">欢迎登录</h2>
       <p class="auth-description">输入账号、密码和图形验证码后登录。</p>
       <LoginForm ref="loginForm" :loading="loading" :error-message="errorMessage" @submit="handleLogin" />

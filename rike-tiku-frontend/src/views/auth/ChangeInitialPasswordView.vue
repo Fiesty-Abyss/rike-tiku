@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router'
 import type { FormInstance, FormRules } from 'element-plus'
 
 import type { ApiError } from '../../api/http'
+import AquaBrand from '../../components/layout/AquaBrand.vue'
 import { useAuthStore } from '../../stores/auth'
 
 const router = useRouter()
@@ -42,8 +43,9 @@ function logout() {
 </script>
 
 <template>
-  <main class="single-panel-page">
-    <el-card class="password-card" shadow="never">
+  <main class="single-panel-page password-entry-page">
+    <el-card class="password-card aero-solid" shadow="never">
+      <AquaBrand class="password-brand" subtitle="账号安全入口" compact />
       <p class="role-label">首次登录安全设置</p>
       <h1>请先修改初始密码</h1>
       <p class="auth-description">{{ username }}，为了保护你的账号安全，请设置新的登录密码。</p>

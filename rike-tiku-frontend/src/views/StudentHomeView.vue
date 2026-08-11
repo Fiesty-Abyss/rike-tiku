@@ -5,6 +5,7 @@ import { useRoute } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { fetchPracticeOptions, type Subject } from '../api/student/practice'
 import ChangePasswordDialog from '../components/auth/ChangePasswordDialog.vue'
+import AquaBrand from '../components/layout/AquaBrand.vue'
 import { useAuthStore } from '../stores/auth'
 import { formatEnum } from '../utils/formatters'
 
@@ -48,9 +49,9 @@ async function logout() {
 
 <template>
   <main class="student-shell">
-    <header class="student-header">
-      <router-link to="/student" class="student-brand">理科学习辅助系统</router-link>
-      <nav>
+    <header class="student-header aero-shell">
+      <AquaBrand class="student-brand-aqua" to="/student" subtitle="学生科学工作台" compact />
+      <nav class="student-nav" aria-label="学生工作区导航">
         <router-link to="/student" active-class="" exact-active-class="" :class="{ 'is-nav-active': navActive('home') }">三科工作台</router-link>
         <router-link to="/student/practice/new" active-class="" exact-active-class="" :class="{ 'is-nav-active': navActive('practice') }">自主练习</router-link>
         <router-link to="/student/wrong-questions" active-class="" exact-active-class="" :class="{ 'is-nav-active': navActive('wrong') }">错题本</router-link>
@@ -86,6 +87,7 @@ async function logout() {
             class="subject-card"
             :class="`subject-card--${subject.code.toLowerCase()}`"
           >
+            <span class="subject-card-instrument" aria-hidden="true"><i></i><b></b></span>
             <div>
               <span class="subject-code">{{ formatEnum(subject.code) }}学习</span>
               <h2>{{ subject.name }}</h2>

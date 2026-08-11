@@ -4,6 +4,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { ElMessage, type FormInstance, type FormRules } from 'element-plus'
 import { createHighFrequencyPoint, fetchTeacherLearningSummary, fetchTeacherWorkspace, updateHighFrequencyPoint, updateHighFrequencyPointStatus, type HighFrequencyPoint, type TeacherScopeLearningSummary, type TeacherWorkspace } from '../../api/teacher'
 import { createConversation, fetchConversations } from '../../api/messages'
+import AquaBrand from '../../components/layout/AquaBrand.vue'
 import { subjectTheme } from '../../utils/subjectTheme'
 
 const route = useRoute()
@@ -134,7 +135,7 @@ onMounted(() => void load())
   <main class="workspace-page" :data-subject="environment">
     <header class="workspace-header teacher-header">
       <div class="teacher-header-context">
-        <router-link class="workspace-brand" to="/teacher">RIKE · 教师工作台</router-link>
+        <AquaBrand class="workspace-brand-aqua" to="/teacher" :subtitle="`${workspace?.subjectName || '任课'}科学工作台`" compact />
         <h1>班级学科工作台</h1>
         <p v-if="workspace">{{ workspace.className }} · {{ workspace.subjectName }}</p>
       </div>

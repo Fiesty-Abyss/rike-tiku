@@ -3,6 +3,7 @@ import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessageBox } from 'element-plus'
 import ChangePasswordDialog from '../components/auth/ChangePasswordDialog.vue'
+import AquaBrand from '../components/layout/AquaBrand.vue'
 
 import { useAuthStore } from '../stores/auth'
 
@@ -25,10 +26,7 @@ async function logout() {
 <template>
   <el-container class="admin-shell">
     <el-aside class="admin-sidebar" width="224px">
-      <router-link class="admin-brand" to="/admin">
-        <span class="admin-brand-mark">RL</span>
-        <span>理科学习辅助系统<small>管理员工作台</small></span>
-      </router-link>
+      <div class="admin-brand"><AquaBrand class="admin-brand-aqua" to="/admin" subtitle="管理员工作台" compact /></div>
       <el-menu class="admin-menu" router :default-active="$route.path" aria-label="管理员工作区导航">
         <el-menu-item index="/admin"><span>工作台</span></el-menu-item>
         <el-menu-item index="/admin/classes"><span>班级管理</span></el-menu-item>
