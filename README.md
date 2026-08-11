@@ -4,9 +4,9 @@
 
 > 当前仓库处于分阶段开发中，不代表完整系统已经完成或投入真实学校使用。
 
-> 2026-08-09 V3.0 非 AI 正式完工审计的 **REJECT** 结论作为历史快照保留。PR #27 已完成 MA-018、MA-019、MA-020 的机器侧修正，并将 MA-017 保持为 `IMPLEMENTED_AWAITING_FINAL_MANUAL_ACCEPTANCE`。第三轮完成的 MA-021 至 MA-025 业务修正继续保持 `FIXED_AWAITING_USER_RETEST`；其视觉人工验收随后失败并新增 MA-026。Round 4 已完成 MA-026 的机器修正，状态为 `FIXED_AWAITING_USER_RETEST`。当前仍不得标记为 100% `DONE_VERIFIED`，也不得开始 AI；需等待用户完成最后一次真实 CAPTCHA 与浏览器复验。详见 [V3.0 非 AI 完工审计](docs/V3_NON_AI_COMPLETION_AUDIT.md)。
+> 2026-08-09 V3.0 非 AI 正式完工审计的 **REJECT** 结论作为历史快照保留。PR #27 已完成 MA-017 至 MA-026，用户已完成最后一次真实 CAPTCHA 与浏览器复验，全部问题正式关闭，非 AI A 层标记为 `DONE_VERIFIED`。PR #27 是最后一个普通非 AI 工程 PR；AI Provider Core 将从其合并后的最新 `main` 另行开始。详见 [V3.0 非 AI 完工审计](docs/V3_NON_AI_COMPLETION_AUDIT.md)。
 
-> 当前接续分支为 `feat/non-ai-final-closure`。PR #26 已以 merge commit `b992bffef07465665b371b7b707ca8814ec2d36d` 普通合并；人工 CAPTCHA/浏览器验收仍统一延期至非 AI 最终集成验收，未执行的人工结果不写为 PASS。PR #27 是最后一个非 AI Draft PR，当前机器实现已覆盖 MA-018、MA-020、Golden30 正常导入闭环、管理员题目图片上传、菜单整理和多角色切换；本分支新增 Flyway V11，业务表为 27 张，仍不得开始 AI。
+> PR #26 已以 merge commit `b992bffef07465665b371b7b707ca8814ec2d36d` 普通合并；PR #27 的机器测试、机器浏览器证据与用户人工浏览器复验已分别记录。PR #27 是最后一个普通非 AI 工程 PR，当前实现包含 V11 管理员日志、Golden30 正常导入闭环、管理员题目图片上传、菜单整理、多角色切换、Round 4 Aqua Future 视觉和三角色工作台；本阶段不包含运行时 AI。
 
 ## 工程范围
 
@@ -58,7 +58,7 @@ Flyway 是数据库结构的唯一建表和升级入口。已经执行的迁移�
 - 管理员 MVP30 题库导入：单文件 Excel 预检查、逐行错误、知识点精确匹配、来源文件追溯、附件对象精确映射与全批次确认入库；成功题目和 STANDARD 解析统一为 `PENDING`。已通过普通 merge 合并至 `main`（PR #12，合并提交 `f499f0c2e1e3b4637d22480868e94dbdacdcbaa0`）。纯 V1–V6 测试库预检查结果为物理 0/10、化学 1/10、生物 1/10；仅在测试事务预置 Excel 所需知识点后，附件专项结果为 2/10、1/10、6/10。随机临时库的真实 HTTP multipart 与浏览器回查结论为 `PASS_WITH_ENV_LIMITATION`；匿名临时题已清理，MVP30 原始 Excel 尚未确认入库。
 - 学生自主练习、自动判分与错题闭环已通过普通 merge 进入 `main`（PR #13，合并提交 `db04fbc9caeeb5e4eb003a45581e62e76dbab420`）：创建时冻结可安全校验的题集，提交整场答案后完成单选/多选/填空自动判分、结果与错题聚合；未提交前不返回标准答案或解析。当前分支补充了安全 PNG/JPEG 附件存储、权限访问和图片显示；正文保留 `〔图片对象 I001〕` / `〔公式对象 F107〕`，数据库附件表只保存 `I001` / `F107` 这样的对象 ID；PDF、公式和 ANSWER 附件仍不进入普通自动判分题池。
 
-已完成前端认证基础：三角色登录入口、Pinia认证状态、Bearer Token注入、会话恢复、首次改密、路由守卫、管理员业务页及学生三科学习工作台。PR #21 已将基于真实答题事实的知识点掌握度、规则推荐和教师班级学情查看普通 merge 进入 `main`；它是确定性规则统计，不属于 AI。当前 PR #27 还补齐了真实管理员 Dashboard、教师密码重置、练习可用题数、中文题型规则、逐题结果、知识点与规则型类似练习、错题实时学科筛选和 Topic18 专题学习。第三轮完成的冻结选项内容、Topic18 安全分段和生物 `1/2` / `0.5` / `50%` / `50％` accepted answers 均保留。Round 3 视觉人工验收失败后，Round 4 以 `RIKE Aqua Future` 重建设计系统、六场景 Portal、光学登录/角色入口、三科学生与教师环境和 neutral Admin，加入四张原创 Aqua WebP、Physics pin+scrub、学科转场、mobile/reduced-motion 降级；MA-026 等待用户复验。尚未完成：AI Provider、AI 答疑、教师任务与考试。当前验收题库为确定性 Demo360（三科各 120）+ Topic18；MVP30 是结构化导入能力验证素材，不等于最终演示内容。
+已完成前端认证基础：三角色登录入口、Pinia认证状态、Bearer Token注入、会话恢复、首次改密、路由守卫、管理员业务页及学生三科学习工作台。PR #21 已将基于真实答题事实的知识点掌握度、规则推荐和教师班级学情查看普通 merge 进入 `main`；它是确定性规则统计，不属于 AI。PR #27 已补齐管理员 Dashboard、教师密码重置、练习可用题数、中文题型规则、逐题结果、知识点与规则型类似练习、错题实时学科筛选、Topic18、冻结选项内容、结构化解析、显式 accepted answers 和 Round 4 Aqua Future 视觉。非 AI A 层已由用户最终复验并标记 `DONE_VERIFIED`。下一阶段仅建立 `feat/ai-provider-core` 入口，尚未开始 AI Provider、AI 答疑、教师任务或考试。当前验收题库为确定性 Demo360（三科各 120）+ Topic18；MVP30 是结构化导入能力验证素材，不等于最终演示内容。
 
 准确状态请以 [开发状态](docs/DEVELOPMENT_STATUS.md) 和 [AI交接](docs/AI_HANDOFF.md) 为准。
 
