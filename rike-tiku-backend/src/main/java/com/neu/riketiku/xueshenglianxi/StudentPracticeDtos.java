@@ -114,7 +114,7 @@ public final class StudentPracticeDtos {
     }
 
     public record WrongQuestionDetail(
-            Long answerFactId,
+            Long aiAnalysisAnswerFactId,
             WrongQuestionItem wrongQuestion,
             String stem,
             List<Option> options,
