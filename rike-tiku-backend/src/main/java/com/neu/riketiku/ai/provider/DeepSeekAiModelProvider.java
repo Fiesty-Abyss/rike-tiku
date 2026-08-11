@@ -102,6 +102,10 @@ public final class DeepSeekAiModelProvider implements AiModelProvider {
             body.put("messages", request.messages());
             body.put("stream", false);
             if (request.jsonOutput()) body.put("response_format", Map.of("type", "json_object"));
+            if (request.maxOutputTokens() != null) body.put("max_tokens", request.maxOutputTokens());
+            if (request.thinkingMode() != AiThinkingMode.DEFAULT) {
+                body.put("thinking", Map.of("type", request.thinkingMode().name().toLowerCase()));
+            }
             return HttpRequest.newBuilder(URI.create(endpoint()))
                     .timeout(properties.getRequestTimeout())
                     .header("Authorization", "Bearer " + properties.getApiKey())
