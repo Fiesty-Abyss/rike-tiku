@@ -4,13 +4,13 @@
 
 > 历史接续分支 `feat/question-attachment-rendering` 已通过 PR #26 普通合并；其 V1–V10、26 张业务表口径仅属于当时基线。
 
-> 当前接续分支：`feat/non-ai-final-closure`，从 PR #26 merge commit `b992bffef07465665b371b7b707ca8814ec2d36d` 创建。PR #26 已普通 merge；MA-017 保持 `IMPLEMENTED_AWAITING_FINAL_MANUAL_ACCEPTANCE`，人工验收延期至非 AI 最终集成验收。PR #27 是最后一个非 AI Draft PR，已加入 V11 管理员操作日志、MA-020、管理员图片上传、来源权利更新、Golden30 正常导入闭环、菜单整理和多角色切换；Flyway V1–V11、27 张业务表，V1–V10 不得修改。
+> 当前接续分支：`feat/non-ai-final-closure`，从 PR #26 merge commit `b992bffef07465665b371b7b707ca8814ec2d36d` 创建。PR #26 已普通 merge；PR #27 已完成用户最终人工复验，MA-017 至 MA-026 均已关闭。PR #27 是最后一个普通非 AI 工程 PR，已加入 V11 管理员操作日志、MA-020、管理员图片上传、来源权利更新、Golden30 正常导入闭环、菜单整理和多角色切换；Flyway V1–V11、27 张业务表，V1–V10 不得修改。
 
-> PR #27 当前机器准备：Demo360 为物理/化学/生物各 120 道、55 个叶子知识点，另含 Topic18，总题量 378。Round 4 前端为 50/50 文件、174/174 测试，type-check、build、audit 0；build 保留 main chunk 797.43 kB（gzip 254.25 kB）warning。Round 4 未改后端，未机械重跑 Maven；最近一次后端事实仍为 133 tests、0 failure、0 error、1 个符号链接 assumption skipped 及 package PASS。MA-021 至 MA-026 均等待用户复验；最终人工环境关闭 CAPTCHA `testCode`，机器结果不得记为人工 PASS。
+> PR #27 最终机器准备：Demo360 为物理/化学/生物各 120 道、55 个叶子知识点，另含 Topic18，总题量 378。Round 4 前端为 50/50 文件、174/174 测试，type-check、build、audit 0；build 保留 main chunk 797.43 kB（gzip 254.25 kB）warning。用户已在 CAPTCHA testCode 关闭的 acceptance 环境完成最终人工浏览器复验；机器测试、机器浏览器和用户人工结果已分开记录。
 
 > 第三轮 MA-021 至 MA-025 的机器修正包括：五章 Portal 与三张原创静态 WebP、内联掌握比例、冻结完整答案、Demo360 选择题逐项 STANDARD 解析、Topic18 安全分段以及显式 accepted answers 等价判分。没有新增 Flyway、运行时 AI 或通用表达式求值。
 
-> 第三轮视觉随后被用户人工判定失败并新增 MA-026。Round 4 已用 `RIKE Aqua Future`、四张原创 Aqua WebP、六场景 Portal、Physics pin+scrub、学科环境 transition、Aqua Auth/Workspace、移动端和 reduced-motion 降级完成机器修正；MA-026 当前为 `FIXED_AWAITING_USER_RETEST`。PR #27 继续 Draft，非 AI 不得标记 `DONE_VERIFIED`，AI 未开始。
+> 第三轮视觉随后被用户人工判定失败并新增 MA-026。Round 4 已用 `RIKE Aqua Future`、四张原创 Aqua WebP、六场景 Portal、Physics pin+scrub、学科环境 transition、Aqua Auth/Workspace、移动端和 reduced-motion 降级完成机器修正；用户最终复验后 MA-026 已关闭，非 AI A 层正式为 `DONE_VERIFIED`。PR #27 是最后一个普通非 AI 工程 PR，AI 仍未开始。
 
 更新时间：2026-08-11
 
@@ -90,4 +90,4 @@ PR #27 当前机器收口已完成主要实现：V11 管理员高风险操作日
 
 ## 当前下一步
 
-保持 PR #27 Draft 和 `feat/non-ai-final-closure`。用户在 `http://localhost:18080` 使用真实图形 CAPTCHA 复验 Round 4 Portal 1440/1280/390、Physics pinned scene、三科 Student/Teacher、neutral Admin、Login/Role Selection，并抽查 MA-022 至 MA-025；通过后仍在同一 PR #27 补充人工证据，再决定 `DONE_VERIFIED` 与普通 merge。MA-026 在此之前保持 `FIXED_AWAITING_USER_RETEST`。不得创建 PR #28，不开始 AI。
+PR #27 用户人工复验已通过，封板动作是 ordinary merge；合并后同步最新 `main`，删除 `feat/non-ai-final-closure`，再创建干净的 `feat/ai-provider-core`。下一轮只实施 Fake/Test Provider、配置模型、超时、一次有限重试、降级和基础调用日志；不索取 API Key，不创建 PR #28，不在本轮修改 AI 代码。
