@@ -29,3 +29,14 @@ V12 `ai_diao_yong_ri_zhi` 只保存 provider、model、用途、可空业务引�
 - 错因分析使用 `response_format={"type":"json_object"}` 与 `max_tokens=1200`；Prompt 内明确包含 json 及目标结构示例。
 - 首次 JSON 无效时业务层最多纠正一次；这与 Provider Core 的网络/429/5xx 最多一次 HTTP retry 相互独立，不存在控制器重试。
 - 学生 AI 仍服从本页 `enabled/provider/base-url/model/api-key/connect-timeout/request-timeout/retry-count` 配置。默认关闭或 Key 缺失不会影响非 AI 启动、练习、判分、错题与 STANDARD 解析。
+
+## 最小真实 Provider smoke
+
+真实 smoke 不属于默认自动化，只能在同一 PowerShell 临时设置轮换后的 `RIKE_TIKU_AI_API_KEY`、`RIKE_TIKU_AI_ENABLED=true`、`RIKE_TIKU_AI_PROVIDER=deepseek` 和 `RIKE_TIKU_AI_MODEL=deepseek-v4-flash` 后执行：
+
+```powershell
+cd rike-tiku-backend
+mvn "-Dtest=RealDeepSeekSmokeTest" test
+```
+
+测试只报告模型、HTTP 结果、耗时、token、Parser 与日志脱敏结果，不输出 Key；环境变量缺失时以 assumption 跳过。测试完成后应立即从当前 PowerShell 删除上述四个临时环境变量。

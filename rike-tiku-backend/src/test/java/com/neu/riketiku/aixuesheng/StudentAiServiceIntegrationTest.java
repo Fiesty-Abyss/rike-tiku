@@ -11,6 +11,8 @@ import com.neu.riketiku.ai.provider.AiThinkingMode;
 import com.neu.riketiku.ai.provider.AiTokenUsage;
 import com.neu.riketiku.renzheng.RenZhengYeWuYiChang;
 import com.neu.riketiku.tiku.admin.AdminQuestionIntegrationTestSupport;
+import com.neu.riketiku.xueshenglianxi.StudentPracticeDtos;
+import com.neu.riketiku.xueshenglianxi.StudentPracticeService;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +27,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
+import tools.jackson.databind.node.JsonNodeFactory;
 
 @SpringBootTest
 @Import(StudentAiServiceIntegrationTest.Config.class)
@@ -33,6 +36,7 @@ class StudentAiServiceIntegrationTest extends AdminQuestionIntegrationTestSuppor
             {"errorType":"CONCEPT_ERROR","errorReason":"没有区分速度与加速度","correctThinking":"先依据 STANDARD 分析受力，再判断加速度方向", "commonMistakes":["只看速度方向"],"reviewSuggestions":["复习牛顿第二定律"]}
             """;
     @Autowired StudentAiService service;
+    @Autowired StudentPracticeService practiceService;
     @Autowired JdbcTemplate jdbc;
     @Autowired QueueClient client;
 
@@ -134,6 +138,47 @@ class StudentAiServiceIntegrationTest extends AdminQuestionIntegrationTestSuppor
                 .isEqualTo(AiProviderErrorType.values().length);
     }
 
+    @Test
+    @Transactional
+    void keepsAiAnalysisBoundToLatestWrongFactAcrossReviewingAndMasteredLifecycle() {
+        long owner = student("wrong_lifecycle");
+        long other = student("wrong_lifecycle_other");
+        long questionId = publishedSingleChoiceQuestion();
+
+        StudentPracticeDtos.Result wrongResult = submitSingle(owner, "B");
+        long wrongFactId = wrongResult.questions().getFirst().answerFactId();
+        var newWrong = practiceService.wrongQuestion(owner, questionId);
+        assertThat(newWrong.wrongQuestion().status()).isEqualTo("NEW");
+        assertThat(newWrong.aiAnalysisAnswerFactId()).isEqualTo(wrongFactId);
+        client.answer(VALID_JSON);
+        assertThat(service.generateAnalysis(owner, newWrong.aiAnalysisAnswerFactId()).status()).isEqualTo("SUCCESS");
+
+        StudentPracticeDtos.Result firstCorrect = submitSingle(owner, "A");
+        long firstCorrectFactId = firstCorrect.questions().getFirst().answerFactId();
+        var reviewing = practiceService.wrongQuestion(owner, questionId);
+        assertThat(reviewing.wrongQuestion().status()).isEqualTo("REVIEWING");
+        assertThat(reviewing.latestStudentAnswer().asText()).isEqualTo("A");
+        assertThat(reviewing.aiAnalysisAnswerFactId()).isEqualTo(wrongFactId).isNotEqualTo(firstCorrectFactId);
+        assertThat(jdbc.queryForObject("SELECT zui_jin_da_ti_id FROM cuo_ti_ji_lu WHERE xue_sheng_id=? AND ti_mu_id=?",
+                Long.class, studentId(owner), questionId)).isEqualTo(firstCorrectFactId);
+        assertThat(service.generateAnalysis(owner, reviewing.aiAnalysisAnswerFactId()).cached()).isTrue();
+
+        StudentPracticeDtos.Result secondCorrect = submitSingle(owner, "A");
+        long secondCorrectFactId = secondCorrect.questions().getFirst().answerFactId();
+        var mastered = practiceService.wrongQuestion(owner, questionId);
+        assertThat(mastered.wrongQuestion().status()).isEqualTo("MASTERED");
+        assertThat(mastered.latestStudentAnswer().asText()).isEqualTo("A");
+        assertThat(mastered.aiAnalysisAnswerFactId()).isEqualTo(wrongFactId).isNotEqualTo(secondCorrectFactId);
+        assertThat(jdbc.queryForObject("SELECT zui_jin_da_ti_id FROM cuo_ti_ji_lu WHERE xue_sheng_id=? AND ti_mu_id=?",
+                Long.class, studentId(owner), questionId)).isEqualTo(secondCorrectFactId);
+        assertThat(service.generateAnalysis(owner, mastered.aiAnalysisAnswerFactId()).cached()).isTrue();
+        assertThatThrownBy(() -> practiceService.wrongQuestion(other, questionId))
+                .isInstanceOf(RenZhengYeWuYiChang.class);
+        assertThatThrownBy(() -> service.analysis(other, wrongFactId))
+                .isInstanceOf(RenZhengYeWuYiChang.class);
+        assertThat(client.requests).hasSize(1);
+    }
+
     private long student(String prefix) {
         String suffix = UUID.randomUUID().toString().replace("-", "").substring(0, 12);
         jdbc.update("INSERT INTO yong_hu(yong_hu_ming,mi_ma_zhai_yao,shi_fou_shou_ci_deng_lu) VALUES (?,?,0)",
@@ -145,7 +190,7 @@ class StudentAiServiceIntegrationTest extends AdminQuestionIntegrationTestSuppor
     }
 
     private long fact(long userId, boolean correct, boolean submitted, String stem, String studentAnswer) {
-        long studentId = jdbc.queryForObject("SELECT id FROM xue_sheng_dang_an WHERE yong_hu_id=?", Long.class, userId);
+        long studentId = studentId(userId);
         jdbc.update("INSERT INTO lian_xi_hui_hua(xue_sheng_id,ke_mu_id,zhuang_tai,ti_mu_shu) VALUES (?,?,?,1)",
                 studentId, 1, submitted ? "SUBMITTED" : "CREATED");
         long sessionId = jdbc.queryForObject("SELECT LAST_INSERT_ID()", Long.class);
@@ -161,6 +206,43 @@ class StudentAiServiceIntegrationTest extends AdminQuestionIntegrationTestSuppor
                 VALUES (?,?,JSON_QUOTE(?),?,?,CURRENT_TIMESTAMP(3))
                 """, practiceQuestionId, studentId, studentAnswer, correct, correct ? 1 : 0);
         return jdbc.queryForObject("SELECT LAST_INSERT_ID()", Long.class);
+    }
+
+    private long studentId(long userId) {
+        return jdbc.queryForObject("SELECT id FROM xue_sheng_dang_an WHERE yong_hu_id=?", Long.class, userId);
+    }
+
+    private long publishedSingleChoiceQuestion() {
+        String suffix = UUID.randomUUID().toString().replace("-", "");
+        jdbc.update("""
+                INSERT INTO ti_mu(ke_mu_id,ti_mu_lei_xing,shi_yong_mo_shi,ti_gan,zheng_que_da_an,nan_du,
+                  shi_fou_ke_zi_dong_pan_fen,zhuang_tai,nei_rong_ha_xi)
+                VALUES (1,'SINGLE_CHOICE','ONLINE_PRACTICE',?,
+                  '{"schemaVersion":1,"type":"SINGLE_CHOICE","optionLabels":["A"]}',1,1,'PUBLISHED',?)
+                """, "AI 错题事实生命周期" + suffix, suffix);
+        long questionId = jdbc.queryForObject("SELECT LAST_INSERT_ID()", Long.class);
+        jdbc.update("""
+                INSERT INTO ti_mu_xuan_xiang(ti_mu_id,xuan_xiang_biao_shi,xuan_xiang_nei_rong,shi_fou_zheng_que,pai_xu)
+                VALUES (?,'A','正确选项',1,1),(?,'B','错误选项',0,2)
+                """, questionId, questionId);
+        jdbc.update("""
+                INSERT INTO ti_mu_jie_xi(ti_mu_id,jie_xi_lei_xing,jie_xi_nei_rong,ban_ben_hao,zhuang_tai)
+                VALUES (?,'STANDARD','STANDARD 生命周期解析',1,'PUBLISHED')
+                """, questionId);
+        long pointId = jdbc.queryForObject(
+                "SELECT id FROM zhi_shi_dian WHERE ke_mu_id=1 AND zhuang_tai='ACTIVE' AND yi_shan_chu=0 LIMIT 1",
+                Long.class);
+        jdbc.update("INSERT INTO ti_mu_zhi_shi_dian(ti_mu_id,zhi_shi_dian_id,shi_fou_zhu_yao,pai_xu) VALUES (?,?,1,1)",
+                questionId, pointId);
+        return questionId;
+    }
+
+    private StudentPracticeDtos.Result submitSingle(long userId, String answer) {
+        var session = practiceService.create(userId, new StudentPracticeDtos.CreateRequest(
+                1L, null, List.of("SINGLE_CHOICE"), null, 1));
+        return practiceService.submit(userId, session.id(), new StudentPracticeDtos.SubmitRequest(List.of(
+                new StudentPracticeDtos.Answer(session.questions().getFirst().practiceQuestionId(),
+                        JsonNodeFactory.instance.textNode(answer), 1))));
     }
 
     @TestConfiguration
