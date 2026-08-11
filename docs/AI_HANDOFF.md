@@ -2,7 +2,7 @@
 
 ## PR #29 学生 AI 学习主链（2026-08-11）
 
-- 状态：`REAL_PROVIDER_SMOKE_PENDING`。V13 随机临时库、分析/复用/纠正/会话/所有权/注入/降级专项和前端门禁均已覆盖；真实 Provider 结果不得由 Mock 代替，全量最终回归和人工验收仍留 PR #31。
+- 状态：`DONE_VERIFIED`。V13 随机临时库、分析/复用/纠正/会话/所有权/注入/降级专项、前端门禁与真实 DeepSeek smoke 均通过；全量最终回归和人工验收仍留 PR #31。
 - 基线：PR #28 ordinary merge commit `54c1669b3113086a2fb22e756e0656ea8cb751c8`；分支 `feat/ai-student-learning-core`。
 - 数据：V13 新增 `ai_cuo_ti_fen_xi`、`ai_hui_hua`、`ai_xiao_xi`；分析唯一绑定 `xue_sheng_da_ti.id`，会话同时绑定学生、正式答题事实和冻结练习题。V1–V12 不修改。
 - 分析：受控 8 类错误、严格 5 字段 JSON、数组/长度上限；`response_format=json_object`、`thinking=disabled`、`max_tokens=1200`。首次无效只允许一次业务纠正，第二次失败不保存成功分析。
@@ -13,7 +13,7 @@
 - 安全：冻结题干、选项、正式学生答案仅放入 user 数据区；STANDARD 正确答案/解析明确不可变；不传姓名、手机号、班级或整份历史；API 不返回 provider/model/token；V12/V13 均不保存 Prompt、输出或 Key。
 - 降级：Provider/JSON 失败只返回受控错误，练习结果、错题、判分、掌握度、规则推荐和 STANDARD 解析保持不变。
 - 集中修正轮门禁：后端受影响专项 65/65 PASS（其中生命周期组合 24/24 PASS），无 Key smoke 门禁 1/1 assumption skipped；`mvn -DskipTests package` PASS。前端 AI/错题专项 15/15 PASS，`npm run type-check` 与 `npm run build` PASS；既有 500 kB chunk warning 保留。未机械运行完整历史全量、Demo reset/seed/smoke、全站浏览器或人工验收。
-- 真实 DeepSeek smoke：`REAL_PROVIDER_SMOKE_PENDING`。当前 Codex 进程检测到 `RIKE_TIKU_AI_API_KEY/ENABLED/PROVIDER/MODEL` 均不存在；聊天中出现过的旧 Key 未使用。新增 `RealDeepSeekSmokeTest`，只在同一 PowerShell 安全设置轮换后的环境变量时执行两个最小真实请求，并验证 V12 脱敏列和 V13 成功分析；无变量时以 assumption 跳过，禁止输出或落盘 Key。
+- 真实 DeepSeek smoke：1/1 PASS、0 skipped。`deepseek-v4-flash` 返回 HTTP 2xx；文本调用 848 ms、22/11 token，结构化分析 1670 ms、400/132 token、1 次 JSON 调用；严格五字段 Parser、V12 安全元数据列/脱敏、V13 SUCCESS 与 STANDARD 不变均 PASS。Key 仅注入单次 PowerShell 子进程，测试结束即清除，未写入文件、日志、数据库或 Git。`RealDeepSeekSmokeTest` 使用测试级动态属性覆盖，保留全局自动化的 `app.ai.enabled=false` 安全默认。
 - 后续：PR #30 仅做候选题生成 + PENDING + 人工审核 + 质量评价；PR #31 做真实 Provider 集成、全量测试、最终文档与一次人工验收。
 
 ## PR #28 Provider Core（2026-08-11）
