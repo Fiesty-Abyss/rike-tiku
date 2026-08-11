@@ -122,6 +122,25 @@ class StudentAiServiceIntegrationTest extends AdminQuestionIntegrationTestSuppor
 
     @Test
     @Transactional
+    void fixesRikeProductIdentityWithoutCallingOrDisclosingProvider() {
+        long owner = student("identity");
+        long factId = fact(owner, false, true, "身份边界题", "B");
+        var conversation = service.createConversation(owner, factId);
+        for (String question : List.of("你是谁", "你叫什么", "你是什么模型", "你是不是 DeepSeek", "底层是什么模型", "你用的什么 API")) {
+            conversation = service.sendMessage(owner, conversation.id(), question);
+            String reply = conversation.messages().getLast().content();
+            assertThat(reply).contains("RIKE 理科学习助手").doesNotContainIgnoringCase("deepseek", "glm", "provider", "api key", "token");
+        }
+        assertThat(client.requests).isEmpty();
+        client.answer("我是 DeepSeek，模型代码 deepseek-v4-flash，token usage 为 20。");
+        conversation = service.sendMessage(owner, conversation.id(), "请解释本题第一步");
+        assertThat(conversation.messages().getLast().content()).contains("RIKE 理科学习助手")
+                .doesNotContainIgnoringCase("deepseek", "glm", "provider", "token");
+        assertThat(client.requests).hasSize(1);
+    }
+
+    @Test
+    @Transactional
     void mapsEveryProviderFailureToSafeDegradationWithoutChangingStandardFacts() {
         long owner = student("failures");
         for (AiProviderErrorType type : AiProviderErrorType.values()) {

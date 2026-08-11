@@ -1,5 +1,7 @@
 # 开发状态
 
+> 2026-08-11 PR #30 AI 候选题/视觉主链：`DONE_VERIFIED`（受影响专项和必要构建）。V14 新增管理员 AI 模型配置、生成任务、候选题质量评价、视觉上下文缓存四表；数据库启用配置优先、环境配置回退。DeepSeek 负责文本推理，GLM `glm-4.6v-flash` 只生成受控 `UNTRUSTED_VISION_CONTEXT`。候选一次 1–3 道、同母题 AI_GENERATED PENDING 最多 6 道，request hash/内容 hash/Jaccard 三层重复控制，结果只进入 PENDING，五项人工评价通过后才能 PUBLISHED。后端专项 54/54、前端专项 12/12、package/type-check/build PASS。真实 GLM 单图 smoke 到达官方接口，但有限重试后仍为 HTTP 429，状态为 `REAL_GLM_VISION_SMOKE_FAIL_429`；最终真实全链路、全量回归和人工验收留 PR #31。
+
 > 2026-08-11 PR #29 学生 AI 学习主链：`DONE_VERIFIED`。Mock/随机临时 MySQL 专项覆盖分析、复用、一次 JSON correction、当前题最多 8 轮答疑、严格所有权、Prompt 数据隔离和 STANDARD 降级；集中修正轮保证 REVIEWING/MASTERED 后 AI 仍查询最近一次错误正式答题事实。真实 `deepseek-v4-flash` smoke 为 1/1 PASS、0 skipped：HTTP 2xx，文本 848 ms（22/11 token），结构化分析 1670 ms（400/132 token）、1 次 JSON 调用，Parser 与 V12 日志脱敏 PASS，V13 SUCCESS 且 STANDARD 未改变。Flyway 保持 V1–V13、31 张业务表；V1–V13 未修改。候选题生成仍为 `NOT_STARTED`。
 
 > 2026-08-11 PR #28 `AiModelProvider Core`：`DONE_VERIFIED`（Provider 专项与 package 门禁）。已实现统一 Provider 契约、确定性 Fake、DeepSeek OpenAI-compatible HTTP Provider、连接/请求超时、最多一次临时失败重试、有限错误分类、受控降级和 V12 脱敏调用日志。AI 默认关闭，自动化不需要真实 Key。学生错因分析、多轮答疑、候选题生成和前端 AI 页面仍为 `NOT_STARTED`；完整全量回归留到 PR #31。
@@ -12,13 +14,13 @@
 
 > Round 3 视觉人工验收已明确失败并新增 MA-026。Round 4 以 `RIKE Aqua Future` 完成机器修正，用户已完成最终人工复验；MA-017 至 MA-026 均已关闭，非 AI A 层正式为 `DONE_VERIFIED`。PR #27 是最后一个普通非 AI 工程 PR，AI 阶段从其合并后的最新 `main` 开始。
 
-更新时间：2026-08-11（PR #29 学生 AI 学习主链）
+更新时间：2026-08-11（PR #30 AI 候选题/视觉主链）
 
 ## 当前主线状态
 
-- 当前分支：`feat/ai-student-learning-core`；基线为 PR #28 ordinary merge commit `54c1669b3113086a2fb22e756e0656ea8cb751c8`。
-- Flyway：V1–V13，共 31 张业务表；V13 新增 `ai_cuo_ti_fen_xi`、`ai_hui_hua`、`ai_xiao_xi`，V1–V12 未修改。
-- Provider Core：`DONE_VERIFIED`。学生 AI 主链：`DONE_VERIFIED`。候选题生成：`NOT_STARTED`。
+- 当前分支：`feat/ai-question-generation-review`；基线为 PR #29 ordinary merge commit `d04e5dcf9639182303e26e38ccfa4351ad91c5d9`。
+- Flyway：V1–V14，共 35 张业务表；V14 新增四张 AI 配置/生成/评价/视觉缓存表，V1–V13 未修改。
+- Provider Core：`DONE_VERIFIED`。学生 AI 主链：`DONE_VERIFIED`。候选题生成、PENDING 审核、质量评价与视觉桥接：`DONE_VERIFIED`。真实 GLM smoke：`FAIL_429`。
 
 - 当前分支：`feat/non-ai-final-closure`；PR #26 已合并，公共门户和附件机器实现已进入 `main`；PR #27 已完成最终人工验收，准备 ordinary merge 封板。
 - 根路径 `/` 是无需认证的公共门户。Round 4 以 Hero、Physics、Chemistry、Biology、Learning Loop、Entrance 六场景组织真实产品内容，保留 3 / 360 / 18 与统一 `/login`，不写 AI 宣传或虚构指标；登录、角色选择、首次改密和受保护路由守卫的业务行为未改动。MA-016 已关闭。

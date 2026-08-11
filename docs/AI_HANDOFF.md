@@ -1,5 +1,19 @@
 # AI 开发交接
 
+## PR #30 AI 候选题、视觉与配置中心（2026-08-11）
+
+- 状态：`DONE_VERIFIED`（后端受影响专项 54/54、前端专项 12/12、package/type-check/build、V14 随机临时 MySQL）。PR #31 仍负责最终全量、真实 DeepSeek+GLM 全链路和一次人工验收。
+- 基线：PR #29 ordinary merge commit `d04e5dcf9639182303e26e38ccfa4351ad91c5d9`；分支 `feat/ai-question-generation-review`。
+- 数据：V14 新增 `ai_mo_xing_pei_zhi`、`ai_sheng_cheng_ren_wu`、`ai_hou_xuan_ti_zhi_liang_ping_jia`、`ai_shi_jue_shang_xia_wen`，当前 V1–V14、35 张业务表；V1–V13 未修改。
+- 配置：管理员 `/admin/ai-models` 管理 DeepSeek TEXT 与 GLM VISION 配置、启停、默认模型、超时、最多一次重试、Token 上限、Key 替换/清除和连接测试。响应只返回 `apiKeyConfigured`，不回显 Key；本地毕设演示允许 MySQL 明文保存 Key，不描述为生产级密钥管理。
+- 运行时：每次业务调用只做一次索引配置查询；启用的数据库默认配置优先，缺失时回退 application/env，均不可用时受控降级。DeepSeek 使用 `deepseek-v4-flash`/`deepseek-v4-pro`；GLM 只接受 `glm-4.6v-flash`。
+- 身份：学生询问身份、模型、Provider 或 API 时不调用 Provider，固定以“RIKE 理科学习助手”回答；Provider 返回中若出现底层身份、URL、Key 或 token 表述，也由输出守卫替换。管理员配置和 V12 日志仍可记录真实 provider/model。
+- Vision：无图片不调用；仅 PNG/JPEG，每题最多 2 张、单图 3 MB、总量 6 MB，SHA-256 去重；严格五字段 JSON、正文不超过 1500 字、`thinking=disabled`、max tokens 1000。缓存键由 question、附件 SHA 集、provider、model、`vision-context-v1` 组成；缓存只保存受控 JSON。失败不改 STANDARD，生成场景中图片必要而视觉失败则任务 FAILED。
+- 生成：仅 ADMIN 或本人 ACTIVE 任课科目教师可从 PUBLISHED 母题发起；单次 1–3 道，同母题 AI_GENERATED PENDING 加本次不得超过 6。request hash 固定绑定母题、题型、排序知识点、难度、变化方式和 Prompt 版本；相同有效请求受唯一约束拒绝。
+- 校验与重复：固定 8 字段 Candidate JSON；题型/选项/答案/难度 1–5/知识点/同科/长度/危险 HTML 全部先校验。现有 `nei_rong_ha_xi` 和批内 hash 拒绝完全重复；三字符 n-gram Jaccard ≥ 0.72 标为 `SUSPECTED_DUPLICATE`，只提示人工审核。
+- 审核：候选复用 `ti_mu`，固定 `AI_GENERATED + fu_ti_mu_id + PENDING`；未填写五项 0/1 质量评价并明确 APPROVED 前不能发布，REJECTED 回到 DRAFT 并保留任务/评价事实。
+- 真实 GLM smoke：使用程序生成的无隐私电路 PNG，真实请求已到达官方端点；Provider 按规则最多重试一次后仍为 HTTP 429，因此状态为 `REAL_GLM_VISION_SMOKE_FAIL_429`。未把失败写 PASS，未输出/保存 Key，未继续重复调用。
+
 ## PR #29 学生 AI 学习主链（2026-08-11）
 
 - 状态：`DONE_VERIFIED`。V13 随机临时库、分析/复用/纠正/会话/所有权/注入/降级专项、前端门禁与真实 DeepSeek smoke 均通过；全量最终回归和人工验收仍留 PR #31。

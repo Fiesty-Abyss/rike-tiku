@@ -1,10 +1,12 @@
-# 集成大模型智能答疑的在线题库实训管理系统
+# 面向高中物化生的 Spring Boot 大模型题库系统设计与实现
 
 本科毕业设计项目，面向高中物理、化学、生物的在线题库实训场景。系统计划围绕“题目练习 → 自动判分 → 标准解析 → 错题沉淀 → AI辅助答疑”构建可演示、可测试、可降级的学习闭环。
 
 > 当前仓库处于分阶段开发中，不代表完整系统已经完成或投入真实学校使用。
 
-> PR #29 在 `feat/ai-student-learning-core` 完成学生 AI 学习主链并通过真实 DeepSeek smoke，状态为 `DONE_VERIFIED`。真实 `deepseek-v4-flash` 已验证普通文本、结构化错因 JSON、token/latency、严格 Parser、V12 脱敏日志、V13 SUCCESS 与 STANDARD 不变；错题 REVIEWING/MASTERED 后仍绑定最近一次错误正式答题事实。V13 后为 31 张业务表，本轮未新增迁移；候选题生成仍未开始。Provider 配置见 [AI Provider 配置](docs/AI_PROVIDER_CONFIGURATION.md)。
+> PR #30 在 `feat/ai-question-generation-review` 完成管理员 AI 模型配置、GLM 视觉上下文、固定 RIKE 学生身份、AI 候选变式题、重复控制、PENDING 人工审核与质量评价，受影响专项、package、type-check 和 build 均已通过，状态为 `DONE_VERIFIED`；完整全量与人工验收仍留 PR #31。V14 后为 35 张业务表，V1–V13 未修改。真实 GLM 单图 smoke 已到达官方接口，但最多一次重试后仍为 HTTP 429，记为 `REAL_GLM_VISION_SMOKE_FAIL_429`，不冒充 PASS。Provider 配置见 [AI Provider 配置](docs/AI_PROVIDER_CONFIGURATION.md)。
+
+> PR #29 已以 ordinary merge commit `d04e5dcf9639182303e26e38ccfa4351ad91c5d9` 进入 `main`。学生 AI 学习主链和真实 `deepseek-v4-flash` smoke 为 `DONE_VERIFIED`：普通文本、结构化错因 JSON、token/latency、严格 Parser、V12 脱敏日志、V13 SUCCESS 与 STANDARD 不变均已验证。
 
 > 2026-08-09 V3.0 非 AI 正式完工审计的 **REJECT** 结论作为历史快照保留。PR #27 已完成 MA-017 至 MA-026，用户已完成最后一次真实 CAPTCHA 与浏览器复验，全部问题正式关闭，非 AI A 层标记为 `DONE_VERIFIED`。PR #27 是最后一个普通非 AI 工程 PR；AI Provider Core 将从其合并后的最新 `main` 另行开始。详见 [V3.0 非 AI 完工审计](docs/V3_NON_AI_COMPLETION_AUDIT.md)。
 
