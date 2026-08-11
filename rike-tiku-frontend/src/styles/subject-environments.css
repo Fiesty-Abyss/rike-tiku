@@ -1,0 +1,210 @@
+/* Subject environments are driven only by stable subjectCode -> data-subject. */
+[data-subject="physics"] {
+  --subject-accent: var(--physics-cobalt);
+  --subject-accent-deep: var(--physics-deep);
+  --subject-soft: var(--physics-soft);
+  --subject-light: var(--physics-light);
+  --subject-line: var(--physics-field);
+  --subject-environment: oklch(91% 0.06 235);
+}
+
+[data-subject="chemistry"] {
+  --subject-accent: var(--chemistry-plum);
+  --subject-accent-deep: var(--chemistry-deep);
+  --subject-soft: var(--chemistry-soft);
+  --subject-light: var(--chemistry-fluid);
+  --subject-line: oklch(65% 0.085 294);
+  --subject-environment: oklch(93% 0.045 296);
+}
+
+[data-subject="biology"] {
+  --subject-accent: var(--biology-jade);
+  --subject-accent-deep: var(--biology-deep);
+  --subject-soft: var(--biology-soft);
+  --subject-light: var(--biology-water);
+  --subject-line: var(--biology-leaf);
+  --subject-environment: oklch(91% 0.052 164);
+}
+
+.student-shell:has(.student-page[data-subject]),
+.workspace-page[data-subject] {
+  --brand: var(--subject-accent);
+  --brand-deep: var(--subject-accent-deep);
+  --brand-soft: var(--subject-soft);
+  --focus-ring: var(--subject-accent);
+  --el-color-primary: var(--subject-accent);
+  --el-color-primary-light-9: var(--subject-soft);
+}
+
+/* One world, three complete environmental grammars. */
+.student-shell:has(.student-page[data-subject="physics"]),
+.workspace-page[data-subject="physics"] {
+  --subject-accent: var(--physics-cobalt);
+  --subject-accent-deep: var(--physics-deep);
+  --subject-soft: var(--physics-soft);
+  --subject-light: var(--physics-light);
+  --subject-line: var(--physics-field);
+  --brand: var(--physics-cobalt);
+  --brand-deep: var(--physics-deep);
+  --brand-soft: var(--physics-soft);
+  background:
+    linear-gradient(108deg, transparent 0 66%, oklch(63% 0.13 246 / 0.1) 66.08% 66.2%, transparent 66.28%),
+    repeating-radial-gradient(ellipse at 93% 14rem, transparent 0 3.4rem, oklch(67% 0.12 239 / 0.08) 3.45rem 3.52rem, transparent 3.58rem 5.8rem),
+    radial-gradient(ellipse at 86% 4rem, oklch(75% 0.12 232 / 0.52), transparent 31rem),
+    linear-gradient(164deg, oklch(89% 0.065 235), var(--aero-mist) 38rem, oklch(95% 0.03 204));
+}
+
+.student-shell:has(.student-page[data-subject="chemistry"]),
+.workspace-page[data-subject="chemistry"] {
+  --subject-accent: var(--chemistry-plum);
+  --subject-accent-deep: var(--chemistry-deep);
+  --subject-soft: var(--chemistry-soft);
+  --subject-light: var(--chemistry-fluid);
+  --subject-line: oklch(65% 0.085 294);
+  --brand: var(--chemistry-plum);
+  --brand-deep: var(--chemistry-deep);
+  --brand-soft: var(--chemistry-soft);
+  background:
+    radial-gradient(circle at 88% 16rem, transparent 0 5.4rem, oklch(63% 0.08 300 / 0.11) 5.48rem 5.62rem, transparent 5.7rem),
+    linear-gradient(102deg, transparent 0 78%, oklch(70% 0.075 298 / 0.1) 78.08% 78.22%, transparent 78.3%),
+    radial-gradient(ellipse at 84% 5rem, oklch(80% 0.08 291 / 0.48), transparent 31rem),
+    linear-gradient(164deg, oklch(92% 0.045 298), var(--aero-mist) 38rem, oklch(96% 0.025 221));
+}
+
+.student-shell:has(.student-page[data-subject="biology"]),
+.workspace-page[data-subject="biology"] {
+  --subject-accent: var(--biology-jade);
+  --subject-accent-deep: var(--biology-deep);
+  --subject-soft: var(--biology-soft);
+  --subject-light: var(--biology-water);
+  --subject-line: var(--biology-leaf);
+  --brand: var(--biology-jade);
+  --brand-deep: var(--biology-deep);
+  --brand-soft: var(--biology-soft);
+  background:
+    linear-gradient(132deg, transparent 0 70%, oklch(50% 0.1 155 / 0.09) 70.08% 70.2%, transparent 70.28%),
+    linear-gradient(48deg, transparent 0 81%, oklch(57% 0.105 151 / 0.08) 81.08% 81.22%, transparent 81.3%),
+    radial-gradient(ellipse at 85% 5rem, oklch(75% 0.105 170 / 0.48), transparent 31rem),
+    linear-gradient(164deg, oklch(89% 0.055 164), var(--aero-mist) 38rem, oklch(95% 0.035 183));
+}
+
+.student-shell:has(.student-page[data-subject]) .student-header {
+  border-color: color-mix(in oklch, var(--subject-accent), transparent 68%);
+  background: color-mix(in oklch, var(--subject-soft) 74%, transparent);
+  box-shadow: inset 0 1px var(--aero-specular), 0 0.8rem 2.6rem color-mix(in oklch, var(--subject-accent), transparent 91%);
+}
+
+.student-page[data-subject] {
+  position: relative;
+  isolation: isolate;
+}
+
+.student-page[data-subject]::before {
+  position: absolute;
+  z-index: -1;
+  top: -3rem;
+  right: -3vw;
+  width: min(39vw, 31rem);
+  height: 12rem;
+  border-top: 1px solid color-mix(in oklch, var(--subject-line), transparent 45%);
+  border-right: 1px solid color-mix(in oklch, var(--subject-line), transparent 72%);
+  border-radius: 50%;
+  opacity: 0.72;
+  content: "";
+  transform: rotate(-7deg);
+  pointer-events: none;
+}
+
+.student-page[data-subject] .student-page-heading,
+.student-page[data-subject] .practice-progress,
+.student-page[data-subject] .result-summary {
+  position: relative;
+  overflow: hidden;
+  padding: clamp(1.25rem, 2.8vw, 2.25rem);
+  border: 0;
+  border-left: 3px solid var(--subject-accent);
+  border-radius: 0 var(--radius-panel) var(--radius-panel) 0;
+  background: linear-gradient(90deg, color-mix(in oklch, var(--subject-soft) 84%, white), color-mix(in oklch, var(--subject-soft) 30%, transparent) 72%, transparent);
+  box-shadow: none;
+}
+
+.student-page[data-subject] .student-page-heading::after,
+.student-page[data-subject] .practice-progress::after,
+.student-page[data-subject] .result-summary::after {
+  position: absolute;
+  inset: auto -8% -4.2rem 55%;
+  height: 7rem;
+  border: 1px solid color-mix(in oklch, var(--subject-line), transparent 62%);
+  border-radius: 50%;
+  content: "";
+  pointer-events: none;
+}
+
+.student-page[data-subject] .practice-question,
+.student-page[data-subject] .result-focus,
+.student-page[data-subject] .topic-reader,
+.student-page[data-subject] .data-table {
+  border-color: color-mix(in oklch, var(--subject-accent), transparent 78%);
+}
+
+.student-page[data-subject] .question-meta,
+.student-page[data-subject] .result-kicker,
+.student-page[data-subject] .topic-reader article > header span,
+.student-page[data-subject] .page-kicker {
+  color: var(--subject-accent-deep);
+}
+
+.student-page[data-subject] .el-progress-bar__inner,
+.student-page[data-subject] .result-question-nav button.active {
+  background: var(--subject-accent);
+}
+
+.workspace-page[data-subject] .workspace-header {
+  border-bottom-color: color-mix(in oklch, var(--subject-light), transparent 58%);
+  background:
+    radial-gradient(circle at 82% 0, color-mix(in oklch, var(--subject-light), transparent 48%), transparent 21rem),
+    linear-gradient(120deg, color-mix(in oklch, var(--subject-accent-deep), oklch(20% 0.045 230) 42%), color-mix(in oklch, var(--subject-accent), oklch(34% 0.05 224) 58%));
+}
+
+.workspace-page[data-subject] .scope-overview > div {
+  border-color: color-mix(in oklch, var(--subject-accent), transparent 70%);
+  background: color-mix(in oklch, var(--subject-soft) 72%, white 28%);
+  box-shadow: inset 0 1px white, 0 0.8rem 2rem color-mix(in oklch, var(--subject-accent), transparent 92%);
+}
+
+.workspace-page[data-subject] .workspace-card {
+  border-color: color-mix(in oklch, var(--subject-accent), transparent 82%);
+}
+
+.scientific-text { white-space: inherit; line-height: inherit; overflow-wrap: anywhere; }
+.scientific-text__plain { white-space: inherit; }
+.math-fragment { display: inline-block; max-width: 100%; margin-inline: .08em; vertical-align: -0.08em; color: var(--ink-primary); font-family: var(--font-scientific); }
+.math-fragment--display { display: block; width: 100%; margin: .8rem 0; padding: .45rem 0; overflow-x: auto; overflow-y: hidden; text-align: center; -webkit-overflow-scrolling: touch; }
+.math-fragment[data-render-status="fallback"] { padding-inline: .25em; border-bottom: 1px dashed var(--warning); color: var(--ink-secondary); font-family: ui-monospace, "Cascadia Mono", monospace; }
+.katex { font-size: var(--type-scientific); }
+.katex-display { margin: 0; }
+
+.metric-fraction { display: inline-grid; grid-template-rows: auto 1px auto; place-items: center; min-width: 2.2rem; color: var(--ink-primary); font: 680 1.05rem/1 var(--font-display); font-variant-numeric: tabular-nums; vertical-align: middle; }
+.metric-fraction__bar { width: 100%; min-width: 1.8rem; height: 1px; margin-block: .22rem; background: currentColor; }
+.metric-fraction__numerator, .metric-fraction__denominator { line-height: 1; }
+
+@media (max-width: 48rem) {
+  .student-shell:has(.student-page[data-subject]),
+  .workspace-page[data-subject] { background-size: auto; }
+  .student-page[data-subject]::before { width: 70vw; opacity: .42; }
+}
+
+@media (max-width: 30rem) {
+  .student-page[data-subject] .student-page-heading,
+  .student-page[data-subject] .practice-progress,
+  .student-page[data-subject] .result-summary { padding: 1rem; }
+  .math-fragment--display { text-align: left; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .student-page[data-subject]::before { transform: none; }
+}
+
+@supports not selector(:has(*)) {
+  .student-shell { background: linear-gradient(180deg, var(--aero-horizon), var(--aero-mist)); }
+}

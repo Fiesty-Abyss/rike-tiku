@@ -6,6 +6,7 @@ import { createPracticeSession, fetchPracticeOptions, type Subject } from '../..
 import { fetchStudentHighFrequencyPoints, type StudentHighFrequencyPoint } from '../../api/student/highFrequency'
 import { fetchStudentLearningSummary, type MasteryLevel, type StudentLearningSummary } from '../../api/student/learningMastery'
 import type { ApiError } from '../../api/http'
+import { subjectTheme } from '../../utils/subjectTheme'
 const route = useRoute()
 const router = useRouter()
 const subject = ref<Subject | null>(null)
@@ -13,7 +14,10 @@ const pointCount = ref(0)
 const loading = ref(false)
 const highFrequencyPoints = ref<StudentHighFrequencyPoint[]>([])
 const learningSummary = ref<StudentLearningSummary | null>(null)
+const focusedKnowledgePointId = computed(() => Number(route.query?.knowledgePointId) || 0)
+const focusedKnowledgePoint = computed(() => learningSummary.value?.knowledgePoints.find(point => point.knowledgePointId === focusedKnowledgePointId.value) || null)
 const subjectCode = computed(() => String(route.params.subjectCode).toUpperCase())
+const environment = computed(() => subjectTheme(subjectCode.value))
 const valid = computed(() => ['PHYSICS', 'CHEMISTRY', 'BIOLOGY'].includes(subjectCode.value))
 
 async function load() {
@@ -70,11 +74,12 @@ function accuracy(value: number | null) {
 async function startReinforcement(subjectId: number, knowledgePointId: number, count: number) {
   await router.push({ path: '/student/practice/new', query: { subjectId, knowledgePointId, count } })
 }
+function rowClassName({ row }: { row: { knowledgePointId: number } }) { return row.knowledgePointId === focusedKnowledgePointId.value ? 'is-focused-knowledge' : '' }
 onMounted(() => void load())
 </script>
 
 <template>
-  <section v-if="subject" class="student-page subject-page">
+  <section v-if="subject" class="student-page subject-page" :data-subject="environment">
     <div class="student-page-heading">
       <div>
         <h1>{{ subject.name }}学习工作台</h1>
@@ -98,12 +103,16 @@ onMounted(() => void load())
       <article>
         <h2>本学科错题</h2>
         <p>当前可用知识点 {{ pointCount }} 个；错题状态和历史会保留。</p>
-        <el-button @click="router.push({ path: '/student/wrong-questions', query: { subjectId: subject.id } })">
+        <el-button @click="router.push({ path: '/student/wrong-questions', query: { subjectCode: subject.code } })">
           查看{{ subject.name }}错题
         </el-button>
       </article>
     </div>
     <section v-if="learningSummary" class="student-mastery-section">
+      <div v-if="focusedKnowledgePoint" class="focused-knowledge-panel">
+        <div><span>当前聚焦</span><h2>{{ focusedKnowledgePoint.fullPath }}</h2><p>正确率 {{ accuracy(focusedKnowledgePoint.accuracy) }} · 当前错题 {{ focusedKnowledgePoint.activeWrongQuestionCount }} 道 · {{ masteryLabel(focusedKnowledgePoint.masteryLevel) }}</p></div>
+        <el-button type="primary" @click="startReinforcement(subject.id, focusedKnowledgePoint.knowledgePointId, 5)">练习这个知识点</el-button>
+      </div>
       <div class="section-title-row">
         <div>
           <h2>学习掌握</h2>
@@ -118,7 +127,7 @@ onMounted(() => void load())
           <small>{{ learningSummary.overall.totalCorrectCount }} / {{ learningSummary.overall.totalAnsweredCount }} 题答对</small>
         </div>
         <dl class="mastery-counts">
-          <div><dt>已练习知识点</dt><dd>{{ learningSummary.overall.practicedKnowledgePointCount }} / {{ learningSummary.overall.totalKnowledgePointCount }}</dd></div>
+          <div><dt>已练习知识点</dt><dd><span class="mastery-inline-ratio" role="text" :aria-label="`已练习知识点 ${learningSummary.overall.practicedKnowledgePointCount} / ${learningSummary.overall.totalKnowledgePointCount}`">{{ learningSummary.overall.practicedKnowledgePointCount }} / {{ learningSummary.overall.totalKnowledgePointCount }}</span></dd></div>
           <div><dt>已掌握</dt><dd>{{ learningSummary.overall.masteredKnowledgePointCount }}</dd></div>
           <div><dt>巩固中</dt><dd>{{ learningSummary.overall.improvingKnowledgePointCount }}</dd></div>
           <div><dt>薄弱</dt><dd>{{ learningSummary.overall.weakKnowledgePointCount }}</dd></div>
@@ -134,7 +143,7 @@ onMounted(() => void load())
           <p>同一道题关联多个知识点时，会计入每个关联知识点。</p>
         </div>
       </div>
-      <el-table :data="learningSummary.knowledgePoints" class="data-table" empty-text="当前学科暂无有效知识点。">
+      <el-table :data="learningSummary.knowledgePoints" :row-class-name="rowClassName" class="data-table" empty-text="当前学科暂无有效知识点。">
         <el-table-column prop="fullPath" label="知识点" min-width="240" />
         <el-table-column prop="answeredCount" label="答题数" width="88" />
         <el-table-column label="正确率" width="130"><template #default="{ row }">{{ accuracy(row.accuracy) }}</template></el-table-column>

@@ -68,6 +68,16 @@ public class StudentPracticeService {
         return new StudentPracticeDtos.Options(subjects, points);
     }
 
+    @Transactional(readOnly = true)
+    public StudentPracticeDtos.Availability availability(Long userId, StudentPracticeDtos.CreateRequest request) {
+        requireStudent(userId);
+        validateRequest(request);
+        validateSubject(request.subjectId());
+        validateKnowledgePoints(request.subjectId(), request.knowledgePointIds());
+        int available = findEligibleQuestions(request).size();
+        return new StudentPracticeDtos.Availability(available, Math.min(5, available));
+    }
+
     @Transactional
     public StudentPracticeDtos.Session create(Long userId, StudentPracticeDtos.CreateRequest request) {
         long studentId = requireStudent(userId);
@@ -80,9 +90,11 @@ public class StudentPracticeService {
             fail("PRACTICE_QUESTION_INSUFFICIENT", "符合条件的已发布题目不足，还差" + (request.count() - pool.size()) + "题", HttpStatus.BAD_REQUEST);
         }
 
-        List<QuestionPoolItem> shuffledPool = new ArrayList<>(pool);
-        Collections.shuffle(shuffledPool);
-        List<QuestionPoolItem> selected = shuffledPool.subList(0, request.count());
+        List<QuestionPoolItem> selectedPool = new ArrayList<>(pool);
+        if (request.referenceQuestionId() == null) {
+            Collections.shuffle(selectedPool);
+        }
+        List<QuestionPoolItem> selected = selectedPool.subList(0, request.count());
         jdbc.update("INSERT INTO lian_xi_hui_hua(xue_sheng_id,ke_mu_id,zhuang_tai,ti_mu_shu) VALUES (?,?,'CREATED',?)",
                 studentId, request.subjectId(), selected.size());
         Long sessionId = requiredLastInsertId();
@@ -170,12 +182,24 @@ public class StudentPracticeService {
             records.add(new StudentPracticeDtos.ResultQuestion(toSafeQuestion(question, sessionId, "SUBMITTED"), fact.answer(), readJson(question.correctAnswer()),
                     question.standardAnalysis(), fact.correct(), fact.score()));
         }
-        return new StudentPracticeDtos.Result(sessionId, result.totalCount(), result.correctCount(), result.totalScore(), result.submittedAt(), records);
+        return new StudentPracticeDtos.Result(sessionId, header.subjectId(), header.subjectCode(), header.subjectName(),
+                result.totalCount(), result.correctCount(), result.totalScore(), result.submittedAt(), records);
     }
 
     @Transactional(readOnly = true)
     public List<StudentPracticeDtos.WrongQuestionItem> wrongQuestions(Long userId) {
+        return wrongQuestions(userId, null);
+    }
+
+    @Transactional(readOnly = true)
+    public List<StudentPracticeDtos.WrongQuestionItem> wrongQuestions(Long userId, String subjectCode) {
         long studentId = requireStudent(userId);
+        String normalizedSubjectCode = subjectCode == null || subjectCode.isBlank()
+                ? null : subjectCode.trim().toUpperCase(Locale.ROOT);
+        if (normalizedSubjectCode != null && count("SELECT COUNT(*) FROM ke_mu WHERE ke_mu_dai_ma=? AND zhuang_tai='ACTIVE' AND yi_shan_chu=0",
+                normalizedSubjectCode) != 1) {
+            fail("PRACTICE_SUBJECT_NOT_FOUND", "科目不存在或已停用", HttpStatus.BAD_REQUEST);
+        }
         return jdbc.query("""
                 SELECT c.ti_mu_id,s.ke_mu_dai_ma,s.ke_mu_ming_cheng,lt.ti_mu_lei_xing,LEFT(lt.ti_gan_kuai_zhao,120),
                        c.cuo_wu_ci_shu,c.lian_xu_zheng_que_ci_shu,c.zhuang_tai,c.zui_jin_cuo_wu_shi_jian
@@ -184,9 +208,9 @@ public class StudentPracticeService {
                 JOIN lian_xi_ti_mu lt ON lt.id=da.lian_xi_ti_mu_id
                 JOIN lian_xi_hui_hua h ON h.id=lt.lian_xi_hui_hua_id
                 JOIN ke_mu s ON s.id=h.ke_mu_id
-                WHERE c.xue_sheng_id=?
+                WHERE c.xue_sheng_id=? AND (? IS NULL OR s.ke_mu_dai_ma=?)
                 ORDER BY c.zui_jin_cuo_wu_shi_jian DESC,c.id DESC
-                """, (rs, row) -> wrongItem(rs), studentId);
+                """, (rs, row) -> wrongItem(rs), studentId, normalizedSubjectCode, normalizedSubjectCode);
     }
 
     @Transactional(readOnly = true)
@@ -221,6 +245,12 @@ public class StudentPracticeService {
                 if (!AUTO_GRADABLE_TYPES.contains(type)) {
                     fail("PRACTICE_QUESTION_TYPE_INVALID", "练习只支持单选、多选和填空自动判分题", HttpStatus.BAD_REQUEST);
                 }
+            }
+        }
+        if (request.referenceQuestionId() != null) {
+            ReferenceQuestion reference = referenceQuestion(request.referenceQuestionId());
+            if (reference.subjectId() != request.subjectId()) {
+                fail("PRACTICE_REFERENCE_INVALID", "类似练习参考题与所选科目不一致", HttpStatus.BAD_REQUEST);
             }
         }
     }
@@ -278,7 +308,17 @@ public class StudentPracticeService {
                     .append(placeholders(request.knowledgePointIds().size())).append("))");
             arguments.addAll(request.knowledgePointIds());
         }
-        sql.append(" ORDER BY q.id DESC");
+        if (request.referenceQuestionId() != null) {
+            ReferenceQuestion reference = referenceQuestion(request.referenceQuestionId());
+            sql.append(" AND q.id<>? AND EXISTS (SELECT 1 FROM ti_mu_zhi_shi_dian candidate_kp JOIN ti_mu_zhi_shi_dian reference_kp ON reference_kp.zhi_shi_dian_id=candidate_kp.zhi_shi_dian_id AND reference_kp.ti_mu_id=? AND reference_kp.yi_shan_chu=0 WHERE candidate_kp.ti_mu_id=q.id AND candidate_kp.yi_shan_chu=0)");
+            arguments.add(reference.id());
+            arguments.add(reference.id());
+            sql.append(" ORDER BY CASE WHEN q.ti_mu_lei_xing=? THEN 0 ELSE 1 END,ABS(q.nan_du-?),q.id DESC");
+            arguments.add(reference.type());
+            arguments.add(reference.difficulty());
+        } else {
+            sql.append(" ORDER BY q.id DESC");
+        }
         List<QuestionPoolSeed> seeds = jdbc.query(sql.toString(), (rs, row) -> new QuestionPoolSeed(rs.getLong(1), rs.getLong(2),
                 rs.getString(3), rs.getString(4), rs.getString(5), rs.getInt(6)), arguments.toArray());
         return seeds.stream().map(this::toEligibleQuestion).flatMap(Optional::stream).toList();
@@ -398,8 +438,17 @@ public class StudentPracticeService {
 
     private StudentPracticeDtos.SessionQuestion toSafeQuestion(FrozenQuestion question, long sessionId, String sessionStatus) {
         int blankCount = "FILL_BLANK".equals(question.type()) ? readJson(question.correctAnswer()).path("blanks").size() : 0;
-        return new StudentPracticeDtos.SessionQuestion(question.id(), question.order(), question.type(), question.stem(), question.difficulty(),
+        return new StudentPracticeDtos.SessionQuestion(question.id(), question.questionId(), question.order(), question.type(), question.stem(), question.difficulty(),
                 question.score(), blankCount, readOptions(question.options()), readKnowledgePoints(question.knowledgePoints()), sessionAttachments(question.questionId(), sessionId, sessionStatus));
+    }
+
+    private ReferenceQuestion referenceQuestion(long questionId) {
+        return jdbc.query("""
+                SELECT id,ke_mu_id,ti_mu_lei_xing,nan_du FROM ti_mu
+                WHERE id=? AND zhuang_tai='PUBLISHED' AND shi_yong_mo_shi='ONLINE_PRACTICE'
+                  AND shi_fou_ke_zi_dong_pan_fen=1 AND yi_shan_chu=0
+                """, (rs, row) -> new ReferenceQuestion(rs.getLong(1), rs.getLong(2), rs.getString(3), rs.getInt(4)), questionId)
+                .stream().findFirst().orElseThrow(() -> business("PRACTICE_REFERENCE_INVALID", "类似练习参考题不存在或不可用于普通练习", HttpStatus.BAD_REQUEST));
     }
 
     private List<StudentPracticeDtos.Attachment> sessionAttachments(long questionId, long sessionId, String sessionStatus) {
@@ -631,6 +680,9 @@ public class StudentPracticeService {
     }
 
     private record QuestionPoolSeed(long id, long subjectId, String type, String stem, String correctAnswer, int difficulty) {
+    }
+
+    private record ReferenceQuestion(long id, long subjectId, String type, int difficulty) {
     }
 
     private record QuestionPoolItem(long id, long subjectId, String type, String stem, String correctAnswer, int difficulty,

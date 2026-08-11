@@ -1,692 +1,311 @@
 <script setup lang="ts">
-const learningLoop = [
-  { title: '练习', copy: '按学科、知识点、题型和难度创建练习。' },
-  { title: '判分', copy: '单选、多选、填空由确定性规则自动判分。' },
-  { title: '错题', copy: '错误记录持续保留，支持后续复习。' },
-  { title: '标准解析', copy: '以 STANDARD 答案和解析作为权威事实。' },
-  { title: '掌握度 / 推荐', copy: '依据真实答题记录计算并给出规则推荐。' },
-  { title: '再练习', copy: '从薄弱知识点重新进入练习闭环。' },
-]
+import { onBeforeUnmount, onMounted, ref } from 'vue'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import aquaWorld from '../assets/aqua/rike-aqua-world.webp'
+import physicsVisual from '../assets/aqua/physics-field-lab.webp'
+import chemistryVisual from '../assets/aqua/chemistry-equilibrium-lab.webp'
+import biologyVisual from '../assets/aqua/biology-living-system.webp'
 
-const availableCapabilities = [
-  ['在线练习与自动判分', '围绕高中物理、化学、生物开展条件练习与随机练习。'],
-  ['错题与标准解析', '提交后查看本人答案、正确答案、知识点和标准解析。'],
-  ['知识点掌握与规则推荐', '使用已提交答题事实计算掌握状态，不依赖 AI。'],
-  ['教师和教学组织管理', '支持班级、学生、教师、三元任课范围、学情与师生私信。'],
-]
+gsap.registerPlugin(ScrollTrigger)
 
-const subjects = [
-  { code: 'PHYSICS', name: '物理', copy: '从力学、电磁学等知识点进入练习，以清晰步骤核对概念与计算。' },
-  { code: 'CHEMISTRY', name: '化学', copy: '围绕物质结构、反应原理等内容训练规范表达与条件判断。' },
-  { code: 'BIOLOGY', name: '生物', copy: '通过生命活动规律与实验情境，巩固概念辨析和信息提取。' },
-]
+const root = ref<HTMLElement>()
+const hero = ref<HTMLElement>()
+const heroOptic = ref<HTMLElement>()
+const physicsChapter = ref<HTMLElement>()
+const physicsPin = ref<HTMLElement>()
+const loopScene = ref<HTMLElement>()
 
-const roles = [
-  ['学生', '练习、结果、错题、掌握度、规则推荐与师生私信'],
-  ['教师', '任课范围、班级学生、高频考点、班级学情与师生私信'],
-  ['管理员', '教学组织、账号、题库导入、审核和发布管理'],
-]
+let context: gsap.Context | undefined
+let motion: gsap.MatchMedia | undefined
+let pointerHandler: ((event: PointerEvent) => void) | undefined
+
+onMounted(() => {
+  if (!root.value) return
+  document.documentElement.classList.add('aqua-motion-ready')
+  motion = gsap.matchMedia()
+
+  context = gsap.context(() => {
+    motion?.add('(min-width: 64rem) and (prefers-reduced-motion: no-preference)', () => {
+      let desktopPointerTarget: HTMLElement | undefined
+      let desktopPointerHandler: ((event: PointerEvent) => void) | undefined
+
+      gsap.timeline({ defaults: { ease: 'power3.out' } })
+        .from('.portal-nav', { autoAlpha: 0, duration: 0.46 })
+        .from('.portal-hero-kicker, .portal-hero h1, .portal-subtitle', { autoAlpha: 0, y: 28, duration: 0.62, stagger: 0.08 }, '-=0.16')
+        .from('.portal-actions', { autoAlpha: 0, y: 16, duration: 0.44 }, '-=0.28')
+        .from('.portal-hero-world', { autoAlpha: 0, scale: 1.035, duration: 1.05, ease: 'power2.out' }, '-=0.68')
+        .from('.portal-hero-instrument', { autoAlpha: 0, scale: 0.88, rotate: -6, duration: 0.75 }, '-=0.62')
+
+      if (hero.value) {
+        gsap.timeline({
+          scrollTrigger: {
+            trigger: hero.value,
+            start: 'top top',
+            end: 'bottom top',
+            scrub: 0.75,
+          },
+        })
+          .to('.portal-hero-world', { yPercent: 13, scale: 1.08, ease: 'none' }, 0)
+          .to('.portal-hero-copy', { yPercent: -16, autoAlpha: 0.24, ease: 'none' }, 0)
+          .to('.portal-hero-instrument', { yPercent: -28, rotate: 8, ease: 'none' }, 0)
+          .to('.portal-scroll-cue', { autoAlpha: 0, y: -12, ease: 'none' }, 0)
+      }
+
+      gsap.to(root.value, {
+        '--portal-nav-opacity': 0.9,
+        '--portal-nav-scale': 0.965,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: root.value,
+          start: 'top top',
+          end: '+=360',
+          scrub: 0.6,
+        },
+      })
+
+      if (physicsChapter.value && physicsPin.value) {
+        gsap.timeline({
+          scrollTrigger: {
+            trigger: physicsChapter.value,
+            start: 'top top',
+            end: '+=2300',
+            scrub: 0.82,
+            pin: physicsPin.value,
+            anticipatePin: 1,
+            invalidateOnRefresh: true,
+          },
+        })
+          .fromTo('.physics-wave-path', { strokeDashoffset: 720 }, { strokeDashoffset: 0, duration: 0.28, ease: 'none' }, 0.02)
+          .fromTo('.physics-field-path', { strokeDashoffset: 560 }, { strokeDashoffset: 0, duration: 0.28, ease: 'none' }, 0.18)
+          .to('.physics-lens', { xPercent: -24, scale: 1.08, duration: 0.34, ease: 'none' }, 0.22)
+          .to('.physics-beam', { scaleX: 1, autoAlpha: 1, duration: 0.2, ease: 'none' }, 0.34)
+          .to('.physics-readout--wave', { autoAlpha: 0, y: -28, duration: 0.16 }, 0.28)
+          .fromTo('.physics-readout--field', { autoAlpha: 0, y: 34 }, { autoAlpha: 1, y: 0, duration: 0.18 }, 0.33)
+          .to('.physics-readout--field', { autoAlpha: 0, y: -28, duration: 0.16 }, 0.56)
+          .fromTo('.physics-readout--light', { autoAlpha: 0, y: 34 }, { autoAlpha: 1, y: 0, duration: 0.18 }, 0.61)
+          .to('.physics-material-solid', { autoAlpha: 1, duration: 0.22, ease: 'none' }, 0.66)
+          .to('.physics-spectrum', { scaleX: 1, autoAlpha: 1, duration: 0.26, ease: 'none' }, 0.72)
+          .to('.physics-scene-media', { xPercent: -5, scale: 1.035, duration: 0.26, ease: 'none' }, 0.72)
+      }
+
+      const disciplines = gsap.utils.toArray<HTMLElement>('.portal-discipline')
+      disciplines.forEach((section) => {
+        const atmosphere = section.dataset.atmosphere
+        const media = section.querySelector('.portal-discipline-media')
+        const copy = section.querySelector('.portal-discipline-copy')
+        if (atmosphere) {
+          gsap.timeline({
+            scrollTrigger: { trigger: section, start: 'top 84%', end: 'center 42%', scrub: 0.72 },
+          })
+            .to(`.portal-atmosphere--${atmosphere}`, { autoAlpha: 1, duration: 0.48, ease: 'none' }, 0)
+            .fromTo(media, { autoAlpha: 0, yPercent: 8, scale: 0.97 }, { autoAlpha: 1, yPercent: -2, scale: 1, duration: 1, ease: 'none' }, 0)
+            .fromTo(copy, { autoAlpha: 0, yPercent: 14 }, { autoAlpha: 1, yPercent: 0, duration: 0.82, ease: 'none' }, 0.08)
+        }
+      })
+
+      gsap.utils.toArray<HTMLElement>('[data-aqua-reveal]').filter((element) => !element.closest('.portal-discipline')).forEach((element) => {
+        gsap.fromTo(element, { autoAlpha: 0, y: 30 }, {
+          autoAlpha: 1,
+          y: 0,
+          duration: 0.7,
+          ease: 'power3.out',
+          scrollTrigger: { trigger: element, start: 'top 86%', once: true },
+        })
+      })
+
+      if (loopScene.value) {
+        gsap.timeline({
+          scrollTrigger: { trigger: loopScene.value, start: 'top 70%', end: 'bottom 62%', scrub: 0.68 },
+        })
+          .fromTo('.portal-loop-progress', { scaleX: 0 }, { scaleX: 1, duration: 1, ease: 'none' }, 0)
+          .fromTo('.portal-loop-step', { autoAlpha: 0.34 }, { autoAlpha: 1, duration: 0.82, stagger: 0.15, ease: 'none' }, 0.08)
+      }
+
+      if (hero.value && heroOptic.value && matchMedia('(hover: hover) and (pointer: fine)').matches) {
+        const opticX = gsap.quickTo(heroOptic.value, 'x', { duration: 0.55, ease: 'power3.out' })
+        const opticY = gsap.quickTo(heroOptic.value, 'y', { duration: 0.55, ease: 'power3.out' })
+        desktopPointerTarget = hero.value
+        desktopPointerHandler = (event: PointerEvent) => {
+          const rect = hero.value?.getBoundingClientRect()
+          if (!rect || !root.value) return
+          const x = ((event.clientX - rect.left) / rect.width - 0.5) * 2
+          const y = ((event.clientY - rect.top) / rect.height - 0.5) * 2
+          root.value.style.setProperty('--portal-pointer-x', `${50 + x * 8}%`)
+          root.value.style.setProperty('--portal-pointer-y', `${42 + y * 7}%`)
+          opticX(x * 12)
+          opticY(y * 9)
+        }
+        pointerHandler = desktopPointerHandler
+        desktopPointerTarget.addEventListener('pointermove', desktopPointerHandler, { passive: true })
+      }
+
+      return () => {
+        if (desktopPointerTarget && desktopPointerHandler) {
+          desktopPointerTarget.removeEventListener('pointermove', desktopPointerHandler)
+        }
+        if (pointerHandler === desktopPointerHandler) pointerHandler = undefined
+        root.value?.style.removeProperty('--portal-pointer-x')
+        root.value?.style.removeProperty('--portal-pointer-y')
+      }
+    })
+
+    motion?.add('(max-width: 63.99rem) and (prefers-reduced-motion: no-preference)', () => {
+      gsap.utils.toArray<HTMLElement>('[data-aqua-reveal]').forEach((element) => {
+        gsap.fromTo(element, { autoAlpha: 0, y: 22 }, {
+          autoAlpha: 1,
+          y: 0,
+          duration: 0.62,
+          ease: 'power3.out',
+          scrollTrigger: { trigger: element, start: 'top 88%', once: true },
+        })
+      })
+    })
+
+    motion?.add('(prefers-reduced-motion: reduce)', () => {
+      gsap.set('.portal-nav, .portal-hero-copy > *, .portal-hero-world, .portal-hero-instrument, [data-aqua-reveal], .physics-readout', { clearProps: 'all' })
+    })
+  }, root.value)
+
+  requestAnimationFrame(() => ScrollTrigger.refresh())
+})
+
+onBeforeUnmount(() => {
+  if (pointerHandler && hero.value) hero.value.removeEventListener('pointermove', pointerHandler)
+  context?.revert()
+  motion?.revert()
+  document.documentElement.classList.remove('aqua-motion-ready')
+})
 </script>
 
 <template>
-  <div class="portal-page">
-    <header class="portal-nav" aria-label="公共门户导航">
-      <RouterLink class="portal-wordmark" to="/" aria-label="返回公共首页">
-        <span class="portal-mark" aria-hidden="true">理科</span>
-        <span class="portal-wordmark-full">在线题库实训管理系统</span>
-        <span class="portal-wordmark-short">题库系统</span>
-      </RouterLink>
-      <RouterLink class="portal-nav-login" to="/login">统一登录</RouterLink>
+  <div ref="root" class="portal-page" data-portal-theme="aqua-future">
+    <div class="portal-atmospheres" aria-hidden="true">
+      <span class="portal-atmosphere portal-atmosphere--physics"></span>
+      <span class="portal-atmosphere portal-atmosphere--chemistry"></span>
+      <span class="portal-atmosphere portal-atmosphere--biology"></span>
+    </div>
+
+    <header class="portal-nav aero-shell" aria-label="公共门户导航">
+      <router-link class="portal-wordmark" to="/" aria-label="RIKE 公共首页">
+        <span class="portal-mark aero-orb" aria-hidden="true"><i></i></span>
+        <span><strong>RIKE</strong><small>理科学习辅助系统</small></span>
+      </router-link>
+      <nav aria-label="页面章节">
+        <a href="#physics">物理</a><a href="#chemistry">化学</a><a href="#biology">生物</a>
+      </nav>
+      <router-link data-testid="portal-login" class="portal-nav-login aero-control" to="/login">登录</router-link>
     </header>
 
     <main>
-      <section class="portal-hero" aria-labelledby="portal-title">
-        <div class="portal-hero-copy portal-enter" style="--portal-order: 0">
-          <h1 id="portal-title">集成大模型智能答疑的在线题库实训管理系统</h1>
-          <p class="portal-subtitle">面向高中物理、化学、生物的在线题库实训与学习辅助系统</p>
-          <p class="portal-ai-boundary">
-            <strong>能力边界</strong>
-            当前运行时 AI 智能答疑尚未上线；现阶段以标准答案与标准解析为权威。
-          </p>
+      <section ref="hero" class="portal-hero" data-portal-scene="hero" aria-labelledby="portal-title">
+        <figure class="portal-hero-media">
+          <img class="portal-hero-world portal-depth-layer" :src="aquaWorld" width="1586" height="992" loading="eager" fetchpriority="high" decoding="async" alt="清水与日光中的透明光学仪器连接波动、化学液面和生命叶脉" />
+          <span class="portal-caustics" aria-hidden="true"></span>
+          <span ref="heroOptic" class="portal-hero-instrument aero-orb" aria-hidden="true"><i></i><b></b></span>
+        </figure>
+        <div class="portal-hero-copy">
+          <p class="portal-hero-kicker">FIELD · EQUILIBRIUM · LIFE</p>
+          <h1 id="portal-title" aria-label="RIKE 理科学习辅助系统"><span>RIKE</span>理科学习辅助系统</h1>
+          <p class="portal-subtitle">高中物理、化学、生物练习与学习管理。</p>
           <div class="portal-actions">
-            <RouterLink data-testid="portal-login" class="portal-primary-action" to="/login">
-              进入统一登录
-              <span class="action-arrow" aria-hidden="true"></span>
-            </RouterLink>
-            <a class="portal-secondary-action" href="#learning-loop">查看学习闭环</a>
+            <router-link class="portal-primary-action aero-control" to="/login">进入系统</router-link>
+            <a class="portal-secondary-action" href="#physics">沿科学路径向下</a>
           </div>
         </div>
-
-        <dl class="portal-scope portal-enter" style="--portal-order: 1" aria-label="系统范围">
-          <div><dt>学科范围</dt><dd>物理 · 化学 · 生物</dd></div>
-          <div><dt>自动判分</dt><dd>单选 · 多选 · 填空</dd></div>
-          <div><dt>使用角色</dt><dd>学生 · 教师 · 管理员</dd></div>
-          <div><dt>事实边界</dt><dd>标准答案与标准解析始终权威</dd></div>
-        </dl>
+        <div class="portal-scroll-cue" aria-hidden="true"><span></span><p>SCROLL TO OBSERVE</p></div>
       </section>
 
-      <section id="learning-loop" class="portal-section learning-section" aria-labelledby="learning-title">
-        <header class="portal-section-heading">
-          <h2 id="learning-title">一条可重复验证的学习闭环</h2>
-          <p>每一步都来自系统中的真实练习数据；规则推荐不会改写标准答案或标准解析。</p>
-        </header>
-        <ol class="learning-map" aria-label="练习到再练习的学习闭环">
-          <li v-for="(step, index) in learningLoop" :key="step.title">
-            <span class="learning-index" aria-hidden="true">{{ String(index + 1).padStart(2, '0') }}</span>
-            <h3>{{ step.title }}</h3>
-            <p>{{ step.copy }}</p>
-          </li>
-        </ol>
-        <p class="loop-return"><span class="loop-return-mark" aria-hidden="true"></span> 完成一次练习后，可从薄弱知识点再次进入练习。</p>
-      </section>
-
-      <section class="portal-section capability-section" aria-labelledby="capability-title">
-        <header class="portal-section-heading capability-heading">
-          <h2 id="capability-title">当前可用的非 AI 能力</h2>
-          <p>首页只介绍已经进入系统并有测试证据的功能，不展示虚构指标。</p>
-        </header>
-        <dl class="capability-list">
-          <div v-for="capability in availableCapabilities" :key="capability[0]">
-            <dt>{{ capability[0] }}</dt>
-            <dd>{{ capability[1] }}</dd>
+      <section ref="physicsChapter" id="physics" class="portal-physics-chapter" data-portal-scene="physics" data-subject="physics" aria-labelledby="physics-title">
+        <div ref="physicsPin" class="portal-physics-pin">
+          <div class="physics-scene-media">
+            <img :src="physicsVisual" width="1586" height="992" loading="lazy" decoding="async" alt="清水实验场中的透明透镜、钴蓝波干涉、场线和精密测量环" />
+            <svg class="physics-overlay" viewBox="0 0 1200 760" aria-hidden="true">
+              <path class="physics-wave-path" pathLength="720" d="M40 474c78-150 156 150 234 0s156 150 234 0 156 150 234 0 156 150 234 0" />
+              <path class="physics-field-path" pathLength="560" d="M122 624C310 472 533 414 806 430c122 7 214-8 292-62" />
+            </svg>
+            <span class="physics-lens" aria-hidden="true"></span>
+            <span class="physics-beam" aria-hidden="true"></span>
+            <span class="physics-spectrum" aria-hidden="true"></span>
           </div>
-        </dl>
-        <aside class="ai-plan-note" aria-label="AI 能力边界">
-          <strong>AI 智能答疑：后续能力规划</strong>
-          <p>当前系统尚未实现运行时 AI 答疑。AI 不可用时，登录、题库、练习、判分、错题和标准解析仍应正常工作。</p>
-        </aside>
+          <div class="physics-copy">
+            <p class="portal-scene-index">01 / PHYSICS</p>
+            <h2 id="physics-title">场、波与运动，<br />在同一次观察里展开。</h2>
+            <p>练习保留条件、单位、推导和知识点，让物理过程可以被测量、回看和再次验证。</p>
+            <div class="physics-material aero-glass">
+              <span class="physics-material-solid" aria-hidden="true"></span>
+              <div class="physics-readout physics-readout--wave"><b>WAVE</b><span>干涉与传播</span></div>
+              <div class="physics-readout physics-readout--field"><b>FIELD</b><span>方向与作用</span></div>
+              <div class="physics-readout physics-readout--light"><b>OPTICS</b><span>折射与测量</span></div>
+            </div>
+          </div>
+        </div>
       </section>
 
-      <section class="portal-section subject-section" aria-labelledby="subject-title">
-        <header class="portal-section-heading">
-          <h2 id="subject-title">三科学习入口，共用同一套可靠规则</h2>
-          <p>当前正式自动判分题型为单选、多选和填空；综合题不进行自动评分。</p>
-        </header>
-        <div class="subject-grid">
-          <article v-for="subject in subjects" :key="subject.code">
-            <span class="subject-code">{{ subject.code }}</span>
-            <h3>{{ subject.name }}</h3>
-            <p>{{ subject.copy }}</p>
-            <small>单选 · 多选 · 填空</small>
-          </article>
+      <section id="chemistry" class="portal-discipline portal-discipline--chemistry" data-portal-scene="chemistry" data-atmosphere="chemistry" data-subject="chemistry" aria-labelledby="chemistry-title">
+        <div class="portal-discipline-copy" data-aqua-reveal>
+          <p class="portal-scene-index">02 / CHEMISTRY</p>
+          <h2 id="chemistry-title">变化并不混乱。<br />条件决定平衡。</h2>
+          <p>物质组成、反应条件、实验现象和计算依据在一条证据链中被逐项解释。</p>
+          <ul aria-label="化学学习内容"><li>物质的量</li><li>元素化合物</li><li>实验与反应原理</li></ul>
+        </div>
+        <figure class="portal-discipline-media" data-aqua-reveal>
+          <img :src="chemistryVisual" width="1586" height="992" loading="lazy" decoding="async" alt="水面实验平台上的透明器皿、梅紫液面、分子几何和光谱折射" />
+          <figcaption><span>MENISCUS</span><span>TRANSFORMATION</span><span>SPECTRUM</span></figcaption>
+        </figure>
+      </section>
+
+      <section id="biology" class="portal-discipline portal-discipline--biology" data-portal-scene="biology" data-atmosphere="biology" data-subject="biology" aria-labelledby="biology-title">
+        <figure class="portal-discipline-media" data-aqua-reveal>
+          <img :src="biologyVisual" width="1586" height="992" loading="lazy" decoding="async" alt="清水上下相连的巨幅叶脉、膜结构、水滴和根系生命网络" />
+          <figcaption><span>GROWTH</span><span>MEMBRANE</span><span>CONNECTION</span></figcaption>
+        </figure>
+        <div class="portal-discipline-copy" data-aqua-reveal>
+          <p class="portal-scene-index">03 / BIOLOGY</p>
+          <h2 id="biology-title">生命不是一个细胞。<br />它是持续连接的系统。</h2>
+          <p>从膜结构与遗传，到稳态与生态，沿材料证据逐层建立结构、功能和系统关系。</p>
+          <ul aria-label="生物学习内容"><li>分子与细胞</li><li>遗传与进化</li><li>稳态与生态</li></ul>
         </div>
       </section>
 
-      <section class="portal-section role-section" aria-labelledby="role-title">
-        <header class="portal-section-heading role-heading">
-          <h2 id="role-title">同一登录入口，按真实角色进入工作台</h2>
-          <p>角色来自后台账号配置；公共门户不会授予、切换或推测用户权限。</p>
+      <section ref="loopScene" class="portal-loop" data-portal-scene="learning-loop" aria-labelledby="loop-title">
+        <header data-aqua-reveal>
+          <p class="portal-scene-index">04 / LEARNING LOOP</p>
+          <h2 id="loop-title">一次练习，形成可复验的反馈闭环。</h2>
+          <p>练习事实冻结后，判分、错题和标准解析保持同一条链路。</p>
         </header>
-        <dl class="role-list">
-          <div v-for="role in roles" :key="role[0]">
-            <dt>{{ role[0] }}</dt>
-            <dd>{{ role[1] }}</dd>
-          </div>
+        <div class="portal-loop-rail">
+          <span class="portal-loop-track" aria-hidden="true"><i class="portal-loop-progress"></i></span>
+          <ol>
+            <li class="portal-loop-step"><b>01</b><h3>练习</h3><p>按学科与知识点创建题组。</p></li>
+            <li class="portal-loop-step"><b>02</b><h3>判分</h3><p>固定答案规则即时判断。</p></li>
+            <li class="portal-loop-step"><b>03</b><h3>错题</h3><p>错误事实进入本人记录。</p></li>
+            <li class="portal-loop-step"><b>04</b><h3>标准解析</h3><p>查看冻结答案与逐项说明。</p></li>
+            <li class="portal-loop-step"><b>05</b><h3>再练习</h3><p>回到同一知识点验证掌握。</p></li>
+          </ol>
+        </div>
+        <dl class="portal-facts" aria-label="演示内容规模" data-aqua-reveal>
+          <div><dt>学科</dt><dd>3</dd></div>
+          <div><dt>自动练习题</dt><dd>360</dd></div>
+          <div><dt>专题综合题</dt><dd>18</dd></div>
         </dl>
       </section>
 
-      <section class="portal-close" aria-labelledby="portal-close-title">
-        <div>
-          <h2 id="portal-close-title">从一次清晰的练习开始。</h2>
-          <p>使用管理员发放的账号，经统一入口进入对应工作台。</p>
+      <section class="portal-entrance-scene" data-portal-scene="entrance" aria-labelledby="entrance-title">
+        <div class="portal-entrance-optic" aria-hidden="true"><span></span><i></i></div>
+        <div class="portal-entrance aero-glass-heavy" data-aqua-reveal>
+          <p class="portal-scene-index">05 / ENTER RIKE</p>
+          <h2 id="entrance-title">从真实账号，进入自己的科学工作台。</h2>
+          <p>学生进入学科练习，教师进入任课范围，管理员进入中性管理环境。</p>
+          <router-link class="portal-primary-action aero-control" to="/login">前往登录</router-link>
         </div>
-        <RouterLink class="portal-primary-action" to="/login">进入统一登录 <span class="action-arrow" aria-hidden="true"></span></RouterLink>
       </section>
     </main>
 
     <footer class="portal-footer">
-      <span>集成大模型智能答疑的在线题库实训管理系统</span>
-      <span>高中物理 · 化学 · 生物</span>
+      <strong>RIKE</strong><p>练习、判分、错题、标准解析与再练习。</p><span>本科毕业设计 · 非 AI 基础能力</span>
     </footer>
   </div>
 </template>
 
-<style src="../../portal-tokens.css"></style>
-
-<style scoped>
-.portal-page {
-  min-height: 100dvh;
-  color: var(--color-portal-ink);
-  background: var(--color-portal-paper);
-  font-family: var(--font-portal-body);
-  font-size: var(--text-portal-base);
-  line-height: 1.65;
-}
-
-.portal-nav,
-.portal-hero,
-.portal-section,
-.portal-close,
-.portal-footer {
-  width: min(100% - 2rem, 76rem);
-  margin-inline: auto;
-}
-
-.portal-nav {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-portal-md);
-  min-height: 4.5rem;
-  border-bottom: var(--rule-portal) solid var(--color-portal-rule);
-}
-
-.portal-wordmark,
-.portal-nav-login,
-.portal-primary-action,
-.portal-secondary-action {
-  white-space: nowrap;
-}
-
-.portal-wordmark {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-portal-sm);
-  min-width: 0;
-  color: var(--color-portal-ink);
-  font-family: var(--font-portal-display);
-  font-weight: 700;
-  line-height: 1.25;
-  text-decoration: none;
-}
-
-.portal-wordmark-short {
-  display: none;
-}
-
-.portal-mark {
-  display: grid;
-  flex: 0 0 auto;
-  place-items: center;
-  width: 2.5rem;
-  height: 2.5rem;
-  border: var(--rule-portal) solid var(--color-portal-accent);
-  border-radius: var(--radius-portal-control);
-  color: var(--color-portal-accent-deep);
-  font-size: var(--text-portal-sm);
-}
-
-.portal-nav-login,
-.portal-secondary-action {
-  color: var(--color-portal-accent-deep);
-  font-weight: 700;
-  text-underline-offset: 0.3em;
-}
-
-.portal-nav-login {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 2.75rem;
-  padding-inline: var(--space-portal-md);
-  border: var(--rule-portal) solid var(--color-portal-rule-strong);
-  border-radius: var(--radius-portal-control);
-  text-decoration: none;
-  transition: color var(--dur-portal-micro) var(--ease-portal-out), border-color var(--dur-portal-micro) var(--ease-portal-out), transform var(--dur-portal-micro) var(--ease-portal-out);
-}
-
-.portal-hero {
-  display: grid;
-  gap: var(--space-portal-2xl);
-  padding-block: var(--space-portal-2xl) var(--space-portal-3xl);
-}
-
-.portal-hero-copy {
-  min-width: 0;
-}
-
-.portal-hero h1 {
-  max-width: 16ch;
-  margin: 0;
-  color: var(--color-portal-ink);
-  font-family: var(--font-portal-display);
-  font-size: var(--text-portal-display);
-  font-style: normal;
-  font-weight: 700;
-  letter-spacing: -0.035em;
-  line-height: 1.16;
-  overflow-wrap: anywhere;
-}
-
-.portal-subtitle {
-  max-width: 38rem;
-  margin: var(--space-portal-lg) 0 0;
-  color: var(--color-portal-ink-soft);
-  font-size: var(--text-portal-md);
-}
-
-.portal-ai-boundary {
-  max-width: 66ch;
-  margin: var(--space-portal-md) 0 0;
-  color: var(--color-portal-ink-soft);
-  font-size: var(--text-portal-sm);
-}
-
-.portal-ai-boundary strong {
-  margin-inline-end: var(--space-portal-xs);
-  color: var(--color-portal-plan-ink);
-}
-
-.portal-actions {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--space-portal-md);
-  margin-top: var(--space-portal-xl);
-}
-
-.portal-primary-action {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-portal-sm);
-  min-height: 3rem;
-  padding-inline: var(--space-portal-lg);
-  border: var(--rule-portal) solid var(--color-portal-accent);
-  border-radius: var(--radius-portal-control);
-  color: var(--color-portal-accent-ink);
-  background: var(--color-portal-accent);
-  font-weight: 700;
-  text-decoration: none;
-  transition: background-color var(--dur-portal-micro) var(--ease-portal-out), transform var(--dur-portal-micro) var(--ease-portal-out);
-}
-
-.action-arrow {
-  width: 0.5rem;
-  height: 0.5rem;
-  border-block-start: 0.125rem solid currentColor;
-  border-inline-end: 0.125rem solid currentColor;
-  transform: rotate(45deg);
-}
-
-.portal-secondary-action {
-  display: inline-flex;
-  align-items: center;
-  min-height: 3rem;
-  padding-inline: var(--space-portal-xs);
-}
-
-.portal-scope {
-  display: grid;
-  margin: 0;
-  border-top: var(--rule-portal) solid var(--color-portal-rule-strong);
-}
-
-.portal-scope div {
-  display: grid;
-  grid-template-columns: minmax(6rem, 0.7fr) minmax(0, 1.4fr);
-  gap: var(--space-portal-md);
-  padding-block: var(--space-portal-md);
-  border-bottom: var(--rule-portal) solid var(--color-portal-rule);
-}
-
-.portal-scope dt,
-.capability-list dt,
-.role-list dt {
-  color: var(--color-portal-muted);
-  font-size: var(--text-portal-sm);
-  font-weight: 700;
-}
-
-.portal-scope dd,
-.capability-list dd,
-.role-list dd {
-  margin: 0;
-  color: var(--color-portal-ink-soft);
-}
-
-.portal-section {
-  padding-block: var(--space-portal-3xl);
-  border-top: var(--rule-portal) solid var(--color-portal-rule);
-}
-
-.portal-section-heading {
-  display: grid;
-  gap: var(--space-portal-md);
-  margin-bottom: var(--space-portal-xl);
-}
-
-.portal-section-heading h2,
-.portal-close h2 {
-  margin: 0;
-  color: var(--color-portal-ink);
-  font-family: var(--font-portal-display);
-  font-size: clamp(1.75rem, 3vw, 2.75rem);
-  font-style: normal;
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  line-height: 1.2;
-  overflow-wrap: anywhere;
-}
-
-.portal-section-heading p,
-.portal-close p {
-  max-width: 44rem;
-  margin: 0;
-  color: var(--color-portal-muted);
-}
-
-.learning-map {
-  display: grid;
-  gap: 0;
-  margin: 0;
-  padding: 0;
-  border-block: var(--rule-portal) solid var(--color-portal-rule-strong);
-  list-style: none;
-}
-
-.learning-map li {
-  position: relative;
-  min-width: 0;
-  padding: var(--space-portal-lg) var(--space-portal-md);
-  border-bottom: var(--rule-portal) solid var(--color-portal-rule);
-}
-
-.learning-map li:last-child {
-  border-bottom: 0;
-}
-
-.learning-index,
-.subject-code {
-  color: var(--color-portal-accent);
-  font-family: var(--font-portal-display);
-  font-size: var(--text-portal-sm);
-  font-weight: 700;
-  font-variant-numeric: tabular-nums;
-}
-
-.learning-map h3,
-.subject-grid h3 {
-  margin: var(--space-portal-xs) 0 0;
-  color: var(--color-portal-ink);
-  font-family: var(--font-portal-display);
-  font-size: var(--text-portal-lg);
-  font-style: normal;
-}
-
-.learning-map p,
-.subject-grid p {
-  margin: var(--space-portal-sm) 0 0;
-  color: var(--color-portal-ink-soft);
-}
-
-.loop-return {
-  display: flex;
-  align-items: center;
-  gap: var(--space-portal-sm);
-  margin: var(--space-portal-lg) 0 0;
-  color: var(--color-portal-accent-deep);
-  font-weight: 700;
-}
-
-.loop-return-mark {
-  position: relative;
-  width: 1rem;
-  height: 0.75rem;
-  border-block-end: 0.125rem solid currentColor;
-  border-inline-start: 0.125rem solid currentColor;
-  border-radius: 0 0 0 0.375rem;
-}
-
-.loop-return-mark::before {
-  position: absolute;
-  inset-block-start: 0.25rem;
-  inset-inline-start: -0.1875rem;
-  width: 0.375rem;
-  height: 0.375rem;
-  content: '';
-  border-block-start: 0.125rem solid currentColor;
-  border-inline-start: 0.125rem solid currentColor;
-  transform: rotate(-45deg);
-}
-
-.capability-list,
-.role-list {
-  margin: 0;
-  border-top: var(--rule-portal) solid var(--color-portal-rule-strong);
-}
-
-.capability-list div,
-.role-list div {
-  display: grid;
-  gap: var(--space-portal-sm);
-  padding-block: var(--space-portal-lg);
-  border-bottom: var(--rule-portal) solid var(--color-portal-rule);
-}
-
-.capability-list dt,
-.role-list dt {
-  color: var(--color-portal-ink);
-  font-size: var(--text-portal-md);
-}
-
-.ai-plan-note {
-  display: grid;
-  gap: var(--space-portal-xs);
-  margin-top: var(--space-portal-xl);
-  padding: var(--space-portal-lg);
-  border: var(--rule-portal) solid var(--color-portal-rule-strong);
-  border-radius: var(--radius-portal-panel);
-  color: var(--color-portal-plan-ink);
-  background: var(--color-portal-plan);
-}
-
-.ai-plan-note p {
-  max-width: 54rem;
-  margin: 0;
-}
-
-.subject-grid {
-  display: grid;
-  border-block: var(--rule-portal) solid var(--color-portal-rule-strong);
-}
-
-.subject-grid article {
-  position: relative;
-  min-width: 0;
-  padding: var(--space-portal-xl) 0;
-  border-bottom: var(--rule-portal) solid var(--color-portal-rule);
-}
-
-.subject-grid article:last-child {
-  border-bottom: 0;
-}
-
-.subject-grid small {
-  display: block;
-  margin-top: var(--space-portal-lg);
-  color: var(--color-portal-muted);
-  font-size: var(--text-portal-sm);
-}
-
-.portal-close {
-  display: grid;
-  gap: var(--space-portal-xl);
-  align-items: end;
-  padding-block: var(--space-portal-3xl);
-  border-top: var(--rule-portal) solid var(--color-portal-rule-strong);
-}
-
-.portal-close p {
-  margin-top: var(--space-portal-md);
-}
-
-.portal-close .portal-primary-action {
-  justify-self: start;
-}
-
-.portal-footer {
-  display: grid;
-  gap: var(--space-portal-xs);
-  padding-block: var(--space-portal-lg) var(--space-portal-xl);
-  border-top: var(--rule-portal) solid var(--color-portal-rule);
-  color: var(--color-portal-muted);
-  font-size: var(--text-portal-sm);
-}
-
-.portal-enter {
-  animation: portal-enter var(--dur-portal-long) var(--ease-portal-out) both;
-  animation-delay: calc(var(--portal-order, 0) * 70ms);
-}
-
-@keyframes portal-enter {
-  from { opacity: 0; transform: translateY(0.5rem); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.portal-nav-login:hover,
-.portal-nav-login:focus-visible {
-  color: var(--color-portal-accent);
-  border-color: var(--color-portal-accent);
-}
-
-.portal-primary-action:hover {
-  background: var(--color-portal-accent-deep);
-  transform: translateY(-1px);
-}
-
-.portal-nav-login:active,
-.portal-primary-action:active {
-  transform: translateY(1px);
-}
-
-.portal-wordmark:focus-visible,
-.portal-nav-login:focus-visible,
-.portal-primary-action:focus-visible,
-.portal-secondary-action:focus-visible {
-  outline: 3px solid var(--color-portal-focus);
-  outline-offset: 3px;
-}
-
-@media (min-width: 48rem) {
-  .portal-nav,
-  .portal-hero,
-  .portal-section,
-  .portal-close,
-  .portal-footer {
-    width: min(100% - 4rem, 76rem);
-  }
-
-  .portal-hero {
-    grid-template-columns: minmax(0, 1.45fr) minmax(18rem, 0.75fr);
-    align-items: end;
-    padding-block: var(--space-portal-3xl);
-  }
-
-  .portal-section-heading {
-    grid-template-columns: minmax(0, 1fr) minmax(18rem, 0.7fr);
-    align-items: end;
-  }
-
-  .learning-map {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
-  .learning-map li {
-    border-right: var(--rule-portal) solid var(--color-portal-rule);
-  }
-
-  .learning-map li:nth-child(3n) {
-    border-right: 0;
-  }
-
-  .learning-map li:nth-child(n + 4) {
-    border-bottom: 0;
-  }
-
-  .capability-list div,
-  .role-list div {
-    grid-template-columns: minmax(13rem, 0.7fr) minmax(0, 1.3fr);
-    gap: var(--space-portal-xl);
-  }
-
-  .subject-grid {
-    grid-template-columns: 1.15fr 1fr 0.85fr;
-  }
-
-  .subject-grid article {
-    padding-inline: var(--space-portal-lg);
-    border-right: var(--rule-portal) solid var(--color-portal-rule);
-    border-bottom: 0;
-  }
-
-  .subject-grid article:first-child {
-    padding-inline-start: 0;
-  }
-
-  .subject-grid article:last-child {
-    padding-inline-end: 0;
-    border-right: 0;
-  }
-
-  .portal-close {
-    grid-template-columns: minmax(0, 1fr) auto;
-  }
-
-  .portal-close .portal-primary-action {
-    justify-self: end;
-  }
-
-  .portal-footer {
-    grid-template-columns: minmax(0, 1fr) auto;
-  }
-}
-
-@media (min-width: 72rem) {
-  .learning-map {
-    grid-template-columns: repeat(6, minmax(0, 1fr));
-  }
-
-  .learning-map li,
-  .learning-map li:nth-child(n + 4) {
-    border-bottom: 0;
-  }
-
-  .learning-map li:nth-child(3n) {
-    border-right: var(--rule-portal) solid var(--color-portal-rule);
-  }
-
-  .learning-map li:last-child {
-    border-right: 0;
-  }
-}
-
-@media (max-width: 30rem) {
-  .portal-wordmark-full {
-    display: none;
-  }
-
-  .portal-wordmark-short {
-    display: inline;
-  }
-
-  .portal-nav-login {
-    padding-inline: var(--space-portal-sm);
-  }
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .portal-secondary-action:hover {
-    color: var(--color-portal-accent);
-  }
-}
-
-@media (pointer: coarse) {
-  .portal-nav-login,
-  .portal-primary-action,
-  .portal-secondary-action {
-    min-height: 3rem;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .portal-enter {
-    animation: none;
-  }
-
-  .portal-nav-login,
-  .portal-primary-action {
-    transition-duration: var(--dur-portal-micro);
-  }
-}
-</style>
+<style src="../styles/portal.css"></style>

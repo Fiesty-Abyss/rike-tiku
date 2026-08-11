@@ -19,7 +19,7 @@ vi.mock('element-plus', () => ({ ElMessage: { error: vi.fn(), success: vi.fn() }
 
 const summary = {
   subject: { id: 1, code: 'PHYSICS', name: '物理' },
-  overall: { practicedKnowledgePointCount: 2, totalKnowledgePointCount: 3, totalAnsweredCount: 8, totalCorrectCount: 5, overallAccuracy: 62.5, weakKnowledgePointCount: 1, improvingKnowledgePointCount: 1, masteredKnowledgePointCount: 0, insufficientKnowledgePointCount: 0, notStartedKnowledgePointCount: 1 },
+  overall: { practicedKnowledgePointCount: 0, totalKnowledgePointCount: 38, totalAnsweredCount: 8, totalCorrectCount: 5, overallAccuracy: 62.5, weakKnowledgePointCount: 1, improvingKnowledgePointCount: 1, masteredKnowledgePointCount: 0, insufficientKnowledgePointCount: 0, notStartedKnowledgePointCount: 38 },
   knowledgePoints: [{ knowledgePointId: 7, knowledgePointName: '牛顿运动定律', fullPath: '力学>运动和力>牛顿运动定律', answeredCount: 4, correctCount: 2, wrongCount: 2, accuracy: 50, activeWrongQuestionCount: 1, masteryLevel: 'WEAK' }],
   recommendations: [{ knowledgePointId: 7, knowledgePointName: '牛顿运动定律', reason: '该知识点仍有未完成复习的错题。', practiceParameters: { subjectId: 1, knowledgePointId: 7, count: 5 } }],
   recommendationMessage: null,
@@ -57,6 +57,10 @@ describe('学生学科页掌握度与推荐', () => {
     expect(wrapper.text()).toContain('薄弱')
     expect(wrapper.text()).toContain('该知识点仍有未完成复习的错题。')
     expect(wrapper.find('.table-data').text()).toContain('WEAK')
+    expect(wrapper.attributes('data-subject')).toBe('physics')
+    expect(wrapper.find('.mastery-inline-ratio').text()).toBe('0 / 38')
+    expect(wrapper.find('.mastery-inline-ratio').attributes('aria-label')).toBe('已练习知识点 0 / 38')
+    expect(wrapper.find('.metric-fraction').exists()).toBe(false)
   })
 
   it('开始巩固复用条件练习并预选学科、知识点和五题', async () => {
