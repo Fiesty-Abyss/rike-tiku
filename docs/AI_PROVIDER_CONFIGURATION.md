@@ -22,3 +22,10 @@ PR #28 提供统一 `AiModelProvider` 基础层。AI 默认关闭；不配置 AP
 自动化使用 `FakeAiModelProvider` 或 JDK 本地 HTTP stub，不访问外网、不需要真实 Key。受控错误类型为 `DISABLED`、`CONFIGURATION_ERROR`、`AUTHENTICATION_ERROR`、`RATE_LIMITED`、`TIMEOUT`、`PROVIDER_UNAVAILABLE`、`INVALID_RESPONSE`、`UNKNOWN`。
 
 V12 `ai_diao_yong_ri_zhi` 只保存 provider、model、用途、可空业务引用、成功状态、耗时、输入/输出 token、错误码和创建时间。它不保存 Prompt、模型输出、API Key、JWT、密码或完整题目。
+
+## PR #29 学生 AI 请求策略
+
+- 错因分析和当前题答疑都显式发送 `thinking={"type":"disabled"}`，不保存或返回 `reasoning_content`。
+- 错因分析使用 `response_format={"type":"json_object"}` 与 `max_tokens=1200`；Prompt 内明确包含 json 及目标结构示例。
+- 首次 JSON 无效时业务层最多纠正一次；这与 Provider Core 的网络/429/5xx 最多一次 HTTP retry 相互独立，不存在控制器重试。
+- 学生 AI 仍服从本页 `enabled/provider/base-url/model/api-key/connect-timeout/request-timeout/retry-count` 配置。默认关闭或 Key 缺失不会影响非 AI 启动、练习、判分、错题与 STANDARD 解析。

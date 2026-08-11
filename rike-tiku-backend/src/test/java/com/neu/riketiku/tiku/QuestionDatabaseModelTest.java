@@ -29,7 +29,7 @@ class QuestionDatabaseModelTest extends AdminQuestionIntegrationTestSupport {
         "xue_sheng_dang_an", "jiao_shi_dang_an", "ban_ji", "ban_ji_xue_sheng",
         "ren_ke_guan_xi", "lian_xi_hui_hua", "lian_xi_ti_mu", "xue_sheng_da_ti",
         "xue_xi_jie_guo", "cuo_ti_ji_lu", "gao_pin_kao_dian", "si_xin_hui_hua", "si_xin_xiao_xi",
-        "guan_li_cao_zuo_ri_zhi", "ai_diao_yong_ri_zhi"
+        "guan_li_cao_zuo_ri_zhi", "ai_diao_yong_ri_zhi", "ai_cuo_ti_fen_xi", "ai_hui_hua", "ai_xiao_xi"
     );
 
     @Autowired
@@ -54,7 +54,7 @@ class QuestionDatabaseModelTest extends AdminQuestionIntegrationTestSupport {
         assertThat(Set.copyOf(tables)).isEqualTo(BUSINESS_TABLES);
         Integer migrations = jdbcTemplate.queryForObject(
             "SELECT COUNT(*) FROM flyway_schema_history WHERE success = 1", Integer.class);
-        assertThat(migrations).isEqualTo(12);
+        assertThat(migrations).isEqualTo(13);
     }
 
     @Test

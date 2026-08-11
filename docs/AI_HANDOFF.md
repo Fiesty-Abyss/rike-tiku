@@ -1,5 +1,20 @@
 # AI 开发交接
 
+## PR #29 学生 AI 学习主链（2026-08-11）
+
+- 状态：`DONE_VERIFIED`（V13 随机临时库、分析/复用/纠正/会话/所有权/注入/降级专项、前端专项与构建门禁）；全量最终回归和人工验收留 PR #31。
+- 基线：PR #28 ordinary merge commit `54c1669b3113086a2fb22e756e0656ea8cb751c8`；分支 `feat/ai-student-learning-core`。
+- 数据：V13 新增 `ai_cuo_ti_fen_xi`、`ai_hui_hua`、`ai_xiao_xi`；分析唯一绑定 `xue_sheng_da_ti.id`，会话同时绑定学生、正式答题事实和冻结练习题。V1–V12 不修改。
+- 分析：受控 8 类错误、严格 5 字段 JSON、数组/长度上限；`response_format=json_object`、`thinking=disabled`、`max_tokens=1200`。首次无效只允许一次业务纠正，第二次失败不保存成功分析。
+- 复用：成功分析按正式答题事实、Prompt 版本 `student-ai-v1` 和受控输入事实 SHA-256 复用；并发请求通过行锁避免重复调用。
+- 答疑：只围绕当前题；单条用户消息 500 字、助手消息 2000 字、最多 8 轮；Provider 上下文最多最近 12 条消息并受 6000 字预算约束。
+- 权限：studentId 只从 JWT 推导；答题事实和 conversationId 都重新反查本人所有权；未提交练习、其他学生、TEACHER、ADMIN 均不能读取或发送学生 AI 私聊。
+- 安全：冻结题干、选项、正式学生答案仅放入 user 数据区；STANDARD 正确答案/解析明确不可变；不传姓名、手机号、班级或整份历史；API 不返回 provider/model/token；V12/V13 均不保存 Prompt、输出或 Key。
+- 降级：Provider/JSON 失败只返回受控错误，练习结果、错题、判分、掌握度、规则推荐和 STANDARD 解析保持不变。
+- 本轮门禁：后端受影响专项 64/64 PASS，`mvn -DskipTests package` PASS；前端受影响专项 10/10 PASS，`npm run type-check` 与 `npm run build` PASS（既有 500 kB chunk warning 保留）。未机械运行完整后端/前端历史全量、Demo reset/seed/smoke、全站浏览器或人工验收。
+- 真实 DeepSeek smoke：`SKIPPED`。运行时没有安全设置的 `RIKE_TIKU_AI_API_KEY`；聊天中出现的 Key 已视为泄露凭据，未使用、未写文件、未写日志或 Git。
+- 后续：PR #30 仅做候选题生成 + PENDING + 人工审核 + 质量评价；PR #31 做真实 Provider 集成、全量测试、最终文档与一次人工验收。
+
 ## PR #28 Provider Core（2026-08-11）
 
 - 状态：`DONE_VERIFIED`（Provider 专项、V12 随机临时库迁移与日志专项、AI 关闭上下文、package、`git diff --check`）。

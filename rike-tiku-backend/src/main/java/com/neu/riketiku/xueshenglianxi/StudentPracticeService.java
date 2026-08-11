@@ -175,11 +175,11 @@ public class StudentPracticeService {
         List<StudentPracticeDtos.ResultQuestion> records = new ArrayList<>();
         for (FrozenQuestion question : frozenQuestions(sessionId)) {
             AnswerFact fact = jdbc.query("""
-                    SELECT xue_sheng_da_an,shi_fou_zheng_que,de_fen
+                    SELECT id,xue_sheng_da_an,shi_fou_zheng_que,de_fen
                     FROM xue_sheng_da_ti WHERE lian_xi_ti_mu_id=? AND xue_sheng_id=?
-                    """, (rs, row) -> new AnswerFact(readJson(rs.getString(1)), rs.getBoolean(2), rs.getBigDecimal(3)), question.id(), studentId)
+                    """, (rs, row) -> new AnswerFact(rs.getLong(1), readJson(rs.getString(2)), rs.getBoolean(3), rs.getBigDecimal(4)), question.id(), studentId)
                     .stream().findFirst().orElseThrow(() -> business("PRACTICE_ANSWER_NOT_FOUND", "练习答题事实不完整", HttpStatus.INTERNAL_SERVER_ERROR));
-            records.add(new StudentPracticeDtos.ResultQuestion(toSafeQuestion(question, sessionId, "SUBMITTED"), fact.answer(), readJson(question.correctAnswer()),
+            records.add(new StudentPracticeDtos.ResultQuestion(fact.id(), toSafeQuestion(question, sessionId, "SUBMITTED"), fact.answer(), readJson(question.correctAnswer()),
                     question.standardAnalysis(), fact.correct(), fact.score()));
         }
         return new StudentPracticeDtos.Result(sessionId, header.subjectId(), header.subjectCode(), header.subjectName(),
@@ -220,7 +220,7 @@ public class StudentPracticeService {
                 SELECT c.ti_mu_id,s.ke_mu_dai_ma,s.ke_mu_ming_cheng,lt.ti_mu_lei_xing,LEFT(lt.ti_gan_kuai_zhao,120),
                        c.cuo_wu_ci_shu,c.lian_xu_zheng_que_ci_shu,c.zhuang_tai,c.zui_jin_cuo_wu_shi_jian,
                        lt.ti_gan_kuai_zhao,lt.xuan_xiang_kuai_zhao,lt.zheng_que_da_an_kuai_zhao,lt.biao_zhun_jie_xi_kuai_zhao,
-                       lt.zhi_shi_dian_kuai_zhao,da.xue_sheng_da_an
+                       lt.zhi_shi_dian_kuai_zhao,da.xue_sheng_da_an,da.id
                 FROM cuo_ti_ji_lu c
                 JOIN xue_sheng_da_ti da ON da.id=c.zui_jin_da_ti_id
                 JOIN lian_xi_ti_mu lt ON lt.id=da.lian_xi_ti_mu_id
@@ -228,14 +228,14 @@ public class StudentPracticeService {
                 JOIN ke_mu s ON s.id=h.ke_mu_id
                 WHERE c.xue_sheng_id=? AND c.ti_mu_id=?
                 """, (rs, index) -> new WrongDetailRow(wrongItem(rs), rs.getString(10), rs.getString(11), rs.getString(12),
-                        rs.getString(13), rs.getString(14), rs.getString(15)), studentId, questionId)
+                        rs.getString(13), rs.getString(14), rs.getString(15), rs.getLong(16)), studentId, questionId)
                 .stream().findFirst().orElseThrow(() -> business("WRONG_QUESTION_NOT_FOUND", "错题不存在或不属于当前学生", HttpStatus.NOT_FOUND));
         List<StudentPracticeDtos.Attachment> attachments = jdbc.query("""
                 SELECT id,guan_lian_wei_zhi,fu_jian_lei_xing,yuan_shi_wen_jian_ming,dui_xiang_biao_shi,zhuang_tai,xiang_dui_lu_jing,nei_rong_ha_xi
                 FROM ti_mu_fu_jian WHERE ti_mu_id=? AND yi_shan_chu=0 ORDER BY guan_lian_wei_zhi,pai_xu,id
                 """, (rs, index) -> attachment(rs.getLong(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8),
                         "/api/v1/student/wrong-questions/" + questionId + "/attachments/" + rs.getLong(1) + "/content"), questionId);
-        return new StudentPracticeDtos.WrongQuestionDetail(row.item(), row.stem(), readOptions(row.options()), readJson(row.studentAnswer()),
+        return new StudentPracticeDtos.WrongQuestionDetail(row.answerFactId(), row.item(), row.stem(), readOptions(row.options()), readJson(row.studentAnswer()),
                 readJson(row.correctAnswer()), row.analysis(), readKnowledgePoints(row.knowledgePoints()), attachments);
     }
 
@@ -702,13 +702,13 @@ public class StudentPracticeService {
     private record GradedAnswer(FrozenQuestion question, StudentPracticeDtos.Answer answer, boolean correct) {
     }
 
-    private record AnswerFact(JsonNode answer, boolean correct, BigDecimal score) {
+    private record AnswerFact(long id, JsonNode answer, boolean correct, BigDecimal score) {
     }
 
     private record ResultHeader(int totalCount, int correctCount, BigDecimal totalScore, LocalDateTime submittedAt) {
     }
 
     private record WrongDetailRow(StudentPracticeDtos.WrongQuestionItem item, String stem, String options, String correctAnswer,
-                                  String analysis, String knowledgePoints, String studentAnswer) {
+                                  String analysis, String knowledgePoints, String studentAnswer, long answerFactId) {
     }
 }

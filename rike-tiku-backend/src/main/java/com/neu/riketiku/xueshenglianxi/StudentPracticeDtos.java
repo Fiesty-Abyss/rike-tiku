@@ -76,6 +76,7 @@ public final class StudentPracticeDtos {
     }
 
     public record ResultQuestion(
+            Long answerFactId,
             SessionQuestion question,
             JsonNode studentAnswer,
             JsonNode correctAnswer,
@@ -113,6 +114,7 @@ public final class StudentPracticeDtos {
     }
 
     public record WrongQuestionDetail(
+            Long answerFactId,
             WrongQuestionItem wrongQuestion,
             String stem,
             List<Option> options,

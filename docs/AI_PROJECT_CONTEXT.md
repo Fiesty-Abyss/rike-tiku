@@ -1,5 +1,7 @@
 # 跨AI项目上下文
 
+> PR #29 在 `feat/ai-student-learning-core` 完成学生 AI 学习主链：错因分析、成功复用、一次 JSON correction、绑定当前题的 8 轮答疑、严格学生所有权、Prompt 数据边界与 STANDARD 降级均为 `DONE_VERIFIED`。V13 新增 3 张学生 AI 表，当前为 V1–V13、31 张业务表；V1–V12 未修改。候选题生成仍为 `NOT_STARTED`。
+
 > PR #28 在 `feat/ai-provider-core` 建立统一 AI Provider 基础层。Provider Core 为 `DONE_VERIFIED`；学生错因分析、当前题目有限多轮答疑、候选题生成均为 `NOT_STARTED`。V12 新增一张脱敏 AI 调用日志表，当前结构为 V1–V12、28 张业务表，V1–V11 未修改。
 
 > 自动化只使用确定性 Fake 与本地 HTTP stub，不使用真实 API Key或外部网络。真实 DeepSeek Provider 默认关闭，当前默认模型 `deepseek-v4-flash` 来自 2026-08-11 官方文档核对；启用前仍应复核模型有效性。

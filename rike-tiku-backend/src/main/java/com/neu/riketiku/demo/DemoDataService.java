@@ -61,11 +61,11 @@ public class DemoDataService {
         guardDatabaseName(database);
         int version = jdbc.queryForObject("SELECT MAX(CAST(version AS UNSIGNED)) FROM flyway_schema_history WHERE success=1", Integer.class);
         int tableCount = jdbc.queryForObject("SELECT COUNT(*) FROM information_schema.tables WHERE table_schema=DATABASE() AND table_name<>'flyway_schema_history'", Integer.class);
-        if (version != 12 || tableCount != 28) {
-            throw new IllegalStateException("演示库必须完整执行V1-V12且包含28张业务表，当前V" + version + "，" + tableCount + "张");
+        if (version != 13 || tableCount != 31) {
+            throw new IllegalStateException("演示库必须完整执行V1-V13且包含31张业务表，当前V" + version + "，" + tableCount + "张");
         }
         expect("管理员操作日志表", 1, count("SELECT COUNT(*) FROM information_schema.tables WHERE table_schema=DATABASE() AND table_name='guan_li_cao_zuo_ri_zhi'"));
-        System.out.println("演示数据库结构校验通过: " + database + "，V1-V12，28张业务表");
+        System.out.println("演示数据库结构校验通过: " + database + "，V1-V13，31张业务表");
     }
 
     @Transactional
