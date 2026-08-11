@@ -1,5 +1,14 @@
 # AI 开发交接
 
+## PR #28 Provider Core（2026-08-11）
+
+- 状态：`DONE_VERIFIED`（Provider 专项、V12 随机临时库迁移与日志专项、AI 关闭上下文、package、`git diff --check`）。
+- 基线：PR #27 merge commit `84a82fc3bd4972fc11c0811d8332bae306b7e5c0`；分支 `feat/ai-provider-core`。
+- 已有能力：`AiModelProvider` 请求/结果/token/status 契约，确定性 Fake，DeepSeek OpenAI-compatible HTTP Provider，连接/请求超时，最多一次重试，受控错误与 V12 脱敏日志。
+- 安全边界：AI 默认关闭；Key 只读 `RIKE_TIKU_AI_API_KEY`；测试使用本地 stub；不保存 Prompt/输出/Key/JWT/密码；不写正式 `rike_tiku`。
+- 官方核对：2026-08-11 查询 DeepSeek 官方文档，Base URL 为 `https://api.deepseek.com`，Chat Completions 路径为 `/chat/completions`，当前模型为 `deepseek-v4-flash` / `deepseek-v4-pro`；旧 `deepseek-chat` / `deepseek-reasoner` 已于 2026-07-24 后停用。
+- 下一阶段唯一任务：PR #29 学生错因分析 + 当前题目有限多轮答疑。候选题生成属于 PR #30，完整全量与真实 Key 集成属于 PR #31。
+
 > 2026-08-09 V3.0 非 AI 正式完工审计结论为 REJECT。历史审计快照识别出 4 个 A 层硬缺口；其中公共门户 MA-016 已在 `feat/public-portal` 完成并验证，剩余附件真实显示、管理员高风险操作日志、30 道合法样例完整导入发布显示闭环仍阻止开始 AI。完整原始证据见 [V3_NON_AI_COMPLETION_AUDIT.md](V3_NON_AI_COMPLETION_AUDIT.md)。
 
 > 历史接续分支 `feat/question-attachment-rendering` 已通过 PR #26 普通合并；其 V1–V10、26 张业务表口径仅属于当时基线。

@@ -1,5 +1,7 @@
 # 开发状态
 
+> 2026-08-11 PR #28 `AiModelProvider Core`：`DONE_VERIFIED`（Provider 专项与 package 门禁）。已实现统一 Provider 契约、确定性 Fake、DeepSeek OpenAI-compatible HTTP Provider、连接/请求超时、最多一次临时失败重试、有限错误分类、受控降级和 V12 脱敏调用日志。AI 默认关闭，自动化不需要真实 Key。学生错因分析、多轮答疑、候选题生成和前端 AI 页面仍为 `NOT_STARTED`；完整全量回归留到 PR #31。
+
 > 2026-08-09 V3.0 非 AI 正式完工审计已由 PR #24 普通 merge（merge commit `bcfb2181af2197d2524a2df8ca64895e435a4857`）进入 `main`。结论为 REJECT，当前不能认证 100% DONE_VERIFIED。正式证据见 [V3_NON_AI_COMPLETION_AUDIT.md](V3_NON_AI_COMPLETION_AUDIT.md)。
 
 > PR #25 已普通 merge（merge commit `0559a4e4eba041dd74a7bcb7d4c9f2cd8b29e617`）并关闭 MA-016。其后历史接续分支 `feat/question-attachment-rendering` 已通过 PR #26 合并；V1–V10、26 张业务表是当时口径。
@@ -8,9 +10,13 @@
 
 > Round 3 视觉人工验收已明确失败并新增 MA-026。Round 4 以 `RIKE Aqua Future` 完成机器修正，用户已完成最终人工复验；MA-017 至 MA-026 均已关闭，非 AI A 层正式为 `DONE_VERIFIED`。PR #27 是最后一个普通非 AI 工程 PR，AI 阶段从其合并后的最新 `main` 开始。
 
-更新时间：2026-08-11
+更新时间：2026-08-11（PR #28 Provider Core）
 
 ## 当前主线状态
+
+- 当前分支：`feat/ai-provider-core`；基线为 PR #27 ordinary merge commit `84a82fc3bd4972fc11c0811d8332bae306b7e5c0`。
+- Flyway：V1–V12，共 28 张业务表；V12 仅新增 `ai_diao_yong_ri_zhi`，V1–V11 未修改。
+- Provider Core：`DONE_VERIFIED`。学生 AI 主链：`NOT_STARTED`。
 
 - 当前分支：`feat/non-ai-final-closure`；PR #26 已合并，公共门户和附件机器实现已进入 `main`；PR #27 已完成最终人工验收，准备 ordinary merge 封板。
 - 根路径 `/` 是无需认证的公共门户。Round 4 以 Hero、Physics、Chemistry、Biology、Learning Loop、Entrance 六场景组织真实产品内容，保留 3 / 360 / 18 与统一 `/login`，不写 AI 宣传或虚构指标；登录、角色选择、首次改密和受保护路由守卫的业务行为未改动。MA-016 已关闭。

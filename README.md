@@ -4,6 +4,8 @@
 
 > 当前仓库处于分阶段开发中，不代表完整系统已经完成或投入真实学校使用。
 
+> PR #28 当前在 `feat/ai-provider-core` 实现 AI Provider Core：统一契约、确定性 Fake、本地 stub 可测的 DeepSeek OpenAI-compatible HTTP Provider、超时/最多一次重试、受控降级和 V12 脱敏调用日志。AI 默认关闭且不需要真实 API Key；错因分析、答疑、候选题生成和前端 AI 页面仍为 `NOT_STARTED`。配置见 [AI Provider 配置](docs/AI_PROVIDER_CONFIGURATION.md)。
+
 > 2026-08-09 V3.0 非 AI 正式完工审计的 **REJECT** 结论作为历史快照保留。PR #27 已完成 MA-017 至 MA-026，用户已完成最后一次真实 CAPTCHA 与浏览器复验，全部问题正式关闭，非 AI A 层标记为 `DONE_VERIFIED`。PR #27 是最后一个普通非 AI 工程 PR；AI Provider Core 将从其合并后的最新 `main` 另行开始。详见 [V3.0 非 AI 完工审计](docs/V3_NON_AI_COMPLETION_AUDIT.md)。
 
 > PR #26 已以 merge commit `b992bffef07465665b371b7b707ca8814ec2d36d` 普通合并；PR #27 的机器测试、机器浏览器证据与用户人工浏览器复验已分别记录。PR #27 是最后一个普通非 AI 工程 PR，当前实现包含 V11 管理员日志、Golden30 正常导入闭环、管理员题目图片上传、菜单整理、多角色切换、Round 4 Aqua Future 视觉和三角色工作台；本阶段不包含运行时 AI。
