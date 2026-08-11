@@ -6,9 +6,11 @@
 
 > 当前接续分支：`feat/non-ai-final-closure`，从 PR #26 merge commit `b992bffef07465665b371b7b707ca8814ec2d36d` 创建。PR #26 已普通 merge；MA-017 保持 `IMPLEMENTED_AWAITING_FINAL_MANUAL_ACCEPTANCE`，人工验收延期至非 AI 最终集成验收。PR #27 是最后一个非 AI Draft PR，已加入 V11 管理员操作日志、MA-020、管理员图片上传、来源权利更新、Golden30 正常导入闭环、菜单整理和多角色切换；Flyway V1–V11、27 张业务表，V1–V10 不得修改。
 
-> PR #27 最新机器准备已完成：Demo360 为物理/化学/生物各 120 道、55 个叶子知识点，另含 Topic18，总题量 378；后端 133 个测试（0 failure、0 error、1 个符号链接 assumption skipped）及 package 通过，前端 49 个文件 170/170、type-check、build、audit 0。MA-021 至 MA-025 均为 `FIXED_AWAITING_USER_RETEST`；最终人工环境关闭 CAPTCHA `testCode`，用户尚未执行的真实 CAPTCHA/视觉结果不得记为 PASS。
+> PR #27 当前机器准备：Demo360 为物理/化学/生物各 120 道、55 个叶子知识点，另含 Topic18，总题量 378。Round 4 前端为 50/50 文件、174/174 测试，type-check、build、audit 0；build 保留 main chunk 797.43 kB（gzip 254.25 kB）warning。Round 4 未改后端，未机械重跑 Maven；最近一次后端事实仍为 133 tests、0 failure、0 error、1 个符号链接 assumption skipped 及 package PASS。MA-021 至 MA-026 均等待用户复验；最终人工环境关闭 CAPTCHA `testCode`，机器结果不得记为人工 PASS。
 
 > 第三轮 MA-021 至 MA-025 的机器修正包括：五章 Portal 与三张原创静态 WebP、内联掌握比例、冻结完整答案、Demo360 选择题逐项 STANDARD 解析、Topic18 安全分段以及显式 accepted answers 等价判分。没有新增 Flyway、运行时 AI 或通用表达式求值。
+
+> 第三轮视觉随后被用户人工判定失败并新增 MA-026。Round 4 已用 `RIKE Aqua Future`、四张原创 Aqua WebP、六场景 Portal、Physics pin+scrub、学科环境 transition、Aqua Auth/Workspace、移动端和 reduced-motion 降级完成机器修正；MA-026 当前为 `FIXED_AWAITING_USER_RETEST`。PR #27 继续 Draft，非 AI 不得标记 `DONE_VERIFIED`，AI 未开始。
 
 更新时间：2026-08-11
 
@@ -50,7 +52,7 @@ PR #23 浏览器仅操作 `rike_tiku_demo`：物理 3、化学 3、生物 4 道�
 
 PR #26 的 MA-017 机器证据为：后端附件/权限/HTTP/导入/题池专项 27 个，26 PASS、1 个符号链接权限 assumption skipped；`mvn clean test` 112 个测试 0 失败、1 个符号链接权限 assumption skipped，`mvn clean package` PASS；前端附件专项 4/4、`npm test` 127/127 PASS，type-check、build PASS，`npm audit --omit=dev` 为 0 vulnerabilities。当时 Demo 题库为物理 40、化学 39、生物 41，共 120 道；当前验收库已由 PR #27 扩充为 Demo360。PHYSICS-S1 两条附件记录实际文件/hash 回读继续通过。状态仍为 `IMPLEMENTED_AWAITING_FINAL_MANUAL_ACCEPTANCE`。
 
-PR #27 当前机器收口已完成主要实现：V11 管理员高风险操作日志及 ADMIN 查询页面、空提交体 4xx、草稿题干/标准解析图片上传/替换/删除、来源权利补充 API、Golden30 的真实 preview → confirm → 权利补充 → 审核 → 发布 → 查询 → 学生练习闭环、题库/学生菜单整理和多角色“切换身份”均已进入当前分支。Golden30 独立测试验证物理 10、化学 10、生物 10，共 30 道已发布题，其中 29 道固定答案题可进入自动练习，1 道主观题按现有设计保留为专题学习题；原始候选 Excel 未修改，正式库未写入。第三轮又完成五项机器修正：五章 Portal 与三张原创 WebP；内联掌握比例；历史冻结完整选项展示与 Demo360 246 道选择题逐项解析；Topic18 全部结构化解析及安全排版；BV-06 显式 accepted answers 等价判分。最新门禁为后端 133 个测试 0 failure、0 error、1 个 symbolic-link assumption skipped、package PASS；前端 49 个文件 170/170、type-check/build/audit 通过；Demo360 + Topic18 的 `acceptance-prepare → validate → smoke` PASS。Round 3 机器证据位于 `docs/evidence/pr27-ui-round3/`，最终完整复跑控制台 0 error。PR #27 保持 Draft，MA-017 及 MA-021 至 MA-025 仍等待用户最终复验。
+PR #27 当前机器收口已完成主要实现：V11 管理员高风险操作日志及 ADMIN 查询页面、空提交体 4xx、草稿题干/标准解析图片上传/替换/删除、来源权利补充 API、Golden30 的真实 preview → confirm → 权利补充 → 审核 → 发布 → 查询 → 学生练习闭环、题库/学生菜单整理和多角色“切换身份”均已进入当前分支。Golden30 独立测试验证物理 10、化学 10、生物 10，共 30 道已发布题，其中 29 道固定答案题可进入自动练习，1 道主观题按现有设计保留为专题学习题；原始候选 Excel 未修改，正式库未写入。第三轮五项机器修正继续保留：内联掌握比例、历史冻结完整选项展示与 Demo360 246 道选择题逐项解析、Topic18 全部结构化解析及安全排版、BV-06 显式 accepted answers 等价判分。Round 3 视觉人工验收失败后，Round 4 又以 `RIKE Aqua Future` 重建设计系统、Portal/Auth 和三角色工作台，MA-026 已完成机器修正。当前前端门禁为 50/50 文件、174/174 测试、type-check/build/audit 通过，main chunk 797.43 kB（gzip 254.25 kB）warning 保留；本轮未修改后端，故未重跑 Maven，第三轮后端 133/0/0/1 skipped 与 package PASS 作为最近执行事实保留。Demo360 + Topic18 最近一次 `acceptance-prepare → validate → smoke` PASS。Round 3 与 Round 4 机器证据分别位于 `docs/evidence/pr27-ui-round3/`、`docs/evidence/pr27-ui-round4/`，均不替代用户验收。PR #27 保持 Draft，MA-017 及 MA-021 至 MA-026 仍等待用户最终复验；AI 未开始。
 
 第二轮视觉反馈在同一 PR 内继续收敛：Portal 由长叙事减为四段事实入口，删除 AI 规划和解释设计的文案；三科视觉改为原创语义 SVG；学生与教师具体工作页统一由 `subjectCode` 解析学科环境，教师 workspace DTO 因此最小补充 `subjectCode`；管理员保持 neutral。科学排版只接受显式 `\\(...\\)` / `\\[...\\]`，通过 KaTeX DOM API 安全输出，普通 `/` 与旧题纯文本不自动猜测；Topic18 代表题已渐进迁移。该轮证据位于 `docs/evidence/pr27-ui-round2/`，仍须用户最终复验。
 
@@ -83,7 +85,9 @@ PR #27 当前机器收口已完成主要实现：V11 管理员高风险操作日
 - [个人中心前端](PERSONAL_CENTER_FRONTEND.md)
 - [最终演示题库](FINAL_DEMO_QUESTION_BANK.md)
 - [变式候选审核记录](DEMO_VARIANT_QUESTION_REVIEW.md)
+- [Round 4 设计规范](../DESIGN.md)
+- [Round 4 UI/UX Foundation](UI_UX_FOUNDATION.md)
 
 ## 当前下一步
 
-保持 PR #27 Draft 和 `feat/non-ai-final-closure`。用户在 `http://localhost:18080` 使用真实图形 CAPTCHA 完成最后一次 PUBLIC、ADMIN、TEACHER、STUDENT、ADMIN+TEACHER 集成验收；通过后仍在同一 PR #27 补充人工证据，再决定 `DONE_VERIFIED` 与普通 merge。不得创建 PR #28，不开始 AI。
+保持 PR #27 Draft 和 `feat/non-ai-final-closure`。用户在 `http://localhost:18080` 使用真实图形 CAPTCHA 复验 Round 4 Portal 1440/1280/390、Physics pinned scene、三科 Student/Teacher、neutral Admin、Login/Role Selection，并抽查 MA-022 至 MA-025；通过后仍在同一 PR #27 补充人工证据，再决定 `DONE_VERIFIED` 与普通 merge。MA-026 在此之前保持 `FIXED_AWAITING_USER_RETEST`。不得创建 PR #28，不开始 AI。

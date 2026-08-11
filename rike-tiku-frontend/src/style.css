@@ -561,19 +561,6 @@ button:focus-visible,
   text-decoration: none;
 }
 
-.auth-brand > span,
-.role-select-brand > span {
-  display: grid;
-  place-items: center;
-  width: 2.5rem;
-  height: 2.5rem;
-  border: 1px solid var(--color-accent);
-  border-radius: var(--radius-control);
-  color: var(--color-accent-hover);
-  font-size: var(--text-sm);
-  font-weight: 700;
-}
-
 .auth-panel h2 {
   color: var(--color-ink);
   font-family: var(--font-display);
