@@ -29,7 +29,8 @@ class QuestionDatabaseModelTest extends AdminQuestionIntegrationTestSupport {
         "xue_sheng_dang_an", "jiao_shi_dang_an", "ban_ji", "ban_ji_xue_sheng",
         "ren_ke_guan_xi", "lian_xi_hui_hua", "lian_xi_ti_mu", "xue_sheng_da_ti",
         "xue_xi_jie_guo", "cuo_ti_ji_lu", "gao_pin_kao_dian", "si_xin_hui_hua", "si_xin_xiao_xi",
-        "guan_li_cao_zuo_ri_zhi", "ai_diao_yong_ri_zhi", "ai_cuo_ti_fen_xi", "ai_hui_hua", "ai_xiao_xi"
+        "guan_li_cao_zuo_ri_zhi", "ai_diao_yong_ri_zhi", "ai_cuo_ti_fen_xi", "ai_hui_hua", "ai_xiao_xi",
+        "ai_mo_xing_pei_zhi", "ai_sheng_cheng_ren_wu", "ai_hou_xuan_ti_zhi_liang_ping_jia", "ai_shi_jue_shang_xia_wen"
     );
 
     @Autowired
@@ -54,7 +55,7 @@ class QuestionDatabaseModelTest extends AdminQuestionIntegrationTestSupport {
         assertThat(Set.copyOf(tables)).isEqualTo(BUSINESS_TABLES);
         Integer migrations = jdbcTemplate.queryForObject(
             "SELECT COUNT(*) FROM flyway_schema_history WHERE success = 1", Integer.class);
-        assertThat(migrations).isEqualTo(13);
+        assertThat(migrations).isEqualTo(14);
     }
 
     @Test
@@ -114,7 +115,7 @@ class QuestionDatabaseModelTest extends AdminQuestionIntegrationTestSupport {
 
     @Test
     @Transactional
-    void shouldAllowAutoGradeExceptionAndRejectUnsupportedDifficulty() {
+    void shouldAllowFiveLevelDifficultyAndRejectUnsupportedDifficulty() {
         int inserted = jdbcTemplate.update("""
             INSERT INTO ti_mu (
                 ke_mu_id, ti_mu_lei_xing, shi_yong_mo_shi, ti_gan, zheng_que_da_an,
@@ -135,7 +136,7 @@ class QuestionDatabaseModelTest extends AdminQuestionIntegrationTestSupport {
                 nan_du, shi_fou_ke_zi_dong_pan_fen, zhuang_tai, nei_rong_ha_xi
             ) VALUES (1, 'SINGLE_CHOICE', 'ONLINE_PRACTICE', '非法难度测试题',
                 JSON_OBJECT('schemaVersion', 1, 'type', 'SINGLE_CHOICE', 'optionLabels', JSON_ARRAY('A')),
-                4, 1, 'PENDING', REPEAT('e', 64))
+                6, 1, 'PENDING', REPEAT('e', 64))
             """))
             .isInstanceOf(DataAccessException.class)
             .hasMessageContaining("ck_ti_mu_nan_du");
