@@ -1,9 +1,9 @@
 html[data-theme="mizuiro-aero"],
 :root {
   --el-color-primary: var(--brand);
-  --el-color-primary-light-3: oklch(67% 0.095 222);
-  --el-color-primary-light-5: oklch(78% 0.065 218);
-  --el-color-primary-light-7: oklch(88% 0.045 216);
+  --el-color-primary-light-3: color-mix(in oklch, var(--brand), white 30%);
+  --el-color-primary-light-5: color-mix(in oklch, var(--brand), white 50%);
+  --el-color-primary-light-7: color-mix(in oklch, var(--brand), white 72%);
   --el-color-primary-light-9: var(--brand-soft);
   --el-color-success: var(--success);
   --el-color-warning: var(--warning);
@@ -12,17 +12,60 @@ html[data-theme="mizuiro-aero"],
   --el-text-color-regular: var(--ink-secondary);
   --el-text-color-secondary: var(--ink-muted);
   --el-border-color: var(--glass-border);
-  --el-border-color-light: oklch(91% 0.028 215);
+  --el-border-color-light: color-mix(in oklch, var(--glass-border), white 45%);
   --el-fill-color-light: var(--surface-muted);
+  --el-fill-color-lighter: color-mix(in oklch, var(--surface-muted), white 50%);
   --el-bg-color: var(--surface-solid);
   --el-border-radius-base: var(--radius-control);
 }
 
+html,
+body,
+#app { min-height: 100%; }
+
+html { background: var(--aero-mist); }
+
 body {
+  color: var(--ink-primary);
   background:
-    linear-gradient(180deg, oklch(95% 0.033 218) 0, var(--canvas) 18rem, oklch(97% 0.014 178) 100%);
+    radial-gradient(ellipse at 50% -15rem, oklch(88% 0.085 215 / 0.72), transparent 42rem),
+    linear-gradient(180deg, var(--aero-horizon), var(--aero-mist) 25rem, oklch(97% 0.02 178));
+  font-family: var(--font-body);
+  font-size: var(--type-body);
+  line-height: 1.6;
+  text-rendering: optimizeLegibility;
 }
 
+/* Material hierarchy: shell/glass are spatial, solid is for reading and data. */
+.aero-shell {
+  border: 1px solid color-mix(in oklch, var(--aero-edge-light), transparent 28%);
+  background: var(--aero-glass-frosted);
+  box-shadow: inset 0 1px var(--aero-specular), 0 0.65rem 2.4rem oklch(34% 0.065 225 / 0.09);
+  -webkit-backdrop-filter: blur(22px) saturate(135%);
+  backdrop-filter: blur(22px) saturate(135%);
+}
+
+.aero-glass,
+.surface-glass {
+  border: 1px solid var(--aero-edge-light);
+  background: var(--aero-glass-frosted);
+  box-shadow: inset 0 1px var(--aero-specular), inset 0 -1px oklch(64% 0.07 218 / 0.12), var(--shadow-float);
+  -webkit-backdrop-filter: blur(24px) saturate(142%);
+  backdrop-filter: blur(24px) saturate(142%);
+}
+
+.aero-glass-heavy,
+.optical-glass {
+  border: 1px solid color-mix(in oklch, var(--aero-edge-light), white 15%);
+  background:
+    linear-gradient(135deg, oklch(100% 0 0 / 0.52), transparent 32%),
+    var(--aero-glass-thick);
+  box-shadow: inset 0 1px var(--aero-specular), inset 1px 0 oklch(100% 0 0 / 0.52), var(--aero-depth-shadow);
+  -webkit-backdrop-filter: blur(32px) saturate(148%);
+  backdrop-filter: blur(32px) saturate(148%);
+}
+
+.aero-solid,
 .surface-solid,
 .workspace-card,
 .profile-section,
@@ -32,31 +75,55 @@ body {
 .analysis-panel,
 .topic-reader,
 .data-table {
+  border-color: color-mix(in oklch, var(--glass-border), white 18%);
   background: var(--surface-solid);
 }
 
-.surface-glass,
-.admin-topbar,
-.student-header,
-.profile-topbar,
-.filter-panel,
-.el-dialog,
-.el-drawer {
-  border-color: var(--glass-border);
-  background: var(--surface-glass-strong);
-  -webkit-backdrop-filter: blur(24px) saturate(132%);
-  backdrop-filter: blur(24px) saturate(132%);
-  box-shadow: inset 1px 1px var(--glass-highlight), inset -1px -1px oklch(63% 0.06 218 / .08), 0 .85rem 2.7rem oklch(37% .055 226 / .09);
+.aero-control {
+  border: 1px solid color-mix(in oklch, var(--brand), transparent 58%);
+  border-radius: var(--radius-control);
+  background: linear-gradient(180deg, oklch(100% 0 0 / 0.96), color-mix(in oklch, var(--brand-soft), white 42%));
+  box-shadow: inset 0 1px white, 0 0.25rem 0.8rem oklch(35% 0.055 223 / 0.08);
+}
+
+.aero-orb {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--aero-edge-light);
+  border-radius: var(--radius-orb);
+  background:
+    radial-gradient(circle at 34% 22%, white 0 5%, oklch(100% 0 0 / 0.68) 6%, transparent 21%),
+    radial-gradient(circle at 55% 68%, var(--aero-water), var(--aero-sky) 55%, var(--brand-deep));
+  box-shadow: inset 0 1px var(--aero-specular), inset -0.45rem -0.55rem 1.4rem oklch(29% 0.08 228 / 0.2), var(--aero-depth-shadow);
+}
+
+/* Neutral data shell: no per-question subject tint. */
+.admin-shell {
+  --brand: oklch(50% 0.09 221);
+  --brand-deep: oklch(34% 0.075 226);
+  --brand-soft: oklch(93% 0.036 214);
 }
 
 @supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+  .aero-shell,
+  .aero-glass,
   .surface-glass,
+  .aero-glass-heavy,
+  .optical-glass,
   .admin-topbar,
   .student-header,
   .profile-topbar,
   .filter-panel,
   .el-dialog,
   .el-drawer {
-    background: oklch(97% 0.022 214 / 0.98);
+    background: oklch(97.5% 0.02 213 / 0.98);
+  }
+}
+
+@media (prefers-contrast: more) {
+  :root {
+    --ink-muted: oklch(38% 0.035 224);
+    --glass-border: oklch(67% 0.07 218);
+    --focus-ring: oklch(41% 0.17 240);
   }
 }

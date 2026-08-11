@@ -3,6 +3,7 @@ import { computed, onMounted, ref } from 'vue'
 import { ElMessage } from 'element-plus'
 import { useRouter } from 'vue-router'
 import { createConversation, fetchConversations, fetchMessageContacts, type MessageContact, type MessageConversation } from '../../api/messages'
+import AquaBrand from '../../components/layout/AquaBrand.vue'
 import { useAuthStore } from '../../stores/auth'
 
 const auth = useAuthStore()
@@ -52,9 +53,7 @@ onMounted(() => void load())
   <main class="workspace-page message-page">
     <header class="workspace-header shared-workspace-header">
       <div>
-        <button class="workspace-brand workspace-brand-button" type="button" @click="router.push(isTeacher ? '/teacher' : '/student')">
-          RIKE · {{ isTeacher ? '教师工作台' : '学生工作台' }}
-        </button>
+        <AquaBrand class="workspace-brand-aqua" :to="isTeacher ? '/teacher' : '/student'" :subtitle="isTeacher ? '教师科学工作台' : '学生科学工作台'" compact />
         <h1>师生消息</h1>
         <p>仅可联系当前有效教学关系中的{{ isTeacher ? '学生' : '任课教师' }}。</p>
       </div>

@@ -12,6 +12,7 @@ import {
   type ProfileResponse,
 } from '../api/profile'
 import ChangePasswordDialog from '../components/auth/ChangePasswordDialog.vue'
+import AquaBrand from '../components/layout/AquaBrand.vue'
 import { useAuthStore } from '../stores/auth'
 import { formatEnum } from '../utils/formatters'
 
@@ -122,9 +123,7 @@ function formatDate(value: string | null) {
 <template>
   <main class="profile-page" v-loading="loading">
     <header class="profile-topbar">
-      <button class="profile-brand" type="button" @click="router.push(auth.getDefaultHome())">
-        理科学习辅助系统
-      </button>
+      <AquaBrand class="profile-brand-aqua" :to="auth.getDefaultHome()" subtitle="个人中心" compact />
       <div class="profile-topbar-actions">
         <el-button @click="router.push(auth.getDefaultHome())">返回工作台</el-button>
         <el-dropdown trigger="click">

@@ -24,6 +24,20 @@
 - 可访问：键盘焦点可见，触控目标足够，动效尊重 reduced-motion。
 - 可阅读：标准解析按标题、步骤和正文安全分段，公式继续使用 ScientificText / KaTeX；不把数据库文本作为 HTML 执行。
 
+## Round 4 visual experience
+
+`RIKE Aqua Future` 是当前唯一视觉方向，内部主题名仍为 `mizuiro-aero`。它用清水、空气、日光、透明光学与自然生命结构建立统一世界，同时保持科学仪器的精密度；`modern-minimal` 与 `Split Studio` 不再作为现行方向。这里借鉴的是编辑层级、滚动节奏、材质变化和物理反馈，不复制 Apple 产品构图，也不复刻 Windows 7 控件。
+
+- Portal 通过 Hero、Physics、Chemistry、Biology、学习闭环和进入系统六个连续场景说明真实产品；只展示 3 科、360 道自动练习题和 18 道专题综合题，不写 AI 宣传或虚构指标。
+- 登录和角色选择延续同一光学入口语言，但用户名、密码、CAPTCHA、错误和返回首页始终处于首要位置。
+- 学生按真实学科进入物理、化学、生物环境，题目、答案、结果和标准解析仍放在高对比实体表面。
+- 教师按真实 `subjectCode` 进入任课 scope，先表达科目、班级、学情和高频考点，不把教师工作台做成营销页。
+- 管理员使用 neutral Aqua；玻璃只用于 shell 与局部工具面，表格、筛选、日志、导入和危险操作使用高密度实体表面。
+- 桌面 Portal 允许连续 scrub、Physics pinned scene、小范围 pointer response 和材质转换；移动端改为自然纵向叙事，reduced motion 直接显示完整静态内容。
+- 原创 WebP 是构建时静态资产，不引入运行时图像生成或外部图床；现有 GSAP / ScrollTrigger 只服务视觉叙事，不改变浏览器自然滚动。
+
+本轮视觉重设计不增加产品能力，不修改业务流程、API、路由、权限、数据库、Flyway、自动判分或 STANDARD 权威规则。`0 / 38`、冻结完整答案、逐项解析、Topic18 分段、ScientificText / KaTeX、显式 accepted answers、附件 Blob 和角色切换继续按既有行为工作。
+
 ## Technical constraints
 
 - Vue 3、TypeScript、Vite、Element Plus；不更换技术栈。

@@ -4,6 +4,7 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import { useRouter } from 'vue-router'
 import { fetchTeachingScopes, type TeachingScope } from '../api/teacher'
 import ChangePasswordDialog from '../components/auth/ChangePasswordDialog.vue'
+import AquaBrand from '../components/layout/AquaBrand.vue'
 import { useAuthStore } from '../stores/auth'
 import { formatEnum } from '../utils/formatters'
 
@@ -41,7 +42,7 @@ async function logout() {
   <main class="workspace-page">
     <header class="workspace-header teacher-header">
       <div class="teacher-header-context">
-        <router-link class="workspace-brand" to="/teacher">RIKE · 教师工作台</router-link>
+        <AquaBrand class="workspace-brand-aqua" to="/teacher" subtitle="教师科学工作台" compact />
         <h1>教师工作台</h1>
         <p>
           您好，{{ name }}
@@ -77,7 +78,9 @@ async function logout() {
           :key="scope.teachingAssignmentId"
           class="teacher-scope-card"
           :class="`teacher-scope-card--${scope.subjectCode.toLowerCase()}`"
+          :data-subject="scope.subjectCode.toLowerCase()"
         >
+          <span class="teacher-scope-ambient" aria-hidden="true"></span>
           <div class="teacher-scope-route"><span>{{ scope.grade }}</span><i></i><span>{{ scope.subjectName }}</span></div>
           <div><h3>{{ scope.className }}</h3><p>{{ scope.homeroomSubject ? '主任课教师' : '任课教师' }} · {{ formatEnum(scope.teachingStatus) }}</p></div>
           <el-button v-if="scope.teachingStatus === 'ACTIVE'" type="primary" plain @click="router.push(`/teacher/scopes/${scope.teachingAssignmentId}`)">进入班级学科工作台</el-button>
