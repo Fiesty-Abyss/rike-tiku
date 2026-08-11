@@ -1,6 +1,6 @@
 # 跨AI项目上下文
 
-> PR #29 在 `feat/ai-student-learning-core` 完成学生 AI 学习主链机器专项，并在集中修正轮将错题 AI 独立绑定为“当前学生与题目最近一次错误的已提交正式答题事实”；后续正确作答只改变最近答案和 REVIEWING/MASTERED 状态，不改变 AI 分析事实。真实 DeepSeek smoke 因当前进程无安全环境变量保持 `REAL_PROVIDER_SMOKE_PENDING`，不得标为 `DONE_VERIFIED`。V13 新增 3 张学生 AI 表，当前为 V1–V13、31 张业务表；修正轮无新迁移。候选题生成仍为 `NOT_STARTED`。
+> PR #29 在 `feat/ai-student-learning-core` 完成学生 AI 学习主链并通过真实 `deepseek-v4-flash` smoke，状态为 `DONE_VERIFIED`。错题 AI 独立绑定“当前学生与题目最近一次错误的已提交正式答题事实”；后续正确作答只改变最近答案和 REVIEWING/MASTERED 状态。真实 smoke 已验证 HTTP 2xx、token/latency、结构化 Parser、V12 脱敏、V13 SUCCESS 与 STANDARD 不变。V13 新增 3 张学生 AI 表，当前为 V1–V13、31 张业务表；修正轮无新迁移。候选题生成仍为 `NOT_STARTED`。
 
 > PR #28 在 `feat/ai-provider-core` 建立统一 AI Provider 基础层。Provider Core 为 `DONE_VERIFIED`；学生错因分析、当前题目有限多轮答疑、候选题生成均为 `NOT_STARTED`。V12 新增一张脱敏 AI 调用日志表，当前结构为 V1–V12、28 张业务表，V1–V11 未修改。
 
