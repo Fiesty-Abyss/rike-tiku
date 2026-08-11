@@ -19,6 +19,7 @@ import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.IntFunction;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -28,6 +29,7 @@ class DeepSeekAiModelProviderTest {
     private static final String SECRET = "test-secret-that-must-not-leak";
     private final ObjectMapper objectMapper = new ObjectMapper();
     private HttpServer server;
+    private final AtomicReference<JsonNode> lastRequest = new AtomicReference<>();
 
     @AfterEach
     void stopServer() {
@@ -42,13 +44,16 @@ class DeepSeekAiModelProviderTest {
 
         AiModelResult result = provider.generate(new AiModelRequest(
                 List.of(new AiMessage("system", "return json"), new AiMessage("user", "hello")),
-                "unit-test", null, true));
+                "unit-test", null, true, 1200, AiThinkingMode.DISABLED));
 
         assertThat(calls).hasValue(1);
         assertThat(result.providerCode()).isEqualTo("deepseek");
         assertThat(result.modelCode()).isEqualTo("deepseek-v4-flash");
         assertThat(result.content()).isEqualTo("mock answer");
         assertThat(result.usage()).isEqualTo(new AiTokenUsage(12, 8, 20));
+        assertThat(lastRequest.get().path("response_format").path("type").asText()).isEqualTo("json_object");
+        assertThat(lastRequest.get().path("thinking").path("type").asText()).isEqualTo("disabled");
+        assertThat(lastRequest.get().path("max_tokens").asInt()).isEqualTo(1200);
     }
 
     @Test
@@ -177,6 +182,7 @@ class DeepSeekAiModelProviderTest {
         try {
             assertThat(exchange.getRequestHeaders().getFirst("Authorization")).isEqualTo("Bearer " + SECRET);
             JsonNode requestBody = objectMapper.readTree(exchange.getRequestBody());
+            lastRequest.set(requestBody);
             assertThat(requestBody.path("stream").asBoolean()).isFalse();
             if (delayMillis > 0) Thread.sleep(delayMillis);
             Reply reply = replies.apply(attempt);

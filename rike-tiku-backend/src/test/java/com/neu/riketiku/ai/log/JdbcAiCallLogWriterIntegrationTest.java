@@ -27,7 +27,7 @@ class JdbcAiCallLogWriterIntegrationTest extends AdminQuestionIntegrationTestSup
                 "deepseek", "deepseek-v4-flash", AiProviderErrorType.TIMEOUT, 101);
 
         assertThat(jdbc.queryForObject("SELECT MAX(CAST(version AS UNSIGNED)) FROM flyway_schema_history WHERE success=1",
-                Integer.class)).isEqualTo(12);
+                Integer.class)).isEqualTo(13);
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM ai_diao_yong_ri_zhi", Integer.class)).isEqualTo(2);
         Map<String, Object> success = jdbc.queryForMap("SELECT * FROM ai_diao_yong_ri_zhi WHERE shi_fou_cheng_gong=1");
         assertThat(success).containsEntry("provider_dai_ma", "deepseek")
