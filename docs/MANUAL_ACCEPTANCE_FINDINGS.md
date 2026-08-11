@@ -25,6 +25,11 @@
 
 | MA-019 | ADMIN | 题库批量导入 | 用 30 道合法样例完成预检查、确认、审核、发布、查询和附件显示 | 全链路可重复验收 | PR #27 新增独立 Golden30 测试，复用三科清洗候选素材，在隔离库真实经过 preview、confirm、来源权利补充、审核、发布、查询、附件和学生练习；物理/化学/生物各 10 道 | BLOCKER | Golden30 测试通过；30 道均发布，29 道固定答案题进入自动练习，1 道主观题保留专题学习；原始 Excel SHA-256 未改变，正式库未写入 | 机器实现完成，待最终集成验收 |
 | MA-020 | STUDENT | 练习提交 API | 对提交接口发送空请求体 | 返回明确 4xx 校验错误 | 空 body 与不可解析 body 均返回 `400 INVALID_REQUEST`；正常提交、判分和重复提交回归不变 | MEDIUM | `RenZhengJiChengTest.emptyOrUnreadablePracticeSubmitBodyReturnsBadRequest` 通过；正式库未写入 | 机器实现完成，待最终集成验收 |
+| MA-021 | PUBLIC/STUDENT/TEACHER | Portal 与学科环境 | 查看 Portal、三科学生页与教师任课范围 | 形成成熟、原创、清楚分科且克制的学术产品视觉 | Portal 已改为 Hero、物理、化学、生物、学习闭环与登录五章；三张原创 WebP 主视觉进入静态构建，学生/教师继续由真实 `subjectCode` 驱动整页环境；管理员保持非学科中性 | UX | Round 3 机器浏览器已覆盖 1280、390、三科章节、三科学生/教师环境、管理员 Dashboard、reduced-motion 静态测试与 390px 无横向溢出；机器证据不替代用户视觉复验 | 已修复待用户复验 |
+| MA-022 | STUDENT | 学习掌握 | 查看“已练习知识点 / 总知识点” | 使用自然内联比例，例如 `0 / 38` | 该语境已从上下堆叠分数改为内联比例，计算、API 和 MetricFraction 其他用途不变 | UX | 前端专项断言 `0 / 38`；机器浏览器在化学学科页确认 `0 / 38` 与 aria-label | 已修复待用户复验 |
+| MA-023 | STUDENT | 结果/错题与 Demo360 解析 | 查看单选、多选答案和标准解析 | 显示冻结的完整选项，并逐项说明全部活动选项 | `AnswerDisplay` 统一以练习/错题冻结快照显示 `label + 内容`，缺失内容安全回退 label；Demo 246 道选择题的确定性解析均含结论、4 项判断、题目依据和易错点 | HIGH | 全量门禁确认 246/246 非空、每个活动选项均出现、246 份解析唯一，三科各固定抽样 10 道见 Round 3 报告；学科内容仍待用户抽查，不冒充人工逐题审校 | 已修复待用户复验 |
+| MA-024 | STUDENT | Topic18 | 展开标准解析 | 使用可读的多段标题、步骤、结论和易错点 | Topic18 全部 18 道 seed 解析改为学科化多段结构；`StandardAnalysis` 按换行安全渲染并复用 ScientificText / KaTeX，不使用 `v-html` 或 Markdown HTML | HIGH | 后端全量结构门禁 18/18；前端组件测试覆盖多段、公式和普通旧文本；机器浏览器覆盖三科各一题 | 已修复待用户复验 |
+| MA-025 | STUDENT | 生物填空判分 | canonical 为 `1/2` 时提交 `50%` | 在该空显式声明等价时判为正确 | 复用现有 accepted answers，为 BV-06 明确列出 `1/2`、`0.5`、`50%`、`50％`；未增加求值器、迁移或 AI 判分 | HIGH | 后端覆盖正确/错误边界、普通文本、多空、数量、单选/多选回归；机器浏览器结果页显示 `50%`、canonical `1/2` 和“回答正确” | 已修复待用户复验 |
 
 MA-017 机器证据更新（PR #26 独立审查修正后）：附件/权限/导入/题池专项共 27 个测试，26 PASS、1 个符号链接 assumption skipped；真实 `QuestionImportService` 已覆盖 Excel preview → confirm → `ti_mu_fu_jian` 的 I001/I002 → 受控 storage → 管理员 detail/content → 学生题池、提交前 STEM 和提交后 STANDARD_ANALYSIS。`mvn clean test` 为 112 个测试 0 失败、1 个 skipped；前端 127/127、type-check、build、audit 和 Demo `reset → seed → validate → smoke` 均通过。状态为 `IMPLEMENTED_AWAITING_FINAL_MANUAL_ACCEPTANCE`。用户 CAPTCHA、ADMIN/STUDENT/TEACHER/多角色视觉验收统一延期至非 AI 最终集成验收，不属于 PR #26 merge gate。
 
@@ -34,11 +39,13 @@ PR #26 已普通 merge，merge commit 为 `b992bffef07465665b371b7b707ca8814ec2d
 
 PR #27 较早机器门禁口径（2026-08-10）：后端 `mvn clean test` 123 个测试 0 失败、1 个 symbolic-link assumption skipped，`mvn clean package` PASS；前端 35 个文件 133/133、type-check、build、audit 0；当时 Demo `reset → seed → validate → smoke` PASS，Golden30 独立导入测试 PASS，业务题 120 道（物理 40、化学 39、生物 41）。该口径已由下方 Demo360 最终集成人工验收前机器准备结果取代，但保留为修正过程记录。
 
-PR #27 最终集成人工验收前机器准备（2026-08-10，最新）：后端最新全量 130 个测试，0 failure、0 error、1 个 symbolic-link assumption skipped，package PASS；前端 47 个文件、160/160，type-check、build、audit 0。Demo `acceptance-prepare → smoke` PASS，固定 Demo360 为物理/化学/生物各 120 道、55 个叶子知识点，另有 Topic18，总题量 378；PHYSICS-S1 两条图片附件文件与 SHA-256 回读通过。production-like preview 已完成 PUBLIC、ADMIN、TEACHER、STUDENT、ADMIN+TEACHER、物理中等多选、化学困难单选、生物简单填空、逐题结果、错题即时更新和 Topic18 机器浏览器主链；第二轮又复验 Portal 精简、学生/教师三科学科环境、管理员中性环境以及 1280/390 科学排版，浏览器控制台未发现 error。截图见 `docs/evidence/pr27-ui/` 与 `docs/evidence/pr27-ui-round2/`。最终人工环境的 CAPTCHA challenge 不含 `testCode`，但用户尚未完成修正后的真实 CAPTCHA 与视觉复验，因此 MA-017 继续保持 `IMPLEMENTED_AWAITING_FINAL_MANUAL_ACCEPTANCE`，上述结果不得记为人工 PASS。
+PR #27 最终集成人工验收前机器准备（2026-08-11，最新）：后端最新全量 133 个测试，0 failure、0 error、1 个 symbolic-link assumption skipped，package PASS；前端 49 个文件、170/170，type-check、build、audit 0。Demo `acceptance-prepare → validate → smoke` PASS，固定 Demo360 为物理/化学/生物各 120 道、55 个叶子知识点，另有 Topic18，总题量 378；PHYSICS-S1 两条图片附件文件与 SHA-256 回读通过。第三轮 production-like preview 已复验 Portal 1280/390、三科章节、学生/教师三科学科环境、管理员中性 Dashboard、内联掌握度、冻结完整答案、逐项解析、三科 Topic 和生物 `50%` 正确判分，最终完整复跑 console/page error/HTTP 4xx+ 均为 0。截图见 `docs/evidence/pr27-ui-round3/`。最终人工环境的 CAPTCHA challenge 不含 `testCode`，但用户尚未完成修正后的真实 CAPTCHA 与视觉复验，因此 MA-017 继续保持 `IMPLEMENTED_AWAITING_FINAL_MANUAL_ACCEPTANCE`，MA-021 至 MA-025 继续保持 `FIXED_AWAITING_USER_RETEST`，上述结果不得记为人工 PASS。
 
 用户最终集成人工验收反馈（2026-08-10）：用户发现管理员首页过空、筛选控件拥挤、教师忘记密码缺少管理员重置、题型提示不友好、结果页解析连续堆叠、知识点/类似练习闭环不足、错题按固定学科 ID 导致实时筛选错误、Demo 题型难度组合不足、高频考点知识点下拉显示 `0`、管理员上下文标题固定、学生导航双激活和重复错误 Toast，并要求 Topic18 与产品级视觉重设计。上述问题未隐藏，PR #27 一度恢复为 `APPROVE_WITH_CHANGES`；当前均已完成机器修正和回归，但仍等待用户在 testCode 关闭的最终环境复验，不能写为人工 PASS 或 `DONE_VERIFIED`。
 
 第二轮最终人工视觉反馈（2026-08-10）：用户认为主方向改善，但明确否定 Portal 的自我说明/宣传文案、缺乏学科意义的化学/生物装饰图形、只停留在局部 accent 的学科色，以及公式/上下标/化学式仍按普通字符串显示。PR #27 已按该反馈继续修正：Portal 做减法并删除 AI 规划区块；三科换成同一视觉语言的语义 SVG；学生和教师具体工作页由响应中的 `subjectCode` 驱动整页环境；代表性 Topic18 内容采用显式 TeX，旧纯文本继续兼容。上述仍属于实现与机器验证，不冒充用户复验 PASS。
+
+第三轮最终人工反馈（2026-08-11）：MA-021 至 MA-025 均已完成机器修正。Portal 重建为五章并使用三张原创静态 WebP；掌握度改为内联比例；选择题历史结果显示冻结完整选项且 Demo 246 道选择题解析逐项覆盖；Topic18 全部结构化并安全分段；生物 BV-06 只通过显式 accepted answers 接受 `1/2`、`0.5`、`50%`、`50％`。未增加迁移、通用数值求值或运行时 AI。五项在用户复验前均不得关闭。
 
 严重级别：`BLOCKER`、`HIGH`、`MEDIUM`、`LOW`、`UX`。
 

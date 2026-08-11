@@ -6,17 +6,17 @@ Status: PR #27 唯一正式设计系统。内部主题名：`mizuiro-aero`。
 
 RIKE 面向高中物理、化学、生物的长时间学习与教学管理。题目、解析、表格、权限和真实业务状态始终优先于装饰；公共入口可以有环境感，登录后的工作区必须高效、清晰。
 
-## Hallmark second-round distill
+## Hallmark third-round distill
 
-第二轮审计把“继续加设计”改成“删去解释设计的内容”。优先级最高的五项问题是：
+第三轮审计要求在第二轮减法基础上重建真正的 editorial hierarchy。优先级最高的五项问题是：
 
-1. Portal 把学习流程和设计理念写成了面向用户的宣传文案。
-2. Learning Current、角色说明和 AI 规划形成了作品集概念页，而不是简洁入口。
-3. 化学矩形与生物椭圆缺乏学科含义。
-4. 学科色只停留在卡片局部，没有进入学生与教师的真实工作环境。
-5. 科学公式仍混在普通字符串中，理科学习内容缺少可靠的排版层。
+1. Portal 的 Hero、三张卡片与巨大留白仍像通用模板，缺少章节节奏和科学视觉焦点。
+2. 三科学科图形仍偏图标化，不能承载物理场、化学器皿/光谱和生物叶脉/膜/遗传结构的完整语义。
+3. 学科环境需要进入学生与教师真实工作区，同时保持题面、答案、解析的长时间可读性。
+4. 历史结果、掌握度与标准解析需要更自然的展示结构，不能让视觉重构掩盖业务事实。
+5. 动效必须服从内容、reduced motion 和窄屏，不得以粒子、霓虹或 scroll-jacking 制造表面复杂度。
 
-最终 Portal 只保留四个区段：事实型 Hero、三科学科、真实数据快照、登录入口。删除学习流程解说、角色说明和 AI 规划区块；总文字量显著下降，ScrollTrigger 也随冗余叙事一起移除。
+最终 Portal 采用五个清楚章节：事实型 Hero、物理、化学、生物、学习闭环与登录。三科不再压缩成卡片或小图标；每科使用大幅原创主视觉、短事实说明和少量课程标签。学习闭环只保留练习、判分、错题、解析、再练习五步及真实数字 3 / 360 / 18，不写 AI 规划或设计理念。
 
 ## Reference study DNA
 
@@ -52,19 +52,19 @@ Apple 公开产品页面只作为宏观设计研究：保留清楚的标题/正�
 
 ## Semantic science visuals
 
-Portal 三科使用同一线条与水色材质语言的原创 SVG，不使用网络资源：
+Portal 系统 Hero 使用项目原创语义 SVG；三科学科章节使用同一系列的项目原创静态 WebP，不使用网络图片或运行时生成服务：
 
-- 物理：轨迹、波、矢量和场线。
-- 化学：烧瓶液面、分子键和光谱边缘。
-- 生物：细胞膜、细胞核、叶脉网络和螺旋结构。
+- `physics-optical-field.webp`：透明光学介质、钴蓝波动、场线和运动轨迹，1600×1000，约 46 KB。
+- `chemistry-glass-spectrum.webp`：日光玻璃器皿、梅紫液面、分子键和光谱折射，1600×1000，约 32 KB。
+- `biology-living-network.webp`：叶脉、细胞膜、遗传双螺旋与生态连接，1600×1000，约 99 KB。
 
-没有学科含义的矩形、椭圆和装饰性几何已删除。
+三张源图由本轮实际可用的图像生成工具生成，再本地压缩为构建时资产；不含文字、Logo、人物、密钥或外部服务配置。物理首幅按首屏需求 eager + high priority，其余两幅 lazy load；每幅都有准确中文 alt。没有学科含义的矩形、椭圆和装饰性几何不再承担学科主视觉。
 
 ## Scientific typography
 
 `ScientificText` 只解析显式 `\\(...\\)` 与 `\\[...\\]` 片段，旧纯文本保持原样；普通 `/` 不会被猜成分数。`MathFragment` 通过 KaTeX 0.18.3 的 DOM renderer 输出 HTML + MathML，不使用 `v-html`，并固定 `trust=false`、大小/宏展开限制与可见 fallback。`QuestionContent` 继续负责附件 marker 与文本组合。
 
-`MetricFraction` 用于少数关键统计的堆叠分数，并提供完整 `aria-label`。Topic18 的代表性物理公式、化学式/离子、电荷上下标、科学单位和遗传分数已迁移到显式标记；后续题库可以渐进采用，不改变 Excel 导入兼容性，也不批量改写全部 378 道题。
+`MetricFraction` 仍可用于真正的数学分数；“已练习知识点 / 总知识点”是统计比例，改为普通内联 `0 / 38` 并保留完整 `aria-label`。`StandardAnalysis` 按换行安全拆分标题、步骤和正文，每一段继续交给 `QuestionContent` / `ScientificText` / KaTeX，不使用 `v-html` 或 Markdown HTML renderer。Topic18 全部 18 道解析已改为多段结构；旧单段纯文本仍兼容。
 
 ## Typography, spacing and interaction
 
@@ -78,18 +78,18 @@ Portal 三科使用同一线条与水色材质语言的原创 SVG，不使用网
 
 ## Motion
 
-Portal 只保留一次短促的 Hero 入场；删除为了长页面而存在的滚动叙事。Vue 中的 GSAP 在 `onMounted` 后通过 `gsap.context()` 和 `gsap.matchMedia()` 创建，卸载时 `revert()`；只动画 opacity、x/y 和小幅 scale。`prefers-reduced-motion` 下内容立即可见。练习切题和解析展开使用短 Vue transition，不为表格和普通按钮增加动画。
+Portal 保留一次短促 Hero 入场，并用 GSAP + ScrollTrigger 为三科学科章节提供进入视口时的轻量 reveal 和极小幅图文视差；不 pin、不锁滚动、不使用粒子、鼠标追光或 3D 引擎。Vue 在 `onMounted` 后通过 `gsap.context()` 和 `gsap.matchMedia()` 创建，卸载时 `revert()`；动画只改 transform 与 opacity。`prefers-reduced-motion` 下所有内容直接可见。练习切题和解析展开使用短 Vue transition，不为表格和管理员页面增加营销动效。
 
 ## Skill execution record
 
 实际发现并读取：
 
-- `hallmark`：`D:/CodexHome/skills/hallmark/SKILL.md` 及 audit/study/redesign/distill 相关参考；
-- `impeccable`：`D:/CodexHome/skills/impeccable/SKILL.md` 与 `reference/craft-floor.md`；
+- `hallmark`：本机已安装 skill 的 audit/study/redesign/distill 参考；
+- `impeccable`：本机已安装 skill 的 craft-floor 与静态检测规则；
 - `gsap-core`、`gsap-timeline`、`gsap-frameworks`、`gsap-performance`、`gsap-scrolltrigger`：对应 `SKILL.md` 均已读取。
 
-Hallmark 本轮执行 audit Portal copy → distill Portal → audit subject pages → redesign subject environments，结论是删掉区块、删掉概念文案、删除 ScrollTrigger，并用语义 SVG/学科环境替代装饰图形。Impeccable 按 audit → critique → normalize → polish → distill 检查文字层级、玻璃可感知度、科学内容可读性、响应式与视觉噪声；最终执行 `node D:\\CodexHome\\skills\\impeccable\\scripts\\detect.mjs --json src`，返回 `[]`。这只表示已知静态反模式为 0，不代替浏览器视觉验收。GSAP 的实际保留范围只有 Portal/Auth/Dashboard 中有内容意义的短动效；本轮 Portal 不再使用 ScrollTrigger。
+第三轮按 Hallmark 的 Split Studio 结构重建 Portal，强调章节节奏、大幅科学主视觉、短事实文案和克制留白；Impeccable 用于审查层级、对比、窄屏、防横向溢出和无障碍，最终静态检测返回 `[]`。这只表示已知静态反模式为 0，不代替浏览器视觉验收。GSAP 只用于 Portal 有内容意义的短入场、视口 reveal 和小幅视差，并完整尊重 reduced motion。
 
 ## Evidence
 
-第二轮 production-like 浏览器证据位于 `docs/evidence/pr27-ui-round2/`，包含 Portal 1280/390、三科学生环境、三科教师任课环境和科学排版页面。机器结果不能替代用户真实 CAPTCHA 与最终视觉复验；在用户复验前，PR #27 保持 Draft，MA-017 保持 `IMPLEMENTED_AWAITING_FINAL_MANUAL_ACCEPTANCE`。
+第三轮 production-like 浏览器证据位于 `docs/evidence/pr27-ui-round3/`，包含 Portal 1280/390、三张原创主视觉、三科学生环境、三科教师任课环境、管理员中性 Dashboard、`0 / 38`、单选/多选完整冻结答案、三科结构化 Topic 和 `50%` 判定正确。机器结果不能替代用户真实 CAPTCHA 与最终视觉复验；在用户复验前，PR #27 保持 Draft，MA-021 至 MA-025 均为 `FIXED_AWAITING_USER_RETEST`。

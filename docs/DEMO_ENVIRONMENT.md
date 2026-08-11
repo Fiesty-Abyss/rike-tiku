@@ -115,6 +115,7 @@ Vite 启动参数为 `--host localhost --port 18080`。
 - 知识点：覆盖 55 个叶子知识点，其中物理 18、化学 16、生物 21；完整矩阵见 `DEMO360_COVERAGE_MATRIX.xlsx`。
 - 题库：确定性 Demo360，物理、化学、生物各 120 道；三科均覆盖单选、多选、填空和简单、中等、困难三档。另有每科 6 道不评分的 Topic18 专题学习题，总题量 378。`PHYSICS-S1` 额外关联一张确定性原创 PNG，同时用于题干 QUESTION 和 STANDARD_ANALYSIS 图片显示验收。正文使用 `〔图片对象 I001〕` / `〔图片对象 I002〕`，附件表使用 `I001` / `I002` 对象 ID。
 - 科学排版：旧纯文本继续原样显示；需要分数、上下标、化学式或 display equation 的新内容使用显式 `\\(...\\)` / `\\[...\\]`。Demo Topic18 的代表性物理、化学和生物综合题已包含该格式，不改变普通题数量或导入接口。
+- 解析与判分：Demo360 的 246 道选择题在确定性 seed 中生成结论、逐项判断、学科依据和易错点；Topic18 全部为多段 STANDARD 解析。BV-06 复用既有每空 accepted answers，只显式接受 `1/2`、`0.5`、`50%`、`50％`，canonical 仍显示 `1/2`，不启用全局数值推导或 AI 判分。
 - 高频考点：V8 的 `gao_pin_kao_dian` 仅绑定真实 `ren_ke_guan_xi_id`；199/200 班物理、化学、生物六条场景任课关系各预置 2 条，共 12 条 ACTIVE 自编纯文本考点。
 - 私信：V9 的两张表不预置聊天内容；浏览器验收消息可由 `reset` 清理，固定账号和组织关系保持可重复 seed。
 - 个人中心：V10 的简介和头像字段默认均为空，不在固定 seed 写入二进制头像；浏览器验收内容可由 `reset → seed` 完整清理。
@@ -134,4 +135,4 @@ Demo360 均为项目原创的“本科毕业设计自编演示题”，不复制
 `clean` 后演示账号、组织、题目和学习记录均被删除；`reset` 是库级重建，只允许对通过安全检查的演示库名执行。MVP30 原始 Excel 和正式 `rike_tiku` 不参与上述流程。
 ## PR #27 分支状态
 
-当前分支为 `feat/non-ai-final-closure`，Draft PR #27。Flyway 为 V1–V11、27 张业务表；`reset`、`seed`、`validate`、`clean` 和 `final-acceptance` 继续受数据库名保护。最终人工验收只使用 `rike_tiku_demo`，不向正式 `rike_tiku` 写入题目或其他演示业务数据。最终机器口径为后端 130 个测试（0 failure、0 error、1 symbolic-link assumption skipped）、前端 47 文件 160/160、package/type-check/build/audit PASS、`acceptance-prepare → smoke` PASS。机器浏览器截图见 `docs/evidence/pr27-ui/` 与 `docs/evidence/pr27-ui-round2/`；它不替代用户的真实 CAPTCHA 与视觉复验。
+当前分支为 `feat/non-ai-final-closure`，Draft PR #27。Flyway 为 V1–V11、27 张业务表；`reset`、`seed`、`validate`、`clean` 和 `final-acceptance` 继续受数据库名保护。最终人工验收只使用 `rike_tiku_demo`，不向正式 `rike_tiku` 写入题目或其他演示业务数据。最终机器口径为后端 133 个测试（0 failure、0 error、1 symbolic-link assumption skipped）、前端 49 文件 170/170、package/type-check/build/audit PASS、`acceptance-prepare → validate → smoke` PASS。第三轮机器浏览器截图见 `docs/evidence/pr27-ui-round3/`；它不替代用户的真实 CAPTCHA 与视觉复验。
