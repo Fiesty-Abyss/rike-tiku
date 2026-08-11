@@ -1,6 +1,6 @@
 # 本地演示验收环境
 
-PR #27 当前分支新增 V11 管理员操作日志表；当前 Demo 结构目标为 Flyway V1–V11、27 张业务表。下文对 V1–V10 的历史记录保持原样，实际 `reset/create/validate` 由当前后端 `DemoDataService` 校验 V11/27。
+PR #28 新增 V12 脱敏 AI 调用日志表；当前 Demo 结构目标为 Flyway V1–V12、28 张业务表。下文历史记录保持原样，实际 `reset/create/validate` 由当前后端 `DemoDataService` 校验 V12/28。
 
 ## 用途与安全边界
 
@@ -19,10 +19,10 @@ $env:RIKE_TIKU_DB_PASSWORD = "你的本机MySQL密码"
 
 - `acceptance-prepare`：仅允许 `rike_tiku_demo`，依次重建、播种并校验最终人工验收数据。
 - `final-acceptance`：`acceptance-prepare` 的兼容入口，并显示前后端启动命令。
-- `create`：保留现有演示库，仅在不存在时创建并执行 V1–V11。
-- `reset`：删除并重建指定演示库，再执行 V1–V11；会清除该演示库的全部已有内容。
+- `create`：保留现有演示库，仅在不存在时创建并执行 V1–V12。
+- `reset`：删除并重建指定演示库，再执行 V1–V12；会清除该演示库的全部已有内容。
 - `seed`：清理旧演示数据后重建固定数据，重复执行结果稳定。
-- `validate`：只读检查 V1–V11/27 张表、验收账号、关系、题库、PHYSICS-S1 图片文件/hash 和学习记录。
+- `validate`：只读检查 V1–V12/28 张表、验收账号、关系、题库、PHYSICS-S1 图片文件/hash 和学习记录。
 - `clean`：只删除带受控演示标识的数据，保留 Flyway 基础科目和样例。
 
 ## 启动方案 A：IDE 默认端口
