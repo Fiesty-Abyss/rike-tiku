@@ -1,5 +1,17 @@
 # 数据库模型 V2：题库、账号与教学组织
 
+PR #29 新增 V13 三张学生 AI 学习表，当前结构为 V1–V13、31 张业务表；V1–V12 未修改。
+
+## V13 学生 AI 学习表
+
+| 表 | 核心绑定与约束 |
+| --- | --- |
+| `ai_cuo_ti_fen_xi` | `UNIQUE(xue_sheng_da_ti_id)` 绑定不可伪造正式答题事实；保存受控错误类型、分析字段、provider/model、Prompt 版本、输入事实 SHA-256 和生成状态，不覆盖正式答案或 STANDARD 解析 |
+| `ai_hui_hua` | 绑定 `xue_sheng_id + xue_sheng_da_ti_id + lian_xi_ti_mu_id`；状态仅 `ACTIVE/LIMIT_REACHED`，累计轮数限制 0–8 |
+| `ai_xiao_xi` | 外键属于会话；角色仅 `USER/ASSISTANT`，会话内序号唯一，消息 1–2000 字 |
+
+三张表不保存 API Key、JWT、system Prompt、Provider 原始响应、reasoning content、姓名、手机号或班级信息。学生正文仅为本人会话所需消息；Provider 调用元数据继续由 V12 脱敏日志记录。
+
 PR #28 新增 V12 `ai_diao_yong_ri_zhi` 脱敏 AI 调用日志表，当前结构为 V1–V12、28 张业务表。V1–V11 未修改；该表不保存 Prompt、模型输出、API Key、JWT、密码或完整题目。
 
 ## V12 AI 调用日志

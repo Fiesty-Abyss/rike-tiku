@@ -4,7 +4,7 @@
 
 > 当前仓库处于分阶段开发中，不代表完整系统已经完成或投入真实学校使用。
 
-> PR #28 当前在 `feat/ai-provider-core` 实现 AI Provider Core：统一契约、确定性 Fake、本地 stub 可测的 DeepSeek OpenAI-compatible HTTP Provider、超时/最多一次重试、受控降级和 V12 脱敏调用日志。AI 默认关闭且不需要真实 API Key；错因分析、答疑、候选题生成和前端 AI 页面仍为 `NOT_STARTED`。配置见 [AI Provider 配置](docs/AI_PROVIDER_CONFIGURATION.md)。
+> PR #29 在 `feat/ai-student-learning-core` 完成学生 AI 学习主链：绑定正式答题事实的错因分析与复用、严格 JSON 校验和一次纠正、当前题最多 8 轮答疑、学生所有权、Prompt 数据边界、前端入口与 STANDARD 降级。V13 后为 31 张业务表；AI 默认关闭且自动化不需要真实 API Key。候选题生成仍未开始。Provider 配置见 [AI Provider 配置](docs/AI_PROVIDER_CONFIGURATION.md)。
 
 > 2026-08-09 V3.0 非 AI 正式完工审计的 **REJECT** 结论作为历史快照保留。PR #27 已完成 MA-017 至 MA-026，用户已完成最后一次真实 CAPTCHA 与浏览器复验，全部问题正式关闭，非 AI A 层标记为 `DONE_VERIFIED`。PR #27 是最后一个普通非 AI 工程 PR；AI Provider Core 将从其合并后的最新 `main` 另行开始。详见 [V3.0 非 AI 完工审计](docs/V3_NON_AI_COMPLETION_AUDIT.md)。
 
