@@ -170,6 +170,11 @@ class RenZhengJiChengTest {
         assertError(get("/api/v1/student/practice-options", adminToken), 403, "ACCESS_DENIED");
         assertError(get("/api/v1/student/practice-options", initialStudentToken), 403, "MUST_CHANGE_PASSWORD");
         assertThat(get("/api/v1/student/practice-options", studentToken).status()).isEqualTo(200);
+        assertError(get("/api/v1/student/ai/analyses/999999", null), 401, "UNAUTHENTICATED");
+        assertError(get("/api/v1/student/ai/analyses/999999", teacherToken), 403, "ACCESS_DENIED");
+        assertError(get("/api/v1/student/ai/analyses/999999", adminToken), 403, "ACCESS_DENIED");
+        assertError(get("/api/v1/student/ai/analyses/999999", initialStudentToken), 403, "MUST_CHANGE_PASSWORD");
+        assertError(get("/api/v1/student/ai/analyses/999999", studentToken), 404, "STUDENT_AI_RESOURCE_NOT_FOUND");
     }
 
     @Test

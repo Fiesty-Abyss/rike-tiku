@@ -3,13 +3,18 @@ import { flushPromises, mount } from '@vue/test-utils'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import WrongQuestionsView from './WrongQuestionsView.vue'
 
-const { fetchWrongQuestions } = vi.hoisted(() => ({ fetchWrongQuestions: vi.fn() }))
+const { fetchWrongQuestions, fetchWrongQuestion } = vi.hoisted(() => ({ fetchWrongQuestions: vi.fn(), fetchWrongQuestion:vi.fn() }))
 vi.mock('vue-router', () => ({ useRoute: () => ({ query: { subjectCode:'BIOLOGY' } }), useRouter: () => ({ push:vi.fn() }) }))
-vi.mock('../../api/student/practice', () => ({ fetchWrongQuestions, fetchWrongQuestion:vi.fn() }))
+vi.mock('../../api/student/practice', () => ({ fetchWrongQuestions, fetchWrongQuestion }))
 vi.mock('element-plus', () => ({ ElMessage:{error:vi.fn()} }))
 
 describe('错题本实时学科筛选', () => {
-  beforeEach(() => { vi.clearAllMocks(); fetchWrongQuestions.mockResolvedValue([{questionId:3,subjectCode:'BIOLOGY',subjectName:'生物',questionType:'FILL_BLANK',stemSummary:'细胞结构',errorCount:1,consecutiveCorrectCount:0,status:'NEW',lastWrongAt:''}]) })
+  const row = {questionId:3,subjectCode:'BIOLOGY',subjectName:'生物',questionType:'FILL_BLANK',stemSummary:'细胞结构',errorCount:1,consecutiveCorrectCount:0,status:'NEW',lastWrongAt:''}
+  beforeEach(() => {
+    vi.clearAllMocks()
+    fetchWrongQuestions.mockResolvedValue([row])
+    fetchWrongQuestion.mockResolvedValue({aiAnalysisAnswerFactId:501,wrongQuestion:row,stem:'细胞结构题',options:[],latestStudentAnswer:['线粒体'],correctAnswer:['叶绿体'],standardAnalysis:'STANDARD 解析',knowledgePoints:[],attachments:[]})
+  })
 
   it('进入生物错题时按 subjectCode 立即读取，不依赖固定数据库 ID', async () => {
     const wrapper = mount(WrongQuestionsView,{global:{directives:{loading:()=>undefined},stubs:{
@@ -20,5 +25,22 @@ describe('错题本实时学科筛选', () => {
     expect(fetchWrongQuestions).toHaveBeenCalledWith('BIOLOGY')
     expect(wrapper.text()).toContain('细胞结构')
     expect(wrapper.text()).not.toContain('PHYSICS')
+  })
+
+  it('错题详情把后端选择的最近错误事实传给 AI，而不是最近正确作答事实', async () => {
+    const wrapper = mount(WrongQuestionsView,{global:{directives:{loading:()=>undefined},stubs:{
+      ElButton:{template:'<button @click="$emit(\'click\')"><slot /></button>'},
+      ElTable:{props:['data'],template:'<div><slot /></div>'},
+      ElTableColumn:{template:'<div><slot :row="row" /></div>',setup:()=>({row})},
+      ElTag:{template:'<span><slot /></span>'},ElDrawer:{template:'<aside><slot /></aside>'},QuestionContent:true,
+      AnswerDisplay:true,StandardAnalysis:{props:['content'],template:'<div>{{ content }}</div>'},
+      StudentAiLearningPanel:{props:['answerFactId','wrong'],template:'<div data-testid="wrong-ai-fact">{{ answerFactId }} / {{ wrong }}</div>'},
+    }}})
+    await flushPromises()
+    await wrapper.findAll('button').find(button => button.text() === '查看详情')!.trigger('click')
+    await flushPromises()
+    expect(fetchWrongQuestion).toHaveBeenCalledWith(3)
+    expect(wrapper.get('[data-testid="wrong-ai-fact"]').text()).toBe('501 / true')
+    expect(wrapper.text()).toContain('STANDARD 解析')
   })
 })
