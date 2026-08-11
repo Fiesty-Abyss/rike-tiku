@@ -16,6 +16,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 
 @SpringBootTest
 class RealDeepSeekSmokeTest extends AdminQuestionIntegrationTestSupport {
@@ -26,6 +28,15 @@ class RealDeepSeekSmokeTest extends AdminQuestionIntegrationTestSupport {
     @Autowired AiProviderService providerService;
     @Autowired StudentAiService studentAiService;
     @Autowired JdbcTemplate jdbc;
+
+    @DynamicPropertySource
+    static void realProviderProperties(DynamicPropertyRegistry registry) {
+        registry.add("app.ai.enabled", () -> true);
+        registry.add("app.ai.provider", () -> "deepseek");
+        registry.add("app.ai.base-url", () -> "https://api.deepseek.com");
+        registry.add("app.ai.model", () -> "deepseek-v4-flash");
+        registry.add("app.ai.api-key", () -> System.getenv("RIKE_TIKU_AI_API_KEY"));
+    }
 
     @Test
     void realTextAndStructuredStudentAnalysisSmoke() {

@@ -40,3 +40,5 @@ mvn "-Dtest=RealDeepSeekSmokeTest" test
 ```
 
 测试只报告模型、HTTP 结果、耗时、token、Parser 与日志脱敏结果，不输出 Key；环境变量缺失时以 assumption 跳过。测试完成后应立即从当前 PowerShell 删除上述四个临时环境变量。
+
+2026-08-11 真实门禁结果：`deepseek-v4-flash`、HTTP 2xx；文本 848 ms（22/11 token），结构化分析 1670 ms（400/132 token）、1 次 JSON 调用；Parser 与日志脱敏均 PASS。真实 Key 未记录。
