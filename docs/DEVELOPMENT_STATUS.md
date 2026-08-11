@@ -6,13 +6,13 @@
 
 > PR #26 已普通 merge（merge commit `b992bffef07465665b371b7b707ca8814ec2d36d`）。当前接续分支为 `feat/non-ai-final-closure`，PR #27 为最后一个非 AI Draft PR。当前分支已加入 V11 管理员操作日志、MA-020 空 body 4xx、管理员题目图片上传、来源权利补充 API、Golden30 正常导入闭环、菜单整理和多角色切换；Flyway 为 V1–V11、27 张业务表；V1–V10 未修改。
 
-> Round 3 视觉人工验收已明确失败并新增 MA-026。Round 4 以 `RIKE Aqua Future` 完成机器修正，MA-026 当前为 `FIXED_AWAITING_USER_RETEST`；PR #27 仍是 Draft，非 AI 整体仍不得标记 `DONE_VERIFIED`，AI 未开始。
+> Round 3 视觉人工验收已明确失败并新增 MA-026。Round 4 以 `RIKE Aqua Future` 完成机器修正，用户已完成最终人工复验；MA-017 至 MA-026 均已关闭，非 AI A 层正式为 `DONE_VERIFIED`。PR #27 是最后一个普通非 AI 工程 PR，AI 阶段从其合并后的最新 `main` 开始。
 
 更新时间：2026-08-11
 
 ## 当前主线状态
 
-- 当前分支：`feat/non-ai-final-closure`；PR #26 已合并，公共门户和附件机器实现已进入 `main`。
+- 当前分支：`feat/non-ai-final-closure`；PR #26 已合并，公共门户和附件机器实现已进入 `main`；PR #27 已完成最终人工验收，准备 ordinary merge 封板。
 - 根路径 `/` 是无需认证的公共门户。Round 4 以 Hero、Physics、Chemistry、Biology、Learning Loop、Entrance 六场景组织真实产品内容，保留 3 / 360 / 18 与统一 `/login`，不写 AI 宣传或虚构指标；登录、角色选择、首次改密和受保护路由守卫的业务行为未改动。MA-016 已关闭。
 - V3.0 未指定名为 MVP30 的 Excel 必须整体正式入库；它要求 30 题 MVP 验证导入、审核、发布、查询和附件显示闭环，并强调少量高质量题目。MVP30 因此保留为结构化导入能力验证素材，原始文件不修改。
 - 三角色共用 `/profile`，本人身份从 JWT 推导；页面展示真实账号角色及学生/教师档案，只允许维护 500 字简介和本人头像，并复用现有主动修改密码流程。
@@ -25,12 +25,12 @@
 - MA-020 已机器修复：练习提交空 body 和不可解析 body 均由全局异常处理返回 `400 INVALID_REQUEST`，正常提交/判分回归不变。
 - MA-019 已加入独立 `Golden30ImportIntegrationTest`：复用现有三科清洗候选素材，在独立测试数据库真实走 preview → confirm → 来源权利补充 → 审核发布 → 查询 → 题池 → 学生提交/标准解析；物理 10、化学 10、生物 10，29 道固定答案题进入自动练习，1 道主观题保留为专题学习题。原始 MVP30 文件未修改，正式库未写入。
 - 管理员题目页已支持草稿题干/标准解析 PNG/JPEG 上传、预览、替换和删除，复用 PR #26 受控存储；正式菜单已将“批量导入题目”并入题库入口、将学生 Excel 导入并入学生管理，并为多角色账号增加“切换身份”。
-- PR #27 当前机器专项：MA-020、管理员图片上传、Golden30、导入回归、日志权限、管理员 Dashboard、教师密码重置、练习 availability、错题 `subjectCode` 隔离、规则型类似练习、Topic18 与 Demo 分布均通过。MA-017 仍为 `IMPLEMENTED_AWAITING_FINAL_MANUAL_ACCEPTANCE`。
+- PR #27 当前机器专项：MA-020、管理员图片上传、Golden30、导入回归、日志权限、管理员 Dashboard、教师密码重置、练习 availability、错题 `subjectCode` 隔离、规则型类似练习、Topic18 与 Demo 分布均通过。用户最终人工验收已通过，MA-017 至 MA-026 均已关闭。
 - PR #27 第三轮综合机器门禁（历史执行结果）：后端 `mvn clean test` 为 133 个测试，0 failure、0 error、1 个 symbolic-link assumption skipped，`mvn clean package` PASS；前端当时为 49 个文件、170/170 PASS，type-check、build PASS，audit 0；Demo `acceptance-prepare → validate → smoke` PASS，Golden30 独立导入测试 PASS。Demo360 固定为物理/化学/生物各 120 道，叶子知识点 18/16/21；每科题型分布 44/38/38、难度分布 36/48/36；Topic18 每科 6 道，总题量 378。题干附件内容 hash、文件/数据库事务回滚、草稿文本保护、SUCCESS 审计事务和附件外键稳定性修正继续保持。
-- 第三轮最终人工验收修正 MA-021 至 MA-025 均为 `FIXED_AWAITING_USER_RETEST`：Portal 使用 Hero、物理、化学、生物、学习闭环与登录五章和三张原创压缩 WebP；学生/教师继续由真实 `subjectCode` 进入三科环境，管理员保持中性；学习掌握显示内联 `0 / 38`；结果与错题使用冻结选项快照显示完整答案；Demo360 的 246 道选择题解析含结论、全部选项逐项判断、题目依据和易错点；Topic18 全部使用多段结构并由 `StandardAnalysis` 安全渲染；BV-06 仅通过显式 accepted answers 接受 `1/2`、`0.5`、`50%`、`50％`。未增加迁移、求值器或运行时 AI。
+- 第三轮最终人工验收修正 MA-021 至 MA-025 已关闭：Portal 使用 Hero、物理、化学、生物、学习闭环与登录六场景和四张原创 Aqua WebP；学生/教师继续由真实 `subjectCode` 进入三科环境，管理员保持中性；学习掌握显示内联 `0 / 38`；结果与错题使用冻结选项快照显示完整答案；Demo360 的 246 道选择题解析含结论、全部选项逐项判断、题目依据和易错点；Topic18 全部使用多段结构并由 `StandardAnalysis` 安全渲染；BV-06 仅通过显式 accepted answers 接受 `1/2`、`0.5`、`50%`、`50％`。未增加迁移、求值器或运行时 AI。
 - Round 3 production-like 机器浏览器完成 Portal 1280/390、三科 Portal 章节、三科学生环境、教师三科 scope、管理员中性 Dashboard、`0 / 38`、单选/多选冻结完整答案及逐项解析、三科 Topic 和生物 `50%` 正确判分；390px 无横向溢出，最终完整复跑 console/page error/HTTP 4xx+ 计数为 0。截图与抽样见 `docs/evidence/pr27-ui-round3/`。机器证据不等于用户人工 CAPTCHA 或视觉验收。
 - Round 3 随后被用户明确判定视觉人工验收失败：普通极简 SaaS、无效留白、三科学科环境不足、Frutiger Aero 材质缺失以及缺少连续滚动叙事均未达要求。历史机器截图继续保留，不改写为人工 PASS。
-- Round 4 MA-026 机器修正已完成，状态为 `FIXED_AWAITING_USER_RETEST`：`RIKE Aqua Future` 重建设计 token、材料、八级排版、共享 Aqua shell、Portal/Auth 和 Student/Teacher/Admin 视觉边界；四张原创 Aqua WebP 进入构建，Portal 使用 Hero depth、导航 material morph、Physics 2300px pin+scrub、学科环境 transition、学习闭环进度与细指针光学反馈；低于 64rem、390px 与 reduced motion 使用完整静态/自然纵向降级。MA-021 至 MA-025 的业务修正继续保留。
+- Round 4 MA-026 已关闭：`RIKE Aqua Future` 重建设计 token、材料、八级排版、共享 Aqua shell、Portal/Auth 和 Student/Teacher/Admin 视觉边界；四张原创 Aqua WebP 进入构建，Portal 使用 Hero depth、导航 material morph、Physics 2300px pin+scrub、学科环境 transition、学习闭环进度与细指针光学反馈；低于 64rem、390px 与 reduced motion 使用完整静态/自然纵向降级。用户已完成最终人工复验。
 - 最终人工环境使用 `acceptance-backend` + `acceptance-frontend`：后端连接 `rike_tiku_demo:18081` 且 challenge JSON 不含 `testCode`；前端先 build 再以 strict-port Vite preview 运行于 18080。先前动态模块失败的真实根因是旧浏览器页面仍引用已停止的 Vite dev server（`ERR_CONNECTION_REFUSED`），不是 lazy import 源码错误。
 - 用户最终人工验收反馈已在同一 PR #27 修正：管理员总览使用真实只读指标；管理员路由标题按 meta 变化；列表筛选改为响应式 grid；管理员可安全重置教师密码；练习显示中文题型/难度规则与实时可用题数；结果按单题导航；知识点可进入定向练习；错题不再假设学科固定 ID，而是按 `subjectCode` 实时过滤；高频考点选择器使用可空值与完整路径；重复错误 Toast 由单一路径处理。用户仍需在最终环境复验这些页面，未记为人工 PASS。
 - 第二次人工视觉反馈同样未隐藏：Portal 已删除学习流程、角色和 AI 规划等自我解释区块，只保留品牌、三科、真实数据快照和登录；三科使用有语义的原创 SVG；学生页面与教师任课范围通过稳定 `subjectCode` 进入 physics/chemistry/biology 环境，管理员继续保持中性；新增 `ScientificText`/`MetricFraction`，仅解析显式 TeX 片段并通过受控 KaTeX DOM renderer 输出 HTML+MathML，普通旧文本和 Excel 导入保持兼容。该轮仍等待用户复验，不得写为 `DONE_VERIFIED`。
@@ -116,11 +116,11 @@
 
 ## 下一步
 
-MA-017 已完成机器实现，当前状态为 `IMPLEMENTED_AWAITING_FINAL_MANUAL_ACCEPTANCE`：附件仅接受 3MB 内 PNG/JPEG，路径始终位于受控 storage 根目录且回读复核类型与 SHA-256。管理员与学生通过带 JWT 的 Blob 请求显示图片；未提交练习只暴露 STEM/OPTION，提交后才允许 STANDARD_ANALYSIS。PDF 与历史无文件元数据不进入普通练习；练习附件未单独快照，文件被替换或删除时按 hash 失败并友好降级。用户 CAPTCHA 和浏览器视觉验收统一延期至非 AI 最终集成验收，不属于 PR #26 的 merge gate。
+ MA-017 已关闭：附件仅接受 3MB 内 PNG/JPEG，路径始终位于受控 storage 根目录且回读复核类型与 SHA-256。管理员与学生通过带 JWT 的 Blob 请求显示图片；未提交练习只暴露 STEM/OPTION，提交后才允许 STANDARD_ANALYSIS。PDF 与历史无文件元数据不进入普通练习；练习附件未单独快照，文件被替换或删除时按 hash 失败并友好降级。用户已完成最终人工浏览器复验。
 
 附件对象标识规范：正文保留 `〔图片对象 I001〕`、`〔公式对象 F107〕`；Excel 导入和历史数据写入 `dui_xiang_biao_shi` 的是 `I001`、`F107`，不是带括号的完整正文 marker。管理员详情、学生题池校验和 `QuestionContent` 均先从正文提取对象 ID，再按位置和对象 ID 匹配。`QuestionAttachmentStorage` 还会拒绝 storage 根目录、父目录、中间目录或最终文件路径上的符号链接；当前 Windows 无创建符号链接权限，因此对应 JUnit 用例按 assumption 明确跳过，未伪造 PASS。
 
-用户下一步只需在最终 acceptance 环境复验 Round 4 Portal 1440/1280/390、Physics pinned scrollytelling、三科学生与教师环境、neutral Admin、Login/Role Selection，并抽查 MA-022 至 MA-025 业务能力及真实 CAPTCHA。通过后仍在同一 PR #27 补充人工证据，再统一更新非 AI 状态；在此之前 MA-026 保持 `FIXED_AWAITING_USER_RETEST`，不得把 MA-017 或整体非 AI 写成 `DONE_VERIFIED`。PR #27 保持 Draft，不创建 PR #28，不开始 AI。
+用户最终人工复验已完成，MA-017 至 MA-026 全部关闭，非 AI A 层为 `DONE_VERIFIED`。下一步是在 PR #27 ordinary merge 后同步最新 `main`，删除 `feat/non-ai-final-closure`，创建并推送 `feat/ai-provider-core` 作为 AI Provider Core 的干净入口；本阶段不修改 AI 代码、不创建 PR #28、不索取 API Key。
 
 ## 非 AI 工程基础完成门槛
 
