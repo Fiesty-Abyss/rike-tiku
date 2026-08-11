@@ -13,6 +13,7 @@ public final class QuestionDtos {
                        @NotBlank String correctAnswer, @NotNull Integer difficulty, String difficultyDescription, @NotNull Boolean autoGradable,
                        List<Option> options, @NotBlank String standardAnalysis, List<Long> knowledgePointIds, List<Source> sources) { }
     public record Action(String opinion) { }
+    public record SourceRightsUpdate(@NotBlank String rightsStatus, @NotBlank String rightsBasis) { }
     public record Item(Long id, String subjectCode, String subjectName, String questionType, String usageMode, String stemSummary,
                        Integer difficulty, boolean autoGradable, String status, String rightsStatus, LocalDateTime createdAt, LocalDateTime updatedAt) { }
     public record Page(List<Item> records, long total, long page, long size, long pages) { }

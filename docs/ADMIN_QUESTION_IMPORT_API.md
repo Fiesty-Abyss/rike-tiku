@@ -23,4 +23,4 @@
 
 预检查不会自动创建知识点。MVP30 工作簿的纯 V1–V6 基线与“测试事务预置工作簿所需知识点后”的附件专项统计必须分开记录；后者仅用于隔离附件完整性问题，不能作为当前数据库可导入数量。浏览器临时库联调仍为 `NOT_RUN`，不得写为通过。
 
-PR #26 附件机器证据已覆盖真实 `QuestionImportService` 的 preview → confirm → `ti_mu_fu_jian` 对象 ID（如 `I001`）→ 受控 storage → 管理员 detail/content → 学生题池和提交前后权限链。当前状态为 `IMPLEMENTED_AWAITING_FINAL_MANUAL_ACCEPTANCE`；真实 CAPTCHA 和页面视觉验收延期至非 AI 最终集成验收，不属于 PR #26 的 merge gate。
+PR #26 附件机器证据已覆盖真实 `QuestionImportService` 的 preview → confirm → `ti_mu_fu_jian` 对象 ID（如 `I001`）→ 受控 storage → 管理员 detail/content → 学生题池和提交前后权限链。PR #27 新增的 `Golden30ImportIntegrationTest` 在独立数据库对物理、化学、生物各 10 道候选题真实执行 preview → confirm → 管理员来源权利补充 → 审核 → 发布 → 查询 → 学生练习，验证 30 道发布题和 29 道自动判分题资格；原始 Excel 未修改，正式库未写入。当前 MA-017 状态为 `IMPLEMENTED_AWAITING_FINAL_MANUAL_ACCEPTANCE`；真实 CAPTCHA 和页面视觉验收延期至非 AI 最终集成验收，不属于 PR #26 的 merge gate。

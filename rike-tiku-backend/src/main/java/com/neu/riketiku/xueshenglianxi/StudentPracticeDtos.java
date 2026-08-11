@@ -19,7 +19,15 @@ public final class StudentPracticeDtos {
             List<Long> knowledgePointIds,
             List<String> questionTypes,
             @Min(1) @Max(3) Integer difficulty,
-            @NotNull @Min(1) @Max(50) Integer count) {
+            @NotNull @Min(1) @Max(50) Integer count,
+            Long referenceQuestionId) {
+        public CreateRequest(Long subjectId, List<Long> knowledgePointIds, List<String> questionTypes,
+                Integer difficulty, Integer count) {
+            this(subjectId, knowledgePointIds, questionTypes, difficulty, count, null);
+        }
+    }
+
+    public record Availability(int availableCount, int suggestedCount) {
     }
 
     public record Answer(@NotNull Long practiceQuestionId, @NotNull JsonNode answer,
@@ -43,6 +51,7 @@ public final class StudentPracticeDtos {
 
     public record SessionQuestion(
             Long practiceQuestionId,
+            Long questionId,
             int order,
             String questionType,
             String stem,
@@ -77,6 +86,9 @@ public final class StudentPracticeDtos {
 
     public record Result(
             Long sessionId,
+            Long subjectId,
+            String subjectCode,
+            String subjectName,
             int totalCount,
             int correctCount,
             BigDecimal totalScore,

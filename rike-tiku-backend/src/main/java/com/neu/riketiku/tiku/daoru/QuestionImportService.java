@@ -1,5 +1,6 @@
 package com.neu.riketiku.tiku.daoru;
 
+import com.neu.riketiku.guanlicaozuorizhi.GuanLiCaoZuoRiZhiFuWu;
 import com.neu.riketiku.renzheng.RenZhengYeWuYiChang;
 import com.neu.riketiku.tiku.fujian.QuestionAttachmentStorage;
 import java.io.IOException;
@@ -46,13 +47,16 @@ public class QuestionImportService {
     private final JdbcTemplate jdbc;
     private final Path sourceRoot;
     private final QuestionAttachmentStorage attachmentStorage;
+    private final GuanLiCaoZuoRiZhiFuWu auditLog;
 
     public QuestionImportService(JdbcTemplate jdbc,
                                  QuestionAttachmentStorage attachmentStorage,
-                                 @Value("${rike.tiku.question-import.source-root:../题库}") String sourceRoot) {
+                                 @Value("${rike.tiku.question-import.source-root:../题库}") String sourceRoot,
+                                 GuanLiCaoZuoRiZhiFuWu auditLog) {
         this.jdbc = jdbc;
         this.attachmentStorage = attachmentStorage;
         this.sourceRoot = Path.of(sourceRoot).toAbsolutePath().normalize();
+        this.auditLog = auditLog;
     }
 
     public QuestionImportDtos.Preview preview(MultipartFile file) {
@@ -62,6 +66,11 @@ public class QuestionImportService {
 
     @Transactional
     public QuestionImportDtos.Confirm confirm(MultipartFile file, String previewFileHash, Long reviewerId) {
+        return auditLog.audited("QUESTION_IMPORT", "CONFIRM", null, "管理员确认题库批量导入",
+                () -> confirmInternal(file, previewFileHash, reviewerId), result -> findBatchId(result.batchCode()));
+    }
+
+    private QuestionImportDtos.Confirm confirmInternal(MultipartFile file, String previewFileHash, Long reviewerId) {
         ValidationResult result = validate(file);
         if (previewFileHash == null || previewFileHash.isBlank() || !result.fileHash().equals(previewFileHash)) {
             fail("IMPORT_FILE_CHANGED", "确认文件与预检查文件不一致，请重新预检查", HttpStatus.CONFLICT);
@@ -82,6 +91,10 @@ public class QuestionImportService {
             writeRow(batchId, row, reviewerId);
         }
         return new QuestionImportDtos.Confirm(batchCode, result.rows().size(), result.rows().size());
+    }
+
+    private Long findBatchId(String batchCode) {
+        return jdbc.queryForObject("SELECT id FROM dao_ru_pi_ci WHERE pi_ci_bian_hao=?", Long.class, batchCode);
     }
 
     private ValidationResult validate(MultipartFile file) {
@@ -342,7 +355,7 @@ public class QuestionImportService {
             Matcher matcher = OPTION.matcher(line);
             if (!matcher.matches()) {
                 error(errors, "options", "OPTION_FORMAT_INVALID", "选择题选项必须使用 A. 选项内容 的逐行格式");
-                return List.of();
+                return new ArrayList<>();
             }
             options.add(new OptionDraft(matcher.group(1), matcher.group(2), false));
         }

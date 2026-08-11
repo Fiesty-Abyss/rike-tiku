@@ -1,0 +1,184 @@
+:root {
+  color-scheme: light;
+
+  /* RIKE Aqua Future — environment */
+  --aero-sky: oklch(86% 0.105 222);
+  --aero-water: oklch(72% 0.12 213);
+  --aero-mist: oklch(97.4% 0.018 210);
+  --aero-horizon: oklch(91% 0.058 213);
+  --aero-sun: oklch(97% 0.065 99);
+  --aero-ink: oklch(22% 0.052 226);
+  --aero-ink-soft: oklch(38% 0.04 224);
+  --aero-ink-muted: oklch(51% 0.03 222);
+
+  /* Optical material tokens. Glass is reserved for shell/navigation/focal tools. */
+  --aero-glass-clear: oklch(99% 0.018 210 / 0.34);
+  --aero-glass-frosted: oklch(97% 0.024 211 / 0.72);
+  --aero-glass-thick: oklch(96% 0.026 214 / 0.9);
+  --aero-specular: oklch(100% 0 0 / 0.92);
+  --aero-edge-light: oklch(93% 0.07 208 / 0.86);
+  --aero-depth-shadow: 0 1.5rem 4.5rem oklch(34% 0.075 226 / 0.16), 0 0.25rem 0.8rem oklch(37% 0.06 222 / 0.08);
+  --aero-caustic: linear-gradient(118deg, transparent 12%, oklch(98% 0.06 198 / 0.55) 31%, transparent 48%, oklch(93% 0.085 213 / 0.38) 68%, transparent 84%);
+  --aero-iridescence: linear-gradient(105deg, oklch(88% 0.075 215 / 0.45), oklch(91% 0.06 290 / 0.26), oklch(91% 0.08 159 / 0.34));
+
+  /* Solid reading/data surfaces */
+  --canvas: var(--aero-mist);
+  --canvas-elevated: oklch(98.8% 0.01 211);
+  --surface-solid: oklch(99.2% 0.006 215);
+  --surface-solid-raised: oklch(100% 0 0);
+  --surface-muted: oklch(95.4% 0.02 211);
+  --surface-glass: var(--aero-glass-clear);
+  --surface-glass-strong: var(--aero-glass-frosted);
+  --glass-border: oklch(86% 0.06 213 / 0.72);
+  --glass-highlight: var(--aero-specular);
+  --ink-primary: var(--aero-ink);
+  --ink-secondary: var(--aero-ink-soft);
+  --ink-muted: var(--aero-ink-muted);
+
+  /* Product and state */
+  --brand: oklch(55% 0.135 224);
+  --brand-deep: oklch(39% 0.105 230);
+  --brand-soft: oklch(92% 0.052 215);
+  --focus-ring: oklch(59% 0.17 230);
+  --success: oklch(48% 0.115 158);
+  --warning: oklch(58% 0.125 76);
+  --danger: oklch(52% 0.17 25);
+
+  /* Physics — FIELD / WAVE / MOTION */
+  --physics-field: oklch(62% 0.17 247);
+  --physics-light: oklch(84% 0.105 229);
+  --physics-cobalt: oklch(48% 0.19 256);
+  --physics-deep: oklch(31% 0.11 251);
+  --physics-silver: oklch(87% 0.025 229);
+  --physics: var(--physics-cobalt);
+  --physics-soft: oklch(93% 0.05 236);
+
+  /* Chemistry — TRANSFORMATION / EQUILIBRIUM / SPECTRUM */
+  --chemistry-fluid: oklch(70% 0.075 303);
+  --chemistry-plum: oklch(48% 0.095 309);
+  --chemistry-spectrum: linear-gradient(90deg, oklch(74% 0.09 215), oklch(70% 0.1 304), oklch(78% 0.08 33));
+  --chemistry-silver: oklch(88% 0.018 292);
+  --chemistry-deep: oklch(31% 0.065 302);
+  --chemistry: var(--chemistry-plum);
+  --chemistry-soft: oklch(94% 0.035 299);
+
+  /* Biology — GROWTH / SYSTEM / CONNECTION */
+  --biology-water: oklch(78% 0.085 181);
+  --biology-jade: oklch(55% 0.115 165);
+  --biology-leaf: oklch(61% 0.13 146);
+  --biology-forest: oklch(39% 0.09 151);
+  --biology-deep: oklch(27% 0.072 157);
+  --biology: var(--biology-jade);
+  --biology-soft: oklch(93% 0.047 163);
+
+  /* Typography: Chinese-first system stack; no bundled commercial fonts. */
+  --font-display: "Segoe UI Variable Display", "Microsoft YaHei UI", "PingFang SC", sans-serif;
+  --font-body: "Segoe UI Variable Text", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --font-scientific: "Cambria Math", "STIX Two Math", "Times New Roman", "SimSun", serif;
+  --type-display: clamp(3.8rem, 9.8vw, 9.4rem);
+  --type-hero: clamp(2.7rem, 6.4vw, 6.3rem);
+  --type-section: clamp(2.15rem, 4.7vw, 4.6rem);
+  --type-title: clamp(1.45rem, 2.2vw, 2.25rem);
+  --type-body: clamp(1rem, 0.22vw + 0.94rem, 1.125rem);
+  --type-caption: 0.78rem;
+  --type-metric: clamp(2.2rem, 4.8vw, 5.4rem);
+  --type-scientific: 1.04em;
+
+  /* 4/8 rhythm */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+  --space-9: 6rem;
+  --space-10: 9rem;
+  --page-gutter: clamp(1rem, 4.2vw, 5.5rem);
+  --content-max: 92rem;
+  --reading-max: 72ch;
+
+  --radius-control: 0.78rem;
+  --radius-panel: 1.15rem;
+  --radius-feature: 2rem;
+  --radius-orb: 999px;
+  --shadow-aqua: var(--aero-depth-shadow);
+  --shadow-float: 0 0.85rem 2.8rem oklch(34% 0.06 226 / 0.11);
+
+  --ease-aqua: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-aqua-in-out: cubic-bezier(0.76, 0, 0.24, 1);
+  --ease-aqua-spring: linear(0, .004, .016 1.4%, .06 3%, .224 6.5%, .58 12%, .82 17%, .94 22%, 1.01 30%, 1.02 40%, 1 58%, 1);
+  --duration-fast: 120ms;
+  --duration-ui: 260ms;
+  --duration-scene: 720ms;
+
+  --z-base: 1;
+  --z-raised: 10;
+  --z-dropdown: 100;
+  --z-sticky: 200;
+  --z-modal: 400;
+  --z-toast: 500;
+  --z-tooltip: 600;
+
+  /* Stable aliases retained for every existing business component. */
+  --space-3xs: var(--space-1);
+  --space-2xs: var(--space-1);
+  --space-xs: var(--space-2);
+  --space-sm: var(--space-3);
+  --space-md: var(--space-4);
+  --space-lg: var(--space-5);
+  --space-xl: var(--space-7);
+  --space-2xl: var(--space-8);
+  --space-3xl: var(--space-9);
+  --text-xs: var(--type-caption);
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-md: 1.25rem;
+  --text-lg: 1.5625rem;
+  --text-xl: 1.953rem;
+  --text-2xl: 2.441rem;
+  --radius-large: var(--radius-feature);
+  --shadow-raised: var(--shadow-float);
+  --dur-micro: var(--duration-fast);
+  --dur-short: var(--duration-ui);
+  --dur-long: var(--duration-scene);
+  --ease-out: var(--ease-aqua);
+  --ease-in: cubic-bezier(.7, 0, .84, 0);
+  --ease-in-out: var(--ease-aqua-in-out);
+  --color-paper: var(--canvas);
+  --color-paper-strong: var(--surface-muted);
+  --color-surface: var(--surface-solid);
+  --color-surface-subtle: var(--surface-muted);
+  --color-ink: var(--ink-primary);
+  --color-ink-soft: var(--ink-secondary);
+  --color-muted: var(--ink-muted);
+  --color-rule: var(--glass-border);
+  --color-rule-strong: oklch(73% 0.065 216);
+  --color-accent: var(--brand);
+  --color-accent-hover: var(--brand-deep);
+  --color-accent-soft: var(--brand-soft);
+  --color-accent-ink: oklch(99% 0.004 215);
+  --color-focus: var(--focus-ring);
+  --color-success: var(--success);
+  --color-success-soft: oklch(95% 0.03 158);
+  --color-warning: var(--warning);
+  --color-warning-soft: oklch(95% 0.035 78);
+  --color-danger: var(--danger);
+  --color-danger-soft: oklch(96% 0.028 25);
+  --color-graphite: oklch(27% 0.052 229);
+  --color-graphite-soft: oklch(34% 0.055 226);
+  --color-graphite-muted: oklch(79% 0.038 216);
+  --color-physics: var(--physics);
+  --color-chemistry: var(--chemistry);
+  --color-biology: var(--biology);
+  --page-bg: var(--canvas);
+  --surface: var(--surface-solid);
+  --ink: var(--ink-primary);
+  --muted: var(--ink-muted);
+  --primary: var(--brand);
+  --primary-deep: var(--brand-deep);
+  --border: var(--glass-border);
+  --radius: var(--radius-panel);
+  --shadow: var(--shadow-float);
+}

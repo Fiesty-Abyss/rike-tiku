@@ -133,12 +133,14 @@ class QuestionImportAttachmentHttpIntegrationTest extends AdminQuestionIntegrati
         assertThat(adminContent.headers().firstValue("content-type").orElse("")).startsWith("image/png");
         assertThat(ImageIO.read(new ByteArrayInputStream(adminContent.body()))).isNotNull();
 
-        jdbc.update("UPDATE ti_mu_lai_yuan SET quan_li_zhuang_tai='USER_PROVIDED' WHERE ti_mu_id=?", questionId);
+        adminQuestions.updateSourceRights(questionId,
+                new QuestionDtos.SourceRightsUpdate("USER_PROVIDED", "测试附件由专项提供，仅用于隔离测试"), adminId);
         adminQuestions.transition(questionId, "APPROVED", "PENDING", "PUBLISHED", null, adminId);
 
         long studentId = studentUser();
+        long importedKnowledgePointId = jdbc.queryForObject("SELECT zhi_shi_dian_id FROM ti_mu_zhi_shi_dian WHERE ti_mu_id=? ORDER BY pai_xu,id LIMIT 1", Long.class, questionId);
         StudentPracticeDtos.Session session = practice.create(studentId,
-                new StudentPracticeDtos.CreateRequest(1L, null, List.of("SINGLE_CHOICE"), 1, 1));
+                new StudentPracticeDtos.CreateRequest(1L, List.of(importedKnowledgePointId), List.of("SINGLE_CHOICE"), 1, 1));
         StudentPracticeDtos.SessionQuestion sessionQuestion = session.questions().getFirst();
         assertThat(sessionQuestion.stem()).contains("〔图片对象 I001〕");
         assertThat(sessionQuestion.attachments()).extracting(StudentPracticeDtos.Attachment::objectMarker).containsExactly("I001");

@@ -1,5 +1,6 @@
 package com.neu.riketiku.xueshengguanli;
 
+import com.neu.riketiku.guanlicaozuorizhi.GuanLiCaoZuoRiZhiFuWu;
 import com.neu.riketiku.renzheng.RenZhengYeWuYiChang;
 import com.neu.riketiku.xueshengdaoru.StudentInitialPasswordGenerator;
 import com.neu.riketiku.xueshengguanli.dto.StudentManagementDtos.ClassHistoryResponse;
@@ -28,14 +29,17 @@ public class StudentManagementService {
     private final JdbcTemplate jdbc;
     private final StudentInitialPasswordGenerator passwordGenerator;
     private final PasswordEncoder passwordEncoder;
+    private final GuanLiCaoZuoRiZhiFuWu auditLog;
 
     public StudentManagementService(
             JdbcTemplate jdbc,
             StudentInitialPasswordGenerator passwordGenerator,
-            PasswordEncoder passwordEncoder) {
+            PasswordEncoder passwordEncoder,
+            GuanLiCaoZuoRiZhiFuWu auditLog) {
         this.jdbc = jdbc;
         this.passwordGenerator = passwordGenerator;
         this.passwordEncoder = passwordEncoder;
+        this.auditLog = auditLog;
     }
 
     @Transactional(readOnly = true)
@@ -75,6 +79,10 @@ public class StudentManagementService {
 
     @Transactional
     public StudentCreateResponse create(StudentCreateRequest request) {
+        return auditLog.audited("STUDENT", "CREATE", null, "管理员新增学生账号和档案", () -> createInternal(request), result -> result.student().student().id());
+    }
+
+    private StudentCreateResponse createInternal(StudentCreateRequest request) {
         String studentNumber = trim(request.studentNumber());
         String username = trim(request.username());
         if (exists("SELECT COUNT(*) FROM xue_sheng_dang_an WHERE xue_hao=?", studentNumber)) {
@@ -113,6 +121,10 @@ public class StudentManagementService {
 
     @Transactional
     public StudentDetailResponse update(Long studentId, StudentUpdateRequest request) {
+        return auditLog.audited("STUDENT", "UPDATE", studentId, "管理员修改学生档案或账号状态", () -> updateInternal(studentId, request));
+    }
+
+    private StudentDetailResponse updateInternal(Long studentId, StudentUpdateRequest request) {
         StudentSummaryResponse student = findStudent(studentId);
         jdbc.update("UPDATE yong_hu SET zhang_hao_zhuang_tai=? WHERE yong_hu_ming=?",
                 request.accountStatus(), student.username());
@@ -123,6 +135,10 @@ public class StudentManagementService {
 
     @Transactional
     public StudentDetailResponse transfer(Long studentId, StudentTransferRequest request) {
+        return auditLog.audited("STUDENT", "TRANSFER", studentId, "管理员变更学生主班级", () -> transferInternal(studentId, request));
+    }
+
+    private StudentDetailResponse transferInternal(Long studentId, StudentTransferRequest request) {
         findStudent(studentId);
         requireActiveClass(request.classId());
         List<Long> currentRelations = jdbc.queryForList("""
@@ -153,6 +169,10 @@ public class StudentManagementService {
 
     @Transactional
     public PasswordResetResponse resetPassword(Long studentId) {
+        return auditLog.audited("STUDENT", "RESET_PASSWORD", studentId, "管理员重置学生密码（不记录密码）", () -> resetPasswordInternal(studentId));
+    }
+
+    private PasswordResetResponse resetPasswordInternal(Long studentId) {
         StudentSummaryResponse student = findStudent(studentId);
         String password = passwordGenerator.generate();
         jdbc.update("""

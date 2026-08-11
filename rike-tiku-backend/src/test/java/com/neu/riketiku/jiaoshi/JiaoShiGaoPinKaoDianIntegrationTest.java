@@ -35,7 +35,7 @@ class JiaoShiGaoPinKaoDianIntegrationTest extends AdminQuestionIntegrationTestSu
 
             HttpResponse<String> workspace = get("/api/v1/teacher/scopes/" + physics199, physicsToken);
             assertThat(workspace.statusCode()).isEqualTo(200);
-            assertThat(workspace.body()).contains("199班", "studentCount", "牛顿第二定律受力分析");
+            assertThat(workspace.body()).contains("199班", "studentCount", "牛顿第二定律受力分析", "\"subjectCode\":\"PHYSICS\"");
             assertThat(get("/api/v1/teacher/scopes/" + biology199, physicsToken).statusCode()).isEqualTo(403);
             assertThat(get("/api/v1/teacher/scopes/" + physics199, studentToken).statusCode()).isEqualTo(403);
 

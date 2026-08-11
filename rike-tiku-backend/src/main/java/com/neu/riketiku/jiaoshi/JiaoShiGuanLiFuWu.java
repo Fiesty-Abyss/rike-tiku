@@ -1,5 +1,6 @@
 package com.neu.riketiku.jiaoshi;
 
+import com.neu.riketiku.guanlicaozuorizhi.GuanLiCaoZuoRiZhiFuWu;
 import com.neu.riketiku.jiaoshi.dto.*;
 import com.neu.riketiku.renzheng.RenZhengYeWuYiChang;
 import com.neu.riketiku.xueshengdaoru.StudentInitialPasswordGenerator;
@@ -26,11 +27,14 @@ public class JiaoShiGuanLiFuWu {
     private final YongHuMapper userMapper;
     private final StudentInitialPasswordGenerator passwordGenerator;
     private final PasswordEncoder passwordEncoder;
+    private final GuanLiCaoZuoRiZhiFuWu auditLog;
 
     public JiaoShiGuanLiFuWu(JdbcTemplate jdbcTemplate, YongHuMapper userMapper,
-            StudentInitialPasswordGenerator passwordGenerator, PasswordEncoder passwordEncoder) {
+            StudentInitialPasswordGenerator passwordGenerator, PasswordEncoder passwordEncoder,
+            GuanLiCaoZuoRiZhiFuWu auditLog) {
         this.jdbcTemplate = jdbcTemplate; this.userMapper = userMapper;
         this.passwordGenerator = passwordGenerator; this.passwordEncoder = passwordEncoder;
+        this.auditLog = auditLog;
     }
 
     @Transactional(readOnly = true)
@@ -60,6 +64,10 @@ public class JiaoShiGuanLiFuWu {
 
     @Transactional
     public JiaoShiChuangJianXiangYing create(JiaoShiChuangJianQingQiu request) {
+        return auditLog.audited("TEACHER", "CREATE", null, "管理员创建教师账号和档案", () -> createInternal(request), result -> result.teacher().id());
+    }
+
+    private JiaoShiChuangJianXiangYing createInternal(JiaoShiChuangJianQingQiu request) {
         String employeeNumber = trim(request.employeeNumber()); String username = trim(request.username());
         if (exists("SELECT COUNT(*) FROM jiao_shi_dang_an WHERE gong_hao=?", employeeNumber)) fail("TEACHER_NUMBER_EXISTS", "工号已存在", HttpStatus.CONFLICT);
         if (exists("SELECT COUNT(*) FROM yong_hu WHERE yong_hu_ming=?", username)) fail("USERNAME_EXISTS", "用户名已存在", HttpStatus.CONFLICT);
@@ -83,11 +91,31 @@ public class JiaoShiGuanLiFuWu {
 
     @Transactional
     public JiaoShiXiangYing update(Long teacherId, JiaoShiXiuGaiQingQiu request) {
+        return auditLog.audited("TEACHER", "UPDATE", teacherId, "管理员修改教师档案或账号状态", () -> updateInternal(teacherId, request));
+    }
+
+    private JiaoShiXiangYing updateInternal(Long teacherId, JiaoShiXiuGaiQingQiu request) {
         JiaoShiXiangYing teacher = findTeacher(teacherId);
         jdbcTemplate.update("UPDATE yong_hu SET zhang_hao_zhuang_tai=? WHERE id=(SELECT yong_hu_id FROM jiao_shi_dang_an WHERE id=?)", request.accountStatus(), teacherId);
         jdbcTemplate.update("UPDATE jiao_shi_dang_an SET xing_ming=?,xian_shi_zhi_wu=?,zhuang_tai=? WHERE id=?",
                 trim(request.name()), emptyToNull(request.displayPosition()), request.profileStatus(), teacherId);
         return findTeacher(teacherId);
+    }
+
+    @Transactional
+    public JiaoShiMiMaChongZhiXiangYing resetPassword(Long teacherId) {
+        return auditLog.audited("TEACHER", "RESET_PASSWORD", teacherId,
+                "管理员重置教师密码（不记录密码）", () -> resetPasswordInternal(teacherId));
+    }
+
+    private JiaoShiMiMaChongZhiXiangYing resetPasswordInternal(Long teacherId) {
+        JiaoShiXiangYing teacher = findTeacher(teacherId);
+        String password = passwordGenerator.generate();
+        jdbcTemplate.update("""
+                UPDATE yong_hu SET mi_ma_zhai_yao=?,shi_fou_shou_ci_deng_lu=1,mi_ma_xiu_gai_shi_jian=NULL
+                WHERE yong_hu_ming=? AND yi_shan_chu=0
+                """, passwordEncoder.encode(password), teacher.username());
+        return new JiaoShiMiMaChongZhiXiangYing(password);
     }
 
     @Transactional(readOnly = true)
@@ -102,6 +130,10 @@ public class JiaoShiGuanLiFuWu {
 
     @Transactional
     public RenKeXiangYing createAssignment(Long teacherId, RenKeChuangJianQingQiu request) {
+        return auditLog.audited("TEACHING_ASSIGNMENT", "CREATE", null, "管理员创建教师班级科目任课关系", () -> createAssignmentInternal(teacherId, request));
+    }
+
+    private RenKeXiangYing createAssignmentInternal(Long teacherId, RenKeChuangJianQingQiu request) {
         JiaoShiXiangYing teacher = findTeacher(teacherId);
         if (!"ENABLED".equals(teacher.accountStatus()) || !"ACTIVE".equals(teacher.profileStatus())) fail("TEACHER_UNAVAILABLE", "教师账号或档案不是有效状态", HttpStatus.CONFLICT);
         if (!exists("SELECT COUNT(*) FROM ban_ji WHERE id=? AND zhuang_tai='ACTIVE' AND yi_shan_chu=0", request.classId())) fail("CLASS_UNAVAILABLE", "班级不存在或不是ACTIVE状态", HttpStatus.CONFLICT);
@@ -116,6 +148,10 @@ public class JiaoShiGuanLiFuWu {
 
     @Transactional
     public RenKeXiangYing changeAssignmentStatus(Long assignmentId, RenKeZhuangTaiQingQiu request) {
+        return auditLog.audited("TEACHING_ASSIGNMENT", "STATUS_CHANGE", assignmentId, "管理员结束或停用教师班级科目任课关系", () -> changeAssignmentStatusInternal(assignmentId, request));
+    }
+
+    private RenKeXiangYing changeAssignmentStatusInternal(Long assignmentId, RenKeZhuangTaiQingQiu request) {
         RenKeXiangYing existing = assignment(assignmentId);
         if ("ACTIVE".equals(request.status()) && !"ACTIVE".equals(existing.status())) fail("TEACHING_ASSIGNMENT_REACTIVATION_NOT_SUPPORTED", "为保留结束历史，首版不重新启用已结束或停用的三元关系", HttpStatus.CONFLICT);
         LocalDateTime endTime = "ENDED".equals(request.status()) ? LocalDateTime.now() : existing.endTime();
