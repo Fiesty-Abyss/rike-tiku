@@ -1,6 +1,19 @@
 # 数据库模型 V2：题库、账号与教学组织
 
-PR #29 新增 V13 三张学生 AI 学习表，当前结构为 V1–V13、31 张业务表；V1–V12 未修改。
+PR #30 新增 V14 四张 AI 配置/生成/评价/视觉缓存表，当前结构为 V1–V14、35 张业务表；V1–V13 未修改。V14 同时把现有 `ti_mu.nan_du` 检查约束调整为 1–5，以匹配生成与审核表单。
+
+## V14 AI 配置、生成、评价与视觉缓存
+
+| 表 | 核心绑定与约束 |
+| --- | --- |
+| `ai_mo_xing_pei_zhi` | 唯一绑定 provider/model/用途（TEXT/VISION）；保存启停、默认、超时、0–1 次重试、Token 上限和最近测试元数据。本地毕设演示模式允许 `api_mi_yao` 保存 Key，但 API 只返回是否配置，V12/异常/前端均不回显 |
+| `ai_sheng_cheng_ren_wu` | 绑定 PUBLISHED 母题与 ADMIN/TEACHER 创建人；保存受控题型、排序知识点 JSON、难度 1–5、变化方式、1–3 数量、唯一 request hash、provider/model、Prompt 版本、视觉使用和 GENERATING/SUCCESS/FAILED 事实 |
+| `ai_hou_xuan_ti_zhi_liang_ping_jia` | 一题一条质量事实；保存变式摘要、NONE/SUSPECTED_DUPLICATE、视觉使用、五项可空 0/1 评价、PENDING/APPROVED/REJECTED、审核人/耗时/评论。候选题本体继续复用 `ti_mu` |
+| `ai_shi_jue_shang_xia_wen` | 唯一绑定题目、附件 SHA 集、provider/model、Prompt 版本；只保存受控视觉 JSON 和 SUCCESS/FAILED 元数据，不保存原图 Base64、Prompt、原始模型响应或 Key |
+
+候选题只能写为 `ti_mu.lai_yuan_lei_xing=AI_GENERATED`、`fu_ti_mu_id=母题`、`zhuang_tai=PENDING`；人工 APPROVED 后才允许复用现有状态机进入 PUBLISHED。
+
+PR #29 新增 V13 三张学生 AI 学习表，形成 V1–V13、31 张业务表；V1–V12 未修改。
 
 ## V13 学生 AI 学习表
 

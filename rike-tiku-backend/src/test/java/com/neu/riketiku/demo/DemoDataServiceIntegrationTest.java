@@ -360,7 +360,7 @@ class DemoDataServiceIntegrationTest extends AdminQuestionIntegrationTestSupport
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM ti_mu WHERE ti_gan LIKE '【专题演示】%'", Integer.class)).isZero();
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM ti_mu", Integer.class)).isEqualTo(baselineQuestions);
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM ke_mu", Integer.class)).isEqualTo(3);
-        assertThat(jdbc.queryForObject("SELECT MAX(CAST(version AS UNSIGNED)) FROM flyway_schema_history WHERE success=1", Integer.class)).isEqualTo(13);
+        assertThat(jdbc.queryForObject("SELECT MAX(CAST(version AS UNSIGNED)) FROM flyway_schema_history WHERE success=1", Integer.class)).isEqualTo(14);
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM gao_pin_kao_dian", Integer.class)).isZero();
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM si_xin_hui_hua", Integer.class)).isZero();
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM si_xin_xiao_xi", Integer.class)).isZero();
