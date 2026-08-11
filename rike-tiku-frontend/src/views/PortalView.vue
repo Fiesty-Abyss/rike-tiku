@@ -1,124 +1,184 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref } from 'vue'
+import { onBeforeUnmount, onMounted, ref } from 'vue'
 import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import physicsVisual from '../assets/portal/physics-optical-field.webp'
+import chemistryVisual from '../assets/portal/chemistry-glass-spectrum.webp'
+import biologyVisual from '../assets/portal/biology-living-network.webp'
+
+gsap.registerPlugin(ScrollTrigger)
 
 const root = ref<HTMLElement>()
-let motion: gsap.MatchMedia | undefined
 let context: gsap.Context | undefined
+let motion: gsap.MatchMedia | undefined
 
 onMounted(() => {
-  if (!root.value || typeof window.matchMedia !== 'function') return
+  if (!root.value) return
   motion = gsap.matchMedia()
   context = gsap.context(() => {
     motion?.add('(prefers-reduced-motion: no-preference)', () => {
       gsap.timeline({ defaults: { ease: 'power3.out' } })
-        .from('.portal-nav', { autoAlpha: 0, y: -14, duration: 0.45 })
-        .from('.portal-hero-copy > *', { autoAlpha: 0, y: 22, duration: 0.62, stagger: 0.07 }, '-=0.14')
-        .from('.optical-instrument', { autoAlpha: 0, scale: 0.97, duration: 0.72 }, '-=0.48')
+        .from('.portal-nav', { autoAlpha: 0, y: -8, duration: 0.32 })
+        .from('.portal-hero-copy > *', { autoAlpha: 0, y: 14, duration: 0.42, stagger: 0.07 }, '-=0.12')
+        .from('.portal-system-visual', { autoAlpha: 0, scale: 0.985, duration: 0.52 }, '-=0.28')
+
+      gsap.utils.toArray<HTMLElement>('.portal-subject').forEach((section) => {
+        const copy = section.querySelector('.portal-subject-copy')
+        const visual = section.querySelector('.portal-subject-visual')
+        const ambient = section.querySelector('.subject-visual__ambient')
+        gsap.from([copy, visual], {
+          autoAlpha: 0,
+          y: 18,
+          duration: 0.56,
+          stagger: 0.09,
+          ease: 'power3.out',
+          scrollTrigger: { trigger: section, start: 'top 78%', once: true },
+        })
+        if (ambient) {
+          const drift = gsap.to(ambient, { xPercent: 8, duration: 7, repeat: -1, yoyo: true, ease: 'sine.inOut', paused: true })
+          ScrollTrigger.create({
+            trigger: section,
+            start: 'top bottom',
+            end: 'bottom top',
+            onEnter: () => drift.play(),
+            onEnterBack: () => drift.play(),
+            onLeave: () => drift.pause(),
+            onLeaveBack: () => drift.pause(),
+          })
+        }
+      })
     })
+
     motion?.add('(prefers-reduced-motion: reduce)', () => {
-      gsap.set('.portal-nav, .portal-hero-copy > *, .optical-instrument', { clearProps: 'all' })
+      gsap.set('.portal-nav, .portal-hero-copy > *, .portal-system-visual, .portal-subject-copy, .portal-subject-visual', { clearProps: 'all' })
     })
   }, root.value)
 })
 
-onUnmounted(() => {
-  motion?.revert()
+onBeforeUnmount(() => {
   context?.revert()
+  motion?.revert()
 })
 </script>
 
 <template>
   <div ref="root" class="portal-page">
+    <!--
+      THESIS: RIKE is a clear scientific learning path, not a generic three-card portal.
+      OWN-WORLD: quartz paper, optical water, one restrained subject accent per chapter, authored science imagery.
+      STORY: understand the system, encounter three distinct disciplines, then enter the practice-feedback loop.
+      FIRST VIEWPORT: concise product copy at left; one cross-discipline optical instrument at right; login stays visible.
+      FORM: Split Studio, user-pinned mizuiro-aero direction, key RIKE-PR27-R3.
+      FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, and DESIGN.md
+    -->
     <header class="portal-nav" aria-label="公共门户导航">
-      <RouterLink class="portal-wordmark" to="/" aria-label="返回公共首页">
+      <router-link class="portal-wordmark" to="/" aria-label="RIKE 公共首页">
         <span class="portal-mark" aria-hidden="true"><i></i></span>
         <span><strong>RIKE</strong><small>理科学习辅助系统</small></span>
-      </RouterLink>
-      <RouterLink class="portal-nav-login" to="/login">登录</RouterLink>
+      </router-link>
+      <router-link data-testid="portal-login" class="portal-nav-login" to="/login">登录</router-link>
     </header>
 
     <main>
       <section class="portal-hero" aria-labelledby="portal-title">
         <div class="portal-hero-copy">
           <h1 id="portal-title">RIKE 理科学习辅助系统</h1>
-          <p class="portal-subtitle">高中物理、化学、生物练习与学习管理</p>
+          <p class="portal-subtitle">高中物理、化学、生物练习与学习管理。</p>
           <div class="portal-actions">
-            <RouterLink data-testid="portal-login" class="portal-primary-action" to="/login">登录</RouterLink>
-            <a class="portal-secondary-action" href="#subjects">了解系统</a>
+            <router-link class="portal-primary-action" to="/login">进入系统</router-link>
+            <a class="portal-secondary-action" href="#physics">查看三科学习</a>
           </div>
         </div>
-
-        <div class="optical-instrument" aria-hidden="true">
-          <span class="horizon-line"></span>
-          <span class="optical-arc optical-arc--wide"></span>
-          <span class="optical-arc optical-arc--narrow"></span>
-          <span class="optical-core"></span>
+        <div class="portal-system-visual" role="img" aria-label="波动、分子键与叶脉共同构成的三科学习路径">
+          <svg viewBox="0 0 720 560" aria-hidden="true">
+            <defs>
+              <linearGradient id="portal-glass" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="currentColor" stop-opacity=".1" />
+                <stop offset="1" stop-color="currentColor" stop-opacity=".02" />
+              </linearGradient>
+            </defs>
+            <path class="system-glass" d="M118 96C203 42 335 54 421 113c88 60 176 60 215 143 39 82-1 193-93 243-98 53-241 42-328-28C118 393 39 337 54 236c9-61 28-111 64-140Z" />
+            <path class="system-wave" d="M84 284c42-83 83 83 125 0s83 83 125 0 83 83 125 0 83 83 125 0" />
+            <path class="system-path" d="M103 387c113-136 281-155 500-61" />
+            <g class="system-molecule">
+              <path d="m255 174 70-34 67 45 72-24 65 47" />
+              <circle cx="255" cy="174" r="12" /><circle cx="325" cy="140" r="15" /><circle cx="392" cy="185" r="11" /><circle cx="464" cy="161" r="14" /><circle cx="529" cy="208" r="10" />
+            </g>
+            <g class="system-vein">
+              <path d="M239 442c99-18 194-63 285-137" />
+              <path d="m306 423-30-42m93 15-20-54m83 22-4-56m57 18 22-49" />
+            </g>
+            <circle class="system-node system-node--physics" cx="103" cy="387" r="9" />
+            <circle class="system-node system-node--chemistry" cx="334" cy="284" r="9" />
+            <circle class="system-node system-node--biology" cx="603" cy="326" r="9" />
+          </svg>
         </div>
       </section>
 
-      <section id="subjects" class="portal-section science-section" aria-labelledby="science-title">
-        <header class="portal-section-heading">
-          <h2 id="science-title">三科学习</h2>
+      <section id="physics" class="portal-subject portal-subject--physics" data-subject="physics" aria-labelledby="physics-title">
+        <div class="portal-subject-copy">
+          <h2 id="physics-title">物理</h2>
+          <p>从受力、运动和场的关系出发，在练习中保留条件、单位与推导过程。</p>
+          <ul aria-label="物理学习内容"><li>力学</li><li>电磁学</li><li>光学与热学</li></ul>
+        </div>
+        <figure class="portal-subject-visual">
+          <span class="subject-visual__ambient" aria-hidden="true"></span>
+          <img :src="physicsVisual" width="1600" height="1000" loading="eager" fetchpriority="high" decoding="async" alt="透明光学介质中的钴蓝波动、场线与运动轨迹" />
+        </figure>
+      </section>
+
+      <section class="portal-subject portal-subject--chemistry" data-subject="chemistry" aria-labelledby="chemistry-title">
+        <div class="portal-subject-copy">
+          <h2 id="chemistry-title">化学</h2>
+          <p>把物质组成、反应条件和实验现象放在同一条证据链中理解。</p>
+          <ul aria-label="化学学习内容"><li>物质的量</li><li>元素化合物</li><li>实验与反应原理</li></ul>
+        </div>
+        <figure class="portal-subject-visual">
+          <span class="subject-visual__ambient" aria-hidden="true"></span>
+          <img :src="chemistryVisual" width="1600" height="1000" loading="lazy" decoding="async" alt="日光下的玻璃器皿、梅紫液面、分子结构与光谱折射" />
+        </figure>
+      </section>
+
+      <section class="portal-subject portal-subject--biology" data-subject="biology" aria-labelledby="biology-title">
+        <div class="portal-subject-copy">
+          <h2 id="biology-title">生物</h2>
+          <p>沿着结构、功能和证据层级，连接细胞、遗传与生态系统。</p>
+          <ul aria-label="生物学习内容"><li>分子与细胞</li><li>遗传与进化</li><li>稳态与生态</li></ul>
+        </div>
+        <figure class="portal-subject-visual">
+          <span class="subject-visual__ambient" aria-hidden="true"></span>
+          <img :src="biologyVisual" width="1600" height="1000" loading="lazy" decoding="async" alt="叶脉、细胞膜、遗传双螺旋与生态网络融合的生命结构" />
+        </figure>
+      </section>
+
+      <section class="portal-loop" aria-labelledby="loop-title">
+        <header>
+          <h2 id="loop-title">一次练习，形成完整反馈。</h2>
+          <p>练习事实冻结后，判分、错题与标准解析保持同一条可复验链路。</p>
         </header>
-        <div class="science-compositions">
-          <article class="science-composition science-physics">
-            <div class="science-visual">
-              <svg viewBox="0 0 360 220" role="img" aria-label="物理轨迹、波和场线示意">
-                <defs><linearGradient id="physics-wash" x1="0" x2="1"><stop stop-color="#dcecff"/><stop offset="1" stop-color="#9fc9f5" stop-opacity=".25"/></linearGradient></defs>
-                <path class="science-fill" d="M18 184C83 177 103 48 174 52c64 4 78 120 168 116v42H18Z" fill="url(#physics-wash)"/>
-                <path class="science-line science-line--strong" d="M22 179C86 170 106 44 174 48c66 4 82 119 167 112"/>
-                <path class="science-line" d="M42 123c40-44 82-44 122 0s82 44 124 0"/>
-                <path class="science-line" d="M42 139c40-44 82-44 122 0s82 44 124 0"/>
-                <path class="science-vector" d="M82 170 154 90m0 0-7 19m7-19-20 3"/>
-                <circle class="science-node" cx="174" cy="48" r="7"/>
-              </svg>
-            </div>
-            <div><h3>物理</h3><p>运动、力与场</p></div>
-          </article>
-
-          <article class="science-composition science-chemistry">
-            <div class="science-visual">
-              <svg viewBox="0 0 360 220" role="img" aria-label="化学溶液、分子键和光谱示意">
-                <defs><linearGradient id="chem-liquid" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#c8c9f0" stop-opacity=".36"/><stop offset="1" stop-color="#8f85bd" stop-opacity=".68"/></linearGradient></defs>
-                <path class="science-vessel" d="M108 24h78m-55 0v52l-58 103c-8 14 2 27 18 27h154c16 0 26-13 18-27L207 76V24"/>
-                <path class="science-liquid" d="M91 153c32-16 56 9 88-3 26-10 50-4 78 12l17 30c4 8-1 14-11 14H81c-10 0-15-7-10-15Z" fill="url(#chem-liquid)"/>
-                <path class="science-bond" d="m118 125 32-22 34 20 34-25"/>
-                <circle class="science-atom" cx="118" cy="125" r="7"/><circle class="science-atom" cx="150" cy="103" r="9"/><circle class="science-atom" cx="184" cy="123" r="6"/><circle class="science-atom" cx="218" cy="98" r="8"/>
-                <g class="science-spectrum"><path d="M286 58v58"/><path d="M300 48v68"/><path d="M314 69v47"/><path d="M328 38v78"/></g>
-              </svg>
-            </div>
-            <div><h3>化学</h3><p>结构、反应与平衡</p></div>
-          </article>
-
-          <article class="science-composition science-biology">
-            <div class="science-visual">
-              <svg viewBox="0 0 360 220" role="img" aria-label="生物细胞膜、叶脉和信息网络示意">
-                <path class="science-cell" d="M59 116c0-55 45-91 102-86 64 5 79 38 130 50 35 8 30 65 1 82-46 28-88 4-134 22-53 21-99-12-99-68Z"/>
-                <path class="science-vein science-line--strong" d="M88 160c48-25 74-62 112-108"/>
-                <path class="science-vein" d="m121 139-8-42m40 13 42-13m-17-18-3-34m-20 67-7 45m35-67 52 31"/>
-                <g class="membrane-nodes"><circle cx="84" cy="78" r="7"/><circle cx="105" cy="66" r="7"/><circle cx="128" cy="57" r="7"/><circle cx="152" cy="51" r="7"/><circle cx="178" cy="50" r="7"/><circle cx="203" cy="54" r="7"/><circle cx="227" cy="62" r="7"/></g>
-                <circle class="science-nucleus" cx="210" cy="124" r="27"/><path class="science-helix" d="M198 106c22 8 22 28 0 36m24-36c-22 8-22 28 0 36m-20-29h16m-16 18h16"/>
-              </svg>
-            </div>
-            <div><h3>生物</h3><p>细胞、遗传与生态</p></div>
-          </article>
+        <ol class="portal-loop-steps">
+          <li><span>1</span><div><h3>练习</h3><p>按学科、知识点、题型和难度创建题组。</p></div></li>
+          <li><span>2</span><div><h3>判分</h3><p>客观题使用确定性规则即时判定。</p></div></li>
+          <li><span>3</span><div><h3>错题</h3><p>错误答案进入本人错题记录并持续更新。</p></div></li>
+          <li><span>4</span><div><h3>解析</h3><p>查看冻结答案、逐项说明与结构化标准解析。</p></div></li>
+          <li><span>5</span><div><h3>再练习</h3><p>回到相同知识点，验证是否真正掌握。</p></div></li>
+        </ol>
+        <dl class="portal-facts" aria-label="演示内容规模">
+          <div><dt>学科</dt><dd>3</dd></div>
+          <div><dt>自动练习题</dt><dd>360</dd></div>
+          <div><dt>专题综合题</dt><dd>18</dd></div>
+        </dl>
+        <div class="portal-entrance">
+          <div><h2>从真实账号开始体验。</h2><p>登录后按角色进入管理员、教师或学生工作台。</p></div>
+          <router-link class="portal-primary-action" to="/login">前往登录</router-link>
         </div>
-      </section>
-
-      <section class="portal-snapshot" aria-label="系统数据概览">
-        <div><strong>3</strong><span>个学科</span></div>
-        <div><strong>360</strong><span>道自动练习题</span></div>
-        <div><strong>18</strong><span>道专题综合题</span></div>
-      </section>
-
-      <section class="portal-entrance" aria-labelledby="entrance-title">
-        <div><h2 id="entrance-title">进入 RIKE</h2><p>使用管理员发放的账号登录。</p></div>
-        <RouterLink class="portal-primary-action" to="/login">登录系统</RouterLink>
       </section>
     </main>
 
-    <footer class="portal-footer"><span>RIKE 理科学习辅助系统</span><span>物理 · 化学 · 生物</span><span>当前版本以标准答案与标准解析为准</span></footer>
+    <footer class="portal-footer">
+      <p>练习、判分、错题、解析与再练习，在同一套冻结事实中完成。</p>
+      <div><strong>RIKE</strong><span>本科毕业设计 · 非 AI 基础能力</span></div>
+    </footer>
   </div>
 </template>
 

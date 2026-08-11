@@ -1,11 +1,14 @@
 package com.neu.riketiku.demo;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /** 每科六道原创综合题，只用于显式本地 Demo 专题学习。 */
 final class DemoTopicQuestionBank {
     static final int COUNT_PER_SUBJECT = 6;
     static final int TOTAL_COUNT = 18;
+    private static final Pattern STEP = Pattern.compile("步骤(\\d+)：");
 
     private DemoTopicQuestionBank() {
     }
@@ -55,7 +58,34 @@ final class DemoTopicQuestionBank {
 
     private static TopicQuestion topic(String key, String subject, String title, String stem,
             String knowledgePath, int difficulty, String analysis) {
-        return new TopicQuestion(key, subject, title, stem, knowledgePath, difficulty, analysis);
+        return new TopicQuestion(key, subject, title, stem, knowledgePath, difficulty,
+                structuredAnalysis(subject, title, analysis));
+    }
+
+    private static String structuredAnalysis(String subject, String title, String source) {
+        String approach = switch (subject) {
+            case "PHYSICS" -> "先列出已知量和研究过程，选择适用规律，再按阶段代入并检查单位与物理意义。";
+            case "CHEMISTRY" -> "先明确流程或实验目标，依据反应、现象和守恒关系逐步处理条件。";
+            case "BIOLOGY" -> "先提取材料信息和变量，再沿生理、遗传或生态逻辑逐步判断。";
+            default -> "先读取材料条件，再逐步完成推理。";
+        };
+        Matcher matcher = STEP.matcher(source);
+        String steps = matcher.replaceAll(match -> "\n\n步骤 " + match.group(1) + "：").trim();
+        String[] sentences = source.split("。");
+        String conclusion = java.util.Arrays.stream(sentences)
+                .map(String::trim).filter(value -> !value.isBlank()).reduce((first, second) -> second).orElse(title);
+        String mistake = switch (subject) {
+            case "PHYSICS" -> "不要跨过程套用同一公式；正负号、单位和适用条件必须随“" + title + "”的阶段分别核对。";
+            case "CHEMISTRY" -> "不要省略反应条件、装置顺序或守恒关系；“" + title + "”中的现象与结论必须对应。";
+            case "BIOLOGY" -> "不要脱离材料限定扩大结论；“" + title + "”中的变量、对象和证据层级必须对应。";
+            default -> "不要跳过材料条件直接写结论。";
+        };
+        return "解题思路\n" + approach + "\n\n" + steps + "\n\n结论\n" + terminal(conclusion)
+                + "\n\n易错点\n" + mistake;
+    }
+
+    private static String terminal(String value) {
+        return value.endsWith("。") ? value : value + "。";
     }
 
     record TopicQuestion(String key, String subject, String title, String stem, String knowledgePath,
