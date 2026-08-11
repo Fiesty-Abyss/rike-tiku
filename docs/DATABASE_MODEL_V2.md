@@ -1,5 +1,21 @@
 # 数据库模型 V2：题库、账号与教学组织
 
+PR #28 新增 V12 `ai_diao_yong_ri_zhi` 脱敏 AI 调用日志表，当前结构为 V1–V12、28 张业务表。V1–V11 未修改；该表不保存 Prompt、模型输出、API Key、JWT、密码或完整题目。
+
+## V12 AI 调用日志
+
+| 字段 | 类型 | 说明 |
+| --- | --- | --- |
+| `id` | BIGINT | 主键 |
+| `provider_dai_ma` / `model_dai_ma` | VARCHAR | Provider 与模型代码 |
+| `yong_tu` | VARCHAR(96) | 用途/用例 |
+| `ye_wu_guan_lian` | VARCHAR(128) | 可空的非敏感业务引用 |
+| `shi_fou_cheng_gong` | TINYINT(1) | 成功/失败 |
+| `hao_shi_hao_miao` | BIGINT | 调用耗时 |
+| `shu_ru_token` / `shu_chu_token` | INT | Provider 返回时记录，可空 |
+| `cuo_wu_dai_ma` | VARCHAR(64) | 受控 Provider 错误码，可空 |
+| `chuang_jian_shi_jian` | DATETIME(3) | 创建时间 |
+
 PR #27 当前分支在 V1–V10 之后新增 V11 `guan_li_cao_zuo_ri_zhi` 管理员高风险操作日志表，当前结构为 V1–V11、27 张业务表。本文前面的 V1–V10 说明保留为历史快照；V1–V10 不修改。
 
 更新时间：2026-08-08

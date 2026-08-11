@@ -33,7 +33,8 @@ class UserTeachingDatabaseModelTest extends AdminQuestionIntegrationTestSupport 
         "ti_mu_shen_he_ji_lu", "yong_hu", "jiao_se", "yong_hu_jiao_se",
         "xue_sheng_dang_an", "jiao_shi_dang_an", "ban_ji", "ban_ji_xue_sheng",
         "ren_ke_guan_xi", "lian_xi_hui_hua", "lian_xi_ti_mu", "xue_sheng_da_ti",
-        "xue_xi_jie_guo", "cuo_ti_ji_lu", "gao_pin_kao_dian", "si_xin_hui_hua", "si_xin_xiao_xi", "guan_li_cao_zuo_ri_zhi"
+        "xue_xi_jie_guo", "cuo_ti_ji_lu", "gao_pin_kao_dian", "si_xin_hui_hua", "si_xin_xiao_xi",
+        "guan_li_cao_zuo_ri_zhi", "ai_diao_yong_ri_zhi"
     );
 
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(4);
@@ -66,7 +67,7 @@ class UserTeachingDatabaseModelTest extends AdminQuestionIntegrationTestSupport 
         Integer roleCount = jdbcTemplate.queryForObject(
             "SELECT COUNT(*) FROM jiao_se WHERE jiao_se_dai_ma IN ('STUDENT','TEACHER','ADMIN')", Integer.class);
 
-        assertThat(latestVersion).isEqualTo(11);
+        assertThat(latestVersion).isEqualTo(12);
         Set<String> profileColumns = Set.copyOf(jdbcTemplate.queryForList("""
             SELECT column_name FROM information_schema.columns
             WHERE table_schema=DATABASE() AND table_name='yong_hu'
@@ -265,17 +266,17 @@ class UserTeachingDatabaseModelTest extends AdminQuestionIntegrationTestSupport 
                 .locations("classpath:db/migration")
                 .cleanDisabled(true)
                 .load();
-            assertThat(flyway.migrate().migrationsExecuted).isEqualTo(11);
+            assertThat(flyway.migrate().migrationsExecuted).isEqualTo(12);
 
             try (Connection connection = DriverManager.getConnection(testUrl, username, password);
                  Statement statement = connection.createStatement()) {
                 assertThat(singleInt(statement,
                     "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='" + schema
                         + "' AND table_name <> 'flyway_schema_history'"))
-                    .isEqualTo(27);
+                    .isEqualTo(28);
                 assertThat(singleInt(statement, "SELECT COUNT(*) FROM ti_mu")).isEqualTo(3);
                 assertThat(singleInt(statement,
-                    "SELECT COUNT(*) FROM flyway_schema_history WHERE success=1")).isEqualTo(11);
+                    "SELECT COUNT(*) FROM flyway_schema_history WHERE success=1")).isEqualTo(12);
                 assertThat(singleInt(statement, "SELECT COUNT(*) FROM information_schema.columns WHERE table_schema='" + schema + "' AND table_name='gao_pin_kao_dian' AND column_name='ren_ke_guan_xi_id'")).isEqualTo(1);
                 assertThat(singleInt(statement, "SELECT COUNT(*) FROM information_schema.columns WHERE table_schema='" + schema + "' AND table_name='si_xin_hui_hua'")).isEqualTo(8);
                 assertThat(singleInt(statement, "SELECT COUNT(*) FROM information_schema.columns WHERE table_schema='" + schema + "' AND table_name='si_xin_xiao_xi'")).isEqualTo(8);

@@ -31,3 +31,12 @@ app:
   auth:
     captcha:
       expose-test-code: ${RIKE_TIKU_CAPTCHA_EXPOSE_TEST_CODE:false}
+  ai:
+    enabled: ${RIKE_TIKU_AI_ENABLED:false}
+    provider: ${RIKE_TIKU_AI_PROVIDER:deepseek}
+    base-url: ${RIKE_TIKU_AI_BASE_URL:https://api.deepseek.com}
+    model: ${RIKE_TIKU_AI_MODEL:deepseek-v4-flash}
+    api-key: ${RIKE_TIKU_AI_API_KEY:}
+    connect-timeout: ${RIKE_TIKU_AI_CONNECT_TIMEOUT:3s}
+    request-timeout: ${RIKE_TIKU_AI_REQUEST_TIMEOUT:30s}
+    retry-count: ${RIKE_TIKU_AI_RETRY_COUNT:1}
