@@ -3,7 +3,7 @@
 - 日期：2026-08-11（Asia/Shanghai）
 - 分支：`feat/non-ai-final-closure`
 - 开始 Base / HEAD：`b992bffef07465665b371b7b707ca8814ec2d36d` / `d94cf67e593fd2401ae4ceae49f4eb69b61782f4`
-- 实现与证据 commit：提交后在 docs-only follow-up 中回填
+- 实现与证据 commit：`d098ca17b7d96b73c0c3c04b38365ea4b79daab2`
 - 前端模式：当前源码执行 `npm run build` 后的 Vite preview，`localhost:18080`，`strictPort`
 - 后端机器链路模式：`smoke`，`localhost:18081`，仅用 demo-only `testCode` 建立三角色机器会话；脚本不记录 testCode、JWT、数据库密码或密钥
 - 最终交付后端模式：`acceptance`，`localhost:18081`，CAPTCHA `testCode=false`
