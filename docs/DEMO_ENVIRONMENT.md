@@ -1,6 +1,6 @@
 # 本地演示验收环境
 
-PR #29 新增 V13 三张学生 AI 学习表；当前 Demo 结构目标为 Flyway V1–V13、31 张业务表。下文历史记录保持原样，实际 `reset/create/validate` 由当前后端 `DemoDataService` 校验 V13/31。
+当前 Demo 结构目标为 Flyway V1–V14、35 张业务表。`reset/create/validate` 由当前后端 `DemoDataService` 校验 V14/35；V14 的 AI 配置、生成、评价与视觉缓存表默认不预置真实 Key 或调用数据。
 
 ## 用途与安全边界
 
@@ -19,10 +19,10 @@ $env:RIKE_TIKU_DB_PASSWORD = "你的本机MySQL密码"
 
 - `acceptance-prepare`：仅允许 `rike_tiku_demo`，依次重建、播种并校验最终人工验收数据。
 - `final-acceptance`：`acceptance-prepare` 的兼容入口，并显示前后端启动命令。
-- `create`：保留现有演示库，仅在不存在时创建并执行 V1–V13。
-- `reset`：删除并重建指定演示库，再执行 V1–V13；会清除该演示库的全部已有内容。
+- `create`：保留现有演示库，仅在不存在时创建并执行 V1–V14。
+- `reset`：删除并重建指定演示库，再执行 V1–V14；会清除该演示库的全部已有内容。
 - `seed`：清理旧演示数据后重建固定数据，重复执行结果稳定。
-- `validate`：只读检查 V1–V13/31 张表、验收账号、关系、题库、PHYSICS-S1 图片文件/hash 和学习记录。
+- `validate`：只读检查 V1–V14/35 张表、验收账号、关系、题库、PHYSICS-S1 图片文件/hash 和学习记录。
 - `clean`：只删除带受控演示标识的数据，保留 Flyway 基础科目和样例。
 
 ## 启动方案 A：IDE 默认端口
@@ -133,6 +133,8 @@ Demo360 均为项目原创的“本科毕业设计自编演示题”，不复制
 ```
 
 `clean` 后演示账号、组织、题目和学习记录均被删除；`reset` 是库级重建，只允许对通过安全检查的演示库名执行。MVP30 原始 Excel 和正式 `rike_tiku` 不参与上述流程。
-## PR #27 分支状态
+## 历史 PR #27 验收快照
 
-当前分支为 `feat/non-ai-final-closure`，Draft PR #27。Flyway 为 V1–V11、27 张业务表；`reset`、`seed`、`validate`、`clean` 和 `final-acceptance` 继续受数据库名保护。最终人工验收只使用 `rike_tiku_demo`，不向正式 `rike_tiku` 写入题目或其他演示业务数据。最终机器口径为后端 133 个测试（0 failure、0 error、1 symbolic-link assumption skipped）、前端 49 文件 170/170、package/type-check/build/audit PASS、`acceptance-prepare → validate → smoke` PASS。第三轮机器浏览器截图见 `docs/evidence/pr27-ui-round3/`；它不替代用户的真实 CAPTCHA 与视觉复验。
+> 本节为历史阶段快照，当前项目状态请查看 [README](../README.md) 和 [开发状态](DEVELOPMENT_STATUS.md)。
+
+当时分支为 `feat/non-ai-final-closure`，Draft PR #27。Flyway 为 V1–V11、27 张业务表；`reset`、`seed`、`validate`、`clean` 和 `final-acceptance` 继续受数据库名保护。最终人工验收只使用 `rike_tiku_demo`，不向正式 `rike_tiku` 写入题目或其他演示业务数据。该阶段机器口径为后端 133 个测试（0 failure、0 error、1 symbolic-link assumption skipped）、前端 49 文件 170/170、package/type-check/build/audit PASS、`acceptance-prepare → validate → smoke` PASS。第三轮机器浏览器截图见 `evidence/pr27-ui-round3/`；它不替代用户的真实 CAPTCHA 与视觉复验。

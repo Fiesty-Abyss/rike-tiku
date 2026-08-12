@@ -11,7 +11,7 @@ const stubs = {
   ElButton:{ props:['loading','disabled'], template:'<button :disabled="disabled" @click="$emit(\'click\')"><slot /></button>' },
   ElTag:{ template:'<span><slot /></span>' }, ElSkeleton:true,
   ElInput:{ props:['modelValue','disabled'], emits:['update:modelValue'], template:'<textarea :value="modelValue" :disabled="disabled" @input="$emit(\'update:modelValue\', $event.target.value)" />' },
-  ElDrawer:{ template:'<aside><slot /></aside>' },
+  ElDrawer:{ props:['title'], template:'<aside><h2>{{ title }}</h2><slot /></aside>' },
 }
 
 describe('学生 AI 学习面板', () => {
@@ -51,6 +51,7 @@ describe('学生 AI 学习面板', () => {
     await wrapper.findAll('button').find(button => button.text().includes('当前题目答疑'))!.trigger('click')
     await flushPromises()
     expect(api.createAiConversation).toHaveBeenCalledWith(19)
+    expect(wrapper.text()).toContain('RIKE 理科学习助手', '已绑定当前题目')
     expect(wrapper.text()).toContain('剩余 8 / 8 轮')
     await wrapper.find('textarea').setValue('为什么要先受力分析？')
     await wrapper.findAll('button').find(button => button.text() === '发送')!.trigger('click')

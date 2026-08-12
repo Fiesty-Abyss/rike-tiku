@@ -32,6 +32,8 @@ async function logout() {
         <el-menu-item index="/admin/classes"><span>班级管理</span></el-menu-item>
         <el-menu-item index="/admin/teachers"><span>教师与任课关系</span></el-menu-item>
         <el-menu-item index="/admin/questions"><span>题库审核发布</span></el-menu-item>
+        <el-menu-item index="/admin/ai-generation"><span>AI 候选题</span></el-menu-item>
+        <el-menu-item index="/admin/ai-models"><span>AI 模型管理</span></el-menu-item>
         <el-menu-item index="/admin/students"><span>学生管理</span></el-menu-item>
         <el-menu-item index="/admin/operation-logs"><span>操作日志</span></el-menu-item>
       </el-menu>
