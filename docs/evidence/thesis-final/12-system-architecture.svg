@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="760" viewBox="0 0 1400 760">
+  <rect width="1400" height="760" fill="#eefbff"/>
+  <style>.title{font:700 42px Arial,"Microsoft YaHei";fill:#062b3a}.h{font:700 27px Arial,"Microsoft YaHei";fill:#06374a}.t{font:20px Arial,"Microsoft YaHei";fill:#315867}.box{rx:26;stroke:#87d4ec;stroke-width:2}.arrow{stroke:#168db7;stroke-width:5;marker-end:url(#a)}</style>
+  <defs><marker id="a" markerWidth="12" markerHeight="12" refX="10" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 Z" fill="#168db7"/></marker></defs>
+  <text x="700" y="72" text-anchor="middle" class="title">RIKE 前后端分离模块化单体架构</text>
+  <rect x="70" y="170" width="330" height="400" fill="#d8f4ff" class="box"/>
+  <text x="235" y="230" text-anchor="middle" class="h">Vue 3 Frontend</text><text x="235" y="285" text-anchor="middle" class="t">STUDENT / TEACHER / ADMIN</text><text x="235" y="330" text-anchor="middle" class="t">Vue Router · Pinia · Axios</text><text x="235" y="375" text-anchor="middle" class="t">Element Plus · KaTeX</text><text x="235" y="450" text-anchor="middle" class="t">HTTP JSON / JWT</text>
+  <rect x="535" y="135" width="370" height="470" fill="#d9fbf5" class="box"/>
+  <text x="720" y="205" text-anchor="middle" class="h">Spring Boot 4.1</text><text x="720" y="260" text-anchor="middle" class="t">Spring MVC · Security · JWT</text><text x="720" y="305" text-anchor="middle" class="t">题库 / 练习 / 教学组织</text><text x="720" y="350" text-anchor="middle" class="t">学生 AI / Vision / 候选审核</text><text x="720" y="395" text-anchor="middle" class="t">MyBatis-Plus · Flyway</text><text x="720" y="470" text-anchor="middle" class="t">模块化单体，不是微服务</text>
+  <rect x="1040" y="170" width="290" height="185" fill="#fff" class="box"/><text x="1185" y="235" text-anchor="middle" class="h">MySQL 8.4</text><text x="1185" y="285" text-anchor="middle" class="t">Flyway V1–V14</text><text x="1185" y="325" text-anchor="middle" class="t">35 张业务表</text>
+  <rect x="1040" y="415" width="290" height="155" fill="#fff7dc" class="box"/><text x="1185" y="475" text-anchor="middle" class="h">AI Provider</text><text x="1185" y="520" text-anchor="middle" class="t">DeepSeek · GLM · Fake/Stub</text>
+  <line x1="400" y1="370" x2="525" y2="370" class="arrow"/><line x1="905" y1="280" x2="1030" y2="280" class="arrow"/><line x1="905" y1="500" x2="1030" y2="500" class="arrow"/>
+  <text x="700" y="700" text-anchor="middle" class="t">正式答案与 STANDARD 是权威；AI 仅提供受控辅助事实</text>
+</svg>

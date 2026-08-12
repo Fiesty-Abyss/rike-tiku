@@ -4,13 +4,13 @@
 
 ## CURRENT HANDOFF
 
-- PR #30 已 ordinary merge，merge commit 为 `d67ebc83bf0b8a2fbd889290d5a0f78a27d7640e`。当前分支为 PR #31 `chore/final-ai-integration-verification`。
+- PR #31 已 ordinary merge，merge commit 为 `c79b7a6f93e32509989282995419bbaf64666182`。当前分支为 PR #32 `chore/final-local-production-thesis-package`，只做本机正式化、论文资料包与最终维护。
 - 当前 Flyway 为 V1–V14，共 35 张业务表；没有 V15。
 - 非 AI 主链、Provider Core、学生 AI、管理员 AI 配置、候选题生成与人工审核均为 `DONE_VERIFIED`。
 - PR #31 机器阶段为 `AUTO_FINAL_VERIFICATION_PASS`。后端全量 173 tests、0 failures、0 errors、3 skipped；前端全量 58 files、190 tests，type-check、build、audit 通过。
 - PR #31 真实 `deepseek-v4-flash` smoke 与 Demo 错因、当前题答疑、单题候选生成均为 PASS。
 - GLM-4.6V-Flash 代码链、Stub 和最终 Parser 全量通过。真实第一次窗口为 429，第二个最终窗口暴露完整 JSON 代码围栏兼容；Parser 已严格修复但未发起第三次调用，状态为 `REAL_GLM_VISION_NOT_REVERIFIED_AFTER_WRAPPER_FIX`。
-- Demo 已清理重建为 V1–V14、35 表、378 题，并启动真实 CAPTCHA 验收环境。下一唯一动作是用户按最终清单验收；当前为 `FINAL_MANUAL_ACCEPTANCE_PENDING`，PR #31 不合并。
+- Demo 已清理重建为 V1–V14、35 表、378 题。PR #32 又在仓库外备份后把本机正式库从 V11 迁移到 V14，并建立 378 题和最小正式组织基线；真实人员数据、密码与 Key 只留在本机。用户验收仍为 `FINAL_MANUAL_ACCEPTANCE_PENDING`。
 
 ## 当前 AI 架构
 
@@ -67,4 +67,4 @@ PR #27 ordinary merge commit 为 `84a82fc3bd4972fc11c0811d8332bae306b7e5c0`。MA
 - 不把计划或 skipped 写成 PASS。
 - 不把 AI 候选直接发布，不让 AI 覆盖 STANDARD。
 - 不为了最终封板引入微服务、Redis、MQ、RAG、向量数据库、WebSocket 或流式输出。
-- PR #31 原则上不新增业务功能，不新增 V15；只处理最终集成、BLOCKER/HIGH、测试、Demo、浏览器和文档问题。
+- PR #32 不新增业务功能或 V15；此后进入论文写作与维护模式，不创建额外核心业务 PR。

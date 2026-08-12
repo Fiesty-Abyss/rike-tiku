@@ -11,6 +11,7 @@ import com.neu.riketiku.jiaoshi.dto.RenKeChuangJianQingQiu;
 import com.neu.riketiku.jiaoshi.dto.RenKeZhuangTaiQingQiu;
 import com.neu.riketiku.renzheng.RenZhengYeWuYiChang;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,7 +59,9 @@ class JiaoShiGuanLiFuWuTest extends AdminQuestionIntegrationTestSupport {
         var response = service.resetPassword(created.teacher().id());
         String hash = jdbc.queryForObject("SELECT mi_ma_zhai_yao FROM yong_hu WHERE id=?", String.class, userId);
 
-        assertThat(response.initialPassword()).matches("(?=.*[A-Za-z])(?=.*[0-9]).{8,64}");
+        assertThat(response.initialPassword()).isEqualTo("a1234567");
+        assertThat(response.resetCount()).isEqualTo(1);
+        assertThat(response.mustChangePassword()).isTrue();
         assertThat(passwordEncoder.matches("OldPassword1", hash)).isFalse();
         assertThat(passwordEncoder.matches(response.initialPassword(), hash)).isTrue();
         assertThat(jdbc.queryForObject("SELECT shi_fou_shou_ci_deng_lu FROM yong_hu WHERE id=?", Boolean.class, userId)).isTrue();
@@ -67,6 +70,45 @@ class JiaoShiGuanLiFuWuTest extends AdminQuestionIntegrationTestSupport {
                 WHERE mo_kuai='TEACHER' AND ye_wu_dui_xiang_id=? ORDER BY id DESC LIMIT 1
                 """, String.class, created.teacher().id());
         assertThat(audit).contains("RESET_PASSWORD").doesNotContain(response.initialPassword(), "OldPassword1");
+    }
+
+    @Test @Transactional
+    void batchResetTeacherPasswordsUsesDistinctBcryptAndAuditsOnlySafeMetadata() {
+        String suffix = suffix();
+        var first = service.create(new JiaoShiChuangJianQingQiu("TA" + suffix, "教师甲", "teacher_a_" + suffix, null, "OldPassword1", "ENABLED"));
+        var second = service.create(new JiaoShiChuangJianQingQiu("TB" + suffix, "教师乙", "teacher_b_" + suffix, null, "OldPassword2", "ENABLED"));
+
+        var response = service.resetPasswords(List.of(first.teacher().id(), second.teacher().id(), first.teacher().id()));
+        List<String> hashes = jdbc.queryForList("""
+                SELECT u.mi_ma_zhai_yao FROM yong_hu u JOIN jiao_shi_dang_an p ON p.yong_hu_id=u.id
+                WHERE p.id IN (?,?) ORDER BY p.id
+                """, String.class, first.teacher().id(), second.teacher().id());
+
+        assertThat(response.resetCount()).isEqualTo(2);
+        assertThat(response.initialPassword()).isEqualTo("a1234567");
+        assertThat(response.mustChangePassword()).isTrue();
+        assertThat(hashes).hasSize(2).doesNotHaveDuplicates();
+        assertThat(hashes).allMatch(hash -> passwordEncoder.matches(response.initialPassword(), hash));
+        String audit = jdbc.queryForObject("""
+                SELECT CONCAT(cao_zuo_lei_xing,'|',COALESCE(zhai_yao,'')) FROM guan_li_cao_zuo_ri_zhi
+                WHERE mo_kuai='TEACHER' AND cao_zuo_lei_xing='BATCH_RESET_PASSWORD' ORDER BY id DESC LIMIT 1
+                """, String.class);
+        assertThat(audit).contains("BATCH_RESET_PASSWORD", "数量=2", String.valueOf(first.teacher().id()), String.valueOf(second.teacher().id()))
+                .doesNotContain(response.initialPassword(), "OldPassword1", "OldPassword2", first.teacher().name(), second.teacher().name());
+    }
+
+    @Test @Transactional
+    void batchResetTeacherPasswordsIsAtomicWhenAnyTargetDoesNotExist() {
+        String suffix = suffix();
+        var teacher = service.create(new JiaoShiChuangJianQingQiu("TC" + suffix, "教师甲", "teacher_c_" + suffix, null, "OldPassword1", "ENABLED"));
+        Long userId = jdbc.queryForObject("SELECT yong_hu_id FROM jiao_shi_dang_an WHERE id=?", Long.class, teacher.teacher().id());
+        String before = jdbc.queryForObject("SELECT mi_ma_zhai_yao FROM yong_hu WHERE id=?", String.class, userId);
+
+        assertThatThrownBy(() -> service.resetPasswords(List.of(teacher.teacher().id(), 999999999L)))
+                .isInstanceOf(RenZhengYeWuYiChang.class).hasMessage("教师不存在");
+
+        assertThat(jdbc.queryForObject("SELECT mi_ma_zhai_yao FROM yong_hu WHERE id=?", String.class, userId)).isEqualTo(before);
+        assertThat(passwordEncoder.matches("OldPassword1", before)).isTrue();
     }
 
     @Test @Transactional

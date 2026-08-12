@@ -4,12 +4,14 @@ import com.neu.riketiku.guanlicaozuorizhi.GuanLiCaoZuoRiZhiFuWu;
 import com.neu.riketiku.jiaoshi.dto.*;
 import com.neu.riketiku.renzheng.RenZhengYeWuYiChang;
 import com.neu.riketiku.xueshengdaoru.StudentInitialPasswordGenerator;
+import com.neu.riketiku.zhanghao.AdminDefaultPasswordPolicy;
 import com.neu.riketiku.zhanghao.entity.YongHu;
 import com.neu.riketiku.zhanghao.mapper.YongHuMapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -28,13 +30,15 @@ public class JiaoShiGuanLiFuWu {
     private final StudentInitialPasswordGenerator passwordGenerator;
     private final PasswordEncoder passwordEncoder;
     private final GuanLiCaoZuoRiZhiFuWu auditLog;
+    private final AdminDefaultPasswordPolicy defaultPasswordPolicy;
 
     public JiaoShiGuanLiFuWu(JdbcTemplate jdbcTemplate, YongHuMapper userMapper,
             StudentInitialPasswordGenerator passwordGenerator, PasswordEncoder passwordEncoder,
-            GuanLiCaoZuoRiZhiFuWu auditLog) {
+            GuanLiCaoZuoRiZhiFuWu auditLog, AdminDefaultPasswordPolicy defaultPasswordPolicy) {
         this.jdbcTemplate = jdbcTemplate; this.userMapper = userMapper;
         this.passwordGenerator = passwordGenerator; this.passwordEncoder = passwordEncoder;
         this.auditLog = auditLog;
+        this.defaultPasswordPolicy = defaultPasswordPolicy;
     }
 
     @Transactional(readOnly = true)
@@ -105,17 +109,37 @@ public class JiaoShiGuanLiFuWu {
     @Transactional
     public JiaoShiMiMaChongZhiXiangYing resetPassword(Long teacherId) {
         return auditLog.audited("TEACHER", "RESET_PASSWORD", teacherId,
-                "管理员重置教师密码（不记录密码）", () -> resetPasswordInternal(teacherId));
+                "管理员恢复教师默认密码（不记录密码）", () -> resetPasswordInternal(teacherId));
     }
 
     private JiaoShiMiMaChongZhiXiangYing resetPasswordInternal(Long teacherId) {
         JiaoShiXiangYing teacher = findTeacher(teacherId);
-        String password = passwordGenerator.generate();
+        String password = defaultPasswordPolicy.password();
         jdbcTemplate.update("""
                 UPDATE yong_hu SET mi_ma_zhai_yao=?,shi_fou_shou_ci_deng_lu=1,mi_ma_xiu_gai_shi_jian=NULL
                 WHERE yong_hu_ming=? AND yi_shan_chu=0
                 """, passwordEncoder.encode(password), teacher.username());
-        return new JiaoShiMiMaChongZhiXiangYing(password);
+        return new JiaoShiMiMaChongZhiXiangYing(1, password, true);
+    }
+
+    @Transactional
+    public JiaoShiMiMaChongZhiXiangYing resetPasswords(List<Long> requestedIds) {
+        List<Long> ids = new ArrayList<>(new LinkedHashSet<>(requestedIds));
+        String summary = "管理员批量恢复教师默认密码；数量=" + ids.size() + "；目标业务ID=" + ids;
+        return auditLog.audited("TEACHER", "BATCH_RESET_PASSWORD", null, summary,
+                () -> resetPasswordsInternal(ids));
+    }
+
+    private JiaoShiMiMaChongZhiXiangYing resetPasswordsInternal(List<Long> ids) {
+        List<JiaoShiXiangYing> teachers = ids.stream().map(this::findTeacher).toList();
+        String password = defaultPasswordPolicy.password();
+        for (JiaoShiXiangYing teacher : teachers) {
+            jdbcTemplate.update("""
+                    UPDATE yong_hu SET mi_ma_zhai_yao=?,shi_fou_shou_ci_deng_lu=1,mi_ma_xiu_gai_shi_jian=NULL
+                    WHERE yong_hu_ming=? AND yi_shan_chu=0
+                    """, passwordEncoder.encode(password), teacher.username());
+        }
+        return new JiaoShiMiMaChongZhiXiangYing(teachers.size(), password, true);
     }
 
     @Transactional(readOnly = true)
