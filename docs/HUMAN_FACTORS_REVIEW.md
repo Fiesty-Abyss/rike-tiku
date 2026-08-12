@@ -2,14 +2,16 @@
 
 状态：`PASS_WITH_NOTES`
 
-性质：machine-controlled operator walkthrough。该复查使用 Chrome/Playwright、1440×1000 与 390×844 视口、真实 PNG CAPTCHA 和既有匿名业务证据，不能替代用户研究或 `FINAL_MANUAL_ACCEPTANCE`。
+性质：Codex desktop-controlled walkthrough using actual IDEA, WebStorm, Chrome and the local formal `rike_tiku` environment。该复查实际点击 IDEA/WebStorm Run，并控制独立临时 Profile 的真实 Chrome；浏览器通过 CDP/Playwright 读取确定 URL 和执行 DOM 操作，避免复用用户日常浏览器或猜测窗口焦点。它仍是 machine-controlled walkthrough，不是多人真实用户研究，不能替代 `FINAL_MANUAL_ACCEPTANCE`。
 
 ## 覆盖与结果
 
-- 正式环境 `http://localhost:8080` 与后端 8081：Portal、Login、未认证 Admin 路由保护均为 HTTP 200 页面响应；受保护路由重定向 Login。
-- 桌面 Portal、Login 和 390 px Portal 均无横向溢出；0 console error、0 page error、0 failed request。
+- 真实 IDEA `RikeTikuBackendApplication` 与 WebStorm `RIKE Frontend` 均由 Run 按钮启动；后端连接正式 `rike_tiku`、校验 V1–V14 后监听 8081，前端监听 8080，health/front 均为 200。
+- 专用 Chrome 使用独立临时 Profile 和固定 CDP URL；真实 PNG CAPTCHA 不使用 `testCode`。代表性正式账号完成首次改密、双角色选择、教师学科边界、学生练习/提交/STANDARD/错题/AI 入口与个人中心。
+- 1440 px 与 390 px 覆盖 Portal、学生首页、练习配置、错题、个人中心和消息，无横向溢出；0 console error、0 page error、0 failed request。
 - CAPTCHA 为真实随机 PNG，响应不含 `testCode`。
-- PR #31 匿名机器浏览器已覆盖学生 Dashboard/练习/结果/STANDARD/错题/AI、教师工作台/AI 生成、管理员模型/候选审核，共 25 条路由，0 console/page/request/overflow 错误。
+- 管理员 AI 模型页仅显示 Key 已配置，不回显字面值；管理员/教师候选题工作区、教师管理员路由隔离和 RIKE 学生助手边界均正常。
+- PR #31 匿名机器浏览器的 25 路由证据继续作为不含正式姓名的论文证据；本轮正式账号页面只保留脱敏文字结论。
 
 ## 评价
 
@@ -39,4 +41,4 @@
 - MEDIUM：0 个需要在本轮修改的明显问题。
 - LOW：管理员复杂表格建议保持桌面操作；前端 build 的大 chunk warning 可在未来维护时按路由拆分，但不影响正确性。
 
-本轮没有重新装修 UI，也没有修改生产业务代码。正式真实姓名不出现在截图或提交文件；账号首次改密和完整真人操作仍由用户最终验收确认。
+本轮没有重新装修 UI，也没有修改生产业务代码。实际桌面与正式库流程结论为 `PASS_WITH_NOTES`，BLOCKER/HIGH 为 0；正式姓名不出现在截图或提交文件。用户人工验收仍为 `FINAL_MANUAL_ACCEPTANCE_PENDING`。

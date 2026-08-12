@@ -31,9 +31,9 @@ PR #31 已由用户明确决定 ordinary merge，merge commit 为 `c79b7a6f93e32
 - 正式库经仓库外备份后由 V11/27 表正规迁移至 V14/35 表；最终保留 378 道 PUBLISHED 题、3 位教师、6 位学生、2 个班级和 6 条 ACTIVE 任课关系，机器事务事实已清空。
 - 9 个正式账号均使用 BCrypt，恢复统一初始密码状态并启用首次改密；真实姓名、账号清单、备份与 AI Key 均只存在本机受控边界，Git 精确扫描为 0 命中。
 - 后端导入模板集成测试 1/1 PASS；`mvn -DskipTests package`、前端 type-check/build、`npm audit --omit=dev` 与 `git diff --check` 均通过，audit 为 0 vulnerabilities；build 保留大于 500 kB chunk 的已知 warning。
-- 后端→前端、前端→后端和双端重启三种顺序均验证 8081/8080、health 200、CORS 与正式库连接；IDE Run Configuration 已建立且由 Git ignore，桌面 IDE 手动点击因当前工具不可用未冒充 PASS。
+- 真实 IDEA `RikeTikuBackendApplication` 与 WebStorm `RIKE Frontend` 已分别点击 Run；四种 Run/Stop 顺序验证 8081/8080、health 200、CORS、Flyway V14 与正式库连接。旧 RIKE Node/Java orphan 是端口冲突根因，新增的受控脚本只按仓库路径和进程特征回收 RIKE 端口，拒绝停止无关进程。
 - 论文资料包含写作入口、功能—代码—技术映射、导入指南及可验证 XLSX、35 表结构参考、纯结构快照、SQL 示例、匿名截图索引、开发时间线、中期材料草稿和已核验参考文献。
-- 浏览器操作者巡检结论为 `PASS_WITH_NOTES`，BLOCKER/HIGH 为 0；Docker 因本机环境不可用记为 `SKIPPED_DOCKER_ENVIRONMENT`；Redis 明确为 `NOT ADOPTED BY DESIGN`。
+- 独立临时 Profile 的真实 Chrome 通过 CDP/Playwright 完成固定 URL 操作者巡检；代表性正式账号覆盖多角色、单角色教师和两个班级学生主链，1440/390 无溢出，console/page/request error 为 0，结论 `PASS_WITH_NOTES`，BLOCKER/HIGH 为 0。Docker 因本机环境不可用记为 `SKIPPED_DOCKER_ENVIRONMENT`；Redis 明确为 `NOT ADOPTED BY DESIGN`。
 
 ## PR #31 机器验证
 
