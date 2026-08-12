@@ -1,5 +1,7 @@
 # 管理员题库审核发布接口
 
+> 本文为历史阶段快照，当前项目状态请查看 [README](../README.md) 和 [开发状态](DEVELOPMENT_STATUS.md)。
+
 当前分支 `feat/admin-question-review` 在既有 V1–V6 表上提供管理员题目管理接口。所有接口均要求正常 `ROLE_ADMIN`；JWT、密码摘要和内部审计字段不会出现在响应中。
 
 ## 接口

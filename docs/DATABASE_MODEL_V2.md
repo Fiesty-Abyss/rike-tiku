@@ -1,6 +1,11 @@
-# 数据库模型 V2：题库、账号与教学组织
+# 数据库模型 V2：题库、账号、教学组织与 AI
 
-PR #30 新增 V14 四张 AI 配置/生成/评价/视觉缓存表，当前结构为 V1–V14、35 张业务表；V1–V13 未修改。V14 同时把现有 `ti_mu.nan_du` 检查约束调整为 1–5，以匹配生成与审核表单。
+- 更新时间：2026-08-12
+- 数据库：MySQL 8.4 / `rike_tiku`
+- 迁移版本：Flyway V1–V14
+- 业务表：35 张
+
+当前结构以 Flyway 为唯一事实来源。V14 新增四张 AI 配置、生成、评价与视觉缓存表，并把现有 `ti_mu.nan_du` 检查约束调整为 1–5，以匹配生成与审核表单。V1–V14 均为已执行迁移，不得修改。
 
 ## V14 AI 配置、生成、评价与视觉缓存
 
@@ -11,9 +16,9 @@ PR #30 新增 V14 四张 AI 配置/生成/评价/视觉缓存表，当前结构�
 | `ai_hou_xuan_ti_zhi_liang_ping_jia` | 一题一条质量事实；保存变式摘要、NONE/SUSPECTED_DUPLICATE、视觉使用、五项可空 0/1 评价、PENDING/APPROVED/REJECTED、审核人/耗时/评论。候选题本体继续复用 `ti_mu` |
 | `ai_shi_jue_shang_xia_wen` | 唯一绑定题目、附件 SHA 集、provider/model、Prompt 版本；只保存受控视觉 JSON 和 SUCCESS/FAILED 元数据，不保存原图 Base64、Prompt、原始模型响应或 Key |
 
-候选题只能写为 `ti_mu.lai_yuan_lei_xing=AI_GENERATED`、`fu_ti_mu_id=母题`、`zhuang_tai=PENDING`；人工 APPROVED 后才允许复用现有状态机进入 PUBLISHED。
+候选题本体继续写入 `ti_mu`，设置 `fu_ti_mu_id=母题`、`zhuang_tai=PENDING`，并通过 `ti_mu_lai_yuan.lai_yuan_lei_xing=AI_GENERATED` 保存来源事实；人工 APPROVED 后才允许复用现有状态机进入 PUBLISHED。
 
-PR #29 新增 V13 三张学生 AI 学习表，形成 V1–V13、31 张业务表；V1–V12 未修改。
+V13 新增三张学生 AI 学习表。它们已经纳入当前 V1–V14、35 张业务表基线。
 
 ## V13 学生 AI 学习表
 
@@ -25,7 +30,7 @@ PR #29 新增 V13 三张学生 AI 学习表，形成 V1–V13、31 张业务表�
 
 三张表不保存 API Key、JWT、system Prompt、Provider 原始响应、reasoning content、姓名、手机号或班级信息。学生正文仅为本人会话所需消息；Provider 调用元数据继续由 V12 脱敏日志记录。
 
-PR #28 新增 V12 `ai_diao_yong_ri_zhi` 脱敏 AI 调用日志表，当前结构为 V1–V12、28 张业务表。V1–V11 未修改；该表不保存 Prompt、模型输出、API Key、JWT、密码或完整题目。
+V12 新增 `ai_diao_yong_ri_zhi` 脱敏 AI 调用日志表。该表不保存 Prompt、模型输出、API Key、JWT、密码或完整题目。
 
 ## V12 AI 调用日志
 
@@ -41,14 +46,13 @@ PR #28 新增 V12 `ai_diao_yong_ri_zhi` 脱敏 AI 调用日志表，当前结构
 | `cuo_wu_dai_ma` | VARCHAR(64) | 受控 Provider 错误码，可空 |
 | `chuang_jian_shi_jian` | DATETIME(3) | 创建时间 |
 
-PR #27 当前分支在 V1–V10 之后新增 V11 `guan_li_cao_zuo_ri_zhi` 管理员高风险操作日志表，当前结构为 V1–V11、27 张业务表。本文前面的 V1–V10 说明保留为历史快照；V1–V10 不修改。
+V11 新增 `guan_li_cao_zuo_ri_zhi` 管理员高风险操作日志表。以下 V1–V10 字段字典保留为基础模型历史说明，不代表当前迁移终点。
 
-更新时间：2026-08-08
-设计基线：V3.0  
-数据库：MySQL 8.4 / `rike_tiku`  
-迁移版本：Flyway V1–V10
+## V1–V10 基础模型历史说明
 
-## 1. 范围和事实来源
+> 本节记录 V1–V10 阶段的基础字段与约束。当前迁移版本和表数以文首 V1–V14、35 张为准。
+
+### 1. 范围和事实来源
 
 本版在题库核心 V1 模型上增加账号、角色、学生/教师档案、班级、班级学生历史、教师—班级—科目三元任课关系、高频考点、师生私信及用户简介/头像字段。V10 后仍为 26 张业务表。
 
@@ -60,7 +64,7 @@ PR #21 不增加数据库结构。知识点掌握度是由 `lian_xi_hui_hua`、`
 
 PR #22 的 `V10__add_user_profile_fields.sql` 只向 `yong_hu` 增加 500 字简介、头像 MIME、MEDIUMBLOB 原始图片和头像更新时间。没有新增表，业务表仍为 26 张；头像不保存文件名或 Base64 字符串。
 
-## 2. 总体关系
+### 2. 总体关系
 
 - `yong_hu` 与 `jiao_se` 通过 `yong_hu_jiao_se` 构成多对多，同一账号可拥有多个角色。
 - 一个 `yong_hu` 最多对应一份 `xue_sheng_dang_an`，也最多对应一份 `jiao_shi_dang_an`。同一账号在被授权时可以同时拥有不同类型档案。
@@ -68,9 +72,9 @@ PR #22 的 `V10__add_user_profile_fields.sql` 只向 `yong_hu` 增加 500 字简
 - `ren_ke_guan_xi` 直接表达 `jiao_shi_id + ban_ji_id + ke_mu_id`，避免拆成教师—班级和教师—科目后产生组合歧义。
 - `ti_mu_shen_he_ji_lu.shen_he_ren_id` 可空并外键关联 `yong_hu`。系统提交或历史导入可以没有人工审核人；已有人工审核历史由逻辑删除和 `ON DELETE RESTRICT` 保留。
 
-## 3. 字段字典
+### 3. 字段字典
 
-### 3.1 `yong_hu` 用户账号
+#### 3.1 `yong_hu` 用户账号
 
 | 字段 | 类型 | 空值/默认 | 说明 |
 |---|---|---|---|
@@ -91,7 +95,7 @@ PR #22 的 `V10__add_user_profile_fields.sql` 只向 `yong_hu` 增加 500 字简
 
 关键约束：`UK(yong_hu_ming)`；状态和布尔检查；`IDX(zhang_hao_zhuang_tai, yi_shan_chu)`。
 
-### 3.2 `jiao_se` 系统角色
+#### 3.2 `jiao_se` 系统角色
 
 | 字段 | 类型 | 空值/默认 | 说明 |
 |---|---|---|---|
@@ -105,7 +109,7 @@ PR #22 的 `V10__add_user_profile_fields.sql` 只向 `yong_hu` 增加 500 字简
 
 V5只初始化三种基础角色，不初始化用户或统一初始密码。
 
-### 3.3 `yong_hu_jiao_se` 用户角色关联
+#### 3.3 `yong_hu_jiao_se` 用户角色关联
 
 | 字段 | 类型 | 空值/默认 | 说明 |
 |---|---|---|---|
@@ -118,7 +122,7 @@ V5只初始化三种基础角色，不初始化用户或统一初始密码。
 
 关键约束：`UK(yong_hu_id, jiao_se_id)`；两个外键均为 `ON DELETE RESTRICT`。
 
-### 3.4 `xue_sheng_dang_an` 学生档案
+#### 3.4 `xue_sheng_dang_an` 学生档案
 
 | 字段 | 类型 | 空值/默认 | 说明 |
 |---|---|---|---|
@@ -134,7 +138,7 @@ V5只初始化三种基础角色，不初始化用户或统一初始密码。
 
 不保存身份证、家庭住址、手机号等当前业务不需要的信息。
 
-### 3.5 `jiao_shi_dang_an` 教师档案
+#### 3.5 `jiao_shi_dang_an` 教师档案
 
 | 字段 | 类型 | 空值/默认 | 说明 |
 |---|---|---|---|
@@ -148,7 +152,7 @@ V5只初始化三种基础角色，不初始化用户或统一初始密码。
 | `geng_xin_shi_jian` | DATETIME(3) | 自动更新 | 更新审计 |
 | `yi_shan_chu` | TINYINT | 0 | 逻辑删除 |
 
-### 3.6 `ban_ji` 班级
+#### 3.6 `ban_ji` 班级
 
 | 字段 | 类型 | 空值/默认 | 说明 |
 |---|---|---|---|
@@ -162,7 +166,7 @@ V5只初始化三种基础角色，不初始化用户或统一初始密码。
 | `geng_xin_shi_jian` | DATETIME(3) | 自动更新 | 更新审计 |
 | `yi_shan_chu` | TINYINT | 0 | 逻辑删除 |
 
-### 3.7 `ban_ji_xue_sheng` 班级学生历史
+#### 3.7 `ban_ji_xue_sheng` 班级学生历史
 
 | 字段 | 类型 | 空值/默认 | 说明 |
 |---|---|---|---|
@@ -185,7 +189,7 @@ V3.0原建议 `UK(ban_ji_id, xue_sheng_id)` 无法同时允许“退出后保留
 
 这是对当前任务历史保留约束的必要细化，不改变业务含义。
 
-### 3.8 `ren_ke_guan_xi` 三元任课关系
+#### 3.8 `ren_ke_guan_xi` 三元任课关系
 
 | 字段 | 类型 | 空值/默认 | 说明 |
 |---|---|---|---|
@@ -202,7 +206,7 @@ V3.0原建议 `UK(ban_ji_id, xue_sheng_id)` 无法同时允许“退出后保留
 
 关键约束：`UK(jiao_shi_id, ban_ji_id, ke_mu_id)`；`IDX(ban_ji_id, ke_mu_id, zhuang_tai)`。教师现实职务、姓名或前端入口均不能替代这条关系授予数据权限。
 
-### 3.9 `gao_pin_kao_dian` 高频考点（V8）
+#### 3.9 `gao_pin_kao_dian` 高频考点（V8）
 
 | 字段 | 类型 | 空值/默认 | 说明 |
 |---|---|---|---|
@@ -221,7 +225,7 @@ V3.0原建议 `UK(ban_ji_id, xue_sheng_id)` 无法同时允许“退出后保留
 
 V8 表使用外键和状态检查，不引入附件、富文本、AI 或审核流。教师只能维护自己的 ACTIVE 任课关系；学生端由有效学生档案、ACTIVE 主班级和所选科目反推任课关系，只返回 ACTIVE 内容。
 
-### 3.10 `si_xin_hui_hua` 私信会话（V9）
+#### 3.10 `si_xin_hui_hua` 私信会话（V9）
 
 | 字段 | 类型 | 说明 |
 |---|---|---|
@@ -235,7 +239,7 @@ V8 表使用外键和状态检查，不引入附件、富文本、AI 或审核�
 
 有效会话唯一约束为 `ren_ke_guan_xi_id + xue_sheng_id`。任课关系停用或学生调班不删除会话，只停止新发送。
 
-### 3.11 `si_xin_xiao_xi` 私信消息（V9）
+#### 3.11 `si_xin_xiao_xi` 私信消息（V9）
 
 | 字段 | 类型 | 说明 |
 |---|---|---|
@@ -249,26 +253,26 @@ V8 表使用外键和状态检查，不引入附件、富文本、AI 或审核�
 
 V9 不引入图片、文件、群聊、撤回或管理员审计。两表外键均使用 `ON DELETE RESTRICT`，历史数据不会因教学关系失效而物理删除。
 
-## 4. 删除和历史策略
+### 4. 删除和历史策略
 
 - 核心主体使用逻辑删除或状态停用，不级联物理删除历史。
 - 所有本轮外键使用 `ON DELETE RESTRICT`。
 - 题目审核人允许为空，适配系统提交和旧数据；填写后必须引用真实用户。
 - 审核人逻辑删除不会破坏审核记录；若尝试物理删除被引用用户，数据库拒绝。
 
-## 5. 密码和账号治理
+### 5. 密码和账号治理
 
 - 数据库只保存密码摘要，`mi_ma_zhai_yao` 不保存明文。
 - 本轮没有创建任何真实用户，也没有统一初始密码。
 - 未来导入时每个账号生成独立随机初始密码，首次登录强制修改。
 - 角色由后端根据账号关系读取，前端入口不能授予角色。
 
-## 6. MyBatis-Plus最小映射
+### 6. MyBatis-Plus 最小映射
 
 本轮只为数据库测试创建 `YongHu`、`JiaoSe`、`BanJi`、`BanJiXueSheng`、`RenKeGuanXi` 及对应Mapper。学生/教师档案等表通过明确SQL验证，未提前创建空DTO、Service或CRUD接口。
 
 `ShenJiZiDuanTianChongChuLiQi` 验证创建/更新时间自动填充；`YongHu` 的 `@TableLogic` 验证逻辑删除。
 
-## 7. 已验证约束
+### 7. 已验证约束
 
 自动化测试覆盖：V5/V6、空库V1–V6、原题库回归、用户名/角色码/学号/工号/班级码唯一、多角色、重复关联拒绝、每用户单份档案、单一有效主班级、班级历史、任课三元唯一、不同班级同科和同班不同科、无关系不授权、审核人外键、自动填充、逻辑删除和事务回滚。
