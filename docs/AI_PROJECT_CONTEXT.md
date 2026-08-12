@@ -12,13 +12,13 @@
 
 ## 当前事实
 
-- PR #30 已 ordinary merge，merge commit 为 `d67ebc83bf0b8a2fbd889290d5a0f78a27d7640e`。当前分支为 PR #31 `chore/final-ai-integration-verification`。
+- PR #31 已 ordinary merge，merge commit 为 `c79b7a6f93e32509989282995419bbaf64666182`。当前分支为 PR #32 `chore/final-local-production-thesis-package`。
 - Flyway 为 V1–V14，共 35 张业务表；V1–V14 不得修改，没有 V15。
 - 非 AI A 层、Provider Core、学生 AI 主链、管理员 AI 配置、Vision 代码链、AI 候选题和人工审核均为 `DONE_VERIFIED`。
 - PR #31 全量自动化、Demo、真实 DeepSeek、权限与降级、机器浏览器和文档封板为 `AUTO_FINAL_VERIFICATION_PASS`。
 - 真实 `deepseek-v4-flash` smoke、学生错因、当前题答疑和候选生成均为 PASS。
 - 真实 GLM 第一次窗口为 429，第二个最终窗口返回完整 JSON 代码围栏；严格 Parser 已修复并通过全量，但没有第三次真实调用，状态为 `REAL_GLM_VISION_NOT_REVERIFIED_AFTER_WRAPPER_FIX`。
-- 当前唯一待办是用户最终人工验收，状态为 `FINAL_MANUAL_ACCEPTANCE_PENDING`。用户确认前不合并 PR #31，不创建 PR #32。
+- PR #32 只处理本机正式环境、论文资料和最终维护；核心业务不再扩张。用户最终人工验收仍为 `FINAL_MANUAL_ACCEPTANCE_PENDING`。
 
 ## 事实优先级
 
