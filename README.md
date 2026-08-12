@@ -17,13 +17,13 @@
 | 真实 DeepSeek | `PASS` |
 | 管理员 AI 模型配置 | `DONE_VERIFIED` |
 | GLM Vision 代码链 | `DONE_VERIFIED` |
-| 真实 GLM Smoke | `REAL_GLM_VISION_SMOKE_FAIL_429` |
+| 真实 GLM Smoke | `REAL_GLM_VISION_NOT_REVERIFIED_AFTER_WRAPPER_FIX` |
 | AI 候选变式题 | `DONE_VERIFIED` |
 | 教师、管理员人工审核 | `DONE_VERIFIED` |
-| 最终全量回归 | `PR #31 PENDING` |
-| 最终用户人工验收 | `PR #31 PENDING` |
+| 最终机器集成验证 | `AUTO_FINAL_VERIFICATION_PASS` |
+| 最终用户人工验收 | `FINAL_MANUAL_ACCEPTANCE_PENDING` |
 
-这里的 `DONE_VERIFIED` 表示对应开发阶段的受影响专项与必要构建已经通过。完整全量回归、最终真实全链路和最后一次用户人工验收仍由 PR #31 完成，因此当前不能表述为百分之百最终验收完成。详细证据见 [开发状态](docs/DEVELOPMENT_STATUS.md)。
+这里的 `DONE_VERIFIED` 表示对应业务实现与专项验证已通过。PR #31 已完成全量自动化、Demo、真实 DeepSeek、权限与降级、机器浏览器和文档统一；真实 GLM 的第二次受控调用暴露了完整 JSON 代码围栏兼容问题，Parser 已修复并通过全量自动化，但遵守两次真实调用上限没有继续请求，因此不能写成真实 GLM PASS。最终用户人工验收仍待本人完成。详细事实见 [开发状态](docs/DEVELOPMENT_STATUS.md) 与 [最终实验事实](docs/AI_FINAL_EXPERIMENT_RESULTS.md)。
 
 ## 核心学习闭环
 
@@ -191,15 +191,13 @@ scripts/             Demo 环境与验收启动脚本
 
 ## 测试与验收
 
-- PR #29 的真实 `deepseek-v4-flash` smoke 为 PASS，严格 JSON Parser 与日志脱敏均通过。
-- PR #30 主实现专项为后端 54/54、前端 12/12；集中修正专项为后端 38/38、前端 32/32。
-- PR #30 的 package、type-check、build 与 `git diff --check` 均为 PASS。
-- 真实 GLM 请求到达官方 endpoint，但最终返回 HTTP 429，状态为 `REAL_GLM_VISION_SMOKE_FAIL_429`，不能记为 PASS。
-- 不把不同轮次、可能重叠的测试数相加成虚假总数。
-- 完整全量回归、Demo、机器浏览器和最终用户人工验收由 PR #31 执行。
+- 后端 `mvn clean test`：173 tests，0 failures，0 errors，3 skipped。跳过项是两个无 Key 的真实 Provider 条件测试和一个 Windows symbolic-link assumption；真实 Provider 已另行单独执行。
+- 前端 `npm test -- --run`：58 files、190 tests，全部通过；type-check、build、`npm audit --omit=dev` 均通过，audit 为 0 vulnerabilities。build 保留已知的单个大于 500 kB chunk warning。
+- `mvn -DskipTests package` 通过并生成可执行 JAR；随机临时 MySQL 完整执行 14 个迁移并验证 35 张业务表。
+- `rike_tiku_demo` 已完成 reset、V1–V14、seed、validate 与 smoke，固定题量 378。机器浏览器覆盖 25 条路由，0 console errors、0 page errors、0 failed requests、0 horizontal overflow routes。
+- PR #31 真实 `deepseek-v4-flash` smoke、学生错因、当前题答疑和 1 道候选生成均通过。真实 GLM 没有记为 PASS，详情见 [最终实验事实](docs/AI_FINAL_EXPERIMENT_RESULTS.md)。
+- 最终人工验收环境已准备，清单见 [最终人工验收清单](docs/FINAL_MANUAL_ACCEPTANCE_CHECKLIST.md)。
 
-## 最终阶段
+## 最终封板
 
-下一阶段唯一任务是 PR #31 `chore/final-ai-integration-verification`。
-
-范围包括全量自动化回归、Flyway、Demo、DeepSeek、GLM、AI 配置后台、学生错因、当前题聊天、候选题生成审核、权限与降级验证、全站机器浏览器、一次最终用户人工验收，以及论文、README 和答辩口径统一。PR #31 原则上不新增业务功能，只处理集成缺陷、测试问题与最终封板。
+PR #31 `chore/final-ai-integration-verification` 的机器阶段为 `AUTO_FINAL_VERIFICATION_PASS`。当前只等待用户按 25 项清单完成真实 CAPTCHA 人工验收；在用户确认前，状态保持 `FINAL_MANUAL_ACCEPTANCE_PENDING`，PR #31 不合并。
