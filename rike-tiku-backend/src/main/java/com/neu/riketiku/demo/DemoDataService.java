@@ -61,11 +61,11 @@ public class DemoDataService {
         guardDatabaseName(database);
         int version = jdbc.queryForObject("SELECT MAX(CAST(version AS UNSIGNED)) FROM flyway_schema_history WHERE success=1", Integer.class);
         int tableCount = jdbc.queryForObject("SELECT COUNT(*) FROM information_schema.tables WHERE table_schema=DATABASE() AND table_name<>'flyway_schema_history'", Integer.class);
-        if (version != 14 || tableCount != 35) {
-            throw new IllegalStateException("演示库必须完整执行V1-V14且包含35张业务表，当前V" + version + "，" + tableCount + "张");
+        if (version != 19 || tableCount != 39) {
+            throw new IllegalStateException("演示库必须完整执行V1-V19且包含39张业务表，当前V" + version + "，" + tableCount + "张");
         }
         expect("管理员操作日志表", 1, count("SELECT COUNT(*) FROM information_schema.tables WHERE table_schema=DATABASE() AND table_name='guan_li_cao_zuo_ri_zhi'"));
-        System.out.println("演示数据库结构校验通过: " + database + "，V1-V14，35张业务表");
+        System.out.println("演示数据库结构校验通过: " + database + "，V1-V19，39张业务表");
     }
 
     @Transactional
@@ -607,7 +607,8 @@ public class DemoDataService {
 
     private void cleanInternal() {
         guardDatabaseName(currentDatabase());
-        jdbc.query("SELECT f.xiang_dui_lu_jing FROM ti_mu_fu_jian f JOIN ti_mu q ON q.id=f.ti_mu_id WHERE q.ti_gan LIKE '【演示】%' OR q.ti_gan LIKE '【专题演示】%'", (rs, row) -> rs.getString(1)).forEach(attachmentStorage::delete);
+        jdbc.query("SELECT DISTINCT f.xiang_dui_lu_jing FROM ti_mu_fu_jian f JOIN ti_mu q ON q.id=f.ti_mu_id WHERE q.ti_gan LIKE '【演示】%' OR q.ti_gan LIKE '【专题演示】%'", (rs, row) -> rs.getString(1))
+                .forEach(this::deleteDemoAttachmentIfUnreferencedOutsideDemo);
         jdbc.update("DELETE m FROM si_xin_xiao_xi m JOIN si_xin_hui_hua h ON h.id=m.hui_hua_id JOIN xue_sheng_dang_an s ON s.id=h.xue_sheng_id WHERE s.xue_hao LIKE 'DEMO_%'");
         jdbc.update("DELETE h FROM si_xin_hui_hua h JOIN xue_sheng_dang_an s ON s.id=h.xue_sheng_id WHERE s.xue_hao LIKE 'DEMO_%'");
         jdbc.update("DELETE w FROM cuo_ti_ji_lu w LEFT JOIN xue_sheng_dang_an s ON s.id=w.xue_sheng_id LEFT JOIN ti_mu q ON q.id=w.ti_mu_id WHERE s.xue_hao LIKE 'DEMO_%' OR q.ti_gan LIKE '【演示】%'");
@@ -629,6 +630,16 @@ public class DemoDataService {
         demoKnowledgePaths().stream()
                 .sorted(Comparator.comparingInt(DemoDataService::pathDepth).reversed())
                 .forEach(path -> jdbc.update("DELETE FROM zhi_shi_dian WHERE wan_zheng_lu_jing=? AND id>9", path));
+    }
+
+    private void deleteDemoAttachmentIfUnreferencedOutsideDemo(String relativePath) {
+        Integer outsideReferences = jdbc.queryForObject("""
+                SELECT COUNT(*) FROM ti_mu_fu_jian f
+                JOIN ti_mu q ON q.id=f.ti_mu_id
+                WHERE f.xiang_dui_lu_jing=? AND f.yi_shan_chu=0 AND f.zhuang_tai='ACTIVE'
+                  AND q.ti_gan NOT LIKE '【演示】%' AND q.ti_gan NOT LIKE '【专题演示】%'
+                """, Integer.class, relativePath);
+        if (outsideReferences == null || outsideReferences == 0) attachmentStorage.delete(relativePath);
     }
 
     private String currentDatabase() {

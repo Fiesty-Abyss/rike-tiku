@@ -6,6 +6,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "docs" / "DATABASE_SCHEMA_REFERENCE.md"
+SCHEMA = os.getenv("RIKE_SCHEMA_REFERENCE_DATABASE", "rike_tiku_demo")
+LATEST = 19
 
 GROUPS = {
     "Authentication": {"yong_hu", "jiao_se", "yong_hu_jiao_se"},
@@ -17,7 +19,10 @@ GROUPS = {
     "Audit": {"guan_li_cao_zuo_ri_zhi"},
     "AI Provider": {"ai_diao_yong_ri_zhi", "ai_mo_xing_pei_zhi"},
     "Student AI": {"ai_cuo_ti_fen_xi", "ai_hui_hua", "ai_xiao_xi"},
+    "Student AI variants": {"ai_xue_sheng_bian_shi_shi_li"},
     "AI generation / vision": {"ai_sheng_cheng_ren_wu", "ai_hou_xuan_ti_zhi_liang_ping_jia", "ai_shi_jue_shang_xia_wen"},
+    "Account recovery": {"mi_ma_chong_zhi_shen_qing"},
+    "Paper": {"shi_juan", "shi_juan_ti_mu"},
 }
 
 PURPOSE = {
@@ -34,6 +39,8 @@ PURPOSE = {
     "ai_mo_xing_pei_zhi": "本地 AI Provider/模型配置", "ai_cuo_ti_fen_xi": "错题结构化 AI 分析",
     "ai_hui_hua": "当前题 AI 会话", "ai_xiao_xi": "当前题 AI 消息", "ai_sheng_cheng_ren_wu": "候选变式题生成任务",
     "ai_hou_xuan_ti_zhi_liang_ping_jia": "候选题人工质量评价", "ai_shi_jue_shang_xia_wen": "受控视觉上下文缓存",
+    "ai_xue_sheng_bian_shi_shi_li": "绑定答题事实的学生结构化变式", "mi_ma_chong_zhi_shen_qing": "匿名密码恢复请求与处理事实",
+    "shi_juan": "教师冻结试卷", "shi_juan_ti_mu": "试卷题目顺序与分值",
 }
 
 MIGRATION = {
@@ -45,6 +52,7 @@ MIGRATION = {
     8: {"gao_pin_kao_dian"}, 9: {"si_xin_hui_hua", "si_xin_xiao_xi"}, 11: {"guan_li_cao_zuo_ri_zhi"},
     12: {"ai_diao_yong_ri_zhi"}, 13: {"ai_cuo_ti_fen_xi", "ai_hui_hua", "ai_xiao_xi"},
     14: {"ai_mo_xing_pei_zhi", "ai_sheng_cheng_ren_wu", "ai_hou_xuan_ti_zhi_liang_ping_jia", "ai_shi_jue_shang_xia_wen"},
+    17: {"mi_ma_chong_zhi_shen_qing"}, 18: {"shi_juan", "shi_juan_ti_mu"}, 19: {"ai_xue_sheng_bian_shi_shi_li"},
 }
 
 
@@ -52,7 +60,7 @@ def migration(table):
     for version, tables in MIGRATION.items():
         if table in tables:
             return f"V{version}"
-    return "V1–V14 演进"
+    return f"V1–V{LATEST} 演进"
 
 
 def escape(value):
@@ -73,24 +81,24 @@ def mysql_rows(query, fieldnames):
 
 
 columns = defaultdict(list)
-for row in mysql_rows("""
+for row in mysql_rows(f"""
     SELECT table_name,column_name,column_type,is_nullable,column_key,extra,
            REPLACE(REPLACE(COALESCE(column_comment,''),'\\t',' '),'\\n',' '),ordinal_position
-    FROM information_schema.columns WHERE table_schema='rike_tiku' AND table_name<>'flyway_schema_history'
+    FROM information_schema.columns WHERE table_schema='{SCHEMA}' AND table_name<>'flyway_schema_history'
     ORDER BY table_name,ordinal_position
 """, ["table_name", "column_name", "column_type", "is_nullable", "column_key", "extra", "column_comment", "ordinal_position"]):
     columns[row["table_name"]].append(row)
 
 constraints = defaultdict(list)
-for row in mysql_rows("""
+for row in mysql_rows(f"""
     SELECT table_name,constraint_name,constraint_type FROM information_schema.table_constraints
-    WHERE table_schema='rike_tiku' AND table_name<>'flyway_schema_history' ORDER BY table_name,constraint_name
+    WHERE table_schema='{SCHEMA}' AND table_name<>'flyway_schema_history' ORDER BY table_name,constraint_name
 """, ["table_name", "constraint_name", "constraint_type"]):
     constraints[row["table_name"]].append(f'{row["constraint_type"]}:{row["constraint_name"]}')
 
 lines = [
-    "# RIKE V14 数据库结构参考", "",
-    "> 本文由 `information_schema` 只读生成，校验对象为 Flyway V1–V14 的 35 张业务表。字段与约束以迁移脚本为准；`database/schema_snapshot_v14.sql` 仅是便于查阅的纯结构快照，不能替代 Flyway。", "",
+    f"# RIKE V{LATEST} 数据库结构参考", "",
+    f"> 本文由 `information_schema` 只读生成，校验对象为隔离库 `{SCHEMA}` 的 Flyway V1–V{LATEST} 业务表。字段与约束以迁移脚本为准；`database/schema_snapshot_v{LATEST}.sql` 仅是便于查阅的纯结构快照，不能替代 Flyway。", "",
     "## 总体约定", "",
     "- MySQL 8.4，默认 `utf8mb4`。", "- 业务主键均为 `BIGINT` 自增标识；关系约束和状态枚举由外键、唯一索引、Check 与服务层共同维护。",
     "- `yi_shan_chu` 为软删除标识时，查询必须同时考虑状态字段。AI Key 只存在本地配置表，API/日志不得回显。", "",

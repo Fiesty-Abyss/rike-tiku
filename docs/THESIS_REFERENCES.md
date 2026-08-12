@@ -32,6 +32,8 @@
 17. 智谱 AI. GLM-4.6V-Flash[EB/OL]. [https://docs.bigmodel.cn/cn/guide/models/free/glm-4.6v-flash](https://docs.bigmodel.cn/cn/guide/models/free/glm-4.6v-flash)。用于图像输入、文本输出和 thinking 开关契约。
 18. SPRING. Spring Boot container images[EB/OL]. [https://docs.spring.io/spring-boot/reference/packaging/container-images/](https://docs.spring.io/spring-boot/reference/packaging/container-images/)。用于可选容器化调研；当前本机交付不依赖 Docker。
 19. ORACLE. MySQL official image[EB/OL]. [https://hub.docker.com/_/mysql](https://hub.docker.com/_/mysql)。用于 MySQL 8.4 容器镜像调研；当前本机正式库仍使用现有 MySQL。
+20. DEEPSEEK. Thinking mode[EB/OL]. [https://api-docs.deepseek.com/guides/thinking_mode](https://api-docs.deepseek.com/guides/thinking_mode)。用于 `thinking`、`reasoning_effort` 与 reasoning content 的受控处理。
+21. 智谱 AI. Web Search[EB/OL]. [https://docs.bigmodel.cn/cn/guide/tools/web-search](https://docs.bigmodel.cn/cn/guide/tools/web-search)。用于结构化搜索请求、引擎选择与来源结果字段。
 
 ## 使用原则
 
