@@ -1,5 +1,7 @@
 # 管理员高风险操作日志
 
+> 本文包含 PR #27 历史实现与验收口径，当前项目状态请查看 [README](../README.md) 和 [开发状态](DEVELOPMENT_STATUS.md)。
+
 PR #27 在不修改 V1–V10 的前提下新增 Flyway V11：`guan_li_cao_zuo_ri_zhi`。
 
 ## 记录内容
