@@ -4,7 +4,7 @@
 
 ## 当前状态
 
-当前实现基线为 PR #30，代码已经通过第二次独立审查，获准 ordinary merge。生产代码审查 HEAD 为 `509f52ed08633801ec18cc2dce576a320357a08c`；合并前只允许整理 README、当前事实文档和仓库元数据。
+PR #30 已 ordinary merge，merge commit 为 `d67ebc83bf0b8a2fbd889290d5a0f78a27d7640e`。当前阶段为 PR #31 `chore/final-ai-integration-verification`，只执行最终集成、全量回归、Demo、真实 Provider、机器浏览器、文档与人工验收准备，原则上不新增业务功能。
 
 | 范围 | 状态 |
 | --- | --- |
@@ -15,16 +15,30 @@
 | 候选题生成、PENDING 审核与质量评价 | `DONE_VERIFIED` |
 | Vision 实现 | `DONE_VERIFIED` |
 | 真实 DeepSeek | `PASS` |
-| 真实 GLM | `REAL_GLM_VISION_SMOKE_FAIL_429` |
-| 最终集成 | `PR #31 PENDING` |
-| 最终用户人工验收 | `PR #31 PENDING` |
+| 真实 GLM | `REAL_GLM_VISION_NOT_REVERIFIED_AFTER_WRAPPER_FIX` |
+| 最终机器集成 | `AUTO_FINAL_VERIFICATION_PASS` |
+| 最终用户人工验收 | `FINAL_MANUAL_ACCEPTANCE_PENDING` |
 
 - 架构保持前后端分离的模块化单体，不使用微服务。
 - Flyway 为 V1–V14，共 35 张业务表；V1–V14 均为已执行迁移，不得修改。
 - 正式答案与 STANDARD 标准解析是权威事实，AI 不能覆盖。
 - DeepSeek 负责文本推理，GLM-4.6V-Flash 只提供受控 `UNTRUSTED_VISION_CONTEXT`。
 - 学生端统一显示“RIKE 理科学习助手”，不显示 Provider、模型代码、API 地址、Key 或 Token。
-- 最终全量、Demo、机器浏览器、真实 DeepSeek 与 GLM 全链路及一次用户人工验收尚未执行，不能写为最终 PASS。
+- PR #31 已完成全量自动化、Demo、真实 DeepSeek、权限与降级、机器浏览器和文档统一。用户人工验收尚未执行，不能写为最终封板 PASS。
+
+## PR #31 机器验证
+
+- 后端 `mvn clean test` 为 173 tests、0 failures、0 errors、3 skipped。两个真实 Provider 测试因全量阶段未注入 Key而按条件跳过，另一个是 Windows symbolic-link assumption；真实 Provider 另行单独执行。
+- 前端全量为 58 files、190 tests、0 failures；type-check、build 和 `npm audit --omit=dev` 通过，audit 为 0 vulnerabilities。build 保留大于 500 kB chunk 的已知 warning。
+- 随机临时 MySQL 完整迁移 V1–V14，验证 35 张业务表；`mvn -DskipTests package` 生成可执行 JAR。
+- `rike_tiku_demo` 已完成 reset、seed、validate 和 smoke。三科各 120 道 Demo360、每科 6 道 Topic18，总计 378 道；PHYSICS-S1 图片和 hash 正常。
+- 真实 `deepseek-v4-flash` smoke 为 1/1 PASS、0 skipped。文本 1008 ms、22/11 Token；结构化 JSON 1722 ms、400/110 Token，Parser 与 V12 脱敏通过。
+- Demo 真实学生错因分析为 `CONCEPT_ERROR`，2911 ms，五字段齐全；第二次读取 5 ms 命中缓存且没有新增收费调用。当前题真实答疑 3014 ms；身份、无关请求与修改 STANDARD 由代码 guard 控制。
+- 真实 DeepSeek 生成 1 道候选，2318 ms，只进入 PENDING；机器审核验证 APPROVED 状态机，不计作用户人工质量评价。
+- 真实 GLM 第一次窗口为 429；第二个最终窗口返回完整 JSON 代码围栏，旧 Parser 拒绝。Parser 已按严格完整围栏规则修复并通过全量自动化，遵守两次窗口上限未第三次调用，状态为 `REAL_GLM_VISION_NOT_REVERIFIED_AFTER_WRAPPER_FIX`。
+- 权限专项确认学生所有权、教师跨科、三角色路由和学生私聊边界；未提交练习响应不含 correctAnswer 或 standardAnalysis。
+- 机器浏览器覆盖 25 条路由，0 console errors、0 page errors、0 failed requests、0 horizontal overflow routes。证据见 [PR #31 最终机器证据](evidence/pr31-final/README.md)。
+- 正式 `rike_tiku` 仅只读核对，当前为 V11、27 张业务表，没有 Demo 账号或 Demo 题；未迁移、未写入。最终验收只使用 `rike_tiku_demo`。
 
 ## PR #30 验证
 
@@ -48,7 +62,7 @@
 - package、type-check、build 与 `git diff --check` PASS。
 - 未运行 PR #31 全量、Demo reset/seed、全站机器浏览器或用户人工验收。
 
-真实 GLM 单图请求已经到达官方 endpoint。Provider 按规则最多重试一次后仍返回 HTTP 429，状态保持 `REAL_GLM_VISION_SMOKE_FAIL_429`，没有记为 PASS，也没有继续重复请求。
+PR #30 的真实 GLM 历史结果为 HTTP 429。本文件顶部的 PR #31 结果是后续事实，不覆盖这条历史记录。
 
 ## 当前业务能力
 
@@ -83,8 +97,6 @@ AI 主链已经覆盖统一 Provider、Fake/Stub、DeepSeek、脱敏调用日志
 - V11 新增管理员操作日志，Demo360、Topic18、附件、Golden30 导入闭环与 RIKE Aqua Future 的测试和验收记录均保留为历史证据。
 - 原始审计过程和各轮机器、人工结论见 [V3.0 非 AI 完工审计](V3_NON_AI_COMPLETION_AUDIT.md)、[人工验收发现](MANUAL_ACCEPTANCE_FINDINGS.md) 与 [历史证据目录](evidence/)。
 
-## 下一阶段
+## 当前下一步
 
-唯一下一阶段为 PR #31 `chore/final-ai-integration-verification`。
-
-范围是全量自动化回归、Flyway、Demo、DeepSeek、GLM、AI 配置后台、学生错因、当前题聊天、候选题生成审核、权限、降级、全站机器浏览器、一次最终用户人工验收，以及论文、README 与答辩口径统一。原则上不新增业务功能，不新增 V15；只处理集成缺陷、BLOCKER/HIGH 安全问题、测试和文档封板。
+用户在 `http://localhost:18080` 按 [最终人工验收清单](FINAL_MANUAL_ACCEPTANCE_CHECKLIST.md) 完成一次真实 CAPTCHA 验收。用户确认前保持 `FINAL_MANUAL_ACCEPTANCE_PENDING`，Draft PR #31 不合并，也不创建 PR #32。

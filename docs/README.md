@@ -78,6 +78,11 @@
 
 ## Test / Acceptance
 
+- [PR #31 最终机器证据](evidence/pr31-final/README.md)
+- [最终人工验收清单](FINAL_MANUAL_ACCEPTANCE_CHECKLIST.md)
+- [AI 最终实验事实](AI_FINAL_EXPERIMENT_RESULTS.md)
+- [论文实现事实口径](THESIS_IMPLEMENTATION_FACTS.md)
+- [答辩事实与问答](DEFENSE_FACTS_AND_QA.md)
 - [人工验收清单](MANUAL_ACCEPTANCE_CHECKLIST.md)
 - [人工验收问题记录](MANUAL_ACCEPTANCE_FINDINGS.md)
 - [V3.0 非 AI 完工审计](V3_NON_AI_COMPLETION_AUDIT.md)
