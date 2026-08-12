@@ -12,7 +12,7 @@
 - 后端：Java 25、Spring Boot 4.1、Spring MVC、Spring Security、JWT、MyBatis-Plus、Flyway。
 - 前端：Vue 3、TypeScript、Vite、Element Plus、Pinia、Vue Router、Axios。
 - 数据库：MySQL 8.4，Flyway V1–V14，35 张业务表。
-- 测试：随机临时 MySQL 跑自动化；`rike_tiku_demo` 用于最终演示；正式 `rike_tiku` 不作为测试库。
+- 测试：随机临时 MySQL 跑自动化；`rike_tiku_demo` 用于匿名演示与论文截图；正式 `rike_tiku` 已在备份后迁移至 V14，仅用于用户本机正式运行，不作为自动化测试库。
 
 ## AI 架构
 

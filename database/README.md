@@ -12,12 +12,13 @@
 rike-tiku-backend/src/main/resources/db/migration/
 ```
 
-当前迁移为V1–V6。禁止修改已经执行的迁移，数据库升级必须新增版本。
+当前冻结迁移为 V1–V14，共 35 张业务表。禁止修改已经执行的迁移；PR #32 不新增 V15。
 
 ## 目录内容
 
 - `diagrams/rike_tiku_er.md`：便于论文和AI阅读的Mermaid ER图。
 - `schema/rike_tiku_schema.sql`：从真实本机数据库自动导出的无数据结构快照。
+- `schema_snapshot_v14.sql`：论文查阅用 V14 无数据结构快照；本机 AUTO_INCREMENT 计数已移除，且不包含账号、密码或 Key。
 
 结构快照不作为建表、恢复或升级入口，也不与Flyway维护两套独立DDL。每次结构迁移完成并验证后重新从真实数据库导出即可。
 

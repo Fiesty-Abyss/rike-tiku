@@ -1,6 +1,7 @@
 package com.neu.riketiku.xueshengguanli;
 
-import com.neu.riketiku.xueshengguanli.dto.StudentManagementDtos.PasswordResetResponse;
+import com.neu.riketiku.zhanghao.dto.AdminPasswordRecoveryDtos.BatchPasswordRecoveryRequest;
+import com.neu.riketiku.zhanghao.dto.AdminPasswordRecoveryDtos.PasswordRecoveryResponse;
 import com.neu.riketiku.xueshengguanli.dto.StudentManagementDtos.StudentCreateRequest;
 import com.neu.riketiku.xueshengguanli.dto.StudentManagementDtos.StudentCreateResponse;
 import com.neu.riketiku.xueshengguanli.dto.StudentManagementDtos.StudentDetailResponse;
@@ -67,8 +68,14 @@ public class StudentManagementController {
     }
 
     @PostMapping("/{id}/reset-password")
-    public ResponseEntity<PasswordResetResponse> resetPassword(@PathVariable Long id) {
+    public ResponseEntity<PasswordRecoveryResponse> resetPassword(@PathVariable Long id) {
         return noStore(service.resetPassword(id));
+    }
+
+    @PostMapping("/reset-passwords")
+    public ResponseEntity<PasswordRecoveryResponse> resetPasswords(
+            @Valid @RequestBody BatchPasswordRecoveryRequest request) {
+        return noStore(service.resetPasswords(request.ids()));
     }
 
     private <T> ResponseEntity<T> noStore(T body) {
