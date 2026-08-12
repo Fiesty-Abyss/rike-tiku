@@ -44,6 +44,9 @@ describe('公共门户首页', () => {
     expect(text).toContain('物理')
     expect(text).toContain('化学')
     expect(text).toContain('生物')
+    expect(text).toContain('力与运动')
+    expect(text).toContain('电磁与场')
+    expect(text).toContain('波与光学')
     expect(text).toContain('自动练习题360')
     expect(text).toContain('专题综合题18')
   })
@@ -55,6 +58,7 @@ describe('公共门户首页', () => {
     expect(text).not.toContain('工作节奏')
     expect(text).not.toContain('AI 智能答疑：后续能力规划')
     expect(text).not.toContain('NON-AI FOUNDATION')
+    expect(text).not.toContain('本科毕业设计')
   })
 
   it('统一登录 CTA 继续指向现有登录页', () => {

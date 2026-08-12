@@ -38,8 +38,12 @@ public class AiProviderService {
     }
 
     public AiModelResult generate(AiModelRequest request) {
+        return generate(request, null);
+    }
+
+    public AiModelResult generate(AiModelRequest request, Long safeConfigId) {
         long started = System.nanoTime();
-        AiRuntimeConfig runtime = runtime();
+        AiRuntimeConfig runtime = safeConfigId == null ? runtime() : runtimeConfigurations.text(safeConfigId);
         AiModelProvider active = null;
         try {
             active = activeProvider(runtime);
