@@ -26,7 +26,9 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
 
@@ -43,14 +45,17 @@ public class AiQuestionGenerationService {
     private final AiCandidateParser parser;
     private final QuestionContentHashService hashes;
     private final QuestionAdminService questions;
+    private final TransactionTemplate transactions;
     private final ObjectMapper mapper=new ObjectMapper();
 
     public AiQuestionGenerationService(JdbcTemplate jdbc,AiProviderService provider,
             AiRuntimeConfigurationService configurations,VisionContextService visionContexts,
             AiQuestionGenerationPromptFactory prompts,AiCandidateParser parser,
-            QuestionContentHashService hashes,QuestionAdminService questions){
+            QuestionContentHashService hashes,QuestionAdminService questions,
+            PlatformTransactionManager transactionManager){
         this.jdbc=jdbc;this.provider=provider;this.configurations=configurations;this.visionContexts=visionContexts;
         this.prompts=prompts;this.parser=parser;this.hashes=hashes;this.questions=questions;
+        this.transactions=new TransactionTemplate(transactionManager);
     }
 
     public AiQuestionGenerationDtos.Task generate(long actorId,String role,AiQuestionGenerationDtos.Generate command){
@@ -74,12 +79,15 @@ public class AiQuestionGenerationService {
             List<AiCandidateParser.Candidate> candidates=parser.parse(result.content(),command.count(),command.questionType(),
                     command.targetDifficulty(),new HashSet<>(command.knowledgePointIds()));
             List<Prepared> prepared=prepare(mother,candidates);
-            persist(taskId,actorId,prepared,vision.used());
-            jdbc.update("""
-                    UPDATE ai_sheng_cheng_ren_wu SET provider_dai_ma=?,model_dai_ma=?,zhuang_tai='SUCCESS',
-                      yi_sheng_cheng_shu_liang=?,shi_fou_shi_yong_shi_jue=?,hao_shi_hao_miao=?,wan_cheng_shi_jian=CURRENT_TIMESTAMP(3)
-                    WHERE id=?
-                    """,safe(result.providerCode()),safe(result.modelCode()),prepared.size(),vision.used(),elapsed(started),taskId);
+            long latency=elapsed(started);
+            transactions.executeWithoutResult(status->{
+                persist(taskId,actorId,prepared,vision.used());
+                jdbc.update("""
+                        UPDATE ai_sheng_cheng_ren_wu SET provider_dai_ma=?,model_dai_ma=?,zhuang_tai='SUCCESS',
+                          yi_sheng_cheng_shu_liang=?,shi_fou_shi_yong_shi_jue=?,hao_shi_hao_miao=?,wan_cheng_shi_jian=CURRENT_TIMESTAMP(3)
+                        WHERE id=?
+                        """,safe(result.providerCode()),safe(result.modelCode()),prepared.size(),vision.used(),latency,taskId);
+            });
             return task(taskId,actorId,actorRole);
         }catch(AiCandidateParser.InvalidCandidateException exception){markFailed(taskId,"INVALID_CANDIDATE_JSON",started);throw failEx("AI_CANDIDATE_INVALID","模型返回的候选题未通过严格校验",HttpStatus.SERVICE_UNAVAILABLE);}
         catch(AiVisionException exception){markFailed(taskId,safe(exception.getMessage()),started);throw failEx("AI_VISION_UNAVAILABLE","母题依赖图片且视觉上下文不可用，未生成候选题",HttpStatus.SERVICE_UNAVAILABLE);}
@@ -164,6 +172,16 @@ public class AiQuestionGenerationService {
                 JOIN ren_ke_guan_xi r ON r.jiao_shi_id=j.id AND r.ke_mu_id=q.ke_mu_id AND r.zhuang_tai='ACTIVE'
                 WHERE q.zhuang_tai='PUBLISHED' AND q.yi_shan_chu=0 ORDER BY q.id DESC LIMIT 200
                 """,(rs,row)->new AiQuestionGenerationDtos.MotherOption(rs.getLong(1),rs.getLong(2),rs.getString(3),rs.getString(4),rs.getString(5),rs.getInt(6)),actorId);
+    }
+
+    @Transactional(readOnly=true)
+    public List<AiQuestionGenerationDtos.KnowledgePointOption> knowledgePoints(long actorId,String role,long subjectId){
+        authorize(actorId,role.toUpperCase(Locale.ROOT),subjectId);
+        return jdbc.query("""
+                SELECT id,zhi_shi_dian_ming_cheng,wan_zheng_lu_jing
+                FROM zhi_shi_dian WHERE ke_mu_id=? AND zhuang_tai='ACTIVE' AND yi_shan_chu=0
+                ORDER BY wan_zheng_lu_jing,id
+                """,(rs,row)->new AiQuestionGenerationDtos.KnowledgePointOption(rs.getLong(1),rs.getString(2),rs.getString(3)),subjectId);
     }
 
     private List<Prepared> prepare(AiQuestionGenerationPromptFactory.Mother mother,List<AiCandidateParser.Candidate> candidates){

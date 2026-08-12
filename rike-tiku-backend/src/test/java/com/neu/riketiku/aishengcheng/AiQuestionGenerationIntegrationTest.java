@@ -76,14 +76,60 @@ class AiQuestionGenerationIntegrationTest extends AdminQuestionIntegrationTestSu
 
     @Test @Transactional
     void enforcesPublishedMotherAndTeacherSubjectScope(){
-        long teacher=user("teacher");long point=point();long published=mother("生物母题");long draft=mother("未发布母题");jdbc.update("UPDATE ti_mu SET zhuang_tai='DRAFT' WHERE id=?",draft);
+        long teacher=user("teacher");long point=point();long published=mother("物理母题");long draft=mother("未发布母题");jdbc.update("UPDATE ti_mu SET zhuang_tai='DRAFT' WHERE id=?",draft);
         assertThatThrownBy(()->service.generate(teacher,"TEACHER",request(published,point,"SCENARIO",1))).isInstanceOfSatisfying(RenZhengYeWuYiChang.class,e->assertThat(e.getStatus().value()).isEqualTo(403));
         assertThatThrownBy(()->service.generate(teacher,"TEACHER",request(draft,point,"SCENARIO",1))).isInstanceOfSatisfying(RenZhengYeWuYiChang.class,e->assertThat(e.getCode()).isEqualTo("AI_MOTHER_QUESTION_UNAVAILABLE"));
         jdbc.update("INSERT INTO jiao_shi_dang_an(yong_hu_id,gong_hao,xing_ming,zhuang_tai) VALUES (?,?,?,'ACTIVE')",teacher,"T"+teacher,"匿名教师");long teacherId=jdbc.queryForObject("SELECT LAST_INSERT_ID()",Long.class);
         jdbc.update("INSERT INTO ban_ji(ban_ji_bian_ma,ban_ji_ming_cheng,nian_ji,ru_xue_nian_fen) VALUES (?,?,?,2025)","AIG"+teacher,"AI测试班","高二");long classId=jdbc.queryForObject("SELECT LAST_INSERT_ID()",Long.class);
         jdbc.update("INSERT INTO ren_ke_guan_xi(jiao_shi_id,ban_ji_id,ke_mu_id,shi_fou_zhu_ren_ke,zhuang_tai,kai_shi_shi_jian) VALUES (?,?,1,0,'ACTIVE',CURRENT_TIMESTAMP(3))",teacherId,classId);
-        provider.answer(candidate("生物母题更换实验情境后的判断",point));
+        assertThat(service.knowledgePoints(teacher,"TEACHER",1)).extracting(AiQuestionGenerationDtos.KnowledgePointOption::id).contains(point);
+        long chemistryPoint=point(2);long chemistryMother=mother(2,"化学母题");
+        assertThatThrownBy(()->service.knowledgePoints(teacher,"TEACHER",2)).isInstanceOfSatisfying(RenZhengYeWuYiChang.class,e->assertThat(e.getStatus().value()).isEqualTo(403));
+        assertThatThrownBy(()->service.generate(teacher,"TEACHER",request(chemistryMother,chemistryPoint,"SCENARIO",1))).isInstanceOfSatisfying(RenZhengYeWuYiChang.class,e->assertThat(e.getStatus().value()).isEqualTo(403));
+        provider.answer(candidate("物理母题更换实验情境后的判断",point));
         assertThat(service.generate(teacher,"TEACHER",request(published,point,"SCENARIO",1)).status()).isEqualTo("SUCCESS");
+    }
+
+    @Test
+    void rollsBackWholeCandidateBatchWhenSecondQualityInsertFails(){
+        long admin=user("atomic");long point=point();long mother=mother("批次原子性母题");
+        String originalStem=jdbc.queryForObject("SELECT ti_gan FROM ti_mu WHERE id=?",String.class,mother);
+        String originalStandard=jdbc.queryForObject("SELECT jie_xi_nei_rong FROM ti_mu_jie_xi WHERE ti_mu_id=? AND jie_xi_lei_xing='STANDARD'",String.class,mother);
+        Long taskId=null;
+        jdbc.execute("DROP TRIGGER IF EXISTS trg_ai_candidate_atomic_failure");
+        jdbc.execute("""
+                CREATE TRIGGER trg_ai_candidate_atomic_failure
+                BEFORE INSERT ON ai_hou_xuan_ti_zhi_liang_ping_jia FOR EACH ROW
+                BEGIN
+                  IF NEW.bian_shi_zhai_yao='FORCE_ATOMIC_FAILURE' THEN
+                    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='forced second candidate failure';
+                  END IF;
+                END
+                """);
+        try{
+            provider.answer(candidateBatch(point));
+            var request=request(mother,point,"COMBINED",2);
+            assertThatThrownBy(()->service.generate(admin,"ADMIN",request))
+                    .isInstanceOfSatisfying(RenZhengYeWuYiChang.class,e->assertThat(e.getCode()).isEqualTo("AI_GENERATION_FAILED"));
+            taskId=jdbc.queryForObject("SELECT id FROM ai_sheng_cheng_ren_wu WHERE mu_ti_mu_id=?",Long.class,mother);
+            assertThat(jdbc.queryForObject("SELECT zhuang_tai FROM ai_sheng_cheng_ren_wu WHERE id=?",String.class,taskId)).isEqualTo("FAILED");
+            assertThat(jdbc.queryForObject("SELECT yi_sheng_cheng_shu_liang FROM ai_sheng_cheng_ren_wu WHERE id=?",Integer.class,taskId)).isZero();
+            assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM ai_hou_xuan_ti_zhi_liang_ping_jia WHERE ai_sheng_cheng_ren_wu_id=?",Integer.class,taskId)).isZero();
+            assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM ti_mu WHERE fu_ti_mu_id=?",Integer.class,mother)).isZero();
+            assertThat(jdbc.queryForObject("""
+                    SELECT COUNT(*) FROM ti_mu q JOIN ti_mu_lai_yuan s ON s.ti_mu_id=q.id
+                    WHERE q.fu_ti_mu_id=? AND q.zhuang_tai='PENDING' AND s.lai_yuan_lei_xing='AI_GENERATED'
+                    """,Integer.class,mother)).isZero();
+            assertThat(jdbc.queryForObject("SELECT ti_gan FROM ti_mu WHERE id=?",String.class,mother)).isEqualTo(originalStem);
+            assertThat(jdbc.queryForObject("SELECT jie_xi_nei_rong FROM ti_mu_jie_xi WHERE ti_mu_id=? AND jie_xi_lei_xing='STANDARD'",String.class,mother)).isEqualTo(originalStandard);
+        }finally{
+            jdbc.execute("DROP TRIGGER IF EXISTS trg_ai_candidate_atomic_failure");
+            if(taskId!=null)jdbc.update("DELETE FROM ai_sheng_cheng_ren_wu WHERE id=?",taskId);
+            jdbc.update("DELETE FROM ti_mu_xuan_xiang WHERE ti_mu_id=?",mother);
+            jdbc.update("DELETE FROM ti_mu_jie_xi WHERE ti_mu_id=?",mother);
+            jdbc.update("DELETE FROM ti_mu WHERE id=?",mother);
+            jdbc.update("DELETE FROM yong_hu WHERE id=?",admin);
+        }
     }
 
     @Test @Transactional
@@ -101,10 +147,14 @@ class AiQuestionGenerationIntegrationTest extends AdminQuestionIntegrationTestSu
     }
 
     private AiQuestionGenerationDtos.Generate request(long mother,long point,String mode,int count){return new AiQuestionGenerationDtos.Generate(mother,"SINGLE_CHOICE",List.of(point),2,mode,count);}
-    private String candidate(String stem,long point){return "{\"candidates\":[{\"stem\":\""+stem+"\",\"questionType\":\"SINGLE_CHOICE\",\"difficulty\":2,\"options\":[{\"label\":\"A\",\"content\":\"正确\",\"correct\":true},{\"label\":\"B\",\"content\":\"错误\",\"correct\":false}],\"correctAnswer\":{\"schemaVersion\":1,\"type\":\"SINGLE_CHOICE\",\"optionLabels\":[\"A\"]},\"standardAnalysis\":\"候选解析，必须人工复核\",\"knowledgePoints\":["+point+"],\"variationSummary\":\"改变情境并保持知识点一致\"}]}";}
+    private String candidate(String stem,long point){return "{\"candidates\":["+candidateJson(stem,point,"改变情境并保持知识点一致")+"]}";}
+    private String candidateBatch(long point){return "{\"candidates\":["+candidateJson("批次原子性候选一",point,"第一候选已进入持久化路径")+","+candidateJson("批次原子性候选二",point,"FORCE_ATOMIC_FAILURE")+"]}";}
+    private String candidateJson(String stem,long point,String summary){return "{\"stem\":\""+stem+"\",\"questionType\":\"SINGLE_CHOICE\",\"difficulty\":2,\"options\":[{\"label\":\"A\",\"content\":\"正确\",\"correct\":true},{\"label\":\"B\",\"content\":\"错误\",\"correct\":false}],\"correctAnswer\":{\"schemaVersion\":1,\"type\":\"SINGLE_CHOICE\",\"optionLabels\":[\"A\"]},\"standardAnalysis\":\"候选解析，必须人工复核\",\"knowledgePoints\":["+point+"],\"variationSummary\":\""+summary+"\"}";}
     private long user(String prefix){String name=prefix+UUID.randomUUID().toString().replace("-","").substring(0,10);jdbc.update("INSERT INTO yong_hu(yong_hu_ming,mi_ma_zhai_yao,shi_fou_shou_ci_deng_lu) VALUES (?,?,0)",name,"x".repeat(60));return jdbc.queryForObject("SELECT LAST_INSERT_ID()",Long.class);}
-    private long point(){return jdbc.queryForObject("SELECT id FROM zhi_shi_dian WHERE ke_mu_id=1 AND zhuang_tai='ACTIVE' LIMIT 1",Long.class);}
-    private long mother(String stem){String hash=UUID.randomUUID().toString().replace("-","");jdbc.update("INSERT INTO ti_mu(ke_mu_id,ti_mu_lei_xing,shi_yong_mo_shi,ti_gan,zheng_que_da_an,nan_du,shi_fou_ke_zi_dong_pan_fen,zhuang_tai,nei_rong_ha_xi) VALUES (1,'SINGLE_CHOICE','ONLINE_PRACTICE',?,'{\"schemaVersion\":1,\"type\":\"SINGLE_CHOICE\",\"optionLabels\":[\"A\"]}',2,1,'PUBLISHED',?)",stem+hash.substring(0,5),hash);long id=jdbc.queryForObject("SELECT LAST_INSERT_ID()",Long.class);jdbc.update("INSERT INTO ti_mu_xuan_xiang(ti_mu_id,xuan_xiang_biao_shi,xuan_xiang_nei_rong,shi_fou_zheng_que,pai_xu) VALUES (?,'A','正确',1,1),(?,'B','错误',0,2)",id,id);jdbc.update("INSERT INTO ti_mu_jie_xi(ti_mu_id,jie_xi_lei_xing,jie_xi_nei_rong,ban_ben_hao,zhuang_tai) VALUES (?,'STANDARD','母题 STANDARD 不可修改',1,'PUBLISHED')",id);return id;}
+    private long point(){return point(1);}
+    private long point(long subjectId){return jdbc.queryForObject("SELECT id FROM zhi_shi_dian WHERE ke_mu_id=? AND zhuang_tai='ACTIVE' LIMIT 1",Long.class,subjectId);}
+    private long mother(String stem){return mother(1,stem);}
+    private long mother(long subjectId,String stem){String hash=UUID.randomUUID().toString().replace("-","");jdbc.update("INSERT INTO ti_mu(ke_mu_id,ti_mu_lei_xing,shi_yong_mo_shi,ti_gan,zheng_que_da_an,nan_du,shi_fou_ke_zi_dong_pan_fen,zhuang_tai,nei_rong_ha_xi) VALUES (?,'SINGLE_CHOICE','ONLINE_PRACTICE',?,'{\"schemaVersion\":1,\"type\":\"SINGLE_CHOICE\",\"optionLabels\":[\"A\"]}',2,1,'PUBLISHED',?)",subjectId,stem+hash.substring(0,5),hash);long id=jdbc.queryForObject("SELECT LAST_INSERT_ID()",Long.class);jdbc.update("INSERT INTO ti_mu_xuan_xiang(ti_mu_id,xuan_xiang_biao_shi,xuan_xiang_nei_rong,shi_fou_zheng_que,pai_xu) VALUES (?,'A','正确',1,1),(?,'B','错误',0,2)",id,id);jdbc.update("INSERT INTO ti_mu_jie_xi(ti_mu_id,jie_xi_lei_xing,jie_xi_nei_rong,ban_ben_hao,zhuang_tai) VALUES (?,'STANDARD','母题 STANDARD 不可修改',1,'PUBLISHED')",id);return id;}
     private void seedPending(long mother,long admin,int number){for(int i=0;i<number;i++){String hash=UUID.randomUUID().toString().replace("-","");jdbc.update("INSERT INTO ti_mu(ke_mu_id,fu_ti_mu_id,ti_mu_lei_xing,shi_yong_mo_shi,ti_gan,zheng_que_da_an,nan_du,shi_fou_ke_zi_dong_pan_fen,zhuang_tai,nei_rong_ha_xi) VALUES (1,?,'SINGLE_CHOICE','ONLINE_PRACTICE',?,'{\"schemaVersion\":1,\"type\":\"SINGLE_CHOICE\",\"optionLabels\":[\"A\"]}',2,1,'PENDING',?)",mother,"已有候选"+hash,hash);long q=jdbc.queryForObject("SELECT LAST_INSERT_ID()",Long.class);jdbc.update("INSERT INTO ti_mu_lai_yuan(ti_mu_id,nei_rong_lei_xing,lai_yuan_lei_xing,lai_yuan_ming_cheng,quan_li_zhuang_tai,quan_li_yi_ju) VALUES (?,'QUESTION','AI_GENERATED','测试','USER_PROVIDED','测试')",q);}}
     @TestConfiguration static class Config{
         @Bean @Primary QueueAiProvider queueAiProvider(AiProviderProperties properties,AiModelProvider actual,AiCallLogWriter log){return new QueueAiProvider(properties,actual,log);}

@@ -1,6 +1,6 @@
 # 跨AI项目上下文
 
-> PR #30 在 `feat/ai-question-generation-review` 完成管理员 AI 配置中心、固定 RIKE 学生身份、GLM 视觉上下文缓存、AI 候选变式题、三层重复控制、PENDING 人工审核与五项质量评价，受影响专项和必要构建为 `DONE_VERIFIED`。V14 新增 4 表，当前 V1–V14、35 张业务表；V1–V13 未修改。真实 GLM 单图调用到达官方接口但有限重试后为 HTTP 429，记为 `REAL_GLM_VISION_SMOKE_FAIL_429`，最终真实全链路留 PR #31。
+> PR #30 在 `feat/ai-question-generation-review` 完成管理员 AI 配置中心、固定 RIKE 学生身份、GLM 视觉上下文缓存、AI 候选变式题、三层重复控制、PENDING 人工审核与五项质量评价，受影响专项和必要构建为 `DONE_VERIFIED`。集中修正已将一个候选批次的题目、关联、PENDING 转换、质量行及任务 SUCCESS 纳入同一显式事务，并补齐教师 `/teacher/ai-generation` 前端入口、共享工作区和授权学科 API 闭环；第二候选故障真实回滚及教师跨学科拒绝均有自动化证据。V14 新增 4 表，当前 V1–V14、35 张业务表；V1–V14 未修改且无 V15。真实 GLM 单图调用到达官方接口但有限重试后为 HTTP 429，记为 `REAL_GLM_VISION_SMOKE_FAIL_429`，最终真实全链路留 PR #31。
 
 > PR #29 已以 ordinary merge commit `d04e5dcf9639182303e26e38ccfa4351ad91c5d9` 进入 `main`，学生 AI 学习主链和真实 `deepseek-v4-flash` smoke 状态为 `DONE_VERIFIED`。错题 AI 独立绑定“当前学生与题目最近一次错误的已提交正式答题事实”；后续正确作答只改变最近答案和 REVIEWING/MASTERED 状态。
 
