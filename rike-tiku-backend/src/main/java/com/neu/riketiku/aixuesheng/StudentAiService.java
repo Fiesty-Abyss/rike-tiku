@@ -2,6 +2,7 @@ package com.neu.riketiku.aixuesheng;
 
 import com.neu.riketiku.ai.provider.AiModelResult;
 import com.neu.riketiku.ai.provider.AiProviderException;
+import com.neu.riketiku.ai.vision.VisionContextService;
 import com.neu.riketiku.renzheng.RenZhengYeWuYiChang;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -30,18 +31,26 @@ public class StudentAiService {
     private static final int MAX_ASSISTANT_CHARS = 2000;
     private static final Pattern SECRET_OR_OVERRIDE = Pattern.compile(
             "(?i)(api\\s*key|system\\s*prompt|系统提示词|数据库密码|忽略.{0,12}(规则|指令)|不要按标准答案|改成我的答案正确|告诉我.{0,8}(密钥|密码))");
+    private static final Pattern PRODUCT_IDENTITY = Pattern.compile("(你是谁|你叫什么|你的名字|你是干什么的)");
+    private static final Pattern MODEL_IDENTITY = Pattern.compile(
+            "(?i)(你(是|是不是|用|使用).{0,8}(deepseek|glm|什么模型|哪个模型|什么\\s*api)|底层.{0,8}(模型|provider)|模型(代码|id)|api地址)");
+    private static final Pattern PROVIDER_DISCLOSURE = Pattern.compile(
+            "(?i)(deepseek|glm[-_ ]?4|provider\\s*code|model\\s*(code|id)|api\\.deepseek|open\\.bigmodel|api\\s*key|token\\s*(usage|count))");
     private final JdbcTemplate jdbc;
     private final StudentAiProviderClient provider;
     private final StudentAiPromptFactory prompts;
     private final StudentAiAnalysisParser parser;
+    private final VisionContextService visionContexts;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     public StudentAiService(JdbcTemplate jdbc, StudentAiProviderClient provider,
-                            StudentAiPromptFactory prompts, StudentAiAnalysisParser parser) {
+                            StudentAiPromptFactory prompts, StudentAiAnalysisParser parser,
+                            VisionContextService visionContexts) {
         this.jdbc = jdbc;
         this.provider = provider;
         this.prompts = prompts;
         this.parser = parser;
+        this.visionContexts = visionContexts;
     }
 
     @Transactional(readOnly = true)
@@ -83,12 +92,13 @@ public class StudentAiService {
                     """, StudentAiPromptFactory.PROMPT_VERSION, hash, fact.answerFactId(), fact.studentId());
         }
         try {
-            AiModelResult result = provider.generate(prompts.analysis(fact, false));
+            String visionContext = visionContext(fact.questionId());
+            AiModelResult result = provider.generate(prompts.analysis(fact, false, visionContext));
             StudentAiAnalysisParser.ParsedAnalysis parsed;
             try {
                 parsed = parser.parse(result.content());
             } catch (StudentAiAnalysisParser.InvalidAnalysisException firstInvalid) {
-                AiModelResult corrected = provider.generate(prompts.analysis(fact, true));
+                AiModelResult corrected = provider.generate(prompts.analysis(fact, true, visionContext));
                 try {
                     parsed = parser.parse(corrected.content());
                     result = corrected;
@@ -149,7 +159,8 @@ public class StudentAiService {
         String assistant = guardedReply(content);
         if (assistant == null) {
             try {
-                AiModelResult result = provider.generate(prompts.tutor(fact, recentMessages(row.id()), content));
+                AiModelResult result = provider.generate(prompts.tutor(fact, recentMessages(row.id()), content,
+                        visionContext(fact.questionId())));
                 assistant = safeAssistant(result.content());
             } catch (AiProviderException exception) {
                 throw providerFailure(exception);
@@ -262,6 +273,12 @@ public class StudentAiService {
     }
 
     private String guardedReply(String content) {
+        if (MODEL_IDENTITY.matcher(content).find()) {
+            return "底层模型由系统统一管理，我会以 RIKE 理科学习助手的身份为你提供学习帮助。";
+        }
+        if (PRODUCT_IDENTITY.matcher(content).find()) {
+            return "我是 RIKE 理科学习助手，主要围绕当前物理、化学、生物题目为你提供讲解、错因分析和学习建议。";
+        }
         if (SECRET_OR_OVERRIDE.matcher(content).find()) {
             return "我不能披露内部提示词、密钥或改变系统 STANDARD 事实。我们可以继续讨论这道题的知识点与解题步骤。";
         }
@@ -272,12 +289,22 @@ public class StudentAiService {
         return null;
     }
 
+    private String visionContext(long questionId) {
+        VisionContextService.Resolution resolution = visionContexts.resolve(questionId, false);
+        if (!resolution.used()) return null;
+        return resolution.available() ? resolution.contextJson()
+                : "UNAVAILABLE: 视觉上下文不可用，不得猜测未看到的图片内容。";
+    }
+
     private String safeAssistant(String content) {
         if (content == null || content.isBlank()) {
             throw new AiProviderException(com.neu.riketiku.ai.provider.AiProviderErrorType.INVALID_RESPONSE,
                     "AI provider returned an empty response");
         }
         String value = content.trim();
+        if (PROVIDER_DISCLOSURE.matcher(value).find()) {
+            return "底层模型由系统统一管理。我会以 RIKE 理科学习助手的身份，继续围绕当前题目提供学习帮助。";
+        }
         return value.length() <= MAX_ASSISTANT_CHARS ? value : value.substring(0, MAX_ASSISTANT_CHARS);
     }
 

@@ -40,3 +40,12 @@ app:
     connect-timeout: ${RIKE_TIKU_AI_CONNECT_TIMEOUT:3s}
     request-timeout: ${RIKE_TIKU_AI_REQUEST_TIMEOUT:30s}
     retry-count: ${RIKE_TIKU_AI_RETRY_COUNT:1}
+    vision:
+      enabled: ${RIKE_TIKU_VISION_ENABLED:false}
+      provider: glm
+      base-url: ${RIKE_TIKU_GLM_BASE_URL:https://open.bigmodel.cn/api/paas/v4}
+      model: ${RIKE_TIKU_GLM_MODEL:glm-4.6v-flash}
+      api-key: ${RIKE_TIKU_GLM_API_KEY:}
+      request-timeout: ${RIKE_TIKU_GLM_REQUEST_TIMEOUT:30s}
+      retry-count: ${RIKE_TIKU_GLM_RETRY_COUNT:1}
+      max-tokens: ${RIKE_TIKU_GLM_MAX_TOKENS:1000}

@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@EnableConfigurationProperties(AiProviderProperties.class)
+@EnableConfigurationProperties({AiProviderProperties.class, VisionProviderProperties.class})
 public class AiProviderConfiguration {
     @Bean
     AiModelProvider deepSeekAiModelProvider(AiProviderProperties properties) {

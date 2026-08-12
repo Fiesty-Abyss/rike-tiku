@@ -1,5 +1,7 @@
 # UI、统一登录与学生三科工作台
 
+> 本文包含历史阶段记录，当前项目状态请查看 [README](../README.md) 和 [开发状态](DEVELOPMENT_STATUS.md)。
+
 本模块已通过 PR #15 普通 merge 进入 `main`，merge commit 为 `12d636fde4afa198edc78eb0c295f5b88c8e3456`。PR #15 不修改 Flyway V1–V7，也不新增迁移。
 
 统一登录为 `/login`；历史三条角色登录路径重定向到该入口。PR #19 当前分支使用 `GET /api/v1/auth/captcha-challenge` 获取服务端两分钟有效的一次性图形验证码，登录提交 `challengeId` 和 `captchaCode`；挑战成功、失败、过期或取用后即失效。验证码默认隐藏，首次登录操作只展开，第二次才提交。`expectedRole` 可选以兼容旧调用；单角色直达工作台，多角色在认证后选择真实拥有的角色。`activeRole` 仅保存在 sessionStorage，后端授权始终依据 JWT 与数据库角色。

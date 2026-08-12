@@ -89,13 +89,13 @@ onMounted(() => void loadAnalysis())
     </template>
     <p v-else class="student-ai-correct">本题已答对；仍可围绕当前题目继续提问。</p>
 
-    <el-drawer v-model="chatVisible" title="当前题目答疑" size="min(520px, 100%)" append-to-body>
+    <el-drawer v-model="chatVisible" title="RIKE 理科学习助手" size="min(520px, 100%)" append-to-body>
       <div class="student-ai-chat" v-loading="chatLoading">
-        <p class="student-ai-chat-note">仅围绕当前题目，最多 8 轮；STANDARD 答案与解析不会被 AI 修改。</p>
+        <p class="student-ai-chat-note"><strong>已绑定当前题目</strong><br>仅围绕本题，最多 8 轮；STANDARD 答案与解析不会被 AI 修改。</p>
         <div ref="messageList" class="student-ai-messages" aria-live="polite">
           <div v-if="!conversation?.messages.length" class="student-ai-empty">可以问：为什么这一步要这样推导？</div>
           <div v-for="message in conversation?.messages || []" :key="message.id" class="student-ai-message" :class="message.role === 'USER' ? 'is-user' : 'is-assistant'">
-            <span>{{ message.role === 'USER' ? '我' : '学习助手' }}</span><p>{{ message.content }}</p>
+            <span>{{ message.role === 'USER' ? '我' : 'RIKE 理科学习助手' }}</span><p>{{ message.content }}</p>
           </div>
         </div>
         <div class="student-ai-composer">

@@ -117,7 +117,13 @@ public class QuestionAdminService {
             requireStatus(id, expected);
             if ("REJECTED".equals(action) && blank(opinion) == null) fail("REVIEW_OPINION_REQUIRED", "退回必须填写审核意见", HttpStatus.BAD_REQUEST);
             if ("SUBMITTED".equals(action)) validateComplete(id);
-            if ("APPROVED".equals(action)) validatePublishableSources(id);
+            if ("APPROVED".equals(action)) {
+                validatePublishableSources(id);
+                if (count("SELECT COUNT(*) FROM ti_mu_lai_yuan WHERE ti_mu_id=? AND lai_yuan_lei_xing='AI_GENERATED' AND yi_shan_chu=0", id) > 0
+                        && count("SELECT COUNT(*) FROM ai_hou_xuan_ti_zhi_liang_ping_jia WHERE ti_mu_id=? AND shen_he_jie_guo='APPROVED'", id) == 0) {
+                    fail("AI_QUALITY_REVIEW_REQUIRED", "AI 候选题必须完成质量评价后才能发布", HttpStatus.CONFLICT);
+                }
+            }
             jdbc.update("UPDATE ti_mu SET zhuang_tai=? WHERE id=?", target, id);
             jdbc.update("UPDATE ti_mu_jie_xi SET zhuang_tai=? WHERE ti_mu_id=? AND jie_xi_lei_xing='STANDARD' AND ban_ben_hao=1 AND yi_shan_chu=0", target, id);
             jdbc.update("INSERT INTO ti_mu_shen_he_ji_lu(ti_mu_id,shen_he_dong_zuo,yuan_zhuang_tai,mu_biao_zhuang_tai,shen_he_ren_id,shen_he_yi_jian) VALUES (?,?,?,?,?,?)", id, action, expected, target, reviewerId, blank(opinion));
@@ -133,7 +139,7 @@ public class QuestionAdminService {
     private void validateRequest(QuestionDtos.Save request) { validateQuestionType(request); validateOptions(request); validateSources(request.sources()); }
     private void validateQuestionType(QuestionDtos.Save request) {
         if (!QUESTION_TYPES.contains(request.questionType()) || !USAGE_MODES.contains(request.usageMode())) fail("QUESTION_TYPE_INVALID", "题型或使用模式不支持", HttpStatus.BAD_REQUEST);
-        if (request.difficulty() < 1 || request.difficulty() > 3) fail("QUESTION_DIFFICULTY_INVALID", "难度必须为1至3", HttpStatus.BAD_REQUEST);
+        if (request.difficulty() < 1 || request.difficulty() > 5) fail("QUESTION_DIFFICULTY_INVALID", "难度必须为1至5", HttpStatus.BAD_REQUEST);
         if ("SUBJECTIVE".equals(request.questionType()) && (!"TOPIC_LEARNING".equals(request.usageMode()) || request.autoGradable())) fail("QUESTION_RULE_INVALID", "主观题必须为专题学习且不可自动判分", HttpStatus.BAD_REQUEST);
         JsonNode answer = readAnswer(request.correctAnswer());
         if (!answer.isObject()) fail("QUESTION_ANSWER_INVALID", "正确答案必须为JSON对象", HttpStatus.BAD_REQUEST);

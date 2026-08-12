@@ -1,5 +1,7 @@
 # 教师班级学科工作台与高频考点 API
 
+> 本文为历史阶段快照，当前项目状态请查看 [README](../README.md) 和 [开发状态](DEVELOPMENT_STATUS.md)。
+
 当前分支：`feat/teacher-workspace-high-frequency`（Draft PR #18）。本组接口只服务教师本人 ACTIVE 三元任课关系；服务端从登录用户的教师档案和 `ren_ke_guan_xi.id` 推导权限，不接受前端传入 teacherId 授权。
 
 ## 教师接口
