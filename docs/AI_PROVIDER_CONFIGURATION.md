@@ -36,7 +36,7 @@ V12 `ai_diao_yong_ri_zhi` 只保存 provider、model、用途、可空业务引�
 - GLM 请求使用 `/chat/completions`、image data URI、`thinking={"type":"disabled"}` 和 max tokens 1000；只返回严格五字段视觉 JSON。
 - `RIKE_TIKU_VISION_ENABLED`、`RIKE_TIKU_GLM_BASE_URL`、`RIKE_TIKU_GLM_MODEL`、`RIKE_TIKU_GLM_API_KEY`、`RIKE_TIKU_GLM_REQUEST_TIMEOUT`、`RIKE_TIKU_GLM_RETRY_COUNT`、`RIKE_TIKU_GLM_MAX_TOKENS` 提供无数据库配置时的安全回退；视觉默认关闭。
 
-2026-08-11 已按官方文档复核：DeepSeek Chat Completions 为 `https://api.deepseek.com/chat/completions`，项目受控模型为 `deepseek-v4-flash`/`deepseek-v4-pro`；智谱 GLM-4.6V-Flash 使用 `https://open.bigmodel.cn/api/paas/v4/chat/completions`，支持 image URL/Base64 输入和文本输出。模型 ID 集中配置，不散落在学生响应中。
+2026-08-12 已按官方文档复核：DeepSeek Chat Completions 为 `https://api.deepseek.com/chat/completions`，项目受控模型为 `deepseek-v4-flash`/`deepseek-v4-pro`；智谱 GLM-4.6V-Flash 使用 `https://open.bigmodel.cn/api/paas/v4/chat/completions`，支持 image URL/Base64 输入、文本输出和关闭 thinking。模型 ID 集中配置，不散落在学生响应中。
 
 ## 学生 AI 请求策略
 
@@ -58,8 +58,12 @@ mvn "-Dtest=RealDeepSeekSmokeTest" test
 
 2026-08-11 真实门禁结果：`deepseek-v4-flash`、HTTP 2xx；文本 848 ms（22/11 token），结构化分析 1670 ms（400/132 token）、1 次 JSON 调用；Parser 与日志脱敏均 PASS。真实 Key 未记录。
 
+2026-08-12 PR #31 复验结果：1/1 PASS、0 skipped。文本 1008 ms（22/11 token），结构化分析 1722 ms（400/110 token）、1 次 JSON 调用；Parser、V12 日志脱敏、V13 SUCCESS 和 STANDARD 不变均通过。随后 Demo 真实错因、当前题答疑和候选生成也通过。
+
 ## 最小真实 GLM Vision smoke
 
 `RealGlmVisionSmokeTest` 仅在当前进程存在 `RIKE_TIKU_GLM_API_KEY` 时启用，使用程序生成的无隐私 PNG、随机临时 MySQL 和真实 `glm-4.6v-flash`。默认自动化无 Key 时跳过，不访问外网。
 
-2026-08-11 实际结果：请求到达官方接口；按 transient 规则最多一次重试后仍为 HTTP 429，记录为 `REAL_GLM_VISION_SMOKE_FAIL_429`。Parser 与成功日志没有被伪造为 PASS，未继续重复调用；Key 未输出、未写文件、未写数据库、未写日志、未进入 Git。PR #31 再做最终真实 DeepSeek 与 GLM 全链路。
+2026-08-11 历史结果：请求到达官方接口；按 transient 规则最多一次重试后仍为 HTTP 429，记录为 `REAL_GLM_VISION_SMOKE_FAIL_429`。
+
+2026-08-12 PR #31 结果：第一个受控窗口仍为 429；第二个最终窗口收到完整 Markdown `json` 代码围栏，旧 Parser 拒绝。Parser 现只允许并剥离“整个响应恰好是一个 JSON 围栏”的包装，围栏外文字、额外字段和非法结构仍拒绝。修复后的专项与全量通过，但遵守两次窗口上限没有第三次真实请求，因此状态为 `REAL_GLM_VISION_NOT_REVERIFIED_AFTER_WRAPPER_FIX`，不能写为 PASS。Key 未输出、未进入 Git、Markdown、V12 或截图。
