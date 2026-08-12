@@ -15,6 +15,8 @@
 
 本机已建立被 `.gitignore` 排除的 Run Configuration：后端使用 `rike_tiku`、端口 8081、允许源 `http://localhost:8080`；前端使用 8080 并把 API 指向 `http://localhost:8081/api/v1`。敏感数据库密码和 JWT secret 继续通过本机已有安全环境注入。
 
+IDEA 配置名为 `RikeTikuBackendApplication`，WebStorm 配置名为 `RIKE Frontend`。本轮已在真实 IDEA 与 WebStorm 中分别点击 Run，并在 IDE 控制台确认 Spring Boot 完整启动和 Vite 监听成功，不再以命令行等价启动代替 IDE 结论。
+
 后端关键变量：
 
 ```text
@@ -29,13 +31,24 @@ RIKE_TIKU_CORS_ALLOWED_ORIGINS=http://localhost:8080
 VITE_API_BASE_URL=http://localhost:8081/api/v1
 ```
 
+## 固定端口与旧实例回收
+
+正式端口固定为前端 8080、后端 8081，不允许 Vite 自动漂移到其他端口。IDE 启动前可以执行：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/reclaim-rike-port.ps1 -Port 8080
+powershell -ExecutionPolicy Bypass -File scripts/reclaim-rike-port.ps1 -Port 8081
+```
+
+脚本从自身位置推导仓库根目录，只会停止命令行明确属于当前 RIKE 仓库的 Vite/Node 或 Spring Boot/JAR 进程。若端口属于其他程序，脚本显示安全的程序名与 PID、返回非零状态并拒绝停止。日常使用仍优先在 IDEA/WebStorm 的 Run/Services 窗口点击红色 Stop；只有 IDE 已无对应实例而进程仍残留时才使用脚本。
+
 ## 启动复验
 
-已执行后端→前端、前端→后端、双端关闭后后端→前端三种冷/热顺序；每次 health 与前端均为 200，CORS 为 8080，Flyway 保持 V14，运行库保持 `rike_tiku`，AI 数据库配置在重启后仍可读取。IDE 配置文件已核对并被 ignore；由于当前自动化环境没有可调用的桌面控制接口，“在 IDEA/WebStorm 中手动点击 Run”留给用户本人按上述同等配置确认，不冒充机器 PASS。
+已通过真实 IDEA/WebStorm Run/Stop 验证后端→前端、前端→后端、后端重启而前端保持、关闭 Run Console 后再次点击 Run 四种顺序。每轮 8080/8081 均只有一个 RIKE listener，health 与前端为 200，CORS 为 8080，Flyway 保持 V14，运行库保持 `rike_tiku`，AI 数据库配置在重启后仍可读取。端口冲突根因是旧 RIKE Node/Java 实例残留；按精确 PID 停止后恢复正常。
 
 ## 正式账号复验与恢复
 
-三位教师和六位学生均使用真实随机 PNG CAPTCHA 完成登录，均要求首次改密。主教师多角色账号完成一次真实初始密码修改，随后通过受控本机 SQL 恢复原 BCrypt 摘要和首次改密标识；其他账号未改变。最终 9 个账号全部回到统一初始密码及首次改密状态，事务表保持空白。
+真实 Chrome 使用随机 PNG CAPTCHA 完成代表性账号流程：多角色教师、两名单角色教师、两个班级各一名学生走完首次改密与角色/练习主链，并额外抽查同班账号。重复账号不机械复测；角色、班级与学科差异由代表流程和数据库约束共同核验。测试后通过受控事务恢复 9 个账号的 BCrypt 初始密码摘要与首次改密标识，并清空练习、错题、AI、候选、私信和调用日志事实。
 
 ## 数据边界
 
