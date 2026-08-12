@@ -5,7 +5,8 @@ import com.neu.riketiku.renzheng.RenZhengYeWuYiChang;
 import com.neu.riketiku.xueshengdaoru.StudentInitialPasswordGenerator;
 import com.neu.riketiku.xueshengguanli.dto.StudentManagementDtos.ClassHistoryResponse;
 import com.neu.riketiku.xueshengguanli.dto.StudentManagementDtos.ClassSummaryResponse;
-import com.neu.riketiku.xueshengguanli.dto.StudentManagementDtos.PasswordResetResponse;
+import com.neu.riketiku.zhanghao.AdminDefaultPasswordPolicy;
+import com.neu.riketiku.zhanghao.dto.AdminPasswordRecoveryDtos.PasswordRecoveryResponse;
 import com.neu.riketiku.xueshengguanli.dto.StudentManagementDtos.StudentCreateRequest;
 import com.neu.riketiku.xueshengguanli.dto.StudentManagementDtos.StudentCreateResponse;
 import com.neu.riketiku.xueshengguanli.dto.StudentManagementDtos.StudentDetailResponse;
@@ -15,6 +16,7 @@ import com.neu.riketiku.xueshengguanli.dto.StudentManagementDtos.StudentTransfer
 import com.neu.riketiku.xueshengguanli.dto.StudentManagementDtos.StudentUpdateRequest;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -30,16 +32,19 @@ public class StudentManagementService {
     private final StudentInitialPasswordGenerator passwordGenerator;
     private final PasswordEncoder passwordEncoder;
     private final GuanLiCaoZuoRiZhiFuWu auditLog;
+    private final AdminDefaultPasswordPolicy defaultPasswordPolicy;
 
     public StudentManagementService(
             JdbcTemplate jdbc,
             StudentInitialPasswordGenerator passwordGenerator,
             PasswordEncoder passwordEncoder,
-            GuanLiCaoZuoRiZhiFuWu auditLog) {
+            GuanLiCaoZuoRiZhiFuWu auditLog,
+            AdminDefaultPasswordPolicy defaultPasswordPolicy) {
         this.jdbc = jdbc;
         this.passwordGenerator = passwordGenerator;
         this.passwordEncoder = passwordEncoder;
         this.auditLog = auditLog;
+        this.defaultPasswordPolicy = defaultPasswordPolicy;
     }
 
     @Transactional(readOnly = true)
@@ -168,18 +173,39 @@ public class StudentManagementService {
     }
 
     @Transactional
-    public PasswordResetResponse resetPassword(Long studentId) {
-        return auditLog.audited("STUDENT", "RESET_PASSWORD", studentId, "管理员重置学生密码（不记录密码）", () -> resetPasswordInternal(studentId));
+    public PasswordRecoveryResponse resetPassword(Long studentId) {
+        return auditLog.audited("STUDENT", "RESET_PASSWORD", studentId,
+                "管理员恢复学生默认密码（不记录密码）", () -> resetPasswordInternal(studentId));
     }
 
-    private PasswordResetResponse resetPasswordInternal(Long studentId) {
+    private PasswordRecoveryResponse resetPasswordInternal(Long studentId) {
         StudentSummaryResponse student = findStudent(studentId);
-        String password = passwordGenerator.generate();
+        String password = defaultPasswordPolicy.password();
         jdbc.update("""
                 UPDATE yong_hu SET mi_ma_zhai_yao=?,shi_fou_shou_ci_deng_lu=1,mi_ma_xiu_gai_shi_jian=NULL
                 WHERE yong_hu_ming=?
                 """, passwordEncoder.encode(password), student.username());
-        return new PasswordResetResponse(password);
+        return new PasswordRecoveryResponse(1, password, true);
+    }
+
+    @Transactional
+    public PasswordRecoveryResponse resetPasswords(List<Long> requestedIds) {
+        List<Long> ids = new ArrayList<>(new LinkedHashSet<>(requestedIds));
+        String summary = "管理员批量恢复学生默认密码；数量=" + ids.size() + "；目标业务ID=" + ids;
+        return auditLog.audited("STUDENT", "BATCH_RESET_PASSWORD", null, summary,
+                () -> resetPasswordsInternal(ids));
+    }
+
+    private PasswordRecoveryResponse resetPasswordsInternal(List<Long> ids) {
+        List<StudentSummaryResponse> students = ids.stream().map(this::findStudent).toList();
+        String password = defaultPasswordPolicy.password();
+        for (StudentSummaryResponse student : students) {
+            jdbc.update("""
+                    UPDATE yong_hu SET mi_ma_zhai_yao=?,shi_fou_shou_ci_deng_lu=1,mi_ma_xiu_gai_shi_jian=NULL
+                    WHERE yong_hu_ming=?
+                    """, passwordEncoder.encode(password), student.username());
+        }
+        return new PasswordRecoveryResponse(students.size(), password, true);
     }
 
     private StudentSummaryResponse findStudent(Long studentId) {

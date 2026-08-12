@@ -71,7 +71,7 @@ async function handleLogin(payload: {
       <h2 id="login-title">欢迎登录</h2>
       <p class="auth-description">输入账号、密码和图形验证码后登录。</p>
       <LoginForm ref="loginForm" :loading="loading" :error-message="errorMessage" @submit="handleLogin" />
-      <p class="login-note">忘记密码请联系管理员</p>
+      <p class="login-note">忘记密码请联系管理员，由管理员在账号管理中恢复默认密码。</p>
     </section>
   </main>
 </template>

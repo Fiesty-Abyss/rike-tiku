@@ -7,6 +7,8 @@ import com.jayway.jsonpath.JsonPath;
 import com.neu.riketiku.renzheng.JwtLingPaiFuWu;
 import com.neu.riketiku.renzheng.RenZhengYeWuYiChang;
 import com.neu.riketiku.renzheng.RenZhengYongHu;
+import com.neu.riketiku.jiaoshi.JiaoShiGuanLiFuWu;
+import com.neu.riketiku.jiaoshi.dto.JiaoShiChuangJianQingQiu;
 import com.neu.riketiku.tiku.admin.AdminQuestionIntegrationTestSupport;
 import com.neu.riketiku.xueshengguanli.dto.StudentManagementDtos.StudentCreateRequest;
 import com.neu.riketiku.xueshengguanli.dto.StudentManagementDtos.StudentTransferRequest;
@@ -31,6 +33,7 @@ class StudentManagementIntegrationTest extends AdminQuestionIntegrationTestSuppo
     @Autowired private JdbcTemplate jdbc;
     @Autowired private PasswordEncoder passwordEncoder;
     @Autowired private JwtLingPaiFuWu jwt;
+    @Autowired private JiaoShiGuanLiFuWu teacherService;
     @LocalServerPort private int port;
 
     @Test
@@ -40,7 +43,7 @@ class StudentManagementIntegrationTest extends AdminQuestionIntegrationTestSuppo
         service.create(new StudentCreateRequest("S-LIST-02", "列表学生乙", "student_list_02", "高三", class199));
 
         assertThat(service.page(1, 10, "S-LIST-01", null, null, null, null, null, null).records()).hasSize(1);
-        assertThat(service.page(1, 10, null, "学生乙", null, null, null, null, null).records()).hasSize(1);
+        assertThat(service.page(1, 10, null, "列表学生乙", null, null, null, null, null).records()).hasSize(1);
         assertThat(service.page(1, 10, null, null, "list_01", null, null, null, null).records()).hasSize(1);
         assertThat(service.page(1, 10, null, null, null, class199, "高三", "ENABLED", "ACTIVE").records()).hasSize(2);
 
@@ -55,7 +58,8 @@ class StudentManagementIntegrationTest extends AdminQuestionIntegrationTestSuppo
     void createIsAtomicAndRejectsDuplicateOrUnavailableData() {
         long activeClass = createClass("STU-CREATE-A", "创建班", "高三", "ACTIVE");
         long disabledClass = createClass("STU-CREATE-D", "停用班", "高三", "DISABLED");
-        service.create(new StudentCreateRequest("S-CREATE-01", "创建学生", "student_create_01", "高三", activeClass));
+        var created = service.create(new StudentCreateRequest("S-CREATE-01", "创建学生", "student_create_01", "高三", activeClass));
+        assertThat(created.initialPassword()).hasSize(12).isNotEqualTo("a1234567");
 
         assertCode(() -> service.create(new StudentCreateRequest("S-CREATE-01", "重复学号", "student_create_02", "高三", activeClass)), "STUDENT_NUMBER_EXISTS");
         assertCode(() -> service.create(new StudentCreateRequest("S-CREATE-02", "重复用户名", "student_create_01", "高三", activeClass)), "USERNAME_EXISTS");
@@ -109,8 +113,11 @@ class StudentManagementIntegrationTest extends AdminQuestionIntegrationTestSuppo
         completeInitialPassword("student_reset", created.initialPassword(), "StudentOldPass2");
         long studentId = created.student().student().id();
 
-        String resetPassword = service.resetPassword(studentId).initialPassword();
-        assertThat(resetPassword).hasSize(12).doesNotContain("StudentOldPass2");
+        var reset = service.resetPassword(studentId);
+        String resetPassword = reset.initialPassword();
+        assertThat(reset.resetCount()).isEqualTo(1);
+        assertThat(reset.mustChangePassword()).isTrue();
+        assertThat(resetPassword).isEqualTo("a1234567").doesNotContain("StudentOldPass2");
         assertThat(login("student_reset", "StudentOldPass2").statusCode()).isEqualTo(401);
         HttpResponse<String> login = login("student_reset", resetPassword);
         assertThat(login.statusCode()).isEqualTo(200);
@@ -118,6 +125,101 @@ class StudentManagementIntegrationTest extends AdminQuestionIntegrationTestSuppo
         String digest = jdbc.queryForObject("SELECT mi_ma_zhai_yao FROM yong_hu WHERE yong_hu_ming='student_reset'", String.class);
         assertThat(digest).doesNotContain(resetPassword);
         assertThat(passwordEncoder.matches(resetPassword, digest)).isTrue();
+        completeInitialPassword("student_reset", resetPassword, "StudentRecovered2");
+        assertThat((Boolean) JsonPath.read(login("student_reset", "StudentRecovered2").body(), "$.mustChangePassword")).isFalse();
+    }
+
+    @Test
+    void batchStudentPasswordRecoveryDeduplicatesTargetsUsesDistinctBcryptAndIsAtomic() {
+        long classId = createClass("STU-BATCH", "批量恢复班", "高三", "ACTIVE");
+        var first = service.create(new StudentCreateRequest("S-BATCH-01", "学生甲", "student_batch_01", "高三", classId));
+        var second = service.create(new StudentCreateRequest("S-BATCH-02", "学生乙", "student_batch_02", "高三", classId));
+        long firstId = first.student().student().id();
+        long secondId = second.student().student().id();
+
+        var response = service.resetPasswords(List.of(firstId, secondId, firstId));
+        List<String> hashes = jdbc.queryForList("""
+                SELECT u.mi_ma_zhai_yao FROM yong_hu u JOIN xue_sheng_dang_an p ON p.yong_hu_id=u.id
+                WHERE p.id IN (?,?) ORDER BY p.id
+                """, String.class, firstId, secondId);
+        assertThat(response.resetCount()).isEqualTo(2);
+        assertThat(response.initialPassword()).isEqualTo("a1234567");
+        assertThat(response.mustChangePassword()).isTrue();
+        assertThat(hashes).hasSize(2).doesNotHaveDuplicates();
+        assertThat(hashes).allMatch(hash -> passwordEncoder.matches(response.initialPassword(), hash));
+        String audit = jdbc.queryForObject("""
+                SELECT CONCAT(cao_zuo_lei_xing,'|',COALESCE(zhai_yao,'')) FROM guan_li_cao_zuo_ri_zhi
+                WHERE mo_kuai='STUDENT' AND cao_zuo_lei_xing='BATCH_RESET_PASSWORD' ORDER BY id DESC LIMIT 1
+                """, String.class);
+        assertThat(audit).contains("BATCH_RESET_PASSWORD", "数量=2", String.valueOf(firstId), String.valueOf(secondId))
+                .doesNotContain(response.initialPassword(), first.student().student().name(), second.student().student().name());
+
+        String before = hashes.getFirst();
+        assertCode(() -> service.resetPasswords(List.of(firstId, 999999999L)), "STUDENT_NOT_FOUND");
+        String after = jdbc.queryForObject("""
+                SELECT u.mi_ma_zhai_yao FROM yong_hu u JOIN xue_sheng_dang_an p ON p.yong_hu_id=u.id WHERE p.id=?
+                """, String.class, firstId);
+        assertThat(after).isEqualTo(before);
+    }
+
+    @Test
+    void passwordRecoveryEndpointsRequireAdminAndReturnNoStore() throws Exception {
+        long classId = createClass("STU-HTTP-RESET", "接口恢复班", "高三", "ACTIVE");
+        long studentId = service.create(new StudentCreateRequest("S-HTTP-RESET", "接口学生", "student_http_reset", "高三", classId)).student().student().id();
+        String body = "{\"ids\":[" + studentId + "," + studentId + "]}";
+
+        assertThat(post("/api/v1/admin/students/reset-passwords", body, token("blocked-student", List.of("STUDENT"))).statusCode()).isEqualTo(403);
+        assertThat(post("/api/v1/admin/students/reset-passwords", body, token("blocked-teacher", List.of("TEACHER"))).statusCode()).isEqualTo(403);
+        assertThat(post("/api/v1/admin/students/reset-passwords", body, null).statusCode()).isEqualTo(401);
+
+        Long operatorId = jdbc.queryForObject("""
+                SELECT yong_hu_id FROM xue_sheng_dang_an WHERE id=?
+                """, Long.class, studentId);
+        HttpResponse<String> response = post("/api/v1/admin/students/reset-passwords", body,
+                token(operatorId, "allowed-admin", List.of("ADMIN")));
+        assertThat(response.statusCode()).isEqualTo(200);
+        assertThat(response.headers().firstValue("Cache-Control")).hasValueSatisfying(value -> assertThat(value).contains("no-store"));
+        assertThat(response.headers().firstValue("Pragma")).contains("no-cache");
+        assertThat((Integer) JsonPath.read(response.body(), "$.resetCount")).isEqualTo(1);
+        assertThat((Boolean) JsonPath.read(response.body(), "$.mustChangePassword")).isTrue();
+    }
+
+    @Test
+    void teacherBatchPasswordRecoveryEndpointRequiresAdminAndReturnsNoStore() throws Exception {
+        String suffix = Long.toString(System.nanoTime());
+        var teacher = teacherService.create(new JiaoShiChuangJianQingQiu(
+                "T-HTTP-" + suffix, "接口教师", "teacher_http_" + suffix, null, "TeacherOld1", "ENABLED"));
+        String body = "{\"ids\":[" + teacher.teacher().id() + "]}";
+
+        assertThat(post("/api/v1/admin/teachers/reset-passwords", body, token("blocked-student", List.of("STUDENT"))).statusCode()).isEqualTo(403);
+        assertThat(post("/api/v1/admin/teachers/reset-passwords", body, token("blocked-teacher", List.of("TEACHER"))).statusCode()).isEqualTo(403);
+        assertThat(post("/api/v1/admin/teachers/reset-passwords", body, null).statusCode()).isEqualTo(401);
+
+        Long operatorId = jdbc.queryForObject("SELECT yong_hu_id FROM jiao_shi_dang_an WHERE id=?", Long.class, teacher.teacher().id());
+        HttpResponse<String> response = post("/api/v1/admin/teachers/reset-passwords", body,
+                token(operatorId, teacher.teacher().username(), List.of("ADMIN")));
+        assertThat(response.statusCode()).isEqualTo(200);
+        assertThat(response.headers().firstValue("Cache-Control")).hasValueSatisfying(value -> assertThat(value).contains("no-store"));
+        assertThat(response.headers().firstValue("Pragma")).contains("no-cache");
+        assertThat((Integer) JsonPath.read(response.body(), "$.resetCount")).isEqualTo(1);
+        assertThat((Boolean) JsonPath.read(response.body(), "$.mustChangePassword")).isTrue();
+    }
+
+    @Test
+    void teacherSinglePasswordRecoveryInvalidatesOldPasswordAndRequiresChange() throws Exception {
+        String suffix = Long.toString(System.nanoTime());
+        var created = teacherService.create(new JiaoShiChuangJianQingQiu(
+                "T-SINGLE-" + suffix, "单人恢复教师", "teacher_single_" + suffix, null, "TeacherInitial1", "ENABLED"));
+        String username = created.teacher().username();
+        completeInitialPassword(username, "TeacherInitial1", "TeacherOldPass2", "TEACHER");
+
+        var reset = teacherService.resetPassword(created.teacher().id());
+        assertThat(login(username, "TeacherOldPass2", "TEACHER").statusCode()).isEqualTo(401);
+        HttpResponse<String> recovered = login(username, reset.initialPassword(), "TEACHER");
+        assertThat(recovered.statusCode()).isEqualTo(200);
+        assertThat((Boolean) JsonPath.read(recovered.body(), "$.mustChangePassword")).isTrue();
+        completeInitialPassword(username, reset.initialPassword(), "TeacherRecovered2", "TEACHER");
+        assertThat((Boolean) JsonPath.read(login(username, "TeacherRecovered2", "TEACHER").body(), "$.mustChangePassword")).isFalse();
     }
 
     @Test
@@ -135,7 +237,11 @@ class StudentManagementIntegrationTest extends AdminQuestionIntegrationTestSuppo
     }
 
     private void completeInitialPassword(String username, String oldPassword, String newPassword) throws Exception {
-        HttpResponse<String> login = login(username, oldPassword);
+        completeInitialPassword(username, oldPassword, newPassword, "STUDENT");
+    }
+
+    private void completeInitialPassword(String username, String oldPassword, String newPassword, String expectedRole) throws Exception {
+        HttpResponse<String> login = login(username, oldPassword, expectedRole);
         String accessToken = JsonPath.read(login.body(), "$.accessToken");
         HttpRequest request = HttpRequest.newBuilder(uri("/api/v1/auth/change-initial-password"))
                 .header("Authorization", "Bearer " + accessToken)
@@ -147,11 +253,15 @@ class StudentManagementIntegrationTest extends AdminQuestionIntegrationTestSuppo
     }
 
     private HttpResponse<String> login(String username, String password) throws Exception {
+        return login(username, password, "STUDENT");
+    }
+
+    private HttpResponse<String> login(String username, String password, String expectedRole) throws Exception {
         HttpResponse<String> challenge = HttpClient.newHttpClient().send(
                 HttpRequest.newBuilder(uri("/api/v1/auth/captcha-challenge")).GET().build(),
                 HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
         String body = "{\"username\":\"" + username + "\",\"password\":\"" + password
-                + "\",\"expectedRole\":\"STUDENT\",\"challengeId\":\""
+                + "\",\"expectedRole\":\"" + expectedRole + "\",\"challengeId\":\""
                 + JsonPath.read(challenge.body(), "$.challengeId") + "\",\"captchaCode\":\""
                 + JsonPath.read(challenge.body(), "$.testCode") + "\"}";
         return HttpClient.newHttpClient().send(HttpRequest.newBuilder(uri("/api/v1/auth/login"))
@@ -166,8 +276,20 @@ class StudentManagementIntegrationTest extends AdminQuestionIntegrationTestSuppo
         return HttpClient.newHttpClient().send(request.build(), HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
     }
 
+    private HttpResponse<String> post(String path, String body, String accessToken) throws Exception {
+        HttpRequest.Builder request = HttpRequest.newBuilder(uri(path))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(body, StandardCharsets.UTF_8));
+        if (accessToken != null) request.header("Authorization", "Bearer " + accessToken);
+        return HttpClient.newHttpClient().send(request.build(), HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+    }
+
     private String token(String username, List<String> roles) {
         return jwt.shengChengLingPai(new RenZhengYongHu(9999L, username, roles, false));
+    }
+
+    private String token(Long userId, String username, List<String> roles) {
+        return jwt.shengChengLingPai(new RenZhengYongHu(userId, username, roles, false));
     }
 
     private URI uri(String path) {

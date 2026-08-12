@@ -3,12 +3,13 @@ import { onMounted, reactive, ref } from 'vue'
 import { ElMessage, ElMessageBox, type FormInstance, type FormRules } from 'element-plus'
 import { type ApiError } from '../../api/http'
 import { fetchClasses, type ClassItem } from '../../api/admin/classes'
-import { confirmStudentPasswordReset } from './studentResetConfirmation'
+import { executePasswordRecovery } from './passwordRecoveryAction'
 import {
   createStudent,
   fetchStudent,
   fetchStudents,
   resetStudentPassword,
+  resetStudentPasswords,
   transferStudent,
   updateStudent,
   type AccountStatus,
@@ -29,6 +30,8 @@ const classes = ref<ClassItem[]>([])
 const detail = ref<StudentDetail | null>(null)
 const total = ref(0)
 const initialPassword = ref<string | null>(null)
+const passwordRecovered = ref(false)
+const selectedStudents = ref<StudentItem[]>([])
 
 const filters = reactive({
   studentNumber: '',
@@ -141,6 +144,7 @@ async function saveStudent() {
     } else if (form.classId !== undefined) {
       const result = await createStudent({ studentNumber: form.studentNumber.trim(), name: form.name.trim(), username: form.username.trim(), grade: form.grade.trim(), classId: form.classId })
       initialPassword.value = result.initialPassword
+      passwordRecovered.value = false
       ElMessage.success('学生已创建，初始密码仅显示本次。')
     }
     formVisible.value = false
@@ -184,18 +188,48 @@ async function saveTransfer() {
 
 async function resetPassword() {
   if (!detail.value) return
-  const confirmed = await confirmStudentPasswordReset(() => ElMessageBox.confirm(
-    '重置后原密码立即失效，新密码仅显示一次。',
-    '确认重置密码',
-    { type: 'warning', confirmButtonText: '确认重置', cancelButtonText: '取消' },
-  ))
-  if (!confirmed) return
   try {
-    initialPassword.value = (await resetStudentPassword(detail.value.student.id)).initialPassword
-    ElMessage.success('密码已重置。')
+    const result = await executePasswordRecovery(
+      () => ElMessageBox.confirm(
+        '确认将该账号恢复为系统默认密码吗？原密码将立即失效，下次登录必须修改密码。',
+        '恢复默认密码',
+        { type: 'warning', confirmButtonText: '确认恢复', cancelButtonText: '取消' },
+      ),
+      () => resetStudentPassword(detail.value!.student.id),
+    )
+    if (!result) return
+    initialPassword.value = result.initialPassword
+    passwordRecovered.value = true
+    ElMessage.success('学生账号已恢复为系统默认密码。')
   } catch (error) {
     ElMessage.error(errorMessage(error, '密码重置失败。'))
   }
+}
+
+async function resetSelectedPasswords() {
+  if (!selectedStudents.value.length) return
+  const count = selectedStudents.value.length
+  try {
+    const result = await executePasswordRecovery(
+      () => ElMessageBox.confirm(
+        `确认恢复选中的 ${count} 个账号吗？原密码将立即失效，下次登录必须修改密码。`,
+        '批量恢复默认密码',
+        { type: 'warning', confirmButtonText: '确认恢复', cancelButtonText: '取消' },
+      ),
+      () => resetStudentPasswords(selectedStudents.value.map((item) => item.id)),
+    )
+    if (!result) return
+    initialPassword.value = result.initialPassword
+    passwordRecovered.value = true
+    ElMessage.success(`已恢复 ${result.resetCount} 个学生账号。`)
+  } catch (error) {
+    ElMessage.error(errorMessage(error, '批量恢复默认密码失败。'))
+  }
+}
+
+function clearInitialPassword() {
+  initialPassword.value = null
+  passwordRecovered.value = false
 }
 
 onMounted(async () => {
@@ -207,10 +241,10 @@ onMounted(async () => {
   <section class="admin-page">
     <div class="page-heading">
       <div><h1>学生管理</h1><p>管理单个学生账号、档案、主班级历史和初始密码。</p></div>
-      <div><el-button @click="$router.push('/admin/students/import')">Excel 批量导入</el-button><el-button type="primary" @click="openCreate">新增学生</el-button></div>
+      <div><el-button :disabled="selectedStudents.length === 0" @click="resetSelectedPasswords">批量恢复默认密码</el-button><el-button @click="$router.push('/admin/students/import')">Excel 批量导入</el-button><el-button type="primary" @click="openCreate">新增学生</el-button></div>
     </div>
     <el-alert v-if="initialPassword" class="inline-alert" type="warning" :closable="false" show-icon>
-      <template #title>初始密码仅显示一次：<strong>{{ initialPassword }}</strong><el-button link type="danger" @click="initialPassword = null">立即清空</el-button></template>
+      <template #title>{{ passwordRecovered ? '已恢复默认密码' : '初始密码仅显示一次' }}：<strong>{{ initialPassword }}</strong><span v-if="passwordRecovered">　下次登录必须修改密码</span><el-button link type="danger" @click="clearInitialPassword">立即清空</el-button></template>
     </el-alert>
     <el-form class="filter-panel" :inline="true" @submit.prevent="filters.page = 1; loadStudents()">
       <el-form-item label="学号"><el-input v-model="filters.studentNumber" clearable /></el-form-item>
@@ -222,7 +256,8 @@ onMounted(async () => {
       <el-form-item label="档案"><el-select v-model="filters.profileStatus" clearable><el-option v-for="item in profileStatuses" :key="item.value" :label="item.label" :value="item.value" /></el-select></el-form-item>
       <el-form-item><el-button type="primary" native-type="submit">查询</el-button><el-button @click="resetFilters">重置</el-button></el-form-item>
     </el-form>
-    <el-table v-loading="loading" :data="students" class="data-table" empty-text="暂无学生数据。">
+    <el-table v-loading="loading" :data="students" class="data-table" empty-text="暂无学生数据。" @selection-change="selectedStudents = $event">
+      <el-table-column type="selection" width="48" />
       <el-table-column prop="studentNumber" label="学号" min-width="130" />
       <el-table-column prop="name" label="姓名" min-width="110" />
       <el-table-column prop="username" label="用户名" min-width="140" />
@@ -255,7 +290,7 @@ onMounted(async () => {
           <el-descriptions-item label="账号状态">{{ statusLabel(accountStatuses, detail.student.accountStatus) }}</el-descriptions-item><el-descriptions-item label="学生角色">{{ detail.roles.join('、') }}</el-descriptions-item>
           <el-descriptions-item label="当前主班级">{{ detail.student.currentClass?.className || '未分班' }}</el-descriptions-item><el-descriptions-item label="档案状态">{{ statusLabel(profileStatuses, detail.student.profileStatus) }}</el-descriptions-item>
         </el-descriptions>
-        <div class="section-title-row"><div><h2>班级历史</h2><p>调班会结束旧关系并新增当前主班级。</p></div><div><el-button @click="resetPassword">重置密码</el-button><el-button type="primary" @click="openTransfer">调班</el-button></div></div>
+        <div class="section-title-row"><div><h2>班级历史</h2><p>调班会结束旧关系并新增当前主班级。</p></div><div><el-button @click="resetPassword">恢复默认密码</el-button><el-button type="primary" @click="openTransfer">调班</el-button></div></div>
         <el-table :data="detail.classHistory" class="data-table" empty-text="暂无班级历史。">
           <el-table-column prop="className" label="班级" /><el-table-column prop="joinedAt" label="加入时间" min-width="180" /><el-table-column prop="exitedAt" label="退出时间" min-width="180"><template #default="{ row }">{{ row.exitedAt || '—' }}</template></el-table-column><el-table-column label="当前有效"><template #default="{ row }"><el-tag :type="row.current ? 'success' : 'info'">{{ row.current ? '是' : '否' }}</el-tag></template></el-table-column>
         </el-table>

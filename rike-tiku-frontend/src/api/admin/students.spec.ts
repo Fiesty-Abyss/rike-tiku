@@ -6,6 +6,7 @@ import {
   fetchStudent,
   fetchStudents,
   resetStudentPassword,
+  resetStudentPasswords,
   transferStudent,
   updateStudent,
 } from './students'
@@ -51,5 +52,10 @@ describe('管理员学生管理 API', () => {
   it('密码重置使用独立接口且不提交明文', async () => {
     await resetStudentPassword(9)
     expect(adapter).toHaveBeenCalledWith(expect.objectContaining({ method: 'post', url: '/admin/students/9/reset-password', data: undefined }))
+  })
+
+  it('批量恢复只提交所选学生业务 ID', async () => {
+    await resetStudentPasswords([9, 10])
+    expect(adapter).toHaveBeenCalledWith(expect.objectContaining({ method: 'post', url: '/admin/students/reset-passwords', data: JSON.stringify({ ids: [9, 10] }) }))
   })
 })
