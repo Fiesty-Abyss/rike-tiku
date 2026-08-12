@@ -1,5 +1,7 @@
 # 学生练习前端
 
+> 本文包含历史分支补充记录，当前项目状态请查看 [README](../README.md) 和 [开发状态](DEVELOPMENT_STATUS.md)。
+
 本模块已通过普通 merge 进入 `main`（PR #13，合并提交 `db04fbc9caeeb5e4eb003a45581e62e76dbab420`）。合并后前端 68/68 测试、类型检查和构建通过，`npm audit` 为 0 vulnerabilities。真实 HTTP 验证为 `PASS`，学生页面回查为 `NOT_RUN`，综合结论为 `PASS_WITH_ENV_LIMITATION`。学生页面不把题目、答题内容或练习结果写入 `localStorage`、`sessionStorage` 或控制台。
 
 | 路由 | 页面 | 行为 |

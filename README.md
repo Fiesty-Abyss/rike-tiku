@@ -1,136 +1,165 @@
-# 面向高中物化生的 Spring Boot 大模型题库系统设计与实现
+# RIKE 理科学习辅助系统
 
-本科毕业设计项目，面向高中物理、化学、生物的在线题库实训场景。系统计划围绕“题目练习 → 自动判分 → 标准解析 → 错题沉淀 → AI辅助答疑”构建可演示、可测试、可降级的学习闭环。
+**面向高中物化生的 Spring Boot 大模型题库系统设计与实现**
 
-> 当前仓库处于分阶段开发中，不代表完整系统已经完成或投入真实学校使用。
+面向高中物理、化学、生物学习场景，集成题库、在线练习、错题分析、AI 当前题答疑、可控变式题生成和人工审核的本科毕业设计系统。
 
-> PR #30 在 `feat/ai-question-generation-review` 完成管理员 AI 模型配置、GLM 视觉上下文、固定 RIKE 学生身份、AI 候选变式题、重复控制、PENDING 人工审核与质量评价，受影响专项、package、type-check 和 build 均已通过，状态为 `DONE_VERIFIED`；完整全量与人工验收仍留 PR #31。V14 后为 35 张业务表，V1–V13 未修改。真实 GLM 单图 smoke 已到达官方接口，但最多一次重试后仍为 HTTP 429，记为 `REAL_GLM_VISION_SMOKE_FAIL_429`，不冒充 PASS。Provider 配置见 [AI Provider 配置](docs/AI_PROVIDER_CONFIGURATION.md)。
+项目早期使用过“集成大模型智能答疑的在线题库实训管理系统”这一标题，当前论文题目与仓库首页统一采用上方正式名称。
 
-> PR #29 已以 ordinary merge commit `d04e5dcf9639182303e26e38ccfa4351ad91c5d9` 进入 `main`。学生 AI 学习主链和真实 `deepseek-v4-flash` smoke 为 `DONE_VERIFIED`：普通文本、结构化错因 JSON、token/latency、严格 Parser、V12 脱敏日志、V13 SUCCESS 与 STANDARD 不变均已验证。
+## 当前状态
 
-> 2026-08-09 V3.0 非 AI 正式完工审计的 **REJECT** 结论作为历史快照保留。PR #27 已完成 MA-017 至 MA-026，用户已完成最后一次真实 CAPTCHA 与浏览器复验，全部问题正式关闭，非 AI A 层标记为 `DONE_VERIFIED`。PR #27 是最后一个普通非 AI 工程 PR；AI Provider Core 将从其合并后的最新 `main` 另行开始。详见 [V3.0 非 AI 完工审计](docs/V3_NON_AI_COMPLETION_AUDIT.md)。
+| 能力 | 状态 |
+| --- | --- |
+| 非 AI 主链 | `DONE_VERIFIED` |
+| AI Provider Core | `DONE_VERIFIED` |
+| 学生 AI 错因分析 | `DONE_VERIFIED` |
+| 当前题有限多轮答疑 | `DONE_VERIFIED` |
+| 真实 DeepSeek | `PASS` |
+| 管理员 AI 模型配置 | `DONE_VERIFIED` |
+| GLM Vision 代码链 | `DONE_VERIFIED` |
+| 真实 GLM Smoke | `REAL_GLM_VISION_SMOKE_FAIL_429` |
+| AI 候选变式题 | `DONE_VERIFIED` |
+| 教师、管理员人工审核 | `DONE_VERIFIED` |
+| 最终全量回归 | `PR #31 PENDING` |
+| 最终用户人工验收 | `PR #31 PENDING` |
 
-> PR #26 已以 merge commit `b992bffef07465665b371b7b707ca8814ec2d36d` 普通合并；PR #27 的机器测试、机器浏览器证据与用户人工浏览器复验已分别记录。PR #27 是最后一个普通非 AI 工程 PR，当前实现包含 V11 管理员日志、Golden30 正常导入闭环、管理员题目图片上传、菜单整理、多角色切换、Round 4 Aqua Future 视觉和三角色工作台；本阶段不包含运行时 AI。
+这里的 `DONE_VERIFIED` 表示对应开发阶段的受影响专项与必要构建已经通过。完整全量回归、最终真实全链路和最后一次用户人工验收仍由 PR #31 完成，因此当前不能表述为百分之百最终验收完成。详细证据见 [开发状态](docs/DEVELOPMENT_STATUS.md)。
 
-## 工程范围
+## 核心学习闭环
 
-> PR #27 当前前端机器门禁（2026-08-11）：50 个测试文件、174/174 PASS，type-check、build PASS，audit 0；Vite main chunk 797.43 kB（gzip 254.25 kB）warning 如实保留。Round 4 未修改后端 Java、API contract、Flyway 或数据库，所以未机械重跑 Maven；最近一次后端执行仍为 133 tests、0 failure、0 error、1 个 Windows 符号链接 assumption skipped 与 package PASS。最近 Demo `acceptance-prepare → validate → smoke` PASS：三科普通题各 120，另有 Topic18，总题量 378。Round 4 机器证据不能替代用户人工 CAPTCHA 或视觉验收。
+```mermaid
+flowchart LR
+    A[题目练习] --> B[自动判分]
+    B --> C[STANDARD 标准解析]
+    C --> D[错题记录]
+    D --> E[AI 个性化错因]
+    E --> F[当前题 AI 答疑]
+    F --> G[薄弱点]
+    G --> A
+```
 
-- 学科：高中物理、化学、生物。
-- 题型：首版规划支持单选、多选、填空自动判分；综合大题只用于专题学习，不自动评分。
-- 用户：学生、教师、管理员。首版关闭自由注册，账号由管理员创建或批量导入。
-- AI：标准答案和标准解析始终是权威基础；AI解析不得覆盖标准解析，AI不可用时不得影响题库、练习、判分和错题等核心功能。
+AI 候选题始终经过人工审核，不直接进入学生练习。
+
+```mermaid
+flowchart LR
+    A[PUBLISHED 母题] --> B[参数化变式]
+    B --> C{图片题}
+    C -->|是| D[GLM Vision]
+    C -->|否| E[DeepSeek]
+    D --> E
+    E --> F[JSON 校验]
+    F --> G[重复检测]
+    G --> H[PENDING]
+    H --> I[教师或管理员评价审核]
+    I --> J[PUBLISHED]
+```
+
+## 三类角色
+
+### STUDENT
+
+- 登录、练习、自动判分与 STANDARD 标准解析
+- 错题本、高频考点与学习情况
+- AI 错因分析与 RIKE 当前题答疑
+- 师生消息
+
+### TEACHER
+
+- 按任教班级与学科查看学生学习情况和高频考点
+- 师生消息
+- AI 变式题生成、候选质量评价与候选题审核
+
+### ADMIN
+
+- 学生、教师、班级与任课关系管理
+- 题库、导入、审核发布、附件与操作日志
+- AI 模型配置、DeepSeek 与 GLM Key、连接测试
+- AI 候选题与全局质量统计
+
+## AI 架构
+
+DeepSeek V4 是文本推理“大脑”，负责错因分析、当前题答疑和候选变式题生成。GLM-4.6V-Flash 是视觉“眼睛”，只负责图片题视觉语义提取。
+
+```text
+图片 → GLM → UNTRUSTED_VISION_CONTEXT → DeepSeek
+```
+
+- GLM 不负责正式判分，也不能覆盖 STANDARD。
+- DeepSeek 的分析和候选答案不覆盖 STANDARD。
+- 学生端不显示 Provider、模型代码、API 地址、Key 或 Token。
+- 学生端统一使用“RIKE 理科学习助手”身份。
+- Provider 调用日志只保存安全元数据，不保存 Prompt、输出、图片 Base64 或 Key。
+
+## 受控限制
+
+学生答疑只绑定当前题，最多 8 轮；单条用户消息最多 500 字；Provider 上下文最多最近 12 条消息，总字符预算 6000。无关闲聊会被限制回当前物理、化学、生物学习场景。
+
+Vision 每题最多 2 张图片，单图不超过 3 MB，总量不超过 6 MB，只接受 PNG/JPEG。附件按 SHA-256 去重，GLM 输出必须通过受控 JSON 校验，相同视觉上下文优先复用缓存。
+
+变式题每次生成 1 至 3 道，同一母题的 `AI_GENERATED + PENDING` 候选最多 6 道。系统使用 request hash、精确内容 hash、批内去重和 trigram/Jaccard 疑似重复提示。候选只能先进入 `PENDING`，人工审核通过后才能发布。
 
 ## 技术栈
 
-- 后端：Java 25、Maven、Spring Boot 4.1、Spring MVC、Spring Security、MyBatis-Plus、Flyway、MySQL、SpringDoc OpenAPI、JUnit 5。
-- 前端：Vue 3、TypeScript、Vite、Element Plus、Pinia、Vue Router、Axios；公共 Portal 使用 GSAP / ScrollTrigger 实现连续滚动叙事，移动端与 reduced motion 提供完整降级。
-- 数据库：MySQL 8.4，业务表和字段使用 `pinyin_snake_case`。
+### Backend
 
-## 目录
+- Java 25
+- Spring Boot 4.1
+- Maven、Spring MVC、Spring Security、JWT
+- MyBatis-Plus 3.5.17、Flyway、MySQL 8.4
+- Apache POI、SpringDoc
 
-```text
-rike-tiku-backend/    Spring Boot 后端
-rike-tiku-frontend/   Vue 3 前端
-docs/                 设计、状态与AI交接文档
-database/             数据库说明、ER图和结构快照
-题库/                 离线题库候选资料及质量检查结果
-脚本/                 离线整理与检查脚本
-scripts/              本地开发与演示环境PowerShell工具
-```
+### Frontend
 
-Flyway 是数据库结构的唯一建表和升级入口。已经执行的迁移不得修改，后续结构变化必须新增版本迁移。
+- Vue 3、TypeScript、Vite
+- Element Plus、Pinia、Vue Router、Axios
+- GSAP、KaTeX
 
-## 当前进度
+### AI
 
-已经完成并验证：
+- DeepSeek OpenAI-compatible API
+- GLM-4.6V-Flash Vision
+- Fake/Stub Provider
+- Structured JSON
+- Metadata-only AI call log
 
-- 前后端基础工程、健康检查、真实数据库连接和开发环境CORS联调；
-- 题库核心数据库V1版，Flyway V1–V4；
-- 10张题库业务表；
-- 物理、化学、生物各1道 `PENDING` 最小真实样本；
-- 账号、角色、学生/教师档案、班级、班级学生历史和三元任课关系数据库模型；
-- Flyway V1–V6，共18张业务表；
-- 最小MyBatis-Plus映射、数据库约束测试和空库全迁移测试。
-- 后端统一登录、BCrypt密码校验、JWT访问Token、当前用户、首次改密门禁和三角色鉴权。
-- 管理员班级基础管理后端：分页查询、详情、创建、修改和状态变更；所有接口仅限管理员（PR #6已普通merge）。
-- 管理员学生Excel导入模板与预检查后端：仅生成模板和逐行预览，不创建账号、学生档案或班级学生关系（PR #7已普通merge）。
-- 管理员学生Excel导入后端：模板、预检查与确认入库；确认时在一个事务中创建账号、STUDENT角色、学生档案和主班级关系。
-- 管理员班级管理与学生Excel导入前端：管理员布局、班级分页筛选/创建/编辑/状态切换，以及模板下载、预检查、确认入库、账号发放结果与Excel下载。
-- 管理员教师账号与档案、教师—班级—科目三元任课关系：管理员分页筛选、创建、修改、一次性初始密码、任课关系创建与状态结束/停用。
-- 管理员题库审核发布：题目分页与筛选、草稿创建/编辑、完整详情、版权复核和 `DRAFT → PENDING → PUBLISHED → DISABLED → PUBLISHED` 状态流；已通过普通 merge 合并到 `main`（PR #11）。
-- 管理员 MVP30 题库导入：单文件 Excel 预检查、逐行错误、知识点精确匹配、来源文件追溯、附件对象精确映射与全批次确认入库；成功题目和 STANDARD 解析统一为 `PENDING`。已通过普通 merge 合并至 `main`（PR #12，合并提交 `f499f0c2e1e3b4637d22480868e94dbdacdcbaa0`）。纯 V1–V6 测试库预检查结果为物理 0/10、化学 1/10、生物 1/10；仅在测试事务预置 Excel 所需知识点后，附件专项结果为 2/10、1/10、6/10。随机临时库的真实 HTTP multipart 与浏览器回查结论为 `PASS_WITH_ENV_LIMITATION`；匿名临时题已清理，MVP30 原始 Excel 尚未确认入库。
-- 学生自主练习、自动判分与错题闭环已通过普通 merge 进入 `main`（PR #13，合并提交 `db04fbc9caeeb5e4eb003a45581e62e76dbab420`）：创建时冻结可安全校验的题集，提交整场答案后完成单选/多选/填空自动判分、结果与错题聚合；未提交前不返回标准答案或解析。当前分支补充了安全 PNG/JPEG 附件存储、权限访问和图片显示；正文保留 `〔图片对象 I001〕` / `〔公式对象 F107〕`，数据库附件表只保存 `I001` / `F107` 这样的对象 ID；PDF、公式和 ANSWER 附件仍不进入普通自动判分题池。
+Redis、消息队列、向量数据库、WebSocket 和微服务不是当前主线依赖。
 
-已完成前端认证基础：三角色登录入口、Pinia认证状态、Bearer Token注入、会话恢复、首次改密、路由守卫、管理员业务页及学生三科学习工作台。PR #21 已将基于真实答题事实的知识点掌握度、规则推荐和教师班级学情查看普通 merge 进入 `main`；它是确定性规则统计，不属于 AI。PR #27 已补齐管理员 Dashboard、教师密码重置、练习可用题数、中文题型规则、逐题结果、知识点与规则型类似练习、错题实时学科筛选、Topic18、冻结选项内容、结构化解析、显式 accepted answers 和 Round 4 Aqua Future 视觉。非 AI A 层已由用户最终复验并标记 `DONE_VERIFIED`。下一阶段仅建立 `feat/ai-provider-core` 入口，尚未开始 AI Provider、AI 答疑、教师任务或考试。当前验收题库为确定性 Demo360（三科各 120）+ Topic18；MVP30 是结构化导入能力验证素材，不等于最终演示内容。
+## 数据库
 
-准确状态请以 [开发状态](docs/DEVELOPMENT_STATUS.md) 和 [AI交接](docs/AI_HANDOFF.md) 为准。
+当前 Flyway 为 V1–V14，共 35 张业务表。已执行迁移不得修改。
 
-## 本地演示验收环境
+- V12：`ai_diao_yong_ri_zhi`
+- V13：`ai_cuo_ti_fen_xi`、`ai_hui_hua`、`ai_xiao_xi`
+- V14：`ai_mo_xing_pei_zhi`、`ai_sheng_cheng_ren_wu`、`ai_hou_xuan_ti_zhi_liang_ping_jia`、`ai_shi_jue_shang_xia_wen`
 
-`main` 已通过 PR #14（普通 merge `4ffbcbda66f26e7390192985ce179f30d3a6b664`）提供显式执行的独立演示库工具。它默认操作 `rike_tiku_demo`，拒绝操作 `rike_tiku` 及 MySQL 系统库，不会在应用正常启动时自动写入数据。准备好 `RIKE_TIKU_DB_PASSWORD` 后，一条命令完成最终验收库的重建、播种和校验：
+完整模型见 [数据库模型](docs/DATABASE_MODEL_V2.md)。
 
-```powershell
-.\scripts\demo-environment.ps1 acceptance-prepare
-```
+## 管理员 AI 配置
 
-最终验收账号为 `demo_admin`、`demo_199_01`、`demo_teacher`、`demo_physics_admin`，本地演示密码均为 `a1234567`；数据库仅保存 BCrypt 摘要。分别启动前后端：
+管理员在 `/admin/ai-models` 配置 DeepSeek TEXT 与 GLM VISION，包括 model、base URL、Key、启停、默认配置、超时、重试、max tokens 和连接测试。
 
-```powershell
-.\scripts\demo-environment.ps1 acceptance-backend
-.\scripts\demo-environment.ps1 acceptance-frontend
-```
+本地本科毕设 Demo 模式允许 MySQL 保存 Key。API 不回显完整 Key，页面只显示是否已配置，调用日志不保存 Key。这是本地演示便利设计，不是生产级 KMS。
 
-`acceptance-frontend` 会先按 `VITE_API_BASE_URL=http://localhost:18081/api/v1` 构建，再以 Vite preview 在 18080 提供 production-like 验收页面；不使用开发服务器。`acceptance-backend` 固定连接 `rike_tiku_demo`，并关闭 CAPTCHA `testCode`。详细安全边界与操作说明见 [演示环境说明](docs/DEMO_ENVIRONMENT.md)，人工检查步骤见 [人工验收清单](docs/MANUAL_ACCEPTANCE_CHECKLIST.md)。
+## 快速启动
 
-使用 IDEA 直接启动时必须在运行配置增加 `RIKE_TIKU_DB_NAME=rike_tiku_demo`；否则后端默认连接正式开发库 `rike_tiku`，其中不存在演示账号。默认端口方案的前端 API 地址为 `http://localhost:8081/api/v1`。脚本的 `backend` 动作关闭 CAPTCHA `testCode`，供真实浏览器验收；机器 smoke 使用独立的 `smoke-backend` 动作。
+### MySQL
 
-历史 PR #14 自动化验证为后端 74/74、前端 68/68，后端打包、前端类型检查与构建均通过，`npm audit` 为 0 vulnerabilities；真实脚本链及三角色 HTTP smoke 已通过。PR #15 已普通 merge 进入 `main`（merge commit `12d636fde4afa198edc78eb0c295f5b88c8e3456`）：当时统一登录使用服务端短时一次性滑块验证，并提供中文化、学生三科工作台、教师任教范围和主动改密。PR #15 合并后回归为后端 79/79、前端 72/72；该滑块只属于历史实现，已由 PR #19 的随机图形验证码替换。
+准备 MySQL 8.4 和数据库 `rike_tiku`。应用启动时由 Flyway 自动校验并迁移到 V14。正式库与独立验收库 `rike_tiku_demo` 的用途不同，Demo 工具不会接受正式库名。
 
-PR #16 已普通 merge（merge commit `588db6ee5b2a6c466c618249f072591af47609a1`），独立 `rike_tiku_demo` 已扩充为 Demo90：物理、化学、生物各 30 道项目原创自编演示题，每科三题型、三档难度和三个演示知识点各 10 道。Demo90 使用稳定 Unicode 表达化学式、电荷与科学计数法，STANDARD 解析为简短学科解析。它仅用于稳定演示筛选、随机练习、判分和错题链路，不等于 MVP30 正式真实题库；MVP30 仍未正式入库，网络候选题也未因此改为 `PUBLISHED`。PR #16 未新增 Flyway 迁移，未写正式 `rike_tiku`。
-
-PR #17 已普通 merge（merge commit `3e5454de8257075d1ccdf11d5f6d3a35b464adc1`）进入 `main`。它新增 `/admin/students` 单学生管理，保留 `/admin/students/import` 批量导入；支持分页筛选、详情与班级历史、事务新增、资料和状态编辑、调班、启停及管理员重置密码。`rike_tiku_demo` 同时扩充为保留原 smoke 数据的 3 班、4 教师、9 学生、9 条 ACTIVE 三元任课关系场景，其中 199 班 5 名固定学生、200 班 3 名固定学生。PR #17 合并时 Flyway 为 V1–V7；未修改 MVP30 原始 Excel。合并后回归为后端 86/86、前端 80/80，package、type-check、build、生产依赖 audit 及 `reset → seed → validate → smoke` 均通过。
-
-PR #18 已普通 merge（merge commit `b615bc1a78d842d61928abc8f89b839f52c88b7f`）进入 `main`。它新增 V8（不修改 V1–V7），将业务表扩展为 24 张：教师可在本人 ACTIVE 三元任课关系内进入班级学科工作台，查看班级学生和维护高频考点；学生端依据本人有效主班级和所选科目只读取对应 ACTIVE 高频考点。Demo 环境预置 199/200 六条场景任课关系各 2 条，共 12 条自编高频考点。浏览器验收已覆盖物理教师新增、编辑、停用、启用、双班切换，生物/化学学科隔离，以及 199/200 学生内容隔离；MA-008 已关闭。合并后验证为后端 87/87、前端 83/83、package/type-check/build/audit 和 Demo 脚本链均通过。
-
-PR #19 已普通 merge（merge commit `0a12943e901e844520e3801264fa4a43590ff28e`）进入 `main`，将登录页历史滑块替换为 JDK 生成的 4 位随机 PNG 图形验证码。验证码默认隐藏，第一次点击或 Enter 仅展开并获取 challenge，第二次才提交登录；challenge 在内存保存 2 分钟并一次性消费，不新增数据库、Redis 或第三方依赖。合并后回归为后端 90/90、前端 91/91，package、type-check、build 和生产依赖 audit（0 vulnerabilities）均通过；Demo `reset → seed → validate → smoke` PASS，正式库四项污染检查均为 0。
-
-PR #20 已普通 merge（merge commit `1055dee567b7afa153750792670fb0bafed1151c`）进入 `main`。V9 新增 `si_xin_hui_hua`、`si_xin_xiao_xi`，业务表共 26 张；师生私信受 ACTIVE 三元任课关系和学生当前主班级约束，发送身份由 JWT 决定，使用 REST polling，不包含 WebSocket、附件、群聊或管理员消息审计。合并后后端 92/92、前端 100/100，package、type-check、build、audit 0、Demo 脚本链及此前真实浏览器双向私信验收均通过，MA-009 已关闭。
-
-PR #21 已普通 merge（merge commit `c0d655324fec0a36772c2d095b6025e5f708fc4c`）进入 `main`。它基于 V7 已提交答题、冻结知识点快照、学习结果和错题状态实时计算掌握度，不新增迁移、缓存或统计表。掌握度覆盖当前学科全部 ACTIVE 知识点；5 题规则推荐单独复用真实练习题池资格。学生三科学科页展示知识点掌握与最多 3 项固定规则推荐，教师只在本人 ACTIVE 三元任课范围内查看班内学生当前学科汇总。合并后回归为后端 98/98、前端 29 文件 106/106，package、type-check、build、audit 0 及 Demo `reset → seed → validate → smoke` 均通过；MA-014、MA-015 已关闭。该功能是确定性规则统计，不属于 AI。
-
-PR #22 已普通 merge（merge commit `67b7bd7239e2ac1de3ad8c71b82b6d0a79162d3b`）进入 `main`，提供三角色共用的 `/profile`：本人账号、真实角色、学生/教师档案只读展示，500 字个人简介，PNG/JPEG 小头像上传、持久化和删除，以及现有主动改密入口。V10 只为 `yong_hu` 增加简介与头像字段，不增加业务表、不修改 V1–V9；当前仍为 26 张业务表。首次登录用户必须先完成初始密码修改，不能提前访问或修改个人中心。合并后回归为后端 102/102、前端 31 文件 117/117，package、type-check、build、audit 0 和 Demo `reset → seed → validate → smoke` 均通过；MA-006 已关闭。
-
-PR #23 已普通 merge（merge commit `3677c7623e08e34ee63e45dbcfd557a27b32f990`）进入 `main`，冻结最终非 AI 演示题库口径：保留经验证的 Demo90，并从 54 个开发阶段原创候选中筛选 30 道变式，形成 120 道最终 Demo 题库。V3.0 要求的是 30 题 MVP 对导入、审核、发布、查询和附件显示闭环的验证，并未指定名为 MVP30 的 Excel 必须整体成为最终演示题库；MVP30 原始文件保持不变，继续作为结构化导入能力验证素材。合并后回归为后端 105/105、前端 31 文件 117/117，package、type-check、build、audit 0 和 Demo `reset → seed → validate → smoke` 均通过；Flyway 仍为 V1–V10、26 张业务表。
-
-## 本地启动
-
-### 后端
-
-后端的 `.env.example` 仅用于说明配置项。当前 Spring Boot 工程和 IDEA 不会自动加载 `.env` 或 `.env.example`。首次使用IDEA时，推荐在后端目录执行一次安全初始化脚本：
+### Backend
 
 ```powershell
 cd rike-tiku-backend
-.\scripts\setup-idea-local-env.ps1
-```
-
-脚本隐藏密码输入，只设置当前Windows用户环境变量，不向Git文件写入密码。执行后必须完全退出并重新打开IDEA，再运行 `RikeTikuBackendApplication`。
-
-脚本还会在本机缺少JWT密钥时生成随机 `RIKE_TIKU_JWT_SECRET`。JWT默认有效期为7200秒，可通过 `RIKE_TIKU_JWT_EXPIRATION_SECONDS` 覆盖。
-
-从终端临时启动时也可以只为当前PowerShell设置密码：
-
-```powershell
-$env:RIKE_TIKU_DB_PASSWORD="your-local-password"
-cd rike-tiku-backend
+$env:RIKE_TIKU_DB_PASSWORD = "<本机 MySQL 密码>"
+$env:RIKE_TIKU_JWT_SECRET = "<至少 32 字节的本机随机密钥>"
 mvn spring-boot:run
 ```
 
-如果不希望设置Windows用户环境变量，也可在IDEA私有 Run Configuration中添加同名变量。数据库地址或账号不是默认值时，再配置 `RIKE_TIKU_DB_HOST`、`RIKE_TIKU_DB_PORT`、`RIKE_TIKU_DB_NAME` 和 `RIKE_TIKU_DB_USERNAME`。项目不读取 `RIKE_TIKU_DB_URL`。
+后端默认运行于 `http://localhost:8081`，健康检查为 `http://localhost:8081/api/v1/health`。数据库地址、账号和端口可通过 `RIKE_TIKU_DB_HOST`、`RIKE_TIKU_DB_PORT`、`RIKE_TIKU_DB_NAME`、`RIKE_TIKU_DB_USERNAME` 和 `RIKE_TIKU_BACKEND_PORT` 覆盖。
 
-详细步骤和故障排查见 [后端本地启动说明](rike-tiku-backend/README.md)。默认后端地址为 `http://localhost:8081`，健康接口为 `http://localhost:8081/api/v1/health`。
+也可以在后端目录运行 `./scripts/setup-idea-local-env.ps1`，按提示为 IDEA 准备本机环境变量。详细说明见 [后端启动说明](rike-tiku-backend/README.md)。
 
-### 前端
+### Frontend
 
 ```powershell
 cd rike-tiku-frontend
@@ -139,61 +168,38 @@ npm install
 npm run dev
 ```
 
-默认前端地址为 `http://localhost:8080`。前端API地址通过 `VITE_API_BASE_URL` 配置。
+前端默认运行于 `http://localhost:8080`，默认 API 地址为 `http://localhost:8081/api/v1`。详细说明见 [前端启动说明](rike-tiku-frontend/README.md)。
 
-前端 Vite 会按其规则加载 `.env.local`；这与后端 Spring Boot 的环境变量加载方式不同，请勿混淆。
+### 启用真实 AI
 
-## 验证命令
+可以在管理员后台 `/admin/ai-models` 保存并启用数据库配置，也可以使用 application/env 回退配置。AI 默认关闭，未配置 Key 不影响登录、题库、练习、判分、错题和 STANDARD。
 
-```powershell
-cd rike-tiku-backend
-mvn clean test
-mvn clean package
+环境变量名与安全默认值见 [AI Provider 配置](docs/AI_PROVIDER_CONFIGURATION.md)。仓库不应保存真实数据库密码、JWT 密钥或 Provider Key。
 
-cd ../rike-tiku-frontend
-npm run type-check
-npm run build
+## 项目结构
+
+```text
+rike-tiku-backend/   Spring Boot 模块化单体后端
+rike-tiku-frontend/  Vue 3 前端
+docs/                当前文档、历史验收与证据索引
+题库/                题库素材与导入验证资料
+脚本/                清洗、核验等辅助脚本
+scripts/             Demo 环境与验收启动脚本
 ```
 
-## 文档索引
+文档导航见 [docs/README.md](docs/README.md)。
 
-- [跨AI项目上下文](docs/AI_PROJECT_CONTEXT.md)
-- [开发状态](docs/DEVELOPMENT_STATUS.md)
-- [AI交接](docs/AI_HANDOFF.md)
-- [题库核心数据库模型V1](docs/QUESTION_DATABASE_MODEL_V1.md)
-- [后端认证接口](docs/AUTHENTICATION_API.md)
-- [管理员班级管理接口](docs/ADMIN_CLASS_MANAGEMENT_API.md)
-- [学生Excel导入预检查接口](docs/STUDENT_IMPORT_PREVIEW_API.md)
-- [管理员班级与学生导入前端](docs/ADMIN_STUDENT_IMPORT_FRONTEND.md)
-- [管理员学生管理 API](docs/ADMIN_STUDENT_MANAGEMENT_API.md)
-- [管理员学生管理前端](docs/ADMIN_STUDENT_MANAGEMENT_FRONTEND.md)
-- [教师工作台与高频考点 API](docs/TEACHER_WORKSPACE_HIGH_FREQUENCY_API.md)
-- [教师工作台与高频考点前端](docs/TEACHER_WORKSPACE_HIGH_FREQUENCY_FRONTEND.md)
-- [师生私信 API](docs/TEACHER_STUDENT_MESSAGING_API.md)
-- [师生私信前端](docs/TEACHER_STUDENT_MESSAGING_FRONTEND.md)
-- [知识点掌握度与规则推荐](docs/LEARNING_MASTERY_RULE_RECOMMENDATION.md)
-- [最终演示题库](docs/FINAL_DEMO_QUESTION_BANK.md)
-- [变式候选审核记录](docs/DEMO_VARIANT_QUESTION_REVIEW.md)
-- [管理员教师与任课关系接口](docs/ADMIN_TEACHER_ASSIGNMENT_API.md)
-- [管理员教师与任课关系前端](docs/ADMIN_TEACHER_ASSIGNMENT_FRONTEND.md)
-- [管理员题库审核发布接口](docs/ADMIN_QUESTION_REVIEW_API.md)
-- [管理员题库审核发布前端](docs/ADMIN_QUESTION_REVIEW_FRONTEND.md)
-- [管理员题库导入接口](docs/ADMIN_QUESTION_IMPORT_API.md)
-- [管理员题库导入前端](docs/ADMIN_QUESTION_IMPORT_FRONTEND.md)
-- [学生练习与自动判分接口](docs/STUDENT_PRACTICE_API.md)
-- [学生练习前端](docs/STUDENT_PRACTICE_FRONTEND.md)
-- [本地演示环境](docs/DEMO_ENVIRONMENT.md)
-- [人工验收清单](docs/MANUAL_ACCEPTANCE_CHECKLIST.md)
-- [人工验收问题记录](docs/MANUAL_ACCEPTANCE_FINDINGS.md)
-- [V3.0 非 AI 正式完工审计](docs/V3_NON_AI_COMPLETION_AUDIT.md)
-- V3.0总体设计公开脱敏版（位于 `docs/`）
+## 测试与验收
 
-## 题库资料和权利说明
+- PR #29 的真实 `deepseek-v4-flash` smoke 为 PASS，严格 JSON Parser 与日志脱敏均通过。
+- PR #30 主实现专项为后端 54/54、前端 12/12；集中修正专项为后端 38/38、前端 32/32。
+- PR #30 的 package、type-check、build 与 `git diff --check` 均为 PASS。
+- 真实 GLM 请求到达官方 endpoint，但最终返回 HTTP 429，状态为 `REAL_GLM_VISION_SMOKE_FAIL_429`，不能记为 PASS。
+- 不把不同轮次、可能重叠的测试数相加成虚假总数。
+- 完整全量回归、Demo、机器浏览器和最终用户人工验收由 PR #31 执行。
 
-`题库/` 中的Excel、JSON、图片、公式对象、Word和PDF资料仅作为本科毕业设计的学习、开发与人工审核候选材料。当前样本保持 `PENDING`，来源权利状态保持 `COPYRIGHT_UNKNOWN`；仓库不声明这些资料已经获得公开传播授权。使用者应在正式发布前完成学科质量和版权核验。
+## 最终阶段
 
-仓库不得包含数据库真实密码、API Key、JWT密钥、访问令牌、学生手机号、身份证、家庭住址或真实成绩等敏感信息。
+下一阶段唯一任务是 PR #31 `chore/final-ai-integration-verification`。
 
-## 下一阶段
-
-PR #25 已普通 merge（merge commit `0559a4e4eba041dd74a7bcb7d4c9f2cd8b29e617`）进入 `main`，关闭 MA-016；V3.0 非 AI 正式完工审计结论仍作为历史 REJECT 保留。当前 PR #27 继续 Draft；MA-017 等待最终集成人工验收，MA-021 至 MA-026 等待用户复验。通过前不得标记 `DONE_VERIFIED`；DeepSeek、GLM 和运行时 AI 能力仍未实现。
+范围包括全量自动化回归、Flyway、Demo、DeepSeek、GLM、AI 配置后台、学生错因、当前题聊天、候选题生成审核、权限与降级验证、全站机器浏览器、一次最终用户人工验收，以及论文、README 和答辩口径统一。PR #31 原则上不新增业务功能，只处理集成缺陷、测试问题与最终封板。

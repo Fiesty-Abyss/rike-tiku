@@ -1,6 +1,6 @@
 # AI Provider 配置
 
-PR #28 提供统一 `AiModelProvider` 基础层。AI 默认关闭；不配置 API Key 时应用仍可启动，题库、练习、判分、错题等非 AI 功能不依赖 Provider 可用。
+当前运行时使用统一 `AiModelProvider` 基础层。AI 默认关闭；不配置 API Key 时应用仍可启动，题库、练习、判分、错题等非 AI 功能不依赖 Provider 可用。
 
 ## 环境变量
 
@@ -23,7 +23,7 @@ PR #28 提供统一 `AiModelProvider` 基础层。AI 默认关闭；不配置 AP
 
 V12 `ai_diao_yong_ri_zhi` 只保存 provider、model、用途、可空业务引用、成功状态、耗时、输入/输出 token、错误码和创建时间。它不保存 Prompt、模型输出、API Key、JWT、密码或完整题目。
 
-## PR #30 管理员数据库配置
+## 管理员数据库配置
 
 管理员 `/admin/ai-models` 可以维护 TEXT/DEEPSEEK 和 VISION/GLM 配置。运行时优先读取当前启用且标记默认的数据库配置；没有可用数据库配置时回退本页环境/application 默认，二者均不可用时返回受控降级。每次业务调用最多一次索引查询，配置保存、切换或清除后立即生效，不使用 Redis。
 
@@ -38,7 +38,7 @@ V12 `ai_diao_yong_ri_zhi` 只保存 provider、model、用途、可空业务引�
 
 2026-08-11 已按官方文档复核：DeepSeek Chat Completions 为 `https://api.deepseek.com/chat/completions`，项目受控模型为 `deepseek-v4-flash`/`deepseek-v4-pro`；智谱 GLM-4.6V-Flash 使用 `https://open.bigmodel.cn/api/paas/v4/chat/completions`，支持 image URL/Base64 输入和文本输出。模型 ID 集中配置，不散落在学生响应中。
 
-## PR #29 学生 AI 请求策略
+## 学生 AI 请求策略
 
 - 错因分析和当前题答疑都显式发送 `thinking={"type":"disabled"}`，不保存或返回 `reasoning_content`。
 - 错因分析使用 `response_format={"type":"json_object"}` 与 `max_tokens=1200`；Prompt 内明确包含 json 及目标结构示例。
@@ -62,4 +62,4 @@ mvn "-Dtest=RealDeepSeekSmokeTest" test
 
 `RealGlmVisionSmokeTest` 仅在当前进程存在 `RIKE_TIKU_GLM_API_KEY` 时启用，使用程序生成的无隐私 PNG、随机临时 MySQL 和真实 `glm-4.6v-flash`。默认自动化无 Key 时跳过，不访问外网。
 
-2026-08-11 实际结果：请求到达官方接口；按 transient 规则最多一次重试后仍为 HTTP 429，记录为 `REAL_GLM_VISION_SMOKE_FAIL_429`。Parser 与成功日志没有被伪造为 PASS，未继续重复调用；Key 未输出、未写文件、未写数据库、未写日志、未进入 Git。PR #31 再做最终真实 DeepSeek + GLM 全链路。
+2026-08-11 实际结果：请求到达官方接口；按 transient 规则最多一次重试后仍为 HTTP 429，记录为 `REAL_GLM_VISION_SMOKE_FAIL_429`。Parser 与成功日志没有被伪造为 PASS，未继续重复调用；Key 未输出、未写文件、未写数据库、未写日志、未进入 Git。PR #31 再做最终真实 DeepSeek 与 GLM 全链路。
