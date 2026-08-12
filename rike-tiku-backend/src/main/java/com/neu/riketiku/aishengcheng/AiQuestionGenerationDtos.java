@@ -46,4 +46,5 @@ public final class AiQuestionGenerationDtos {
                         Double averageLatencyMillis, Double averageReviewMinutes) { }
     public record MotherOption(Long id, Long subjectId, String subjectCode, String stem,
                                String questionType, int difficulty) { }
+    public record KnowledgePointOption(Long id, String name, String path) { }
 }

@@ -1,5 +1,7 @@
 # 开发状态
 
+> 2026-08-12 PR #30 集中修正：`DONE_VERIFIED`（受影响专项和必要构建）。候选 Provider/Parser/prepare 保持在事务外，候选题创建、母题关联、DRAFT→PENDING、质量评价行与任务 SUCCESS 改为同一 `TransactionTemplate` 批次事务；确定性第二候选写入故障验证任务保留 FAILED、生成数 0、质量行 0、关联/PENDING 候选 0、母题与 STANDARD 不变。教师工作台新增 `/teacher/ai-generation` 真实入口，共享管理员候选工作区主体，但仅调用 `/teacher/ai-generation/**`，只读取本人 ACTIVE 任教学科母题、知识点与任务，不请求全局 stats 或模型配置。集中修正后端专项 38/38、前端专项 32/32，package/type-check/build PASS；Flyway 仍为 V1–V14，无 V15。真实 GLM 状态仍为 `REAL_GLM_VISION_SMOKE_FAIL_429`，本轮未重复调用。
+
 > 2026-08-11 PR #30 AI 候选题/视觉主链：`DONE_VERIFIED`（受影响专项和必要构建）。V14 新增管理员 AI 模型配置、生成任务、候选题质量评价、视觉上下文缓存四表；数据库启用配置优先、环境配置回退。DeepSeek 负责文本推理，GLM `glm-4.6v-flash` 只生成受控 `UNTRUSTED_VISION_CONTEXT`。候选一次 1–3 道、同母题 AI_GENERATED PENDING 最多 6 道，request hash/内容 hash/Jaccard 三层重复控制，结果只进入 PENDING，五项人工评价通过后才能 PUBLISHED。后端专项 54/54、前端专项 12/12、package/type-check/build PASS。真实 GLM 单图 smoke 到达官方接口，但有限重试后仍为 HTTP 429，状态为 `REAL_GLM_VISION_SMOKE_FAIL_429`；最终真实全链路、全量回归和人工验收留 PR #31。
 
 > 2026-08-11 PR #29 学生 AI 学习主链：`DONE_VERIFIED`。Mock/随机临时 MySQL 专项覆盖分析、复用、一次 JSON correction、当前题最多 8 轮答疑、严格所有权、Prompt 数据隔离和 STANDARD 降级；集中修正轮保证 REVIEWING/MASTERED 后 AI 仍查询最近一次错误正式答题事实。真实 `deepseek-v4-flash` smoke 为 1/1 PASS、0 skipped：HTTP 2xx，文本 848 ms（22/11 token），结构化分析 1670 ms（400/132 token）、1 次 JSON 调用，Parser 与 V12 日志脱敏 PASS，V13 SUCCESS 且 STANDARD 未改变。Flyway 保持 V1–V13、31 张业务表；V1–V13 未修改。候选题生成仍为 `NOT_STARTED`。

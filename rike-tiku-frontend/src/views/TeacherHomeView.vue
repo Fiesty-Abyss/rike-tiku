@@ -70,7 +70,10 @@ async function logout() {
           <h2>我的任教范围</h2>
           <p>仅展示当前教师档案关联的班级、科目三元任课关系。</p>
         </div>
-        <el-button type="primary" plain @click="router.push('/messages')">消息</el-button>
+        <div class="teacher-heading-actions">
+          <el-button type="primary" @click="router.push('/teacher/ai-generation')">AI 变式题生成与审核</el-button>
+          <el-button type="primary" plain @click="router.push('/messages')">消息</el-button>
+        </div>
       </div>
       <div v-loading="loading" class="teacher-scope-grid">
         <article
@@ -94,7 +97,7 @@ async function logout() {
         type="info"
         :closable="false"
         show-icon
-        description="本页提供任教范围、学生练习学情、高频考点与师生私信；任务发布和考试不属于当前版本。"
+        description="本页提供任教范围、学生练习学情、高频考点、师生私信与 AI 候选题人工审核；任务发布和考试不属于当前版本。"
       />
     </section>
     <ChangePasswordDialog v-model="passwordVisible" />

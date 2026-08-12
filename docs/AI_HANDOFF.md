@@ -12,6 +12,9 @@
 - 生成：仅 ADMIN 或本人 ACTIVE 任课科目教师可从 PUBLISHED 母题发起；单次 1–3 道，同母题 AI_GENERATED PENDING 加本次不得超过 6。request hash 固定绑定母题、题型、排序知识点、难度、变化方式和 Prompt 版本；相同有效请求受唯一约束拒绝。
 - 校验与重复：固定 8 字段 Candidate JSON；题型/选项/答案/难度 1–5/知识点/同科/长度/危险 HTML 全部先校验。现有 `nei_rong_ha_xi` 和批内 hash 拒绝完全重复；三字符 n-gram Jaccard ≥ 0.72 标为 `SUSPECTED_DUPLICATE`，只提示人工审核。
 - 审核：候选复用 `ti_mu`，固定 `AI_GENERATED + fu_ti_mu_id + PENDING`；未填写五项 0/1 质量评价并明确 APPROVED 前不能发布，REJECTED 回到 DRAFT 并保留任务/评价事实。
+- 批次原子性修正：Provider、Parser 与候选 prepare 不占长事务；候选题创建、`fu_ti_mu_id`、DRAFT→PENDING、质量评价行和任务 SUCCESS 使用一个 `TransactionTemplate`。第二候选质量行被测试触发器确定性拒绝时整批回滚，任务随后独立标记 FAILED 且 `generatedCount=0`，无质量行、关联候选或 PENDING 泄漏，母题和 STANDARD 不变。
+- 教师闭环修正：教师工作台提供 `/teacher/ai-generation` 入口，管理员和教师共用 `AiQuestionGenerationWorkspace`。教师客户端只调用 `/teacher/ai-generation/mothers|knowledge-points|tasks|candidates/**/review`，不调用全局 stats 或 `/admin/ai-models`；后端继续按本人 ACTIVE `ren_ke_guan_xi` 限定学科，授权学科可生成/审核，未授权学科返回 403。
+- 集中修正验证：后端 38/38、前端 32/32，`mvn -DskipTests package`、`npm run type-check`、`npm run build` 均 PASS；随机临时 MySQL 迁移到 V14，未增加 V15。未运行 PR #31 全量、Demo reset/seed、全站浏览器或用户人工验收。
 - 真实 GLM smoke：使用程序生成的无隐私电路 PNG，真实请求已到达官方端点；Provider 按规则最多重试一次后仍为 HTTP 429，因此状态为 `REAL_GLM_VISION_SMOKE_FAIL_429`。未把失败写 PASS，未输出/保存 Key，未继续重复调用。
 
 ## PR #29 学生 AI 学习主链（2026-08-11）
