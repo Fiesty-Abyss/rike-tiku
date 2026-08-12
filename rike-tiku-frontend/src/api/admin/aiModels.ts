@@ -1,6 +1,6 @@
 import http from '../http'
 
-export type AiUsage = 'TEXT' | 'VISION'
+export type AiUsage = 'TEXT' | 'VISION' | 'SEARCH'
 export interface AiModelConfig {
   id:number; provider:'DEEPSEEK'|'GLM'; model:string; baseUrl:string; usage:AiUsage
   enabled:boolean; defaultConfig:boolean; timeoutMillis:number; maxTokens:number; retryCount:number
@@ -13,7 +13,7 @@ export interface SaveAiModelConfig {
 }
 export interface AiConnectionResult {
   success:boolean; provider:string; model:string; latencyMillis:number; status:string
-  visionSummaryPreview?:string; safeError?:string
+  visionSummaryPreview?:string; safeError?:string; safeErrorCode?:string; httpStatus?:number; testedAt:string
 }
 export const fetchAiModels=()=>http.get('/admin/ai-models').then(r=>r.data as {records:AiModelConfig[]})
 export const createAiModel=(body:SaveAiModelConfig)=>http.post('/admin/ai-models',body).then(r=>r.data as AiModelConfig)

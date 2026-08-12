@@ -106,6 +106,9 @@ public final class DeepSeekAiModelProvider implements AiModelProvider {
             if (request.thinkingMode() != AiThinkingMode.DEFAULT) {
                 body.put("thinking", Map.of("type", request.thinkingMode().name().toLowerCase()));
             }
+            if (request.thinkingMode() == AiThinkingMode.ENABLED && request.reasoningEffort() != null) {
+                body.put("reasoning_effort", request.reasoningEffort());
+            }
             return HttpRequest.newBuilder(URI.create(endpoint()))
                     .timeout(properties.getRequestTimeout())
                     .header("Authorization", "Bearer " + properties.getApiKey())

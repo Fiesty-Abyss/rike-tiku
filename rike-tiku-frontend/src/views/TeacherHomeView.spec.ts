@@ -13,4 +13,5 @@ const stubs={AquaBrand:true,ChangePasswordDialog:true,ElDropdown:{template:'<div
 describe('教师工作台 AI 入口',()=>{
   beforeEach(()=>{vi.clearAllMocks();mocks.fetchScopes.mockResolvedValue([])})
   it('提供真实可点击的 AI 变式题生成与审核入口',async()=>{const wrapper=mount(TeacherHomeView,{global:{stubs,directives:{loading:()=>undefined}}});await flushPromises();const button=wrapper.findAll('button').find(item=>item.text().includes('AI 变式题生成与审核'));expect(button).toBeTruthy();await button!.trigger('click');expect(mocks.push).toHaveBeenCalledWith('/teacher/ai-generation')})
+  it('提供组卷入口并移除开发边界提示',async()=>{const wrapper=mount(TeacherHomeView,{global:{stubs,directives:{loading:()=>undefined}}});await flushPromises();expect(wrapper.text()).not.toContain('当前工作边界');const button=wrapper.findAll('button').find(item=>item.text().includes('组卷与打印'));expect(button).toBeTruthy();await button!.trigger('click');expect(mocks.push).toHaveBeenCalledWith('/teacher/papers')})
 })

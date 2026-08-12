@@ -2,7 +2,12 @@ package com.neu.riketiku.aixuesheng;
 
 import com.neu.riketiku.ai.provider.AiModelResult;
 import com.neu.riketiku.ai.provider.AiProviderException;
+import com.neu.riketiku.ai.config.AiRuntimeConfigurationService;
 import com.neu.riketiku.ai.vision.VisionContextService;
+import com.neu.riketiku.ai.search.WebSearchClient;
+import com.neu.riketiku.ai.search.WebSearchException;
+import com.neu.riketiku.ai.search.WebSearchRequest;
+import com.neu.riketiku.ai.search.WebSearchResult;
 import com.neu.riketiku.renzheng.RenZhengYeWuYiChang;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -41,16 +46,21 @@ public class StudentAiService {
     private final StudentAiPromptFactory prompts;
     private final StudentAiAnalysisParser parser;
     private final VisionContextService visionContexts;
+    private final WebSearchClient webSearch;
+    private final AiRuntimeConfigurationService runtimeConfigurations;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     public StudentAiService(JdbcTemplate jdbc, StudentAiProviderClient provider,
                             StudentAiPromptFactory prompts, StudentAiAnalysisParser parser,
-                            VisionContextService visionContexts) {
+                            VisionContextService visionContexts, WebSearchClient webSearch,
+                            AiRuntimeConfigurationService runtimeConfigurations) {
         this.jdbc = jdbc;
         this.provider = provider;
         this.prompts = prompts;
         this.parser = parser;
         this.visionContexts = visionContexts;
+        this.webSearch = webSearch;
+        this.runtimeConfigurations = runtimeConfigurations;
     }
 
     @Transactional(readOnly = true)
@@ -124,16 +134,29 @@ public class StudentAiService {
 
     @Transactional
     public StudentAiDtos.Conversation createConversation(Long userId, Long answerFactId) {
+        return createConversation(userId, answerFactId, null, "STANDARD", false);
+    }
+
+    @Transactional
+    public StudentAiDtos.Conversation createConversation(Long userId, Long answerFactId, Long modelConfigId,
+                                                         String rawThinkingMode, boolean webSearch) {
         StudentAiFact fact = requireFact(userId, answerFactId);
+        String thinkingMode = "DEEP".equalsIgnoreCase(rawThinkingMode) ? "DEEP" : "STANDARD";
+        if (modelConfigId != null) runtimeConfigurations.text(modelConfigId);
+        boolean effectiveWebSearch = webSearch && runtimeConfigurations.searchAvailable();
         GeneratedKeyHolder holder = new GeneratedKeyHolder();
         jdbc.update(connection -> {
             PreparedStatement statement = connection.prepareStatement("""
-                    INSERT INTO ai_hui_hua (xue_sheng_id,xue_sheng_da_ti_id,lian_xi_ti_mu_id,zhuang_tai,lei_ji_lun_shu)
-                    VALUES (?,?,?,'ACTIVE',0)
+                    INSERT INTO ai_hui_hua (xue_sheng_id,xue_sheng_da_ti_id,lian_xi_ti_mu_id,ai_mo_xing_pei_zhi_id,
+                      si_kao_mo_shi,shi_fou_lian_wang,zhuang_tai,lei_ji_lun_shu)
+                    VALUES (?,?,?,?,?,?,'ACTIVE',0)
                     """, Statement.RETURN_GENERATED_KEYS);
             statement.setLong(1, fact.studentId());
             statement.setLong(2, fact.answerFactId());
             statement.setLong(3, fact.practiceQuestionId());
+            if (modelConfigId == null) statement.setNull(4, java.sql.Types.BIGINT); else statement.setLong(4, modelConfigId);
+            statement.setString(5, thinkingMode);
+            statement.setBoolean(6, effectiveWebSearch);
             return statement;
         }, holder);
         return conversation(userId, holder.getKey().longValue());
@@ -157,10 +180,15 @@ public class StudentAiService {
         }
         StudentAiFact fact = requireFact(userId, row.answerFactId());
         String assistant = guardedReply(content);
+        List<WebSearchResult> sources = List.of();
         if (assistant == null) {
             try {
+                if (row.webSearch()) {
+                    try { sources = webSearch.search(new WebSearchRequest(searchQuery(fact, content), 5)); }
+                    catch (WebSearchException ignored) { sources = List.of(); }
+                }
                 AiModelResult result = provider.generate(prompts.tutor(fact, recentMessages(row.id()), content,
-                        visionContext(fact.questionId())));
+                        visionContext(fact.questionId()), row.thinkingMode(), sources), row.modelConfigId());
                 assistant = safeAssistant(result.content());
             } catch (AiProviderException exception) {
                 throw providerFailure(exception);
@@ -169,8 +197,8 @@ public class StudentAiService {
         int firstSequence = row.rounds() * 2 + 1;
         jdbc.update("INSERT INTO ai_xiao_xi (ai_hui_hua_id,fa_yan_jiao_se,nei_rong,xu_hao) VALUES (?,'USER',?,?)",
                 row.id(), content, firstSequence);
-        jdbc.update("INSERT INTO ai_xiao_xi (ai_hui_hua_id,fa_yan_jiao_se,nei_rong,xu_hao) VALUES (?,'ASSISTANT',?,?)",
-                row.id(), assistant, firstSequence + 1);
+        jdbc.update("INSERT INTO ai_xiao_xi (ai_hui_hua_id,fa_yan_jiao_se,nei_rong,lian_wang_lai_yuan,xu_hao) VALUES (?,'ASSISTANT',?,CAST(? AS JSON),?)",
+                row.id(), assistant, sources.isEmpty() ? null : sourcesJson(sources), firstSequence + 1);
         int rounds = row.rounds() + 1;
         jdbc.update("UPDATE ai_hui_hua SET lei_ji_lun_shu=?,zhuang_tai=? WHERE id=? AND xue_sheng_id=?",
                 rounds, rounds >= MAX_ROUNDS ? "LIMIT_REACHED" : "ACTIVE", row.id(), row.studentId());
@@ -229,31 +257,33 @@ public class StudentAiService {
     private ConversationRow requireConversation(Long userId, Long id, boolean lock) {
         if (userId == null || id == null) throw notFound();
         String sql = """
-                SELECT h.id,h.xue_sheng_id,h.xue_sheng_da_ti_id,lt.ti_mu_id,h.zhuang_tai,h.lei_ji_lun_shu
+                SELECT h.id,h.xue_sheng_id,h.xue_sheng_da_ti_id,lt.ti_mu_id,h.zhuang_tai,h.lei_ji_lun_shu,
+                       h.ai_mo_xing_pei_zhi_id,h.si_kao_mo_shi,h.shi_fou_lian_wang
                 FROM ai_hui_hua h
                 JOIN xue_sheng_dang_an xs ON xs.id=h.xue_sheng_id
                 JOIN lian_xi_ti_mu lt ON lt.id=h.lian_xi_ti_mu_id
                 WHERE h.id=? AND xs.yong_hu_id=? AND xs.zhuang_tai='ACTIVE' AND xs.yi_shan_chu=0
                 """ + (lock ? " FOR UPDATE" : "");
         return jdbc.query(sql, (rs, n) -> new ConversationRow(rs.getLong(1), rs.getLong(2), rs.getLong(3),
-                rs.getLong(4), rs.getString(5), rs.getInt(6)), id, userId)
+                rs.getLong(4), rs.getString(5), rs.getInt(6), rs.getObject(7, Long.class), rs.getString(8),
+                rs.getBoolean(9)), id, userId)
                 .stream().findFirst().orElseThrow(this::notFound);
     }
 
     private List<StudentAiDtos.Message> allMessages(long conversationId) {
         return jdbc.query("""
-                SELECT id,fa_yan_jiao_se,nei_rong,xu_hao,chuang_jian_shi_jian
+                SELECT id,fa_yan_jiao_se,nei_rong,xu_hao,chuang_jian_shi_jian,CAST(lian_wang_lai_yuan AS CHAR)
                 FROM ai_xiao_xi WHERE ai_hui_hua_id=? ORDER BY xu_hao
                 """, (rs, n) -> new StudentAiDtos.Message(rs.getLong(1), rs.getString(2), rs.getString(3),
-                rs.getInt(4), rs.getObject(5, LocalDateTime.class)), conversationId);
+                rs.getInt(4), rs.getObject(5, LocalDateTime.class), readSources(rs.getString(6))), conversationId);
     }
 
     private List<StudentAiDtos.Message> recentMessages(long conversationId) {
         List<StudentAiDtos.Message> descending = jdbc.query("""
-                SELECT id,fa_yan_jiao_se,nei_rong,xu_hao,chuang_jian_shi_jian
+                SELECT id,fa_yan_jiao_se,nei_rong,xu_hao,chuang_jian_shi_jian,CAST(lian_wang_lai_yuan AS CHAR)
                 FROM ai_xiao_xi WHERE ai_hui_hua_id=? ORDER BY xu_hao DESC LIMIT ?
                 """, (rs, n) -> new StudentAiDtos.Message(rs.getLong(1), rs.getString(2), rs.getString(3),
-                rs.getInt(4), rs.getObject(5, LocalDateTime.class)), conversationId, RECENT_MESSAGES);
+                rs.getInt(4), rs.getObject(5, LocalDateTime.class), readSources(rs.getString(6))), conversationId, RECENT_MESSAGES);
         Collections.reverse(descending);
         List<StudentAiDtos.Message> budgeted = new ArrayList<>();
         int characters = 0;
@@ -269,7 +299,8 @@ public class StudentAiService {
 
     private StudentAiDtos.Conversation toConversation(ConversationRow row, List<StudentAiDtos.Message> messages) {
         return new StudentAiDtos.Conversation(row.id(), row.answerFactId(), row.questionId(), row.status(), row.rounds(),
-                MAX_ROUNDS, Math.max(0, MAX_ROUNDS - row.rounds()), messages);
+                MAX_ROUNDS, Math.max(0, MAX_ROUNDS - row.rounds()), row.modelConfigId(), row.thinkingMode(),
+                row.webSearch(), messages);
     }
 
     private String guardedReply(String content) {
@@ -325,6 +356,13 @@ public class StudentAiService {
         catch (Exception ignored) { return List.of(); }
     }
 
+    private String searchQuery(StudentAiFact fact,String content){
+        String value=(fact.subjectCode()+" "+fact.stem()+" "+fact.knowledgePointsJson()+" "+content).replaceAll("\\s+"," ").trim();
+        return value.substring(0,Math.min(70,value.length()));
+    }
+    private String sourcesJson(List<WebSearchResult> sources){return objectMapper.writeValueAsString(sources.stream().map(s->new StudentAiDtos.Source(s.title(),s.url(),s.publisher(),s.publishDate())).toList());}
+    private List<StudentAiDtos.Source> readSources(String json){if(json==null)return List.of();try{return objectMapper.readValue(json,new TypeReference<List<StudentAiDtos.Source>>(){});}catch(Exception ignored){return List.of();}}
+
     private String safeCode(String value) {
         if (value == null) return null;
         String clean = value.replaceAll("[^A-Za-z0-9_.:-]", "_");
@@ -346,6 +384,7 @@ public class StudentAiService {
     }
 
     private record ConversationRow(long id, long studentId, long answerFactId, long questionId,
-                                   String status, int rounds) { }
+                                   String status, int rounds, Long modelConfigId, String thinkingMode,
+                                   boolean webSearch) { }
     private record AnalysisLock(String status, String hash) { }
 }

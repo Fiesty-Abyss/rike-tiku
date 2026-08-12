@@ -29,6 +29,7 @@ describe('登录页导航与首屏结构', () => {
         stubs: {
           RouterLink,
           LoginForm: { template: '<form data-test="login-form" />' },
+          PasswordRecoveryDialog: { template: '<div data-test="password-recovery" />' },
         },
       },
     })
@@ -39,5 +40,7 @@ describe('登录页导航与首屏结构', () => {
     expect(wrapper.text()).toContain('高中理科学习与教学管理')
     expect(wrapper.text()).not.toContain('从清晰的练习开始')
     expect(wrapper.find('[data-test="login-form"]').exists()).toBe(true)
+    expect(wrapper.text()).toContain('忘记密码？')
+    expect(wrapper.find('[data-test="password-recovery"]').exists()).toBe(true)
   })
 })

@@ -282,6 +282,8 @@ body { overflow-x: clip; }
 .physics-readout--field,
 .physics-readout--light { opacity: 0; }
 .physics-material:has(.physics-material-solid[style*="opacity: 1"]) .physics-readout b { color: var(--physics-deep); }
+.physics-topic-index { display: flex; flex-wrap: wrap; gap: .6rem; margin: 1rem 0 0; padding: 0; list-style: none; }
+.physics-topic-index li { padding: .45rem .72rem; border: 1px solid oklch(82% .08 225 / .45); border-radius: 999px; color: oklch(92% .03 225); background: oklch(25% .05 225 / .42); }
 
 /* Chemistry and Biology: asymmetric editorial plates, not card grids. */
 .portal-discipline {
@@ -356,7 +358,7 @@ body { overflow-x: clip; }
 .portal-entrance > p:not(.portal-scene-index) { max-width: 39rem; margin: 1.4rem auto 0; color: var(--ink-secondary); }
 .portal-entrance .portal-primary-action { margin-top: 2rem; }
 
-.portal-footer { position: relative; z-index: 3; display: grid; grid-template-columns: auto 1fr auto; gap: 2rem; align-items: center; padding: 2.4rem var(--page-gutter); color: oklch(82% .025 213); background: oklch(20% .048 228); }
+.portal-footer { position: relative; z-index: 3; display: grid; grid-template-columns: auto 1fr; gap: 2rem; align-items: center; padding: 2.4rem var(--page-gutter); color: oklch(82% .025 213); background: oklch(20% .048 228); }
 .portal-footer strong { color: white; letter-spacing: .16em; }
 .portal-footer p { margin: 0; text-align: center; }
 .portal-footer span { font-size: .74rem; }

@@ -28,15 +28,18 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class StudentPracticeService {
+    private final ObjectiveAnswerGrader objectiveAnswerGrader;
     private static final List<String> AUTO_GRADABLE_TYPES = List.of("SINGLE_CHOICE", "MULTIPLE_CHOICE", "FILL_BLANK");
     private static final Pattern OBJECT_MARKER = Pattern.compile("〔(?:图片|公式)对象\\s+([IF]\\d{3})〕");
     private final JdbcTemplate jdbc;
     private final QuestionAttachmentContentService attachmentContentService;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    public StudentPracticeService(JdbcTemplate jdbc, QuestionAttachmentContentService attachmentContentService) {
+    public StudentPracticeService(JdbcTemplate jdbc, QuestionAttachmentContentService attachmentContentService,
+                                  ObjectiveAnswerGrader objectiveAnswerGrader) {
         this.jdbc = jdbc;
         this.attachmentContentService = attachmentContentService;
+        this.objectiveAnswerGrader = objectiveAnswerGrader;
     }
 
     @Transactional(readOnly = true)
@@ -495,13 +498,7 @@ public class StudentPracticeService {
     }
 
     private boolean isCorrect(FrozenQuestion question, JsonNode submitted) {
-        JsonNode answer = readJson(question.correctAnswer());
-        return switch (question.type()) {
-            case "SINGLE_CHOICE" -> correctSingle(answer, submitted, question.options());
-            case "MULTIPLE_CHOICE" -> correctMultiple(answer, submitted, question.options());
-            case "FILL_BLANK" -> correctFillBlank(answer, submitted);
-            default -> throw business("PRACTICE_QUESTION_INVALID", "练习中包含不支持自动判分的题型", HttpStatus.CONFLICT);
-        };
+        return objectiveAnswerGrader.grade(question.type(), question.correctAnswer(), question.options(), submitted);
     }
 
     private boolean correctSingle(JsonNode answer, JsonNode submitted, String options) {

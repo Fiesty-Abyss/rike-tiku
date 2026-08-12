@@ -108,10 +108,11 @@ public final class GlmVisionProvider implements AiVisionProvider {
     }
     private String endpoint() { String base=config.baseUrl().replaceAll("/+$", ""); return base.endsWith("/chat/completions")?base:base+"/chat/completions"; }
     private AiVisionException httpFailure(int status) {
-        if (status == 401 || status == 403) return new AiVisionException(AiProviderErrorType.AUTHENTICATION_ERROR, "Vision provider authentication failed");
-        if (status == 429) return new AiVisionException(AiProviderErrorType.RATE_LIMITED, "Vision provider rate limited");
-        if (status >= 500) return new AiVisionException(AiProviderErrorType.PROVIDER_UNAVAILABLE, "Vision provider unavailable");
-        return new AiVisionException(AiProviderErrorType.UNKNOWN, "Vision provider rejected request");
+        if (status == 400) return new AiVisionException(AiProviderErrorType.CONFIGURATION_ERROR, "Vision request format rejected",status);
+        if (status == 401 || status == 403) return new AiVisionException(AiProviderErrorType.AUTHENTICATION_ERROR, "Vision provider authentication failed",status);
+        if (status == 429) return new AiVisionException(AiProviderErrorType.RATE_LIMITED, "Vision provider rate limited",status);
+        if (status >= 500) return new AiVisionException(AiProviderErrorType.PROVIDER_UNAVAILABLE, "Vision provider unavailable",status);
+        return new AiVisionException(AiProviderErrorType.UNKNOWN, "Vision provider rejected request",status);
     }
     private boolean retryable(AiProviderErrorType type) { return type == AiProviderErrorType.RATE_LIMITED || type == AiProviderErrorType.PROVIDER_UNAVAILABLE; }
     private AiVisionException invalid() { return new AiVisionException(AiProviderErrorType.INVALID_RESPONSE, "Vision provider returned invalid response"); }

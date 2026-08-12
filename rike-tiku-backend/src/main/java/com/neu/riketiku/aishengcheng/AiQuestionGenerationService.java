@@ -62,13 +62,14 @@ public class AiQuestionGenerationService {
         String actorRole=role.toUpperCase(Locale.ROOT); validateCommand(command);
         AiQuestionGenerationPromptFactory.Mother mother=mother(command.motherQuestionId());
         authorize(actorId,actorRole,mother.subjectId()); validatePoints(mother.subjectId(),command.knowledgePointIds());
+        if("STUDENT".equals(actorRole)&&command.count()!=1)fail("AI_STUDENT_VARIANT_COUNT_INVALID","学生每次只能生成 1 道变式题",HttpStatus.BAD_REQUEST);
         long pending=count("""
                 SELECT COUNT(DISTINCT q.id) FROM ti_mu q JOIN ti_mu_lai_yuan s ON s.ti_mu_id=q.id
                 WHERE q.fu_ti_mu_id=? AND q.zhuang_tai='PENDING' AND q.yi_shan_chu=0
                   AND s.lai_yuan_lei_xing='AI_GENERATED' AND s.yi_shan_chu=0
                 """,mother.id());
         if(pending+command.count()>6) fail("AI_PENDING_LIMIT_REACHED","同一母题最多保留 6 道待审核 AI 候选题",HttpStatus.CONFLICT);
-        String requestHash=requestHash(command);
+        String requestHash=requestHash(actorId,actorRole,command);
         Long taskId=insertTask(actorId,actorRole,command,requestHash);
         long started=System.nanoTime();
         try{
@@ -260,7 +261,11 @@ public class AiQuestionGenerationService {
     private void markFailed(long id,String code,long started){jdbc.update("UPDATE ai_sheng_cheng_ren_wu SET zhuang_tai='FAILED',shi_bai_dai_ma=?,hao_shi_hao_miao=?,wan_cheng_shi_jian=CURRENT_TIMESTAMP(3) WHERE id=?",safe(code),elapsed(started),id);}
     private void validateCommand(AiQuestionGenerationDtos.Generate c){if(!TYPES.contains(c.questionType())||!MODES.contains(c.variationMode())||c.count()<1||c.count()>3||c.targetDifficulty()<1||c.targetDifficulty()>5)fail("AI_GENERATION_REQUEST_INVALID","生成参数不合法",HttpStatus.BAD_REQUEST);}
     private void validatePoints(long subjectId,List<Long> ids){if(ids==null||ids.isEmpty()||new HashSet<>(ids).size()!=ids.size())fail("AI_KNOWLEDGE_POINT_INVALID","知识点不合法",HttpStatus.BAD_REQUEST);String marks=String.join(",",java.util.Collections.nCopies(ids.size(),"?"));List<Object> args=new ArrayList<>();args.add(subjectId);args.addAll(ids);if(count("SELECT COUNT(*) FROM zhi_shi_dian WHERE ke_mu_id=? AND id IN ("+marks+") AND zhuang_tai='ACTIVE' AND yi_shan_chu=0",args.toArray())!=ids.size())fail("AI_KNOWLEDGE_POINT_INVALID","知识点不存在或不属于母题科目",HttpStatus.BAD_REQUEST);}
-    private void authorize(long actorId,String role,long subjectId){if("ADMIN".equals(role))return;if(!"TEACHER".equals(role)||count("""
+    private void authorize(long actorId,String role,long subjectId){if("ADMIN".equals(role))return;if("STUDENT".equals(role)){if(count("""
+            SELECT COUNT(*) FROM xue_sheng_dang_an xs JOIN xue_sheng_da_ti da ON da.xue_sheng_id=xs.id
+            JOIN lian_xi_ti_mu lt ON lt.id=da.lian_xi_ti_mu_id JOIN lian_xi_hui_hua lh ON lh.id=lt.lian_xi_hui_hua_id
+            WHERE xs.yong_hu_id=? AND xs.zhuang_tai='ACTIVE' AND xs.yi_shan_chu=0 AND lh.ke_mu_id=? AND lh.zhuang_tai='SUBMITTED'
+            """,actorId,subjectId)>0)return;fail("AI_GENERATION_FORBIDDEN","无权操作该科目候选题",HttpStatus.FORBIDDEN);}if(!"TEACHER".equals(role)||count("""
             SELECT COUNT(*) FROM jiao_shi_dang_an j JOIN ren_ke_guan_xi r ON r.jiao_shi_id=j.id
             WHERE j.yong_hu_id=? AND j.zhuang_tai='ACTIVE' AND j.yi_shan_chu=0 AND r.ke_mu_id=? AND r.zhuang_tai='ACTIVE'
             """,actorId,subjectId)==0)fail("AI_GENERATION_FORBIDDEN","无权操作该科目候选题",HttpStatus.FORBIDDEN);}
@@ -280,7 +285,7 @@ public class AiQuestionGenerationService {
         List<AiQuestionGenerationDtos.KnowledgePoint> points=jdbc.query("SELECT p.id,p.zhi_shi_dian_ming_cheng FROM ti_mu_zhi_shi_dian qp JOIN zhi_shi_dian p ON p.id=qp.zhi_shi_dian_id WHERE qp.ti_mu_id=? AND qp.yi_shan_chu=0 ORDER BY qp.pai_xu",(rs,row)->new AiQuestionGenerationDtos.KnowledgePoint(rs.getLong(1),rs.getString(2)),id);
         return new AiQuestionGenerationDtos.Candidate(b.id(),b.taskId(),b.stem(),b.type(),b.difficulty(),b.status(),b.summary(),b.warning(),b.vision(),b.provider(),b.model(),b.answer(),b.analysis(),points,b.quality());
     }
-    private String requestHash(AiQuestionGenerationDtos.Generate c){List<Long> points=c.knowledgePointIds().stream().sorted().toList();return sha(c.motherQuestionId()+"|"+c.questionType()+"|"+points+"|"+c.targetDifficulty()+"|"+c.variationMode()+"|"+AiQuestionGenerationPromptFactory.PROMPT_VERSION);}
+    private String requestHash(long actorId,String role,AiQuestionGenerationDtos.Generate c){List<Long> points=c.knowledgePointIds().stream().sorted().toList();return sha(actorId+"|"+role+"|"+c.motherQuestionId()+"|"+c.questionType()+"|"+points+"|"+c.targetDifficulty()+"|"+c.variationMode()+"|"+AiQuestionGenerationPromptFactory.PROMPT_VERSION);}
     private double jaccard(String a,String b){Set<String>x=ngrams(a),y=ngrams(b);if(x.isEmpty()||y.isEmpty())return 0;Set<String>intersection=new HashSet<>(x);intersection.retainAll(y);Set<String>union=new HashSet<>(x);union.addAll(y);return (double)intersection.size()/union.size();}
     private Set<String> ngrams(String value){String n=value==null?"":value.replaceAll("[\\s\\p{Punct}]","").toLowerCase(Locale.ROOT);Set<String>r=new LinkedHashSet<>();for(int i=0;i+3<=n.length();i++)r.add(n.substring(i,i+3));return r;}
     private String sha(String value){try{return HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(value.getBytes(StandardCharsets.UTF_8)));}catch(Exception e){throw new IllegalStateException(e);}}
