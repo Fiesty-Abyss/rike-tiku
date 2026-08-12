@@ -12,12 +12,13 @@
 
 ## 当前事实
 
-- PR #30 生产代码已经通过第二次独立审查，获准 ordinary merge。审查 HEAD 为 `509f52ed08633801ec18cc2dce576a320357a08c`。
+- PR #30 已 ordinary merge，merge commit 为 `d67ebc83bf0b8a2fbd889290d5a0f78a27d7640e`。当前分支为 PR #31 `chore/final-ai-integration-verification`。
 - Flyway 为 V1–V14，共 35 张业务表；V1–V14 不得修改，没有 V15。
 - 非 AI A 层、Provider Core、学生 AI 主链、管理员 AI 配置、Vision 代码链、AI 候选题和人工审核均为 `DONE_VERIFIED`。
-- 真实 `deepseek-v4-flash` smoke 为 PASS。
-- 真实 GLM 请求到达官方 endpoint 后返回 HTTP 429，状态为 `REAL_GLM_VISION_SMOKE_FAIL_429`。
-- 下一唯一阶段为 PR #31 `chore/final-ai-integration-verification`。它负责全量、Demo、真实全链路、机器浏览器、一次最终用户人工验收和文档/论文/答辩封板，原则上不新增业务功能。
+- PR #31 全量自动化、Demo、真实 DeepSeek、权限与降级、机器浏览器和文档封板为 `AUTO_FINAL_VERIFICATION_PASS`。
+- 真实 `deepseek-v4-flash` smoke、学生错因、当前题答疑和候选生成均为 PASS。
+- 真实 GLM 第一次窗口为 429，第二个最终窗口返回完整 JSON 代码围栏；严格 Parser 已修复并通过全量，但没有第三次真实调用，状态为 `REAL_GLM_VISION_NOT_REVERIFIED_AFTER_WRAPPER_FIX`。
+- 当前唯一待办是用户最终人工验收，状态为 `FINAL_MANUAL_ACCEPTANCE_PENDING`。用户确认前不合并 PR #31，不创建 PR #32。
 
 ## 事实优先级
 
@@ -88,6 +89,6 @@ DeepSeek V4 是文本推理模型，负责学生错因分析、当前题有限�
 - PR #27 ordinary merge commit `84a82fc3bd4972fc11c0811d8332bae306b7e5c0`，非 AI A 层封板。
 - PR #28 ordinary merge commit `54c1669b3113086a2fb22e756e0656ea8cb751c8`，Provider Core 与 V12。
 - PR #29 ordinary merge commit `d04e5dcf9639182303e26e38ccfa4351ad91c5d9`，学生 AI 与 V13。
-- PR #30 完成管理员配置、Vision、候选生成、审核与 V14，等待文档封板后 ordinary merge。
+- PR #30 ordinary merge commit `d67ebc83bf0b8a2fbd889290d5a0f78a27d7640e`，管理员配置、Vision、候选生成、审核与 V14。
 
 完整历史见 [文档索引](README.md) 和 [历史证据](evidence/)。
