@@ -1,6 +1,6 @@
-# RIKE V14 数据库结构参考
+# RIKE V19 数据库结构参考
 
-> 本文由 `information_schema` 只读生成，校验对象为 Flyway V1–V14 的 35 张业务表。字段与约束以迁移脚本为准；`database/schema_snapshot_v14.sql` 仅是便于查阅的纯结构快照，不能替代 Flyway。
+> 本文由 `information_schema` 只读生成，校验对象为隔离库 `rike_tiku_demo` 的 Flyway V1–V19 业务表。字段与约束以迁移脚本为准；`database/schema_snapshot_v19.sql` 仅是便于查阅的纯结构快照，不能替代 Flyway。
 
 ## 总体约定
 
@@ -462,7 +462,7 @@
 | `chuang_jian_shi_jian` | `datetime(3)` | 否 | DEFAULT_GENERATED | — |
 
 约束：`CHECK:ck_xue_xi_jie_guo_de_fen`；`CHECK:ck_xue_xi_jie_guo_ji_shu`；`FOREIGN KEY:fk_xue_xi_jie_guo_hui_hua`；`PRIMARY KEY:PRIMARY`；`UNIQUE:uk_xue_xi_jie_guo_hui_hua`。
-生命周期：由练习提交服务创建；掌握度服务以该结果和正式答题事实实时派生知识点统计，归档/删除遵循外键和业务规则。
+生命周期：由练习最终结果对应服务创建和更新；归档/删除遵循表内状态、外键和业务审计规则。
 
 ## Wrong / mastery
 
@@ -654,12 +654,15 @@
 | `xue_sheng_id` | `bigint` | 否 | MUL | — |
 | `xue_sheng_da_ti_id` | `bigint` | 否 | MUL | — |
 | `lian_xi_ti_mu_id` | `bigint` | 否 | MUL | — |
+| `ai_mo_xing_pei_zhi_id` | `bigint` | 是 | MUL | — |
+| `si_kao_mo_shi` | `varchar(16)` | 否 | — | — |
+| `shi_fou_lian_wang` | `tinyint(1)` | 否 | — | — |
 | `zhuang_tai` | `varchar(16)` | 否 | — | — |
 | `lei_ji_lun_shu` | `int` | 否 | — | — |
 | `chuang_jian_shi_jian` | `datetime(3)` | 否 | DEFAULT_GENERATED | — |
 | `geng_xin_shi_jian` | `datetime(3)` | 否 | DEFAULT_GENERATED on update CURRENT_TIMESTAMP(3) | — |
 
-约束：`CHECK:ck_ai_hui_hua_rounds`；`CHECK:ck_ai_hui_hua_status`；`FOREIGN KEY:fk_ai_hui_hua_da_ti`；`FOREIGN KEY:fk_ai_hui_hua_lian_xi_ti_mu`；`FOREIGN KEY:fk_ai_hui_hua_xue_sheng`；`PRIMARY KEY:PRIMARY`。
+约束：`CHECK:ck_ai_hui_hua_rounds`；`CHECK:ck_ai_hui_hua_search`；`CHECK:ck_ai_hui_hua_status`；`CHECK:ck_ai_hui_hua_thinking`；`FOREIGN KEY:fk_ai_hui_hua_da_ti`；`FOREIGN KEY:fk_ai_hui_hua_lian_xi_ti_mu`；`FOREIGN KEY:fk_ai_hui_hua_model`；`FOREIGN KEY:fk_ai_hui_hua_xue_sheng`；`PRIMARY KEY:PRIMARY`。
 生命周期：由当前题 AI 会话对应服务创建和更新；归档/删除遵循表内状态、外键和业务审计规则。
 
 ### `ai_xiao_xi`
@@ -672,11 +675,37 @@
 | `ai_hui_hua_id` | `bigint` | 否 | MUL | — |
 | `fa_yan_jiao_se` | `varchar(16)` | 否 | — | — |
 | `nei_rong` | `varchar(2000)` | 否 | — | — |
+| `lian_wang_lai_yuan` | `json` | 是 | — | — |
 | `xu_hao` | `int` | 否 | — | — |
 | `chuang_jian_shi_jian` | `datetime(3)` | 否 | DEFAULT_GENERATED | — |
 
-约束：`CHECK:ck_ai_xiao_xi_content`；`CHECK:ck_ai_xiao_xi_order`；`CHECK:ck_ai_xiao_xi_role`；`FOREIGN KEY:fk_ai_xiao_xi_hui_hua`；`PRIMARY KEY:PRIMARY`；`UNIQUE:uk_ai_xiao_xi_hui_hua_xu_hao`。
+约束：`CHECK:ck_ai_xiao_xi_content`；`CHECK:ck_ai_xiao_xi_order`；`CHECK:ck_ai_xiao_xi_role`；`CHECK:ck_ai_xiao_xi_sources`；`FOREIGN KEY:fk_ai_xiao_xi_hui_hua`；`PRIMARY KEY:PRIMARY`；`UNIQUE:uk_ai_xiao_xi_hui_hua_xu_hao`。
 生命周期：由当前题 AI 消息对应服务创建和更新；归档/删除遵循表内状态、外键和业务审计规则。
+
+## Student AI variants
+
+### `ai_xue_sheng_bian_shi_shi_li`
+
+用途：绑定答题事实的学生结构化变式。创建/演进：V19。
+
+| 字段 | SQL 类型 | 可空 | 键/附加 | 说明 |
+|---|---|---:|---|---|
+| `id` | `bigint` | 否 | PRI, auto_increment | — |
+| `xue_sheng_id` | `bigint` | 否 | MUL | — |
+| `xue_sheng_da_ti_id` | `bigint` | 否 | MUL | — |
+| `mu_ti_mu_id` | `bigint` | 否 | MUL | — |
+| `ai_sheng_cheng_ren_wu_id` | `bigint` | 否 | MUL | — |
+| `ti_mu_id` | `bigint` | 否 | MUL | — |
+| `zhuang_tai` | `varchar(24)` | 否 | — | — |
+| `xue_sheng_da_an` | `json` | 是 | — | — |
+| `shi_fou_zheng_que` | `tinyint(1)` | 是 | — | — |
+| `ti_jiao_shi_jian` | `datetime(3)` | 是 | — | — |
+| `shen_he_ti_jiao_shi_jian` | `datetime(3)` | 是 | — | — |
+| `chuang_jian_shi_jian` | `datetime(3)` | 否 | DEFAULT_GENERATED | — |
+| `geng_xin_shi_jian` | `datetime(3)` | 否 | DEFAULT_GENERATED on update CURRENT_TIMESTAMP(3) | — |
+
+约束：`CHECK:ck_ai_xue_sheng_variant_correct`；`CHECK:ck_ai_xue_sheng_variant_status`；`FOREIGN KEY:fk_ai_xue_sheng_variant_fact`；`FOREIGN KEY:fk_ai_xue_sheng_variant_mother`；`FOREIGN KEY:fk_ai_xue_sheng_variant_question`；`FOREIGN KEY:fk_ai_xue_sheng_variant_student`；`FOREIGN KEY:fk_ai_xue_sheng_variant_task`；`PRIMARY KEY:PRIMARY`；`UNIQUE:uk_ai_xue_sheng_variant_question`。
+生命周期：由绑定答题事实的学生结构化变式对应服务创建和更新；归档/删除遵循表内状态、外键和业务审计规则。
 
 ## AI generation / vision
 
@@ -757,3 +786,62 @@
 
 约束：`CHECK:ck_ai_vision_json`；`CHECK:ck_ai_vision_status`；`FOREIGN KEY:fk_ai_vision_question`；`PRIMARY KEY:PRIMARY`；`UNIQUE:uk_ai_vision_context`。
 生命周期：由受控视觉上下文缓存对应服务创建和更新；归档/删除遵循表内状态、外键和业务审计规则。
+
+## Account recovery
+
+### `mi_ma_chong_zhi_shen_qing`
+
+用途：匿名密码恢复请求与处理事实。创建/演进：V17。
+
+| 字段 | SQL 类型 | 可空 | 键/附加 | 说明 |
+|---|---|---:|---|---|
+| `id` | `bigint` | 否 | PRI, auto_increment | — |
+| `yong_hu_id` | `bigint` | 否 | MUL | — |
+| `zhuang_tai` | `varchar(16)` | 否 | MUL | — |
+| `shen_qing_shi_jian` | `datetime(3)` | 否 | DEFAULT_GENERATED | — |
+| `chu_li_ren_id` | `bigint` | 是 | MUL | — |
+| `chu_li_shi_jian` | `datetime(3)` | 是 | — | — |
+| `chu_li_jie_guo` | `varchar(500)` | 是 | — | — |
+| `pending_yong_hu_id` | `bigint` | 是 | UNI, STORED GENERATED | — |
+| `chuang_jian_shi_jian` | `datetime(3)` | 否 | DEFAULT_GENERATED | — |
+| `geng_xin_shi_jian` | `datetime(3)` | 否 | DEFAULT_GENERATED on update CURRENT_TIMESTAMP(3) | — |
+
+约束：`CHECK:ck_mi_ma_chong_zhi_resolution`；`CHECK:ck_mi_ma_chong_zhi_status`；`FOREIGN KEY:fk_mi_ma_chong_zhi_handler`；`FOREIGN KEY:fk_mi_ma_chong_zhi_user`；`PRIMARY KEY:PRIMARY`；`UNIQUE:uk_mi_ma_chong_zhi_pending`。
+生命周期：由匿名密码恢复请求与处理事实对应服务创建和更新；归档/删除遵循表内状态、外键和业务审计规则。
+
+## Paper
+
+### `shi_juan`
+
+用途：教师冻结试卷。创建/演进：V18。
+
+| 字段 | SQL 类型 | 可空 | 键/附加 | 说明 |
+|---|---|---:|---|---|
+| `id` | `bigint` | 否 | PRI, auto_increment | — |
+| `chuang_jian_jiao_shi_id` | `bigint` | 否 | MUL | — |
+| `ke_mu_id` | `bigint` | 否 | MUL | — |
+| `shi_juan_ming_cheng` | `varchar(120)` | 否 | — | — |
+| `zu_juan_mo_shi` | `varchar(16)` | 否 | — | — |
+| `zong_fen` | `decimal(8,2)` | 否 | — | — |
+| `zhuang_tai` | `varchar(16)` | 否 | — | — |
+| `yi_shan_chu` | `tinyint(1)` | 否 | — | — |
+| `chuang_jian_shi_jian` | `datetime(3)` | 否 | DEFAULT_GENERATED | — |
+| `geng_xin_shi_jian` | `datetime(3)` | 否 | DEFAULT_GENERATED on update CURRENT_TIMESTAMP(3) | — |
+
+约束：`CHECK:ck_shi_juan_deleted`；`CHECK:ck_shi_juan_mode`；`CHECK:ck_shi_juan_score`；`CHECK:ck_shi_juan_status`；`FOREIGN KEY:fk_shi_juan_subject`；`FOREIGN KEY:fk_shi_juan_teacher`；`PRIMARY KEY:PRIMARY`。
+生命周期：由教师冻结试卷对应服务创建和更新；归档/删除遵循表内状态、外键和业务审计规则。
+
+### `shi_juan_ti_mu`
+
+用途：试卷题目顺序与分值。创建/演进：V18。
+
+| 字段 | SQL 类型 | 可空 | 键/附加 | 说明 |
+|---|---|---:|---|---|
+| `id` | `bigint` | 否 | PRI, auto_increment | — |
+| `shi_juan_id` | `bigint` | 否 | MUL | — |
+| `ti_mu_id` | `bigint` | 否 | MUL | — |
+| `ti_mu_shun_xu` | `int` | 否 | — | — |
+| `fen_zhi` | `decimal(8,2)` | 否 | — | — |
+
+约束：`CHECK:ck_shi_juan_ti_mu_order`；`CHECK:ck_shi_juan_ti_mu_score`；`FOREIGN KEY:fk_shi_juan_ti_mu_paper`；`FOREIGN KEY:fk_shi_juan_ti_mu_question`；`PRIMARY KEY:PRIMARY`；`UNIQUE:uk_shi_juan_order`；`UNIQUE:uk_shi_juan_question`。
+生命周期：由试卷题目顺序与分值对应服务创建和更新；归档/删除遵循表内状态、外键和业务审计规则。

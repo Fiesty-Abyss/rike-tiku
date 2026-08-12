@@ -1,5 +1,27 @@
 # 常用只读 SQL 示例
 
+> 当前结构为 Flyway V19、39 张业务表。以下新增示例只用于本地核验，不包含账号、姓名、Key 或密码。
+
+```sql
+SELECT version, description, success
+FROM flyway_schema_history
+ORDER BY installed_rank DESC
+LIMIT 5;
+
+SELECT COUNT(*) AS business_table_count
+FROM information_schema.tables
+WHERE table_schema = DATABASE()
+  AND table_name <> 'flyway_schema_history';
+
+SELECT zhuang_tai, COUNT(*)
+FROM mi_ma_chong_zhi_shen_qing
+GROUP BY zhuang_tai;
+
+SELECT shi_juan_id, COUNT(*) AS question_count, SUM(fen_zhi) AS total_score
+FROM shi_juan_ti_mu
+GROUP BY shi_juan_id;
+```
+
 以下查询均为脱敏只读示例。不要用 SQL 绕过应用审核、权限或状态机；AI 配置查询刻意不选择 `api_mi_yao`。
 
 ```sql

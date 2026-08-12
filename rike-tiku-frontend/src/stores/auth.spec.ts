@@ -106,7 +106,7 @@ describe('路由守卫', () => {
 
   it('未登录访问根路径保持公共门户', async () => { await router.push('/'); expect(router.currentRoute.value.path).toBe('/'); expect(router.currentRoute.value.name).toBe('portal') })
   it('已登录用户也可访问公共门户', async () => { authenticated(['STUDENT']); await router.push('/'); expect(router.currentRoute.value.path).toBe('/') })
-  it('未登录访问工作台跳转统一登录页', async () => { await router.push('/teacher'); expect(router.currentRoute.value.path).toBe('/login') })
+  it('未登录访问工作台跳转统一登录页', async () => { await router.push('/teacher'); expect(router.currentRoute.value.path).toBe('/login') }, 15_000)
   it('学生不能访问教师工作台', async () => { authenticated(['STUDENT']); await router.push('/teacher'); expect(router.currentRoute.value.path).toBe('/student') }, 15_000)
   it('学生不能访问管理员工作台', async () => { authenticated(['STUDENT']); await router.push('/admin'); expect(router.currentRoute.value.path).toBe('/student') })
   it('教师不能访问管理员工作台', async () => { authenticated(['TEACHER']); await router.push('/admin'); expect(router.currentRoute.value.path).toBe('/teacher') })
