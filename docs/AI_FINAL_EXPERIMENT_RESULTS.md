@@ -4,6 +4,12 @@
 
 本文只记录 PR #31 已真实执行的数据，不推导 AI 准确率、用户满意度或虚构平均质量分。
 
+## PR #33 增量说明
+
+PR #31 的真实调用数据继续作为历史实验事实，不外推到新模型、深度思考或搜索。PR #33 新增 DeepSeek V4 Flash/Pro 安全选择、STANDARD/DEEP 参数映射、智谱 SEARCH 与结构化学生变式；自动化使用 Fake/Mock HTTP 验证请求映射、429/超时/非法 URL、来源映射与判分，不把 Mock 写成真实 Provider PASS。真实 Key 不存在或未执行时统一记为 `NOT_RUN`。
+
+GLM 管理端现在按 HTTP 400、401/403、429、5xx、TIMEOUT、INVALID_RESPONSE 与 CONFIGURATION_ERROR 安全分类，并只显示状态、延迟、时间和安全错误码。完整请求、Key、Base64、Prompt 与原始响应均不回显。
+
 ## DeepSeek 真实结果
 
 模型：`deepseek-v4-flash`。官方 OpenAI-compatible endpoint 返回 HTTP 2xx。
