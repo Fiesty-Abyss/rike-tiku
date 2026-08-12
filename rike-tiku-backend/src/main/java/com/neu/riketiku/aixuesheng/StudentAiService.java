@@ -25,7 +25,7 @@ import tools.jackson.databind.ObjectMapper;
 
 @Service
 public class StudentAiService {
-    public static final int MAX_ROUNDS = 8;
+    public static final int MAX_ROUNDS = 10;
     private static final int RECENT_MESSAGES = 12;
     private static final int HISTORY_CHAR_BUDGET = 6000;
     private static final int MAX_ASSISTANT_CHARS = 2000;
@@ -149,7 +149,7 @@ public class StudentAiService {
     public StudentAiDtos.Conversation sendMessage(Long userId, Long conversationId, String rawContent) {
         ConversationRow row = requireConversation(userId, conversationId, true);
         if (!"ACTIVE".equals(row.status()) || row.rounds() >= MAX_ROUNDS) {
-            throw failure("AI_CONVERSATION_LIMIT_REACHED", "本会话已达到 8 轮上限，请开启新会话", HttpStatus.CONFLICT);
+            throw failure("AI_CONVERSATION_LIMIT_REACHED", "本会话已达到 10 轮上限，请开启新会话", HttpStatus.CONFLICT);
         }
         String content = rawContent == null ? "" : rawContent.trim();
         if (content.isEmpty() || content.length() > 500) {

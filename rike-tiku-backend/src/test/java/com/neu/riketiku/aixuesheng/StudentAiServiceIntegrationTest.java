@@ -115,9 +115,11 @@ class StudentAiServiceIntegrationTest extends AdminQuestionIntegrationTestSuppor
         assertThat(replied.usedRounds()).isEqualTo(3);
         assertThat(client.requests.getFirst().messages().getFirst().role()).isEqualTo("system");
 
-        jdbc.update("UPDATE ai_hui_hua SET lei_ji_lun_shu=8,zhuang_tai='LIMIT_REACHED' WHERE id=?", conversation.id());
+        jdbc.update("UPDATE ai_hui_hua SET lei_ji_lun_shu=10,zhuang_tai='LIMIT_REACHED' WHERE id=?", conversation.id());
         assertThatThrownBy(() -> service.sendMessage(owner, conversation.id(), "继续"))
-                .isInstanceOf(RenZhengYeWuYiChang.class).hasMessageContaining("8 轮");
+                .isInstanceOf(RenZhengYeWuYiChang.class).hasMessageContaining("10 轮");
+        assertThatThrownBy(() -> jdbc.update("UPDATE ai_hui_hua SET lei_ji_lun_shu=11 WHERE id=?", conversation.id()))
+                .isInstanceOf(Exception.class);
     }
 
     @Test
