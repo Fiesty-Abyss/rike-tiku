@@ -1,5 +1,7 @@
 # 管理员题库审核发布前端
 
+> 本文为历史阶段快照，当前项目状态请查看 [README](../README.md) 和 [开发状态](DEVELOPMENT_STATUS.md)。
+
 当前分支 `feat/admin-question-review` 新增 `/admin/questions`，复用已有 ADMIN 布局、路由守卫和 Axios 实例，尚未合并到 `main`。
 
 ## 页面能力
