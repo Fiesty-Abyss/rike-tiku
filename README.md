@@ -25,6 +25,10 @@
 
 这里的 `DONE_VERIFIED` 表示对应业务实现与专项验证已通过。PR #31 已完成全量自动化、Demo、真实 DeepSeek、权限与降级、机器浏览器和文档统一；真实 GLM 的第二次受控调用暴露了完整 JSON 代码围栏兼容问题，Parser 已修复并通过全量自动化，但遵守两次真实调用上限没有继续请求，因此不能写成真实 GLM PASS。最终用户人工验收仍待本人完成。详细事实见 [开发状态](docs/DEVELOPMENT_STATUS.md) 与 [最终实验事实](docs/AI_FINAL_EXPERIMENT_RESULTS.md)。
 
+PR #31 已由用户明确决定 ordinary merge；当前 PR #32 只进行本机正式化、论文资料整理和维护，不扩张核心业务。论文写作请从 [论文写作资料中心](docs/THESIS_WRITING_HUB.md) 开始。
+
+本机 IDEA/WebStorm 正式运行口径见 [本机正式运行环境](docs/LOCAL_FORMAL_ENVIRONMENT.md)。
+
 ## 核心学习闭环
 
 ```mermaid
@@ -198,6 +202,6 @@ scripts/             Demo 环境与验收启动脚本
 - PR #31 真实 `deepseek-v4-flash` smoke、学生错因、当前题答疑和 1 道候选生成均通过。真实 GLM 没有记为 PASS，详情见 [最终实验事实](docs/AI_FINAL_EXPERIMENT_RESULTS.md)。
 - 最终人工验收环境已准备，清单见 [最终人工验收清单](docs/FINAL_MANUAL_ACCEPTANCE_CHECKLIST.md)。
 
-## 最终封板
+## 最终维护阶段
 
-PR #31 `chore/final-ai-integration-verification` 的机器阶段为 `AUTO_FINAL_VERIFICATION_PASS`。当前只等待用户按 25 项清单完成真实 CAPTCHA 人工验收；在用户确认前，状态保持 `FINAL_MANUAL_ACCEPTANCE_PENDING`，PR #31 不合并。
+PR #31 的机器阶段为 `AUTO_FINAL_VERIFICATION_PASS`，并已由用户明确决定 ordinary merge。当前 PR #32 只完成本机正式环境和论文资料包；之后进入维护模式。用户按 25 项清单完成真人验收前，状态始终保持 `FINAL_MANUAL_ACCEPTANCE_PENDING`。

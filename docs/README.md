@@ -9,18 +9,25 @@
 - [产品说明](../PRODUCT.md)
 - [跨 AI 项目上下文](AI_PROJECT_CONTEXT.md)
 - [AI 开发交接](AI_HANDOFF.md)
+- [论文写作资料中心](THESIS_WRITING_HUB.md)
+- [功能、代码、数据库与技术映射](FEATURE_CODE_TECH_MAP.md)
+- [本机正式运行环境](LOCAL_FORMAL_ENVIRONMENT.md)
 
 ## Architecture
 
 - [总体设计](../DESIGN.md)
 - [UI 与交互基础](UI_UX_FOUNDATION.md)
 - [学习掌握度与规则推荐](LEARNING_MASTERY_RULE_RECOMMENDATION.md)
+- [ADR：不引入 Redis](architecture/ADR_REDIS_NOT_ADOPTED.md)
 
 ## Database
 
 - [当前数据库模型 V2](DATABASE_MODEL_V2.md)
 - [题库数据库模型 V1](QUESTION_DATABASE_MODEL_V1.md)
 - [数据库目录说明](../database/README.md)
+- [V14 数据库结构参考](DATABASE_SCHEMA_REFERENCE.md)
+- [V14 纯结构快照](../database/schema_snapshot_v14.sql)
+- [常用脱敏 SQL](SQL_EXAMPLES.md)
 
 ## Authentication
 
@@ -43,6 +50,7 @@
 - [题目导入 API](ADMIN_QUESTION_IMPORT_API.md)
 - [题目导入前端](ADMIN_QUESTION_IMPORT_FRONTEND.md)
 - [操作日志 API](ADMIN_OPERATION_LOG_API.md)
+- [Excel 导入指南与模板](EXCEL_IMPORT_GUIDE.md)
 
 ## Teacher
 
@@ -83,6 +91,11 @@
 - [AI 最终实验事实](AI_FINAL_EXPERIMENT_RESULTS.md)
 - [论文实现事实口径](THESIS_IMPLEMENTATION_FACTS.md)
 - [答辩事实与问答](DEFENSE_FACTS_AND_QA.md)
+- [人体工学机器复查](HUMAN_FACTORS_REVIEW.md)
+- [论文插图索引](THESIS_FIGURE_INDEX.md)
+- [开发时间线](DEVELOPMENT_TIMELINE.md)
+- [中期进展材料草稿](MIDTERM_PROGRESS_SUMMARY.md)
+- [真实文献与官方资料](THESIS_REFERENCES.md)
 - [人工验收清单](MANUAL_ACCEPTANCE_CHECKLIST.md)
 - [人工验收问题记录](MANUAL_ACCEPTANCE_FINDINGS.md)
 - [V3.0 非 AI 完工审计](V3_NON_AI_COMPLETION_AUDIT.md)
