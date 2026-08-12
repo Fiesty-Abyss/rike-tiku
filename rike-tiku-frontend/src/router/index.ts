@@ -67,6 +67,12 @@ const router = createRouter({
       meta: { requiresAuth: true, roles: ['TEACHER'] },
     },
     {
+      path: '/teacher/ai-generation',
+      name: 'teacher-ai-generation',
+      component: () => import('../views/teacher/TeacherAiQuestionGenerationView.vue'),
+      meta: { requiresAuth: true, roles: ['TEACHER'] },
+    },
+    {
       path: '/messages',
       name: 'messages',
       component: () => import('../views/messages/MessagesView.vue'),
