@@ -69,6 +69,4 @@ public final class StudentManagementDtos {
     public record StudentCreateResponse(StudentDetailResponse student, String initialPassword) {
     }
 
-    public record PasswordResetResponse(String initialPassword) {
-    }
 }

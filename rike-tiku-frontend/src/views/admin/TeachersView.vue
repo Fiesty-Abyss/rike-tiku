@@ -15,6 +15,7 @@ import {
   fetchTeacher,
   fetchTeachers,
   resetTeacherPassword,
+  resetTeacherPasswords,
   type AccountStatus,
   type SubjectItem,
   type TeacherDetail,
@@ -24,6 +25,8 @@ import {
   updateTeacher,
 } from "../../api/admin/teachers";
 import { fetchClasses, type ClassItem } from "../../api/admin/classes";
+import { useAuthStore } from "../../stores/auth";
+import { executePasswordRecovery } from "./passwordRecoveryAction";
 
 const loading = ref(false);
 const saving = ref(false);
@@ -39,6 +42,10 @@ const detail = ref<TeacherDetail | null>(null);
 const classes = ref<ClassItem[]>([]);
 const subjects = ref<SubjectItem[]>([]);
 const initialPassword = ref<string | null>(null);
+const passwordRecovered = ref(false);
+const currentAccountReset = ref(false);
+const selectedTeachers = ref<TeacherItem[]>([]);
+const auth = useAuthStore();
 const filters = reactive({
   employeeNumber: "",
   name: "",
@@ -188,6 +195,7 @@ async function saveTeacher() {
         accountStatus: form.accountStatus,
       });
       initialPassword.value = result.initialPassword;
+      passwordRecovered.value = false;
     }
     ElMessage.success(
       editing.value
@@ -272,26 +280,50 @@ async function updateAssignmentStatus(
 async function resetPassword() {
   if (!detail.value) return;
   try {
-    await ElMessageBox.confirm(
-      `确认重置教师“${detail.value.teacher.name}”的登录密码吗？旧密码将立即失效。`,
-      "重置教师密码",
-      {
-        type: "warning",
-        confirmButtonText: "确认重置",
-        cancelButtonText: "取消",
-      },
+    const result = await executePasswordRecovery(
+      () => ElMessageBox.confirm(
+        "确认将该账号恢复为系统默认密码吗？原密码将立即失效，下次登录必须修改密码。",
+        "恢复默认密码",
+        { type: "warning", confirmButtonText: "确认恢复", cancelButtonText: "取消" },
+      ),
+      () => resetTeacherPassword(detail.value!.teacher.id),
     );
-    const result = await resetTeacherPassword(detail.value.teacher.id);
+    if (!result) return;
     initialPassword.value = result.initialPassword;
-    ElMessage.success("教师密码已重置，新密码仅在当前页面显示一次。");
+    passwordRecovered.value = true;
+    currentAccountReset.value = detail.value.teacher.username === auth.currentUser?.username;
+    ElMessage.success("教师账号已恢复为系统默认密码。");
   } catch (error) {
     if (error === "cancel" || error === "close") return;
     ElMessage.error(message(error, "教师密码重置失败。"));
   }
 }
+async function resetSelectedPasswords() {
+  if (!selectedTeachers.value.length) return;
+  try {
+    const result = await executePasswordRecovery(
+      () => ElMessageBox.confirm(
+        `确认恢复选中的 ${selectedTeachers.value.length} 个账号吗？原密码将立即失效，下次登录必须修改密码。`,
+        "批量恢复默认密码",
+        { type: "warning", confirmButtonText: "确认恢复", cancelButtonText: "取消" },
+      ),
+      () => resetTeacherPasswords(selectedTeachers.value.map((item) => item.id)),
+    );
+    if (!result) return;
+    initialPassword.value = result.initialPassword;
+    passwordRecovered.value = true;
+    currentAccountReset.value = selectedTeachers.value.some((item) => item.username === auth.currentUser?.username);
+    ElMessage.success(`已恢复 ${result.resetCount} 个教师账号。`);
+  } catch (error) {
+    if (error === "cancel" || error === "close") return;
+    ElMessage.error(message(error, "批量恢复默认密码失败。"));
+  }
+}
 function clearInitialPassword() {
   initialPassword.value = null;
-  ElMessage.success("一次性初始密码已从当前页面清除。");
+  passwordRecovered.value = false;
+  currentAccountReset.value = false;
+  ElMessage.success("密码提示已从当前页面清除。");
 }
 function label(
   options: Array<{ label: string; value: string }>,
@@ -311,7 +343,7 @@ onMounted(loadTeachers);
           管理员创建教师账号，并以教师、班级、科目三元关系授予后续数据范围。
         </p>
       </div>
-      <el-button type="primary" @click="openCreate">创建教师</el-button>
+      <div><el-button :disabled="selectedTeachers.length === 0" @click="resetSelectedPasswords">批量恢复默认密码</el-button><el-button type="primary" @click="openCreate">创建教师</el-button></div>
     </div>
     <el-alert
       v-if="initialPassword"
@@ -320,7 +352,9 @@ onMounted(loadTeachers);
       :closable="false"
       show-icon
       ><template #title
-        >初始密码仅显示一次：<strong>{{ initialPassword }}</strong
+        >{{ passwordRecovered ? "已恢复默认密码" : "初始密码仅显示一次" }}：<strong>{{ initialPassword }}</strong
+        ><span v-if="passwordRecovered">　下次登录必须修改密码</span
+        ><span v-if="currentAccountReset">　当前登录账号也已恢复默认密码，请退出并使用默认密码重新登录。</span
         ><el-button link type="danger" @click="clearInitialPassword"
           >立即清空</el-button
         ></template
@@ -366,7 +400,8 @@ onMounted(loadTeachers);
       :data="teachers"
       class="data-table"
       empty-text="暂无教师数据，可先创建教师账号。"
-      ><el-table-column
+      @selection-change="selectedTeachers = $event"
+      ><el-table-column type="selection" width="48" /><el-table-column
         prop="employeeNumber"
         label="工号"
         min-width="130"
@@ -436,7 +471,7 @@ onMounted(loadTeachers);
           class="dialog-help"
           type="info"
           :closable="false"
-          title="工号和用户名创建后不可修改；如教师忘记密码，请在详情中重置。"
+          title="工号和用户名创建后不可修改；如教师忘记密码，请在详情中恢复默认密码。"
         />
         <el-form-item label="工号" prop="employeeNumber"
           ><el-input
@@ -507,8 +542,8 @@ onMounted(loadTeachers);
             ></el-descriptions
           >
           <div class="teacher-security-actions">
-            <p>工号和用户名不可修改。密码重置后旧密码立即失效，新密码只显示一次。</p>
-            <el-button type="danger" plain @click="resetPassword">重置教师密码</el-button>
+            <p>工号和用户名不可修改。恢复后原密码立即失效，下次登录必须修改密码。</p>
+            <el-button type="danger" plain @click="resetPassword">恢复默认密码</el-button>
           </div>
           <div class="section-title-row teacher-assignment-heading">
             <div>

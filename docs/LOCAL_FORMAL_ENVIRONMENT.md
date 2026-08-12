@@ -17,6 +17,8 @@
 
 IDEA 配置名为 `RikeTikuBackendApplication`，WebStorm 配置名为 `RIKE Frontend`。本轮已在真实 IDEA 与 WebStorm 中分别点击 Run，并在 IDE 控制台确认 Spring Boot 完整启动和 Vite 监听成功，不再以命令行等价启动代替 IDE 结论。
 
+WebStorm 必须使用 **npm Run Configuration**：`package.json` 指向前端项目，Command 为 `run`，Script 为 `dev`，Node interpreter 使用本机 Node 24。不要创建 JavaScript/TypeScript 配置直接运行 `src/main.ts`；浏览器入口需要 Vite 处理 Vue、CSS 与模块依赖，直接交给 Node 会产生 `ERR_UNKNOWN_FILE_EXTENSION`。正确控制台应显示 `vite` 和 `Local: http://localhost:8080/`。
+
 后端关键变量：
 
 ```text
@@ -49,6 +51,10 @@ powershell -ExecutionPolicy Bypass -File scripts/reclaim-rike-port.ps1 -Port 808
 ## 正式账号复验与恢复
 
 真实 Chrome 使用随机 PNG CAPTCHA 完成代表性账号流程：多角色教师、两名单角色教师、两个班级各一名学生走完首次改密与角色/练习主链，并额外抽查同班账号。重复账号不机械复测；角色、班级与学科差异由代表流程和数据库约束共同核验。测试后通过受控事务恢复 9 个账号的 BCrypt 初始密码摘要与首次改密标识，并清空练习、错题、AI、候选、私信和调用日志事实。
+
+管理员学生/教师页面现提供单人和批量“恢复默认密码”。默认密码由 `RIKE_TIKU_DEFAULT_RESET_PASSWORD`（未配置时为 `a1234567`）控制；数据库仅保存 BCrypt，响应仅当次显示且禁止缓存，恢复后必须首次改密。忘记密码应联系管理员，不存在公共匿名重置 API。若管理员恢复了当前登录账号，应立即手动退出；现有 JWT 在到期前不做服务端集中撤销。
+
+新增恢复界面的真实 CAPTCHA 页面验收由用户本人按最终清单执行，当前状态仍为 `FINAL_MANUAL_ACCEPTANCE_PENDING`；自动化、IDE 启动或既有代表流程不能替用户将该状态改为 PASS。
 
 ## 数据边界
 

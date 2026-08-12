@@ -34,6 +34,8 @@ PR #31 已由用户明确决定 ordinary merge，merge commit 为 `c79b7a6f93e32
 - 真实 IDEA `RikeTikuBackendApplication` 与 WebStorm `RIKE Frontend` 已分别点击 Run；四种 Run/Stop 顺序验证 8081/8080、health 200、CORS、Flyway V14 与正式库连接。旧 RIKE Node/Java orphan 是端口冲突根因，新增的受控脚本只按仓库路径和进程特征回收 RIKE 端口，拒绝停止无关进程。
 - 论文资料包含写作入口、功能—代码—技术映射、导入指南及可验证 XLSX、35 表结构参考、纯结构快照、SQL 示例、匿名截图索引、开发时间线、中期材料草稿和已核验参考文献。
 - 独立临时 Profile 的真实 Chrome 通过 CDP/Playwright 完成固定 URL 操作者巡检；代表性正式账号覆盖多角色、单角色教师和两个班级学生主链，1440/390 无溢出，console/page/request error 为 0，结论 `PASS_WITH_NOTES`，BLOCKER/HIGH 为 0。Docker 因本机环境不可用记为 `SKIPPED_DOCKER_ENVIRONMENT`；Redis 明确为 `NOT ADOPTED BY DESIGN`。
+- 管理员学生/教师管理新增单人及批量“恢复默认密码”：配置化默认值、逐账号独立 BCrypt、首次改密、no-store、操作日志脱敏与批量原子回滚均由专项验证；新建/导入账号继续使用随机初始密码。真实 WebStorm 已使用 npm `run dev` 配置启动，禁止直接以 Node 执行 `src/main.ts`。
+- 用户选择自行完成新恢复界面的真实 CAPTCHA 人工验收；该部分没有被自动化冒充为人工 PASS，PR #32 保持 Draft / OPEN。
 
 ## PR #31 机器验证
 
