@@ -11,6 +11,9 @@ import com.neu.riketiku.ai.provider.AiModelResult;
 import com.neu.riketiku.ai.provider.AiProviderErrorType;
 import com.neu.riketiku.ai.provider.AiProviderException;
 import com.neu.riketiku.ai.provider.AiThinkingMode;
+import com.neu.riketiku.ai.search.OfficialWebSearchClient;
+import com.neu.riketiku.ai.search.WebSearchException;
+import com.neu.riketiku.ai.search.WebSearchRequest;
 import com.neu.riketiku.ai.vision.AiVisionProvider;
 import com.neu.riketiku.ai.vision.AiVisionException;
 import com.neu.riketiku.ai.vision.AiVisionProviderFactory;
@@ -42,12 +45,14 @@ public class AiModelConfigService {
     private final AiVisionProviderFactory visionFactory;
     private final AiCallLogWriter logWriter;
     private final GuanLiCaoZuoRiZhiFuWu auditLog;
+    private final OfficialWebSearchClient webSearch;
 
     public AiModelConfigService(JdbcTemplate jdbc, AiRuntimeConfigurationService runtimeConfigurations,
                                 AiTextProviderFactory textFactory, AiVisionProviderFactory visionFactory,
-                                AiCallLogWriter logWriter, GuanLiCaoZuoRiZhiFuWu auditLog) {
+                                AiCallLogWriter logWriter, GuanLiCaoZuoRiZhiFuWu auditLog,
+                                OfficialWebSearchClient webSearch) {
         this.jdbc=jdbc; this.runtimeConfigurations=runtimeConfigurations; this.textFactory=textFactory;
-        this.visionFactory=visionFactory; this.logWriter=logWriter; this.auditLog=auditLog;
+        this.visionFactory=visionFactory; this.logWriter=logWriter; this.auditLog=auditLog; this.webSearch=webSearch;
     }
 
     @Transactional(readOnly = true)
@@ -67,19 +72,19 @@ public class AiModelConfigService {
 
     @Transactional
     public AiModelConfigDtos.Item create(AiModelConfigDtos.Save request) {
-        return auditLog.audited("AI_MODEL", "CREATE", null, "新增本地演示 AI 模型配置",
+        return auditLog.audited("AI_MODEL", "CREATE", null, "新增 AI 模型配置",
                 () -> save(null,request), AiModelConfigDtos.Item::id);
     }
 
     @Transactional
     public AiModelConfigDtos.Item update(long id, AiModelConfigDtos.Save request) {
-        return auditLog.audited("AI_MODEL", "UPDATE", id, "更新本地演示 AI 模型配置",
+        return auditLog.audited("AI_MODEL", "UPDATE", id, "更新 AI 模型配置",
                 () -> save(id,request));
     }
 
     @Transactional
     public AiModelConfigDtos.Item clearKey(long id) {
-        return auditLog.audited("AI_MODEL", "CLEAR_KEY", id, "清除本地演示 AI API Key", () -> {
+        return auditLog.audited("AI_MODEL", "CLEAR_KEY", id, "清除 AI API Key", () -> {
             require(id);
             jdbc.update("UPDATE ai_mo_xing_pei_zhi SET api_mi_yao=NULL,zui_jin_ce_shi_zhuang_tai='NOT_TESTED',zui_jin_ce_shi_hao_shi=NULL,zui_jin_ce_shi_shi_jian=NULL WHERE id=?",id);
             runtimeConfigurations.invalidate();
@@ -102,27 +107,34 @@ public class AiModelConfigService {
                         new AiMessage("system","Reply with the single word RIKE."),new AiMessage("user","RIKE")),
                         "ADMIN_CONNECTION_TEST","ai-model:"+id,false,64,AiThinkingMode.DISABLED));
                 logWriter.success(logRequest,new AiModelResult(result.providerCode(),result.modelCode(),"[REDACTED]",result.usage(),result.finishReason()),elapsed(started));
-            } else {
+            } else if ("VISION".equals(runtime.usage())) {
                 AiVisionProvider provider=visionFactory.create(runtime);
                 AiVisionResult result=provider.analyze(new AiVisionRequest(id,List.of(
                         new AiVisionRequest.Image("safe-admin-test","image/png",SAFE_TEST_PNG)),"ADMIN_VISION_TEST"));
                 preview=truncate(result.context().summary(),120);
                 logWriter.success(logRequest,new AiModelResult(result.provider(),result.model(),"[REDACTED]",result.usage(),"stop"),elapsed(started));
+            } else {
+                var results=webSearch.search(runtime,new WebSearchRequest("高中物理 牛顿第二定律",1));
+                preview=results.isEmpty()?"搜索服务已响应，未返回结果":truncate(results.getFirst().title(),120);
+                logWriter.success(logRequest,new AiModelResult(runtime.provider(),runtime.model(),"[REDACTED]",null,"stop"),elapsed(started));
             }
             long latency=elapsed(started); updateTest(id,"SUCCESS",latency);
             return new AiModelConfigDtos.ConnectionResult(true,runtime.provider().toUpperCase(Locale.ROOT),
-                    runtime.model(),latency,"SUCCESS",preview,null);
+                    runtime.model(),latency,"SUCCESS",preview,null,null,null,LocalDateTime.now());
         } catch (AiProviderException exception) {
             long latency=elapsed(started); logWriter.failure(logRequest,runtime.normalizedProvider(),runtime.model(),exception.errorType(),latency);
             updateTest(id,"FAILED",latency);
-            return new AiModelConfigDtos.ConnectionResult(false,runtime.provider().toUpperCase(Locale.ROOT),runtime.model(),latency,"FAILED",null,safe(exception.errorType()));
+            return new AiModelConfigDtos.ConnectionResult(false,runtime.provider().toUpperCase(Locale.ROOT),runtime.model(),latency,"FAILED",null,safe(exception.errorType()),exception.errorType().name(),null,LocalDateTime.now());
         } catch (AiVisionException exception) {
             long latency=elapsed(started); logWriter.failure(logRequest,runtime.normalizedProvider(),runtime.model(),exception.errorType(),latency);
             updateTest(id,"FAILED",latency);
-            return new AiModelConfigDtos.ConnectionResult(false,runtime.provider().toUpperCase(Locale.ROOT),runtime.model(),latency,"FAILED",null,safe(exception.errorType()));
+                    return new AiModelConfigDtos.ConnectionResult(false,runtime.provider().toUpperCase(Locale.ROOT),runtime.model(),latency,"FAILED",null,safe(exception.errorType()),exception.errorType().name(),exception.httpStatus(),LocalDateTime.now());
+        } catch (WebSearchException exception) {
+            long latency=elapsed(started); updateTest(id,"FAILED",latency);
+            return new AiModelConfigDtos.ConnectionResult(false,runtime.provider().toUpperCase(Locale.ROOT),runtime.model(),latency,"FAILED",null,"联网搜索暂不可用","SEARCH_UNAVAILABLE",null,LocalDateTime.now());
         } catch (RuntimeException exception) {
             long latency=elapsed(started); updateTest(id,"FAILED",latency);
-            return new AiModelConfigDtos.ConnectionResult(false,runtime.provider().toUpperCase(Locale.ROOT),runtime.model(),latency,"FAILED",null,"AI 服务暂不可用");
+            return new AiModelConfigDtos.ConnectionResult(false,runtime.provider().toUpperCase(Locale.ROOT),runtime.model(),latency,"FAILED",null,"AI 服务暂不可用","UNKNOWN",null,LocalDateTime.now());
         }
     }
 
@@ -162,6 +174,9 @@ public class AiModelConfigService {
             if(!"DEEPSEEK".equals(provider)||!TEXT_MODELS.contains(model)) fail("AI_TEXT_MODEL_INVALID","文本模型配置不受支持",HttpStatus.BAD_REQUEST);
         }else if("VISION".equals(usage)){
             if(!"GLM".equals(provider)||!VISION_MODEL.equals(model)) fail("AI_VISION_MODEL_INVALID","视觉模型必须为 glm-4.6v-flash",HttpStatus.BAD_REQUEST);
+        }else if("SEARCH".equals(usage)){
+            if(!"GLM".equals(provider)||!Set.of("search_std","search_pro","search_pro_sogou","search_pro_quark").contains(model))
+                fail("AI_SEARCH_CONFIG_INVALID","搜索配置不受支持",HttpStatus.BAD_REQUEST);
         }else fail("AI_MODEL_USAGE_INVALID","AI 模型用途不受支持",HttpStatus.BAD_REQUEST);
         if(request.retryCount()>1) fail("AI_MODEL_RETRY_INVALID","最多重试一次",HttpStatus.BAD_REQUEST);
     }

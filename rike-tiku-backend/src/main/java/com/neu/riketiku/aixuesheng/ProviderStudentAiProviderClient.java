@@ -17,4 +17,9 @@ public class ProviderStudentAiProviderClient implements StudentAiProviderClient 
     public AiModelResult generate(AiModelRequest request) {
         return providerService.generate(request);
     }
+
+    @Override
+    public AiModelResult generate(AiModelRequest request, Long safeConfigId) {
+        return providerService.generate(request, safeConfigId);
+    }
 }
