@@ -44,7 +44,7 @@ describe('学生 AI 学习面板', () => {
     expect(wrapper.text()).toContain('当前题目答疑')
   })
   it('创建绑定当前答题事实的会话并展示轮数，发送失败不暴露底层异常', async () => {
-    api.createAiConversation.mockResolvedValue({ id:7,answerFactId:19,questionId:2,status:'ACTIVE',usedRounds:0,maxRounds:8,remainingRounds:8,messages:[] })
+    api.createAiConversation.mockResolvedValue({ id:7,answerFactId:19,questionId:2,status:'ACTIVE',usedRounds:0,maxRounds:10,remainingRounds:10,messages:[] })
     api.sendAiMessage.mockRejectedValue({ message:'当前题目答疑暂不可用' })
     const wrapper = mount(StudentAiLearningPanel, { props:{ answerFactId:19,wrong:true }, global:{ stubs, directives:{ loading:()=>undefined } } })
     await flushPromises()
@@ -52,7 +52,7 @@ describe('学生 AI 学习面板', () => {
     await flushPromises()
     expect(api.createAiConversation).toHaveBeenCalledWith(19)
     expect(wrapper.text()).toContain('RIKE 理科学习助手', '已绑定当前题目')
-    expect(wrapper.text()).toContain('剩余 8 / 8 轮')
+    expect(wrapper.text()).toContain('剩余 10 / 10 轮')
     await wrapper.find('textarea').setValue('为什么要先受力分析？')
     await wrapper.findAll('button').find(button => button.text() === '发送')!.trigger('click')
     await flushPromises()
