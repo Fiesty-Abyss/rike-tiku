@@ -1,4 +1,7 @@
 package com.neu.riketiku.jiaoshi.dto;
 
-public record JiaoShiMiMaChongZhiXiangYing(String initialPassword) {
+public record JiaoShiMiMaChongZhiXiangYing(
+        int resetCount,
+        String initialPassword,
+        boolean mustChangePassword) {
 }
