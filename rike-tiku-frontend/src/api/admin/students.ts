@@ -64,6 +64,12 @@ export interface CreateStudentRequest {
   classId: number
 }
 
+export interface PasswordRecoveryResponse {
+  resetCount: number
+  initialPassword: string
+  mustChangePassword: boolean
+}
+
 export interface UpdateStudentRequest {
   name: string
   grade: string
@@ -92,5 +98,9 @@ export async function transferStudent(id: number, classId: number) {
 }
 
 export async function resetStudentPassword(id: number) {
-  return (await http.post<{ initialPassword: string }>(`/admin/students/${id}/reset-password`)).data
+  return (await http.post<PasswordRecoveryResponse>(`/admin/students/${id}/reset-password`)).data
+}
+
+export async function resetStudentPasswords(ids: number[]) {
+  return (await http.post<PasswordRecoveryResponse>('/admin/students/reset-passwords', { ids })).data
 }
