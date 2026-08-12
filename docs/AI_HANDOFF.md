@@ -4,12 +4,13 @@
 
 ## CURRENT HANDOFF
 
-- PR #30 生产代码已经通过第二次独立审查，获准 ordinary merge。审查 HEAD 为 `509f52ed08633801ec18cc2dce576a320357a08c`。
+- PR #30 已 ordinary merge，merge commit 为 `d67ebc83bf0b8a2fbd889290d5a0f78a27d7640e`。当前分支为 PR #31 `chore/final-ai-integration-verification`。
 - 当前 Flyway 为 V1–V14，共 35 张业务表；没有 V15。
 - 非 AI 主链、Provider Core、学生 AI、管理员 AI 配置、候选题生成与人工审核均为 `DONE_VERIFIED`。
-- 真实 `deepseek-v4-flash` smoke 为 PASS。
-- GLM-4.6V-Flash 代码链和本地 Stub 专项通过，真实请求到达官方 endpoint 后返回 HTTP 429，状态为 `REAL_GLM_VISION_SMOKE_FAIL_429`。
-- 下一唯一任务是 PR #31 `chore/final-ai-integration-verification`。PR #31 负责全量回归、Demo、真实 Provider 全链路、机器浏览器、一次最终用户人工验收和论文/答辩口径封板，原则上不新增业务功能。
+- PR #31 机器阶段为 `AUTO_FINAL_VERIFICATION_PASS`。后端全量 173 tests、0 failures、0 errors、3 skipped；前端全量 58 files、190 tests，type-check、build、audit 通过。
+- PR #31 真实 `deepseek-v4-flash` smoke 与 Demo 错因、当前题答疑、单题候选生成均为 PASS。
+- GLM-4.6V-Flash 代码链、Stub 和最终 Parser 全量通过。真实第一次窗口为 429，第二个最终窗口暴露完整 JSON 代码围栏兼容；Parser 已严格修复但未发起第三次调用，状态为 `REAL_GLM_VISION_NOT_REVERIFIED_AFTER_WRAPPER_FIX`。
+- Demo 已清理重建为 V1–V14、35 表、378 题，并启动真实 CAPTCHA 验收环境。下一唯一动作是用户按最终清单验收；当前为 `FINAL_MANUAL_ACCEPTANCE_PENDING`，PR #31 不合并。
 
 ## 当前 AI 架构
 

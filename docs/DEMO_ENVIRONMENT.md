@@ -2,6 +2,8 @@
 
 当前 Demo 结构目标为 Flyway V1–V14、35 张业务表。`reset/create/validate` 由当前后端 `DemoDataService` 校验 V14/35；V14 的 AI 配置、生成、评价与视觉缓存表默认不预置真实 Key 或调用数据。
 
+PR #31 机器测试结束后已再次执行 `acceptance-prepare`。当前人工验收基线为 14 个迁移、35 张业务表、三科各 120 道普通题加每科 6 道 Topic18，共 378 道；学习、私信、分析、会话、候选和调用日志等机器记录已清理。随后只在本机 `rike_tiku_demo.ai_mo_xing_pei_zhi` 配置两条启用的演示 Provider，API 只回显 `apiKeyConfigured`。当前状态为 `FINAL_MANUAL_ACCEPTANCE_PENDING`。
+
 ## 用途与安全边界
 
 本工具只为本科毕业设计本机人工验收准备可反复重建的数据。演示数据不在 Flyway 中，不会随应用正常启动写入，也没有公开 seed 接口或免认证入口。
