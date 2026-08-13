@@ -35,6 +35,34 @@ describe('冻结答案展示', () => {
     const wrapper = mount(AnswerDisplay, { props: { questionType: 'FILL_BLANK', value: { blanks: [{ acceptedAnswers: ['1/2', '0.5', '50%'] }] } } })
     expect(wrapper.text()).toContain('第 1 空')
     expect(wrapper.text()).toContain('1/2')
-    expect(wrapper.text()).not.toContain('0.5')
+    expect(wrapper.text()).toContain('0.5')
+  })
+
+  it('安全解析单选 JSON 字符串并显示完整选项', () => {
+    const wrapper = mount(AnswerDisplay, { props: { questionType: 'SINGLE_CHOICE', value: '{"type":"SINGLE_CHOICE","optionLabels":["B"]}', options } })
+    expect(wrapper.text()).toContain('B.')
+    expect(wrapper.text()).toContain('动能为')
+  })
+
+  it('安全解析多选 JSON 字符串', () => {
+    const wrapper = mount(AnswerDisplay, { props: { questionType: 'MULTIPLE_CHOICE', value: '{"optionLabels":["A","C"]}', options } })
+    expect(wrapper.text()).toContain('速度方向发生改变')
+    expect(wrapper.text()).toContain('合外力恒为零')
+  })
+
+  it('安全解析填空 JSON 字符串并列出可接受答案', () => {
+    const wrapper = mount(AnswerDisplay, { props: { questionType: 'FILL_BLANK', value: '{"blanks":[{"acceptedAnswers":["1/2","0.5"]}]}' } })
+    expect(wrapper.text()).toContain('1/2')
+    expect(wrapper.text()).toContain('0.5')
+  })
+
+  it('主观题明确不自动判分', () => {
+    const wrapper = mount(AnswerDisplay, { props: { questionType: 'SUBJECTIVE', value: null } })
+    expect(wrapper.text()).toContain('不自动判分')
+  })
+
+  it('非法 JSON 阻止审核通过', () => {
+    const wrapper = mount(AnswerDisplay, { props: { questionType: 'SINGLE_CHOICE', value: '{broken' } })
+    expect(wrapper.text()).toContain('答案结构异常，禁止通过审核')
   })
 })

@@ -73,7 +73,12 @@ async function handleLogin(payload: {
       <h2 id="login-title">欢迎登录</h2>
       <p class="auth-description">输入账号、密码和图形验证码后登录。</p>
       <LoginForm ref="loginForm" :loading="loading" :error-message="errorMessage" @submit="handleLogin" />
-      <button class="login-note login-note-button" type="button" @click="recoveryVisible=true">忘记密码？</button>
+      <button class="login-note-button" type="button" aria-haspopup="dialog" @click="recoveryVisible=true">
+        <span class="login-note-button__shield" aria-hidden="true">◇</span>
+        <span>遇到登录问题？</span>
+        <strong>申请密码恢复</strong>
+        <span class="login-note-button__arrow" aria-hidden="true">→</span>
+      </button>
       <PasswordRecoveryDialog v-model="recoveryVisible" />
     </section>
   </main>

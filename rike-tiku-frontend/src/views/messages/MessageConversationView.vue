@@ -58,11 +58,9 @@ async function submit() {
 }
 
 async function recall(id:number){
-  if(!window.confirm('撤回后双方都只会看到“消息已撤回”。确认撤回？'))return
   try{await recallMessage(conversationId.value,id);await load(false)}catch(error){ElMessage.warning(errorMessage(error,'消息撤回失败。'))}
 }
 async function hide(id:number){
-  if(!window.confirm('仅从你的消息列表中删除，对方仍可查看。确认删除？'))return
   try{await hideMessage(conversationId.value,id);await load(false)}catch(error){ElMessage.warning(errorMessage(error,'消息删除失败。'))}
 }
 
@@ -94,7 +92,26 @@ onBeforeUnmount(() => stopPolling?.())
         <div ref="messageList" class="chat-history" aria-live="polite">
           <el-empty v-if="page.messages.length === 0" description="暂无消息，可以发送第一条私信。" :image-size="72" />
           <article v-for="item in page.messages" :key="item.id" class="chat-message" :class="{ mine: item.mine, recalled:item.recalled }">
-            <div><strong>{{ item.mine ? '我' : item.senderName }}</strong><p>{{ item.content }}</p><small>{{ formatTime(item.sentAt) }}</small><div class="message-actions"><button v-if="item.mine&&item.recallable" type="button" @click="recall(item.id)">撤回</button><button type="button" @click="hide(item.id)">删除</button></div></div>
+            <div class="message-bubble">
+              <header class="message-bubble__header"><strong>{{ item.mine ? '我' : item.senderName }}</strong>
+                <el-dropdown v-if="!item.recalled" trigger="click" placement="bottom-end" popper-class="message-action-menu">
+                  <button class="message-more-button" type="button" :aria-label="`打开消息 ${item.id} 的操作菜单`">···</button>
+                  <template #dropdown><el-dropdown-menu>
+                    <el-dropdown-item v-if="item.mine&&item.recallable" class="message-action-recall">
+                      <el-popconfirm width="280" title="撤回后双方只会看到“消息已撤回”，是否继续？" confirm-button-text="撤回消息" cancel-button-text="取消" @confirm="recall(item.id)">
+                        <template #reference><button class="message-menu-command message-menu-command--recall" type="button"><span aria-hidden="true">↶</span><span><strong>撤回消息</strong><small>仅限发送后 5 分钟内</small></span></button></template>
+                      </el-popconfirm>
+                    </el-dropdown-item>
+                    <el-dropdown-item>
+                      <el-popconfirm width="300" title="仅从你的列表删除，对方仍可查看，是否继续？" confirm-button-text="仅为我删除" cancel-button-text="取消" @confirm="hide(item.id)">
+                        <template #reference><button class="message-menu-command" type="button"><span aria-hidden="true">⌫</span><span><strong>仅从我的列表删除</strong><small>不会影响对方的消息记录</small></span></button></template>
+                      </el-popconfirm>
+                    </el-dropdown-item>
+                  </el-dropdown-menu></template>
+                </el-dropdown>
+              </header>
+              <p>{{ item.content }}</p><small class="message-bubble__time">{{ formatTime(item.sentAt) }}</small>
+            </div>
           </article>
         </div>
         <div class="chat-composer">
@@ -105,3 +122,15 @@ onBeforeUnmount(() => stopPolling?.())
     </section>
   </main>
 </template>
+
+<style scoped>
+.message-bubble{position:relative;min-width:min(18rem,80vw);max-width:min(42rem,82%);padding:.85rem 1rem .7rem;border:1px solid var(--glass-border);border-radius:18px 18px 18px 6px;background:var(--surface-solid);box-shadow:0 .45rem 1.4rem oklch(30% .035 225/.07)}
+.chat-message.mine .message-bubble{margin-left:auto;border-radius:18px 18px 6px 18px;background:color-mix(in oklch,var(--brand-soft),white 45%)}
+.chat-message.recalled .message-bubble{opacity:.72;background:var(--surface-muted)}
+.message-bubble__header{display:flex;align-items:center;justify-content:space-between;gap:1rem;min-height:1.6rem}.message-bubble p{margin:.42rem 0 .55rem;line-height:1.65;white-space:pre-wrap;overflow-wrap:anywhere}.message-bubble__time{display:block;color:var(--ink-muted);font-variant-numeric:tabular-nums;text-align:right}
+.message-more-button{appearance:none;-webkit-appearance:none;width:2rem;height:1.75rem;padding:0;border:1px solid transparent;border-radius:999px;color:var(--ink-muted);background:transparent;font:700 1rem/1 var(--font-body);letter-spacing:.08em;cursor:pointer;opacity:.35;transition:opacity .16s ease,background .16s ease,color .16s ease}
+.message-bubble:hover .message-more-button,.message-more-button:focus-visible,.message-more-button[aria-expanded="true"]{opacity:1;color:var(--brand-deep);border-color:var(--glass-border);background:var(--surface-glass-strong)}
+.message-menu-command{appearance:none;-webkit-appearance:none;display:flex;width:100%;align-items:center;gap:.7rem;padding:.25rem;border:0;color:var(--ink-secondary);background:transparent;text-align:left;cursor:pointer}.message-menu-command>span:first-child{width:1.4rem;color:var(--ink-muted);font-size:1rem;text-align:center}.message-menu-command>span:last-child{display:grid}.message-menu-command strong{font-size:.86rem}.message-menu-command small{color:var(--ink-muted);font-size:.72rem}.message-menu-command--recall strong,.message-menu-command--recall>span:first-child{color:oklch(54% .12 37)}
+@media(max-width:600px){.message-bubble{max-width:90%;min-width:0}.message-more-button{opacity:.72}}
+@media(prefers-reduced-motion:reduce){.message-more-button{transition:none}}
+</style>
