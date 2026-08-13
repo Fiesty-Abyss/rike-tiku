@@ -82,7 +82,7 @@ Spring Boot 模块化单体
    ├─ 学生 AI、候选生成、人工审核
    └─ Provider / Vision / Search 边界
    │
-MySQL 8.4 · Flyway V1–V19 · 39 张业务表
+MySQL 8.4 · Flyway V1–V23 · 41 张业务表
 ```
 
 ## AI 安全边界
@@ -96,10 +96,10 @@ MySQL 8.4 · Flyway V1–V19 · 39 张业务表
 
 ## 数据库
 
-Flyway V1–V19 共演进为 39 张业务表。V15–V19 依次完成 10 轮约束、学生运行时选择与 SEARCH 用途、密码恢复、教师试卷和学生 AI 变式实例；已提交迁移保持不可变。
+Flyway V1–V23 共演进为 41 张业务表。V20–V23 新增题目专题分类与任课范围私有可见性、知识卡片多知识点与安全图片、私信撤回/按用户隐藏，以及练习结果/专题题互斥 AI 会话上下文；V1–V19 已提交迁移保持不可变。
 
-- [V19 字段与约束参考](docs/DATABASE_SCHEMA_REFERENCE.md)
-- [V19 纯结构快照](database/schema_snapshot_v19.sql)（0 条 `INSERT`）
+- [V23 字段与约束参考](docs/DATABASE_SCHEMA_REFERENCE.md)
+- [V23 纯结构快照](database/schema_snapshot_v23.sql)（0 条 `INSERT`）
 - [数据库模块与 ER 图](database/diagrams/rike_tiku_er.md)
 - [SQL 示例](docs/SQL_EXAMPLES.md)
 
@@ -130,14 +130,14 @@ npm run dev
 
 ## 测试口径
 
-- 随机临时 MySQL 从空库执行 V1→V19；集成测试不使用正式 `rike_tiku`。
+- 随机临时 MySQL 从空库执行 V1→V23；集成测试不使用正式 `rike_tiku`。
 - 匿名验收库 `rike_tiku_demo` 已执行 reset、19 个迁移、seed 与 validate，保持 378 道 PUBLISHED 题基线。
 - 前端专项覆盖科学内容、10 轮控制、模型/思考/搜索、变式题、密码恢复、组卷、试卷预览、Portal 和 AI 模型管理。
 - 真实 Provider 只有本机已配置 Key 时才执行一次受控 smoke；缺 Key 记为 `NOT_RUN`，不伪造 PASS。
 
 ## 论文写作与参考文献
 
-论文材料总入口：[论文写作资料中心](docs/THESIS_WRITING_HUB.md)；[功能—截图—代码—表映射](docs/FEATURE_SCREENSHOT_CODE_INDEX.md)；[论文初稿](docs/thesis/RIKE_THESIS_DRAFT.md)；[事实核对表](docs/thesis/RIKE_THESIS_FACT_CHECK.md)；[答辩提纲](docs/thesis/RIKE_DEFENSE_OUTLINE.md)。数据库论证可直接引用 [V19 字段参考](docs/DATABASE_SCHEMA_REFERENCE.md)、[纯结构快照](database/schema_snapshot_v19.sql)、[ER 模块图](database/diagrams/rike_tiku_er.md) 与 [只读 SQL 示例](docs/SQL_EXAMPLES.md)。
+论文材料总入口：[论文写作资料中心](docs/THESIS_WRITING_HUB.md)；[功能—截图—代码—表映射](docs/FEATURE_SCREENSHOT_CODE_INDEX.md)；[论文初稿](docs/thesis/RIKE_THESIS_DRAFT.md)；[事实核对表](docs/thesis/RIKE_THESIS_FACT_CHECK.md)；[答辩提纲](docs/thesis/RIKE_DEFENSE_OUTLINE.md)。数据库论证可直接引用 [V23 字段参考](docs/DATABASE_SCHEMA_REFERENCE.md)、[纯结构快照](database/schema_snapshot_v23.sql)、[ER 模块图](database/diagrams/rike_tiku_er.md) 与 [只读 SQL 示例](docs/SQL_EXAMPLES.md)。
 
 以下核心资料均已按 DOI 元数据、出版方、官方机构或技术官方文档联网核验；它们说明研究与设计依据，不代表 RIKE 自身实验结果。
 
