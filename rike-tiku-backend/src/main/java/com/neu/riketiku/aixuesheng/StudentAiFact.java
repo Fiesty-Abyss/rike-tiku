@@ -1,9 +1,9 @@
 package com.neu.riketiku.aixuesheng;
 
 record StudentAiFact(
-        long answerFactId,
+        Long answerFactId,
         long studentId,
-        long practiceQuestionId,
+        Long practiceQuestionId,
         long questionId,
         String subjectCode,
         String questionType,

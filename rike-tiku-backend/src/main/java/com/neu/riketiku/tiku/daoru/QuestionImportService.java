@@ -246,8 +246,8 @@ public class QuestionImportService {
 
     private void writeRow(Long batchId, ImportedRow row, Long reviewerId) {
         Long subjectId = jdbc.queryForObject("SELECT id FROM ke_mu WHERE ke_mu_dai_ma=?", Long.class, row.subjectCode());
-        jdbc.update("INSERT INTO ti_mu(ke_mu_id,dao_ru_pi_ci_id,ti_mu_lei_xing,shi_yong_mo_shi,ti_gan,zheng_que_da_an,nan_du,nan_du_shuo_ming,shi_fou_ke_zi_dong_pan_fen,zhuang_tai,nei_rong_ha_xi) VALUES (?,?,?,?,?,CAST(? AS JSON),?,?,?,'PENDING',?)",
-                subjectId, batchId, row.mapping().type(), row.mapping().usageMode(), row.raw().stem(), row.answer(), row.difficulty(), blank(row.raw().difficultyReason()), row.mapping().autoGradable(), row.contentHash());
+        jdbc.update("INSERT INTO ti_mu(ke_mu_id,dao_ru_pi_ci_id,ti_mu_lei_xing,shi_yong_mo_shi,zhuan_ti_lei_xing,ti_gan,zheng_que_da_an,nan_du,nan_du_shuo_ming,shi_fou_ke_zi_dong_pan_fen,zhuang_tai,nei_rong_ha_xi) VALUES (?,?,?,?,?,?,CAST(? AS JSON),?,?,?,'PENDING',?)",
+                subjectId, batchId, row.mapping().type(), row.mapping().usageMode(), "SUBJECTIVE".equals(row.mapping().type())?"COMPREHENSIVE":null,row.raw().stem(), row.answer(), row.difficulty(), blank(row.raw().difficultyReason()), row.mapping().autoGradable(), row.contentHash());
         Long questionId = jdbc.queryForObject("SELECT LAST_INSERT_ID()", Long.class);
         Map<Integer, Long> optionIds = new HashMap<>();
         int order = 1;

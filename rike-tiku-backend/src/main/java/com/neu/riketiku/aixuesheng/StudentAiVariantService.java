@@ -17,11 +17,17 @@ import tools.jackson.databind.ObjectMapper;
 public class StudentAiVariantService {
     private final JdbcTemplate jdbc;private final AiQuestionGenerationService generation;private final ObjectiveAnswerGrader grader;private final ObjectMapper mapper=new ObjectMapper();
     public StudentAiVariantService(JdbcTemplate jdbc,AiQuestionGenerationService generation,ObjectiveAnswerGrader grader){this.jdbc=jdbc;this.generation=generation;this.grader=grader;}
-    public StudentAiVariantDtos.Variant generate(long userId,long factId){
+    @Transactional
+    public StudentAiVariantDtos.Variant generate(long userId,long factId,Integer targetDifficulty){
         Fact fact=fact(userId,factId);List<Long> points=jdbc.query("SELECT zhi_shi_dian_id FROM ti_mu_zhi_shi_dian WHERE ti_mu_id=? AND yi_shan_chu=0 ORDER BY pai_xu",(rs,row)->rs.getLong(1),fact.questionId());
         if(points.isEmpty())throw error("AI_VARIANT_KNOWLEDGE_MISSING","当前题缺少可用知识点",HttpStatus.CONFLICT);
-        var command=new AiQuestionGenerationDtos.Generate(fact.questionId(),fact.type(),points,fact.difficulty(),"COMBINED",1);
-        var task=generation.generate(userId,"STUDENT",command);var candidate=task.candidates().getFirst();
+        int difficulty=targetDifficulty==null?fact.difficulty():targetDifficulty;
+        if(difficulty<1||difficulty>5)throw error("AI_VARIANT_DIFFICULTY_INVALID","目标难度必须是 1 到 5",HttpStatus.BAD_REQUEST);
+        var command=new AiQuestionGenerationDtos.Generate(fact.questionId(),fact.type(),points,difficulty,"COMBINED",1);
+        final AiQuestionGenerationDtos.Task task;
+        try{task=generation.generate(userId,"STUDENT",command);}catch(RenZhengYeWuYiChang exception){throw translateGenerationFailure(exception);}
+        if(task.candidates()==null||task.candidates().size()!=1)throw error("AI_INVALID_RESPONSE","AI 未返回完整的单题结构，请稍后重试",HttpStatus.SERVICE_UNAVAILABLE);
+        var candidate=task.candidates().getFirst();
         jdbc.update("INSERT INTO ai_xue_sheng_bian_shi_shi_li(xue_sheng_id,xue_sheng_da_ti_id,mu_ti_mu_id,ai_sheng_cheng_ren_wu_id,ti_mu_id) VALUES (?,?,?,?,?)",fact.studentId(),factId,fact.questionId(),task.id(),candidate.questionId());
         long id=jdbc.queryForObject("SELECT LAST_INSERT_ID()",Long.class);return detail(userId,id);
     }
@@ -44,5 +50,15 @@ public class StudentAiVariantService {
     private StudentAiVariantDtos.Variant row(long userId,long id){Row r=require(userId,id,false);boolean revealed=!"READY".equals(r.status());return new StudentAiVariantDtos.Variant(r.id(),r.factId(),r.motherId(),r.questionId(),r.status(),r.type(),r.stem(),r.difficulty(),readOptions(r.optionsJson()),r.studentAnswerJson()==null?null:mapper.readTree(r.studentAnswerJson()),r.correct(),revealed?mapper.readTree(r.correctAnswerJson()):null,revealed?r.analysis():null,r.reviewStatus());}
     private List<StudentAiVariantDtos.Option> readOptions(String json){if(json==null)return List.of();return mapper.readValue(json,new TypeReference<List<StudentAiVariantDtos.Option>>(){});}
     private RenZhengYeWuYiChang error(String c,String m,HttpStatus s){return new RenZhengYeWuYiChang(c,m,s);}
+    private RenZhengYeWuYiChang translateGenerationFailure(RenZhengYeWuYiChang exception){
+        String code=exception.getCode();
+        if("AI_DISABLED".equals(code)||"AI_CONFIGURATION_ERROR".equals(code))return error("AI_PROVIDER_DISABLED","AI Provider 尚未启用",HttpStatus.SERVICE_UNAVAILABLE);
+        if("AI_AUTHENTICATION_ERROR".equals(code))return error(code,"AI Provider 认证失败，请联系管理员",HttpStatus.SERVICE_UNAVAILABLE);
+        if("AI_RATE_LIMITED".equals(code))return error(code,"AI 请求过于频繁，请稍后再试",HttpStatus.TOO_MANY_REQUESTS);
+        if("AI_TIMEOUT".equals(code))return error(code,"AI 生成超时，请稍后重试",HttpStatus.GATEWAY_TIMEOUT);
+        if("AI_INVALID_RESPONSE".equals(code)||"AI_CANDIDATE_INVALID".equals(code))return error("AI_INVALID_RESPONSE","AI 返回结构未通过严格校验",HttpStatus.SERVICE_UNAVAILABLE);
+        if("AI_PENDING_LIMIT_REACHED".equals(code))return exception;
+        return error("AI_VARIANT_GENERATION_FAILED","AI 变式生成失败，未创建练习实例",HttpStatus.SERVICE_UNAVAILABLE);
+    }
     private record Fact(long studentId,long questionId,String type,int difficulty){} private record Row(long id,long factId,long motherId,long questionId,String status,String type,String stem,int difficulty,String optionsJson,String correctAnswerJson,String studentAnswerJson,Boolean correct,String analysis,String reviewStatus){}
 }

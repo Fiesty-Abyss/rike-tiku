@@ -61,11 +61,11 @@ public class DemoDataService {
         guardDatabaseName(database);
         int version = jdbc.queryForObject("SELECT MAX(CAST(version AS UNSIGNED)) FROM flyway_schema_history WHERE success=1", Integer.class);
         int tableCount = jdbc.queryForObject("SELECT COUNT(*) FROM information_schema.tables WHERE table_schema=DATABASE() AND table_name<>'flyway_schema_history'", Integer.class);
-        if (version != 19 || tableCount != 39) {
-            throw new IllegalStateException("演示库必须完整执行V1-V19且包含39张业务表，当前V" + version + "，" + tableCount + "张");
+        if (version != 23 || tableCount != 41) {
+            throw new IllegalStateException("演示库必须完整执行V1-V23且包含41张业务表，当前V" + version + "，" + tableCount + "张");
         }
         expect("管理员操作日志表", 1, count("SELECT COUNT(*) FROM information_schema.tables WHERE table_schema=DATABASE() AND table_name='guan_li_cao_zuo_ri_zhi'"));
-        System.out.println("演示数据库结构校验通过: " + database + "，V1-V19，39张业务表");
+        System.out.println("演示数据库结构校验通过: " + database + "，V1-V23，41张业务表");
     }
 
     @Transactional
@@ -591,8 +591,8 @@ public class DemoDataService {
             throw new IllegalStateException("Topic18题内容重复: " + q.key() + " 与题面“" + existingStem + "”冲突");
         }
         long questionId = insert("""
-                INSERT INTO ti_mu (ke_mu_id,ti_mu_lei_xing,shi_yong_mo_shi,ti_gan,zheng_que_da_an,nan_du,nan_du_shuo_ming,shi_fou_ke_zi_dong_pan_fen,zhuang_tai,nei_rong_ha_xi)
-                VALUES (?,'SUBJECTIVE','TOPIC_LEARNING',?,JSON_OBJECT('type','SUBJECTIVE'),?,'综合材料阅读与分步推理',0,'PUBLISHED',?)
+                INSERT INTO ti_mu (ke_mu_id,ti_mu_lei_xing,shi_yong_mo_shi,zhuan_ti_lei_xing,ti_gan,zheng_que_da_an,nan_du,nan_du_shuo_ming,shi_fou_ke_zi_dong_pan_fen,zhuang_tai,nei_rong_ha_xi)
+                VALUES (?,'SUBJECTIVE','TOPIC_LEARNING','COMPREHENSIVE',?,JSON_OBJECT('type','SUBJECTIVE'),?,'综合材料阅读与分步推理',0,'PUBLISHED',?)
                 """, subjectId, stem, q.difficulty(), contentHash);
         jdbc.update("INSERT INTO ti_mu_jie_xi (ti_mu_id,jie_xi_lei_xing,jie_xi_nei_rong,ban_ben_hao,zhuang_tai) VALUES (?,'STANDARD',?,1,'PUBLISHED')",
                 questionId, q.analysis());
