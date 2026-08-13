@@ -73,6 +73,7 @@ async function logout() {
         <div class="teacher-heading-actions">
           <el-button type="primary" @click="router.push('/teacher/ai-generation')">AI 变式题生成与审核</el-button>
           <el-button type="primary" plain @click="router.push('/teacher/papers')">组卷与打印</el-button>
+          <el-button type="primary" plain @click="router.push('/teacher/private-questions')">我的班级题库</el-button>
           <el-button type="primary" plain @click="router.push('/messages')">消息</el-button>
         </div>
       </div>

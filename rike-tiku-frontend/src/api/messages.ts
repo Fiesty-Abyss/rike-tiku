@@ -30,6 +30,8 @@ export interface ChatMessage {
   read: boolean
   sentAt: string
   readAt: string | null
+  recalled: boolean
+  recallable: boolean
 }
 
 export interface MessagePage {
@@ -54,3 +56,9 @@ export const sendMessage = (conversationId: number, content: string) =>
 
 export const markConversationRead = (conversationId: number) =>
   http.post<{ readCount: number }>(`/messages/conversations/${conversationId}/read`).then((response) => response.data)
+
+export const recallMessage = (conversationId:number,messageId:number) =>
+  http.post<ChatMessage>(`/messages/${conversationId}/messages/${messageId}/recall`).then(response=>response.data)
+
+export const hideMessage = (conversationId:number,messageId:number) =>
+  http.delete(`/messages/${conversationId}/messages/${messageId}`)

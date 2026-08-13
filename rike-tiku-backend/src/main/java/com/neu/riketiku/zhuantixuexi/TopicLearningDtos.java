@@ -10,11 +10,11 @@ public final class TopicLearningDtos {
     }
 
     public record TopicItem(Long id, Long subjectId, String subjectCode, String subjectName,
-                            String title, int difficulty, List<KnowledgePoint> knowledgePoints) {
+                            String title, String topicType, int difficulty, List<KnowledgePoint> knowledgePoints) {
     }
 
     public record TopicDetail(Long id, Long subjectId, String subjectCode, String subjectName,
-                              String title, String material, int difficulty, String standardAnalysis,
+                              String title, String material, String topicType, int difficulty, String standardAnalysis,
                               List<KnowledgePoint> knowledgePoints) {
     }
 }

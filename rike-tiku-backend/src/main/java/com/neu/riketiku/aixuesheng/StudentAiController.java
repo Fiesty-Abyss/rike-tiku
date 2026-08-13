@@ -50,8 +50,9 @@ public class StudentAiController {
     public StudentAiDtos.Conversation createConversation(
             @Valid @RequestBody StudentAiDtos.CreateConversationRequest request,
             @AuthenticationPrincipal RenZhengYongHu user) {
-        return service.createConversation(user.id(), request.answerFactId(), request.modelConfigId(),
-                request.thinkingMode(), Boolean.TRUE.equals(request.webSearch()));
+        return service.createConversation(user.id(), request.answerFactId(), request.topicQuestionId(),
+                request.contextType(), request.modelConfigId(), request.thinkingMode(),
+                Boolean.TRUE.equals(request.webSearch()));
     }
 
     @GetMapping("/conversations/{conversationId}")

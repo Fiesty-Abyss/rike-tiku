@@ -78,7 +78,7 @@ class StudentAiPromptFactory {
                 objectMapper.writeValueAsString(sources)));
         boolean deep = "DEEP".equals(thinkingMode);
         return new AiModelRequest(messages, "STUDENT_QUESTION_TUTOR",
-                "answerFact:" + fact.answerFactId(), false, 1200,
+                (fact.answerFactId() == null ? "topicQuestion:" + fact.questionId() : "answerFact:" + fact.answerFactId()), false, 1200,
                 deep ? AiThinkingMode.ENABLED : AiThinkingMode.DISABLED, deep ? "max" : null);
     }
 

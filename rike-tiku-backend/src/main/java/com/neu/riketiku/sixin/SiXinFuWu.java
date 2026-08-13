@@ -63,7 +63,7 @@ public class SiXinFuWu {
         return jdbc.query(conversationSql() + """
                 WHERE h.yi_shan_chu=0 AND (t.yong_hu_id=? OR p.yong_hu_id=?)
                 ORDER BY h.zui_hou_xiao_xi_shi_jian IS NULL,h.zui_hou_xiao_xi_shi_jian DESC,h.id DESC
-                """, (rs, row) -> conversation(rs, principal.id()), principal.id(), principal.id(), principal.id());
+                """, (rs, row) -> conversation(rs, principal.id()), principal.id(),principal.id(),principal.id(), principal.id(), principal.id());
     }
 
     @Transactional
@@ -106,18 +106,22 @@ public class SiXinFuWu {
         List<MessageResponse> messages = jdbc.query("""
                 SELECT m.id,m.fa_song_ren_yong_hu_id,
                        CASE WHEN m.fa_song_ren_yong_hu_id=t.yong_hu_id THEN t.xing_ming ELSE p.xing_ming END,
-                       m.nei_rong,m.yi_du,m.fa_song_shi_jian,m.yi_du_shi_jian
+                       CASE WHEN m.che_hui_shi_jian IS NULL THEN m.nei_rong ELSE '消息已撤回' END,m.yi_du,m.fa_song_shi_jian,m.yi_du_shi_jian,
+                       m.che_hui_shi_jian,
+                       (m.fa_song_ren_yong_hu_id=? AND m.che_hui_shi_jian IS NULL AND TIMESTAMPDIFF(SECOND,m.fa_song_shi_jian,CURRENT_TIMESTAMP(3)) BETWEEN 0 AND 300)
                 FROM si_xin_xiao_xi m
                 JOIN si_xin_hui_hua h ON h.id=m.hui_hua_id
                 JOIN ren_ke_guan_xi r ON r.id=h.ren_ke_guan_xi_id
                 JOIN jiao_shi_dang_an t ON t.id=r.jiao_shi_id
                 JOIN xue_sheng_dang_an p ON p.id=h.xue_sheng_id
                 WHERE m.hui_hua_id=? AND m.yi_shan_chu=0
+                  AND ((m.fa_song_ren_yong_hu_id=? AND m.fa_song_zhe_yi_cang=0) OR (m.fa_song_ren_yong_hu_id<>? AND m.jie_shou_zhe_yi_cang=0))
                 ORDER BY m.fa_song_shi_jian,m.id
                 """, (rs, row) -> new MessageResponse(rs.getLong(1), rs.getLong(2), rs.getString(3),
                 rs.getString(4), rs.getLong(2) == principal.id(), rs.getBoolean(5),
-                rs.getTimestamp(6).toLocalDateTime(), rs.getTimestamp(7) == null ? null : rs.getTimestamp(7).toLocalDateTime()),
-                conversationId);
+                rs.getTimestamp(6).toLocalDateTime(), rs.getTimestamp(7) == null ? null : rs.getTimestamp(7).toLocalDateTime(),
+                rs.getTimestamp(8)!=null,rs.getBoolean(9)),
+                principal.id(),conversationId,principal.id(),principal.id());
         return new MessagePageResponse(conversation.response(principal.id()), messages);
     }
 
@@ -143,7 +147,7 @@ public class SiXinFuWu {
                 """, rs -> {
             rs.next();
             return new MessageResponse(rs.getLong(1), rs.getLong(2), rs.getString(3), rs.getString(4), true,
-                    rs.getBoolean(5), rs.getTimestamp(6).toLocalDateTime(), null);
+                    rs.getBoolean(5), rs.getTimestamp(6).toLocalDateTime(), null,false,true);
         }, principal.id(), conversation.senderName(principal.id()), conversation.peerName(principal.id()), messageId);
     }
 
@@ -156,6 +160,29 @@ public class SiXinFuWu {
                 """, conversationId, principal.id());
         return new ReadResponse(count);
     }
+
+    @Transactional
+    public MessageResponse recall(RenZhengYongHu principal,long conversationId,long messageId){
+        Conversation conversation=requireConversation(principal.id(),conversationId);
+        MessageAction row=messageForAction(conversationId,messageId);
+        if(row.senderId()!=principal.id())fail("MESSAGE_RECALL_FORBIDDEN","只能撤回本人发送的消息",HttpStatus.FORBIDDEN);
+        if(row.recalledAt()!=null)fail("MESSAGE_ALREADY_RECALLED","消息已经撤回",HttpStatus.CONFLICT);
+        if(row.ageSeconds()<0||row.ageSeconds()>300)fail("MESSAGE_RECALL_WINDOW_EXPIRED","消息发送超过 5 分钟，不能撤回",HttpStatus.CONFLICT);
+        jdbc.update("UPDATE si_xin_xiao_xi SET che_hui_shi_jian=CURRENT_TIMESTAMP(3) WHERE id=? AND che_hui_shi_jian IS NULL",messageId);
+        return new MessageResponse(messageId,principal.id(),conversation.senderName(principal.id()),"消息已撤回",true,row.read(),row.sentAt(),row.readAt(),true,false);
+    }
+
+    @Transactional
+    public void hide(RenZhengYongHu principal,long conversationId,long messageId){
+        requireConversation(principal.id(),conversationId);MessageAction row=messageForAction(conversationId,messageId);
+        String column=row.senderId()==principal.id()?"fa_song_zhe_yi_cang":"jie_shou_zhe_yi_cang";
+        jdbc.update("UPDATE si_xin_xiao_xi SET "+column+"=1 WHERE id=?",messageId);
+    }
+
+    private MessageAction messageForAction(long conversationId,long messageId){return jdbc.query("""
+            SELECT fa_song_ren_yong_hu_id,che_hui_shi_jian,TIMESTAMPDIFF(SECOND,fa_song_shi_jian,CURRENT_TIMESTAMP(3)),yi_du,fa_song_shi_jian,yi_du_shi_jian
+            FROM si_xin_xiao_xi WHERE id=? AND hui_hua_id=? AND yi_shan_chu=0 FOR UPDATE
+            """,(rs,row)->new MessageAction(rs.getLong(1),rs.getTimestamp(2)==null?null:rs.getTimestamp(2).toLocalDateTime(),rs.getLong(3),rs.getBoolean(4),rs.getTimestamp(5).toLocalDateTime(),rs.getTimestamp(6)==null?null:rs.getTimestamp(6).toLocalDateTime()),messageId,conversationId).stream().findFirst().orElseThrow(()->new RenZhengYeWuYiChang("MESSAGE_NOT_FOUND","消息不存在",HttpStatus.NOT_FOUND));}
 
     private Actor requireActor(long userId) {
         Long teacherId = jdbc.query("""
@@ -202,7 +229,7 @@ public class SiXinFuWu {
 
     private Conversation requireConversation(long userId, long conversationId) {
         Conversation conversation = jdbc.query(conversationSql() + " WHERE h.id=? AND h.yi_shan_chu=0",
-                rs -> rs.next() ? conversationData(rs) : null, userId, conversationId);
+                rs -> rs.next() ? conversationData(rs) : null, userId,userId,userId, conversationId);
         if (conversation == null) {
             fail("MESSAGE_CONVERSATION_NOT_FOUND", "会话不存在", HttpStatus.NOT_FOUND);
         }
@@ -216,9 +243,13 @@ public class SiXinFuWu {
         return """
                 SELECT h.id,h.ren_ke_guan_xi_id,h.xue_sheng_id,t.yong_hu_id,p.yong_hu_id,
                        t.xing_ming,p.xing_ming,b.ban_ji_ming_cheng,k.ke_mu_ming_cheng,
-                       (SELECT m.nei_rong FROM si_xin_xiao_xi m WHERE m.hui_hua_id=h.id AND m.yi_shan_chu=0 ORDER BY m.fa_song_shi_jian DESC,m.id DESC LIMIT 1),
+                       (SELECT CASE WHEN m.che_hui_shi_jian IS NULL THEN m.nei_rong ELSE '消息已撤回' END FROM si_xin_xiao_xi m
+                         WHERE m.hui_hua_id=h.id AND m.yi_shan_chu=0
+                           AND ((m.fa_song_ren_yong_hu_id=? AND m.fa_song_zhe_yi_cang=0) OR (m.fa_song_ren_yong_hu_id<>? AND m.jie_shou_zhe_yi_cang=0))
+                         ORDER BY m.fa_song_shi_jian DESC,m.id DESC LIMIT 1),
                        h.zui_hou_xiao_xi_shi_jian,
-                       (SELECT COUNT(*) FROM si_xin_xiao_xi m WHERE m.hui_hua_id=h.id AND m.yi_du=0 AND m.yi_shan_chu=0 AND m.fa_song_ren_yong_hu_id<>?),
+                       (SELECT COUNT(*) FROM si_xin_xiao_xi m WHERE m.hui_hua_id=h.id AND m.yi_du=0 AND m.yi_shan_chu=0
+                         AND m.che_hui_shi_jian IS NULL AND m.jie_shou_zhe_yi_cang=0 AND m.fa_song_ren_yong_hu_id<>?),
                        CASE WHEN h.zhuang_tai='ACTIVE' AND r.zhuang_tai='ACTIVE'
                          AND t.zhuang_tai='ACTIVE' AND t.yi_shan_chu=0 AND tu.zhang_hao_zhuang_tai='ENABLED' AND tu.yi_shan_chu=0
                          AND p.zhuang_tai='ACTIVE' AND p.yi_shan_chu=0 AND pu.zhang_hao_zhuang_tai='ENABLED' AND pu.yi_shan_chu=0
@@ -260,6 +291,7 @@ public class SiXinFuWu {
 
     private record Actor(Long teacherId, Long studentId) {
     }
+    private record MessageAction(long senderId,java.time.LocalDateTime recalledAt,long ageSeconds,boolean read,java.time.LocalDateTime sentAt,java.time.LocalDateTime readAt){}
 
     private record Conversation(long id, long scopeId, long studentId, long teacherUserId, long studentUserId,
             String teacherName, String studentName, String className, String subjectName, String latestMessage,
