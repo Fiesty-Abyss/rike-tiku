@@ -17,7 +17,6 @@ import tools.jackson.databind.ObjectMapper;
 public class StudentAiVariantService {
     private final JdbcTemplate jdbc;private final AiQuestionGenerationService generation;private final ObjectiveAnswerGrader grader;private final ObjectMapper mapper=new ObjectMapper();
     public StudentAiVariantService(JdbcTemplate jdbc,AiQuestionGenerationService generation,ObjectiveAnswerGrader grader){this.jdbc=jdbc;this.generation=generation;this.grader=grader;}
-    @Transactional
     public StudentAiVariantDtos.Variant generate(long userId,long factId,Integer targetDifficulty){
         Fact fact=fact(userId,factId);List<Long> points=jdbc.query("SELECT zhi_shi_dian_id FROM ti_mu_zhi_shi_dian WHERE ti_mu_id=? AND yi_shan_chu=0 ORDER BY pai_xu",(rs,row)->rs.getLong(1),fact.questionId());
         if(points.isEmpty())throw error("AI_VARIANT_KNOWLEDGE_MISSING","当前题缺少可用知识点",HttpStatus.CONFLICT);
@@ -42,7 +41,8 @@ public class StudentAiVariantService {
       """,(rs,row)->new Fact(rs.getLong(1),rs.getLong(2),rs.getString(3),rs.getInt(4)),id,userId).stream().findFirst().orElseThrow(()->error("AI_VARIANT_FACT_NOT_FOUND","答题事实不存在或无权访问",HttpStatus.NOT_FOUND));}
     private Row require(long userId,long id,boolean lock){String sql="""
       SELECT v.id,v.xue_sheng_da_ti_id,v.mu_ti_mu_id,v.ti_mu_id,v.zhuang_tai,q.ti_mu_lei_xing,q.ti_gan,q.nan_du,
-       CAST((SELECT JSON_ARRAYAGG(JSON_OBJECT('label',o.xuan_xiang_biao_shi,'content',o.xuan_xiang_nei_rong) ORDER BY o.pai_xu) FROM ti_mu_xuan_xiang o WHERE o.ti_mu_id=q.id AND o.yi_shan_chu=0) AS CHAR),
+       CAST((SELECT JSON_ARRAYAGG(JSON_OBJECT('label',ordered.xuan_xiang_biao_shi,'content',ordered.xuan_xiang_nei_rong)) FROM
+         (SELECT o.xuan_xiang_biao_shi,o.xuan_xiang_nei_rong FROM ti_mu_xuan_xiang o WHERE o.ti_mu_id=q.id AND o.yi_shan_chu=0 ORDER BY o.pai_xu) ordered) AS CHAR),
        CAST(q.zheng_que_da_an AS CHAR),CAST(v.xue_sheng_da_an AS CHAR),v.shi_fou_zheng_que,a.jie_xi_nei_rong,e.shen_he_jie_guo
       FROM ai_xue_sheng_bian_shi_shi_li v JOIN xue_sheng_dang_an xs ON xs.id=v.xue_sheng_id JOIN ti_mu q ON q.id=v.ti_mu_id
       JOIN ti_mu_jie_xi a ON a.ti_mu_id=q.id AND a.jie_xi_lei_xing='STANDARD' JOIN ai_hou_xuan_ti_zhi_liang_ping_jia e ON e.ti_mu_id=q.id
