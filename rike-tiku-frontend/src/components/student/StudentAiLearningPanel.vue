@@ -5,11 +5,12 @@ import type { ApiError } from '../../api/http'
 import AiScientificContent from './AiScientificContent.vue'
 import StudentAiVariantPanel from './StudentAiVariantPanel.vue'
 import {
-  createAiConversation, fetchAiAnalysis, fetchAiCapabilities, fetchAiModelOptions, generateAiAnalysis, sendAiMessage,
+  createAiConversation, createTopicAiConversation, fetchAiAnalysis, fetchAiCapabilities, fetchAiModelOptions, generateAiAnalysis, sendAiMessage,
   type AiAnalysis, type AiConversation, type AiModelOption,
 } from '../../api/student/aiLearning'
 
-const props = defineProps<{ answerFactId:number; wrong:boolean }>()
+const props = withDefaults(defineProps<{ answerFactId?:number; topicQuestionId?:number; wrong?:boolean }>(),{wrong:false})
+const topicMode = !!props.topicQuestionId
 const analysis = ref<AiAnalysis | null>(null)
 const analysisLoading = ref(false)
 const analysisUnavailable = ref(false)
@@ -34,7 +35,7 @@ const errorTypeLabel = (value?:string) => ({
 async function loadAnalysis() {
   analysis.value = null
   analysisUnavailable.value = false
-  if (!props.wrong) return
+  if (!props.wrong || !props.answerFactId) return
   try { analysis.value = await fetchAiAnalysis(props.answerFactId) }
   catch { analysisUnavailable.value = true }
 }
@@ -42,6 +43,7 @@ async function loadAnalysis() {
 async function generate() {
   analysisLoading.value = true
   analysisUnavailable.value = false
+  if(!props.answerFactId)return
   try { analysis.value = await generateAiAnalysis(props.answerFactId) }
   catch (error) {
     analysisUnavailable.value = true
@@ -65,7 +67,12 @@ async function openTutor() {
 
 async function startConversation() {
   chatLoading.value = true
-  try { conversation.value = await createAiConversation(props.answerFactId, { modelConfigId:selectedModelId.value, thinkingMode:thinkingMode.value, webSearch:webSearch.value }) }
+  try {
+    const options={ modelConfigId:selectedModelId.value, thinkingMode:thinkingMode.value, webSearch:webSearch.value }
+    conversation.value = topicMode && props.topicQuestionId
+      ? await createTopicAiConversation(props.topicQuestionId,options)
+      : await createAiConversation(props.answerFactId!,options)
+  }
   catch (error) { ElMessage.warning(safeError(error, '当前题目答疑暂不可用。')) }
   finally { chatLoading.value = false }
 }
@@ -83,17 +90,17 @@ async function send() {
   finally { sending.value = false }
 }
 
-watch(() => props.answerFactId, () => { conversation.value = null; chatVisible.value = false; void loadAnalysis() })
+watch(() => [props.answerFactId,props.topicQuestionId], () => { conversation.value = null; chatVisible.value = false; void loadAnalysis() })
 onMounted(() => void loadAnalysis())
 </script>
 
 <template>
   <section class="student-ai-panel" aria-label="AI 学习辅助">
     <div class="student-ai-heading">
-      <div><span class="student-ai-label">AI 辅助分析</span><p>基于本次正式答案提供个性化提示，不替代标准解析与正式判分。</p></div>
-      <el-button type="primary" plain @click="openTutor">当前题目答疑</el-button>
+      <div><span class="student-ai-label">{{ topicMode ? 'AI 专题讲解' : 'AI 辅助分析' }}</span><p>{{ topicMode ? '基于题干、STANDARD 与知识点讲解；不提交、不评分、不修改 STANDARD。' : '基于本次正式答案提供个性化提示，不替代标准解析与正式判分。' }}</p></div>
+      <el-button type="primary" plain @click="openTutor">{{ topicMode ? '当前专题答疑' : '当前题目答疑' }}</el-button>
     </div>
-    <template v-if="wrong">
+    <template v-if="!topicMode && wrong">
       <div v-if="analysisLoading" class="student-ai-state"><el-skeleton :rows="3" animated /><span>正在生成错因分析…</span></div>
       <div v-else-if="analysis?.status === 'SUCCESS'" class="student-ai-result">
         <el-tag effect="plain">{{ errorTypeLabel(analysis.errorType) }}</el-tag>
@@ -106,12 +113,12 @@ onMounted(() => void loadAnalysis())
         <el-button type="primary" :loading="analysisLoading" @click="generate">{{ analysisUnavailable || analysis?.status === 'FAILED' ? '重试生成' : '生成 AI 错因分析' }}</el-button>
       </div>
     </template>
-    <p v-else class="student-ai-correct">本题已答对；仍可围绕当前题目继续提问。</p>
-    <StudentAiVariantPanel :answer-fact-id="answerFactId" />
+    <p v-else-if="!topicMode" class="student-ai-correct">本题已答对；仍可围绕当前题目继续提问。</p>
+    <StudentAiVariantPanel v-if="answerFactId" :answer-fact-id="answerFactId" />
 
     <el-drawer v-model="chatVisible" title="RIKE 理科学习助手" size="min(520px, 100%)" append-to-body>
       <div class="student-ai-chat" v-loading="chatLoading">
-        <p class="student-ai-chat-note"><strong>已绑定当前题目</strong><br>仅围绕本题，最多 10 轮；STANDARD 答案与解析不会被 AI 修改。</p>
+        <p class="student-ai-chat-note"><strong>已绑定{{ topicMode ? '当前专题' : '当前题目' }}</strong><br>仅围绕本题，最多 10 轮；STANDARD 答案与解析不会被 AI 修改。</p>
         <div v-if="!conversation" class="student-ai-controls">
           <label>回答模型<select v-model="selectedModelId"><option v-for="item in modelOptions" :key="item.id" :value="item.id" :disabled="!item.available">{{ item.displayName }}{{ item.available ? '' : '（管理员尚未启用）' }}</option></select></label>
           <fieldset><legend>回答方式</legend><label><input v-model="thinkingMode" type="radio" value="STANDARD">标准回答</label><label><input v-model="thinkingMode" type="radio" value="DEEP">深度思考</label></fieldset>

@@ -49,7 +49,9 @@ public final class SiXinDtos {
             boolean mine,
             boolean read,
             LocalDateTime sentAt,
-            LocalDateTime readAt) {
+            LocalDateTime readAt,
+            boolean recalled,
+            boolean recallable) {
     }
 
     public record MessagePageResponse(

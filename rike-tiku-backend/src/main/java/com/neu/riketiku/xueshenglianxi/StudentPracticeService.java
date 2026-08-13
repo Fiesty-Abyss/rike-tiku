@@ -47,7 +47,7 @@ public class StudentPracticeService {
         Map<Long, Integer> availableCounts = new HashMap<>();
         StudentPracticeDtos.CreateRequest request = new StudentPracticeDtos.CreateRequest(
                 subjectId, null, null, null, questionCount);
-        for (QuestionPoolItem question : findEligibleQuestions(request)) {
+        for (QuestionPoolItem question : findEligibleQuestions(null,request)) {
             for (StudentPracticeDtos.KnowledgePoint point : question.knowledgePoints()) {
                 availableCounts.merge(point.id(), 1, Integer::sum);
             }
@@ -77,7 +77,7 @@ public class StudentPracticeService {
         validateRequest(request);
         validateSubject(request.subjectId());
         validateKnowledgePoints(request.subjectId(), request.knowledgePointIds());
-        int available = findEligibleQuestions(request).size();
+        int available = findEligibleQuestions(userId,request).size();
         return new StudentPracticeDtos.Availability(available, Math.min(5, available));
     }
 
@@ -88,7 +88,7 @@ public class StudentPracticeService {
         validateSubject(request.subjectId());
         validateKnowledgePoints(request.subjectId(), request.knowledgePointIds());
 
-        List<QuestionPoolItem> pool = findEligibleQuestions(request);
+        List<QuestionPoolItem> pool = findEligibleQuestions(userId,request);
         if (pool.size() < request.count()) {
             fail("PRACTICE_QUESTION_INSUFFICIENT", "符合条件的已发布题目不足，还差" + (request.count() - pool.size()) + "题", HttpStatus.BAD_REQUEST);
         }
@@ -301,7 +301,7 @@ public class StudentPracticeService {
         }
     }
 
-    private List<QuestionPoolItem> findEligibleQuestions(StudentPracticeDtos.CreateRequest request) {
+    private List<QuestionPoolItem> findEligibleQuestions(Long userId,StudentPracticeDtos.CreateRequest request) {
         List<Object> arguments = new ArrayList<>();
         StringBuilder sql = new StringBuilder("""
                 SELECT q.id,q.ke_mu_id,q.ti_mu_lei_xing,q.ti_gan,CAST(q.zheng_que_da_an AS CHAR),q.nan_du
@@ -309,8 +309,14 @@ public class StudentPracticeService {
                 WHERE q.ke_mu_id=? AND q.zhuang_tai='PUBLISHED' AND q.shi_yong_mo_shi='ONLINE_PRACTICE'
                   AND q.shi_fou_ke_zi_dong_pan_fen=1 AND q.yi_shan_chu=0
                   AND q.ti_mu_lei_xing IN ('SINGLE_CHOICE','MULTIPLE_CHOICE','FILL_BLANK')
+                  AND (q.ke_jian_fan_wei='GLOBAL' OR (q.ke_jian_fan_wei='TEACHING_SCOPE_PRIVATE' AND EXISTS (
+                    SELECT 1 FROM xue_sheng_dang_an xs JOIN ban_ji_xue_sheng bx ON bx.xue_sheng_id=xs.id
+                    JOIN ren_ke_guan_xi r ON r.id=q.ren_ke_guan_xi_id AND r.ban_ji_id=bx.ban_ji_id AND r.ke_mu_id=q.ke_mu_id
+                    WHERE xs.yong_hu_id=? AND xs.zhuang_tai='ACTIVE' AND xs.yi_shan_chu=0
+                      AND bx.shi_fou_zhu_ban_ji=1 AND bx.zhuang_tai='ACTIVE' AND bx.tui_chu_shi_jian IS NULL AND r.zhuang_tai='ACTIVE')))
                 """);
         arguments.add(request.subjectId());
+        arguments.add(userId);
         if (request.difficulty() != null) {
             sql.append(" AND q.nan_du=?");
             arguments.add(request.difficulty());

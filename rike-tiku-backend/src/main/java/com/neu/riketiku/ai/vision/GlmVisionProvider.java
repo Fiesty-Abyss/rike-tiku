@@ -66,7 +66,7 @@ public final class GlmVisionProvider implements AiVisionProvider {
             List<Map<String, Object>> content = new ArrayList<>();
             for (AiVisionRequest.Image image : request.images()) {
                 content.add(Map.of("type", "image_url", "image_url",
-                        Map.of("url", "data:" + image.mime() + ";base64," + Base64.getEncoder().encodeToString(image.bytes()))));
+                        Map.of("url", Base64.getEncoder().encodeToString(image.bytes()))));
             }
             content.add(Map.of("type", "text", "text", PROMPT));
             Map<String, Object> body = new LinkedHashMap<>();

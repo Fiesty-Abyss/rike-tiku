@@ -2,7 +2,7 @@
 import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 import { ElMessage } from 'element-plus'
 import { useRoute, useRouter } from 'vue-router'
-import { fetchMessages, markConversationRead, sendMessage, type MessagePage } from '../../api/messages'
+import { fetchMessages, hideMessage, markConversationRead, recallMessage, sendMessage, type MessagePage } from '../../api/messages'
 import AquaBrand from '../../components/layout/AquaBrand.vue'
 import { useAuthStore } from '../../stores/auth'
 import { startMessagePolling } from './messagePolling'
@@ -57,6 +57,15 @@ async function submit() {
   }
 }
 
+async function recall(id:number){
+  if(!window.confirm('撤回后双方都只会看到“消息已撤回”。确认撤回？'))return
+  try{await recallMessage(conversationId.value,id);await load(false)}catch(error){ElMessage.warning(errorMessage(error,'消息撤回失败。'))}
+}
+async function hide(id:number){
+  if(!window.confirm('仅从你的消息列表中删除，对方仍可查看。确认删除？'))return
+  try{await hideMessage(conversationId.value,id);await load(false)}catch(error){ElMessage.warning(errorMessage(error,'消息删除失败。'))}
+}
+
 function formatTime(value: string) {
   return new Date(value).toLocaleString('zh-CN', { hour12: false })
 }
@@ -84,8 +93,8 @@ onBeforeUnmount(() => stopPolling?.())
       <template v-if="page">
         <div ref="messageList" class="chat-history" aria-live="polite">
           <el-empty v-if="page.messages.length === 0" description="暂无消息，可以发送第一条私信。" :image-size="72" />
-          <article v-for="item in page.messages" :key="item.id" class="chat-message" :class="{ mine: item.mine }">
-            <div><strong>{{ item.mine ? '我' : item.senderName }}</strong><p>{{ item.content }}</p><small>{{ formatTime(item.sentAt) }}</small></div>
+          <article v-for="item in page.messages" :key="item.id" class="chat-message" :class="{ mine: item.mine, recalled:item.recalled }">
+            <div><strong>{{ item.mine ? '我' : item.senderName }}</strong><p>{{ item.content }}</p><small>{{ formatTime(item.sentAt) }}</small><div class="message-actions"><button v-if="item.mine&&item.recallable" type="button" @click="recall(item.id)">撤回</button><button type="button" @click="hide(item.id)">删除</button></div></div>
           </article>
         </div>
         <div class="chat-composer">

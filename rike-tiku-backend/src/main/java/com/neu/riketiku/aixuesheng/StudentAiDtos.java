@@ -1,7 +1,6 @@
 package com.neu.riketiku.aixuesheng;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -22,8 +21,8 @@ public final class StudentAiDtos {
             LocalDateTime createdAt,
             LocalDateTime updatedAt) { }
 
-    public record CreateConversationRequest(@NotNull Long answerFactId, Long modelConfigId,
-                                            String thinkingMode, Boolean webSearch) { }
+    public record CreateConversationRequest(Long answerFactId, Long topicQuestionId, String contextType,
+                                            Long modelConfigId, String thinkingMode, Boolean webSearch) { }
 
     public record SendMessageRequest(
             @NotBlank(message = "追问内容不能为空")
@@ -36,6 +35,8 @@ public final class StudentAiDtos {
     public record Conversation(
             Long id,
             Long answerFactId,
+            Long topicQuestionId,
+            String contextType,
             Long questionId,
             String status,
             int usedRounds,

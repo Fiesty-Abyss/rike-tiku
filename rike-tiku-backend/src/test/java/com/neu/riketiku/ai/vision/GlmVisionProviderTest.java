@@ -22,11 +22,11 @@ import org.junit.jupiter.api.Test;
 class GlmVisionProviderTest {
     private HttpServer server; private final ObjectMapper mapper=new ObjectMapper(); private final AtomicInteger calls=new AtomicInteger(); private JsonNode body;
     @AfterEach void stop(){if(server!=null)server.stop(0);}
-    @Test void mapsStrictVisionJsonTokensAndDataUri()throws Exception{
+    @Test void mapsStrictVisionJsonTokensAndRawBase64()throws Exception{
         start(200,success(),0);var result=provider(1,Duration.ofSeconds(1)).analyze(request(2));
         assertThat(result.model()).isEqualTo("glm-4.6v-flash");assertThat(result.context().summary()).isEqualTo("电路图");assertThat(result.usage().totalTokens()).isEqualTo(15);
         assertThat(body.path("thinking").path("type").asText()).isEqualTo("disabled");assertThat(body.path("max_tokens").asInt()).isEqualTo(1000);
-        assertThat(body.path("messages").path(0).path("content").path(0).path("image_url").path("url").asText()).startsWith("data:image/png;base64,");
+        assertThat(body.path("messages").path(0).path("content").path(0).path("image_url").path("url").asText()).isEqualTo("AQID");
     }
     @Test void retries429AndServerFailureOnlyOnce()throws Exception{startSequence();assertThat(provider(99,Duration.ofSeconds(1)).analyze(request(1)).context().diagramType()).isEqualTo("CIRCUIT");assertThat(calls).hasValue(2);}
     @Test void doesNotRetryAuthenticationOrInvalidJson()throws Exception{start(401,"{}",0);assertThatThrownBy(()->provider(1,Duration.ofSeconds(1)).analyze(request(1))).isInstanceOfSatisfying(AiVisionException.class,e->assertThat(e.errorType()).isEqualTo(AiProviderErrorType.AUTHENTICATION_ERROR));assertThat(calls).hasValue(1);stop();calls.set(0);start(200,"{bad",0);assertThatThrownBy(()->provider(1,Duration.ofSeconds(1)).analyze(request(1))).isInstanceOfSatisfying(AiVisionException.class,e->assertThat(e.errorType()).isEqualTo(AiProviderErrorType.INVALID_RESPONSE));assertThat(calls).hasValue(1);}

@@ -126,6 +126,27 @@ class SiXinIntegrationTest extends AdminQuestionIntegrationTestSupport {
         }
     }
 
+    @Test
+    void senderCanRecallWithinFiveMinutesAndEachParticipantCanHideOnlyForSelf() throws Exception {
+        demo.seed();
+        try {
+            long physics199=scope("DEMO_T_PHYSICS","DEMO_CLASS_199",1);
+            String studentToken=login("demo_199_01","STUDENT");String teacherToken=login("demo_physics_admin","TEACHER");
+            long conversationId=((Number)JsonPath.read(post("/api/v1/messages/conversations",studentToken,"{\"teachingAssignmentId\":"+physics199+"}").body(),"$.id")).longValue();
+            long first=((Number)JsonPath.read(post("/api/v1/messages/conversations/"+conversationId+"/messages",studentToken,"{\"content\":\"需要撤回的消息\"}").body(),"$.id")).longValue();
+            assertThat(post("/api/v1/messages/"+conversationId+"/messages/"+first+"/recall",studentToken,"{}").body()).contains("消息已撤回","\"recalled\":true");
+            assertThat(post("/api/v1/messages/"+conversationId+"/messages/"+first+"/recall",studentToken,"{}").statusCode()).isEqualTo(409);
+            assertThat(get("/api/v1/messages/conversations/"+conversationId+"/messages",teacherToken).body()).contains("消息已撤回").doesNotContain("需要撤回的消息");
+            long second=((Number)JsonPath.read(post("/api/v1/messages/conversations/"+conversationId+"/messages",studentToken,"{\"content\":\"只对老师隐藏\"}").body(),"$.id")).longValue();
+            assertThat(delete("/api/v1/messages/"+conversationId+"/messages/"+second,teacherToken).statusCode()).isEqualTo(200);
+            assertThat(get("/api/v1/messages/conversations/"+conversationId+"/messages",teacherToken).body()).doesNotContain("只对老师隐藏");
+            assertThat(get("/api/v1/messages/conversations/"+conversationId+"/messages",studentToken).body()).contains("只对老师隐藏");
+            long expired=((Number)JsonPath.read(post("/api/v1/messages/conversations/"+conversationId+"/messages",studentToken,"{\"content\":\"过期消息\"}").body(),"$.id")).longValue();
+            jdbc.update("UPDATE si_xin_xiao_xi SET fa_song_shi_jian=DATE_SUB(CURRENT_TIMESTAMP(3),INTERVAL 6 MINUTE) WHERE id=?",expired);
+            assertThat(post("/api/v1/messages/"+conversationId+"/messages/"+expired+"/recall",studentToken,"{}").statusCode()).isEqualTo(409);
+        } finally { demo.clean(); }
+    }
+
     private long scope(String teacherNumber, String classCode, long subjectId) {
         return jdbc.queryForObject("""
                 SELECT r.id FROM ren_ke_guan_xi r
@@ -162,4 +183,5 @@ class SiXinIntegrationTest extends AdminQuestionIntegrationTestSupport {
         return http.send(request.POST(HttpRequest.BodyPublishers.ofString(body, StandardCharsets.UTF_8)).build(),
                 HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
     }
+    private HttpResponse<String> delete(String path,String token)throws Exception{HttpRequest.Builder request=HttpRequest.newBuilder().uri(URI.create("http://localhost:"+port+path)).DELETE();if(token!=null)request.header("Authorization","Bearer "+token);return http.send(request.build(),HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));}
 }

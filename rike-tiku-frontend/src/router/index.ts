@@ -72,6 +72,7 @@ const router = createRouter({
       component: () => import('../views/teacher/TeacherAiQuestionGenerationView.vue'),
       meta: { requiresAuth: true, roles: ['TEACHER'] },
     },
+    { path: '/teacher/private-questions', name: 'teacher-private-questions', component: () => import('../views/teacher/TeacherPrivateQuestionBankView.vue'), meta: { requiresAuth: true, roles: ['TEACHER'] } },
     { path: '/teacher/papers', name: 'teacher-papers', component: () => import('../views/teacher/TeacherPaperBuilderView.vue'), meta: { requiresAuth: true, roles: ['TEACHER'] } },
     { path: '/teacher/papers/:id(\\d+)/:version(student|answer)', name: 'teacher-paper-preview', component: () => import('../views/teacher/PaperPreviewView.vue'), meta: { requiresAuth: true, roles: ['TEACHER'] } },
     {

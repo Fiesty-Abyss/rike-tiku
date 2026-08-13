@@ -30,6 +30,7 @@ const blankAnswers = computed(() => {
     return Array.isArray(accepted) ? text(accepted[0]) : ''
   })
 })
+const malformed = computed(()=>props.questionType!=='SUBJECTIVE'&&typeof props.value==='string'&&props.value.trim().startsWith('{')&&choiceAnswers.value.length===0&&blankAnswers.value.length===0)
 
 function optionLabels(value: unknown) {
   const raw = typeof value === 'string'
@@ -55,6 +56,8 @@ function text(value: unknown) {
 
 <template>
   <div class="answer-display" :aria-label="questionType === 'FILL_BLANK' ? '填空答案' : '选择题答案'">
+    <span v-if="questionType==='SUBJECTIVE'" class="answer-display__subjective">本题不自动判分，请查看标准解析</span>
+    <span v-else-if="malformed" class="answer-display__error">答案结构异常，禁止通过审核</span>
     <ol v-if="questionType !== 'FILL_BLANK'" class="answer-display__choices">
       <li v-for="answer in choiceAnswers" :key="answer.label">
         <b>{{ answer.label }}.</b>
@@ -74,7 +77,7 @@ function text(value: unknown) {
         <QuestionContent :content="answer" :attachments="attachments" position="ANSWER" />
       </li>
     </ol>
-    <span v-if="questionType !== 'FILL_BLANK' && !choiceAnswers.length" class="answer-display__empty">未作答</span>
+    <span v-if="questionType !== 'FILL_BLANK' && questionType!=='SUBJECTIVE' && !choiceAnswers.length && !malformed" class="answer-display__empty">不存在答案</span>
     <span v-if="questionType === 'FILL_BLANK' && !blankAnswers.length" class="answer-display__empty">未作答</span>
   </div>
 </template>
