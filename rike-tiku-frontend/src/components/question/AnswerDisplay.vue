@@ -13,24 +13,33 @@ const props = withDefaults(defineProps<{
   attachments: () => [],
 })
 
+const parsedValue = computed(() => {
+  if (typeof props.value !== 'string') return { value: props.value, malformed: false }
+  const raw = props.value.trim()
+  if (!raw.startsWith('{') && !raw.startsWith('[')) return { value: props.value, malformed: false }
+  try { return { value: JSON.parse(raw) as unknown, malformed: false } }
+  catch { return { value: null, malformed: true } }
+})
+
 const choiceAnswers = computed(() => {
   if (props.questionType === 'FILL_BLANK') return []
   const optionMap = new Map(props.options.map(option => [option.label.trim().toUpperCase(), option.content]))
-  return optionLabels(props.value).map(label => ({ label, content: optionMap.get(label) }))
+  return optionLabels(parsedValue.value.value).map(label => ({ label, content: optionMap.get(label) }))
 })
 
 const blankAnswers = computed(() => {
   if (props.questionType !== 'FILL_BLANK') return []
-  if (Array.isArray(props.value)) return props.value.map(value => text(value))
-  const blanks = object(props.value)?.blanks
+  if (Array.isArray(parsedValue.value.value)) return parsedValue.value.value.map(value => text(value))
+  const blanks = object(parsedValue.value.value)?.blanks
   if (!Array.isArray(blanks)) return []
   // acceptedAnswers 的首项是人工审核后的 canonical answer；其余仅参与确定性判分。
   return blanks.map(blank => {
     const accepted = object(blank)?.acceptedAnswers
-    return Array.isArray(accepted) ? text(accepted[0]) : ''
+    if (!Array.isArray(accepted)) return ''
+    return accepted.map(text).filter(Boolean).join('；可接受：')
   })
 })
-const malformed = computed(()=>props.questionType!=='SUBJECTIVE'&&typeof props.value==='string'&&props.value.trim().startsWith('{')&&choiceAnswers.value.length===0&&blankAnswers.value.length===0)
+const malformed = computed(()=>props.questionType!=='SUBJECTIVE' && parsedValue.value.malformed)
 
 function optionLabels(value: unknown) {
   const raw = typeof value === 'string'
