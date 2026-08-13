@@ -11,7 +11,7 @@
 | 5. 系统架构 | [总体设计](../DESIGN.md)、[论文实现事实](THESIS_IMPLEMENTATION_FACTS.md) | 前后端分离模块化单体 |
 | 6. AI 架构 | [AI 交接](AI_HANDOFF.md)、[AI Provider 配置](AI_PROVIDER_CONFIGURATION.md) | DeepSeek 文本推理、GLM 视觉上下文、STANDARD 权威 |
 | 7. 技术栈 | [项目首页](../README.md) | Java 25、Spring Boot 4.1、Vue 3、MySQL 8.4 |
-| 8. 数据库设计 | [数据库结构参考](DATABASE_SCHEMA_REFERENCE.md)、[V19 快照](../database/schema_snapshot_v19.sql) | 39 表、约束与生命周期 |
+| 8. 数据库设计 | [数据库结构参考](DATABASE_SCHEMA_REFERENCE.md)、[V23 快照](../database/schema_snapshot_v23.sql) | 41 表、约束与生命周期 |
 | 9. API | [文档索引](README.md) 的 Admin / Teacher / Student / AI 区 | 接口、授权与降级行为 |
 | 10. Excel 导入 | [Excel 导入指南](EXCEL_IMPORT_GUIDE.md) | 学生与题目 preview/confirm |
 | 11. 功能代码映射 | [功能代码技术映射](FEATURE_CODE_TECH_MAP.md) | 路由、组件、Controller、Service、表、测试 |
@@ -32,7 +32,7 @@
 ## 当前事实
 
 - PR #32 已 ordinary merge，merge commit 为 `359fe61e7622b7f623afa212d37c24145273d47b`；PR #33 是唯一最终交付 PR，保持 Draft、未合并。
-- Flyway V1–V19，39 张业务表；V1–V14 历史迁移未修改。
-- V15—V19 覆盖 10 轮约束、模型/思考/搜索选择、密码恢复请求、教师试卷和学生结构化 AI 变式。
+- Flyway V1–V23，41 张业务表；V1–V19 历史迁移未修改。
+- V20—V23 覆盖专题分类/任课范围私有题、知识卡片附件、私信撤回与按用户隐藏，以及专题 AI 互斥会话上下文。
 - `rike_tiku_demo` 保持 378 道 PUBLISHED 题基线；机器浏览器 17 条真实路由为 0 console/page/request error、0 overflow。
 - 论文事实稿、核验表和答辩提纲位于 [thesis](thesis/)；人工阶段仍为 `FINAL_MANUAL_ACCEPTANCE_PENDING`。

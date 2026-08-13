@@ -6,7 +6,7 @@
 |---|---|---|
 | 系统采用前后端分离模块化单体 | `DESIGN.md`、代码模块和 Maven/Vite 工程 | 已核验 |
 | Java 25、Spring Boot 4.1、Vue 3、MySQL 8.4 | POM、package.json、本机命令输出 | 已核验 |
-| Flyway V1–V19、39 张业务表 | 迁移目录、随机测试库、`rike_tiku_demo` | 已核验 |
+| Flyway V1–V23、41 张业务表 | 迁移目录、随机测试库、`rike_tiku_demo` | 已核验 |
 | 既有 V1–V14 未修改 | Git diff | 已核验 |
 | Demo 题量 378 | DemoDataService validate 输出 | 已核验 |
 | 答疑最多 10 轮 | V15、`StudentAiService.MAX_ROUNDS`、集成测试 | 已核验 |
@@ -22,7 +22,7 @@
 | 后端最终全量 | 186 tests，0 failures，0 errors，3 skipped | 已执行 |
 | 前端最终全量 | 66 files、207 tests；type-check/build/audit 通过 | 已执行 |
 | 机器浏览器 | 17 routes，0 console/page/request error，0 overflow | 已执行；09/10 使用已披露 UI 夹具 |
-| 正式库迁移 | 仓库外备份后 V14/35 → V19/39，378 PUBLISHED、9 用户不变 | 已核验 |
+| 正式库迁移 | V23 尚未应用到正式 `rike_tiku`；本轮只完成随机库与匿名 Demo | FINAL_USER_REVIEW_PENDING |
 | 真实 DeepSeek/GLM/Search 本轮 smoke | 本轮未消费真实 Provider | NOT_RUN；沿用 PR #31 历史事实，不伪造 PASS |
 | 真人用户验收、问卷或学习成效提升 | 无本轮数据 | 禁止声称 |
 
