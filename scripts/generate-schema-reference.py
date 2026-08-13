@@ -7,14 +7,14 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "docs" / "DATABASE_SCHEMA_REFERENCE.md"
 SCHEMA = os.getenv("RIKE_SCHEMA_REFERENCE_DATABASE", "rike_tiku_demo")
-LATEST = 19
+LATEST = 23
 
 GROUPS = {
     "Authentication": {"yong_hu", "jiao_se", "yong_hu_jiao_se"},
     "Organization": {"ban_ji", "ban_ji_xue_sheng", "jiao_shi_dang_an", "xue_sheng_dang_an", "ren_ke_guan_xi"},
     "Question bank": {"ke_mu", "zhi_shi_dian", "ti_mu", "ti_mu_xuan_xiang", "ti_mu_jie_xi", "ti_mu_zhi_shi_dian", "ti_mu_lai_yuan", "ti_mu_fu_jian", "ti_mu_shen_he_ji_lu", "dao_ru_pi_ci"},
     "Practice": {"lian_xi_hui_hua", "lian_xi_ti_mu", "xue_sheng_da_ti", "xue_xi_jie_guo"},
-    "Wrong / mastery": {"cuo_ti_ji_lu", "gao_pin_kao_dian"},
+    "Wrong / mastery": {"cuo_ti_ji_lu", "gao_pin_kao_dian", "gao_pin_kao_dian_zhi_shi_dian", "gao_pin_kao_dian_fu_jian"},
     "Communication": {"si_xin_hui_hua", "si_xin_xiao_xi"},
     "Audit": {"guan_li_cao_zuo_ri_zhi"},
     "AI Provider": {"ai_diao_yong_ri_zhi", "ai_mo_xing_pei_zhi"},
@@ -34,10 +34,11 @@ PURPOSE = {
     "ti_mu_lai_yuan": "题目来源与权利", "ti_mu_fu_jian": "图片/公式附件", "ti_mu_shen_he_ji_lu": "审核状态轨迹",
     "dao_ru_pi_ci": "题目导入批次", "lian_xi_hui_hua": "练习会话", "lian_xi_ti_mu": "冻结练习题",
     "xue_sheng_da_ti": "正式答题事实", "xue_xi_jie_guo": "练习最终结果", "cuo_ti_ji_lu": "错题生命周期",
-    "gao_pin_kao_dian": "班级科目高频考点", "si_xin_hui_hua": "师生私信会话", "si_xin_xiao_xi": "师生私信消息",
+    "gao_pin_kao_dian": "班级科目知识卡片/公式与口诀", "gao_pin_kao_dian_zhi_shi_dian": "知识卡片多知识点关系",
+    "gao_pin_kao_dian_fu_jian": "知识卡片受控图片附件", "si_xin_hui_hua": "师生私信会话", "si_xin_xiao_xi": "支持撤回与按用户隐藏的师生私信消息",
     "guan_li_cao_zuo_ri_zhi": "管理员操作审计", "ai_diao_yong_ri_zhi": "AI 调用安全元数据",
     "ai_mo_xing_pei_zhi": "本地 AI Provider/模型配置", "ai_cuo_ti_fen_xi": "错题结构化 AI 分析",
-    "ai_hui_hua": "当前题 AI 会话", "ai_xiao_xi": "当前题 AI 消息", "ai_sheng_cheng_ren_wu": "候选变式题生成任务",
+    "ai_hui_hua": "练习结果或专题题互斥上下文 AI 会话", "ai_xiao_xi": "当前题 AI 消息", "ai_sheng_cheng_ren_wu": "候选变式题生成任务",
     "ai_hou_xuan_ti_zhi_liang_ping_jia": "候选题人工质量评价", "ai_shi_jue_shang_xia_wen": "受控视觉上下文缓存",
     "ai_xue_sheng_bian_shi_shi_li": "绑定答题事实的学生结构化变式", "mi_ma_chong_zhi_shen_qing": "匿名密码恢复请求与处理事实",
     "shi_juan": "教师冻结试卷", "shi_juan_ti_mu": "试卷题目顺序与分值",
@@ -53,6 +54,7 @@ MIGRATION = {
     12: {"ai_diao_yong_ri_zhi"}, 13: {"ai_cuo_ti_fen_xi", "ai_hui_hua", "ai_xiao_xi"},
     14: {"ai_mo_xing_pei_zhi", "ai_sheng_cheng_ren_wu", "ai_hou_xuan_ti_zhi_liang_ping_jia", "ai_shi_jue_shang_xia_wen"},
     17: {"mi_ma_chong_zhi_shen_qing"}, 18: {"shi_juan", "shi_juan_ti_mu"}, 19: {"ai_xue_sheng_bian_shi_shi_li"},
+    21: {"gao_pin_kao_dian_zhi_shi_dian", "gao_pin_kao_dian_fu_jian"},
 }
 
 
@@ -113,7 +115,7 @@ lines = [
     "## 总体约定", "",
     "- MySQL 8.4，默认 `utf8mb4`。", "- 业务主键均为 `BIGINT` 自增标识；关系约束和状态枚举由外键、唯一索引、Check 与服务层共同维护。",
     "- `yi_shan_chu` 为软删除标识时，查询必须同时考虑状态字段。AI Key 只存在本地配置表，API/日志不得回显。", "",
-    "- 本参考完整列出 39 张业务表；每张表给出 MySQL 类型、NULL、默认值、主键/外键/UNIQUE/CHECK、精确索引与生命周期。", "",
+    f"- 本参考完整列出 {len(columns)} 张业务表；每张表给出 MySQL 类型、NULL、默认值、主键/外键/UNIQUE/CHECK、精确索引与生命周期。", "",
 ]
 
 for group, tables in GROUPS.items():

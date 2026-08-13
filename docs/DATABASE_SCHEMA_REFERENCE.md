@@ -1,6 +1,6 @@
-# RIKE V19 数据库结构参考
+# RIKE V23 数据库结构参考
 
-> 本文由 `information_schema` 只读生成，校验对象为隔离库 `rike_tiku_demo` 的 Flyway V1–V19 业务表。字段与约束以迁移脚本为准；`database/schema_snapshot_v19.sql` 仅是便于查阅的纯结构快照，不能替代 Flyway。
+> 本文由 `information_schema` 只读生成，校验对象为隔离库 `rike_tiku_demo` 的 Flyway V1–V23 业务表。字段与约束以迁移脚本为准；`database/schema_snapshot_v23.sql` 仅是便于查阅的纯结构快照，不能替代 Flyway。
 
 ## 总体约定
 
@@ -8,7 +8,7 @@
 - 业务主键均为 `BIGINT` 自增标识；关系约束和状态枚举由外键、唯一索引、Check 与服务层共同维护。
 - `yi_shan_chu` 为软删除标识时，查询必须同时考虑状态字段。AI Key 只存在本地配置表，API/日志不得回显。
 
-- 本参考完整列出 39 张业务表；每张表给出 MySQL 类型、NULL、默认值、主键/外键/UNIQUE/CHECK、精确索引与生命周期。
+- 本参考完整列出 41 张业务表；每张表给出 MySQL 类型、NULL、默认值、主键/外键/UNIQUE/CHECK、精确索引与生命周期。
 
 ## Authentication
 
@@ -234,6 +234,10 @@
 | `dao_ru_pi_ci_id` | `bigint` | 是 | `NULL` | MUL | 导入批次 |
 | `ti_mu_lei_xing` | `varchar(32)` | 否 | `NULL` | — | SINGLE_CHOICE/MULTIPLE_CHOICE/FILL_BLANK |
 | `shi_yong_mo_shi` | `varchar(32)` | 否 | `NULL` | — | ONLINE_PRACTICE/TOPIC_LEARNING |
+| `zhuan_ti_lei_xing` | `varchar(32)` | 是 | `NULL` | — | 仅 SUBJECTIVE + TOPIC_LEARNING 使用的受控专题类型 |
+| `ke_jian_fan_wei` | `varchar(32)` | 否 | `GLOBAL` | MUL | GLOBAL/TEACHING_SCOPE_PRIVATE |
+| `ren_ke_guan_xi_id` | `bigint` | 是 | `NULL` | MUL | 私有题所属任课关系 |
+| `chuang_jian_ren_id` | `bigint` | 是 | `NULL` | MUL | 题目创建用户；历史全局题允许为空 |
 | `ti_gan` | `longtext` | 否 | `NULL` | — | 题干正文，保留附件对象标记 |
 | `zheng_que_da_an` | `json` | 否 | `NULL` | — | 按题型定义的版本化答案JSON |
 | `nan_du` | `tinyint` | 否 | `NULL` | — | 1 easy，2 medium，3 hard |
@@ -245,8 +249,8 @@
 | `geng_xin_shi_jian` | `datetime(3)` | 否 | `CURRENT_TIMESTAMP(3)` | DEFAULT_GENERATED on update CURRENT_TIMESTAMP(3) | — |
 | `yi_shan_chu` | `tinyint(1)` | 否 | `0` | — | — |
 
-约束：`CHECK:ck_ti_mu_da_an_json`；`CHECK:ck_ti_mu_ke_pan_fen`；`CHECK:ck_ti_mu_lei_xing`；`CHECK:ck_ti_mu_nan_du`；`CHECK:ck_ti_mu_shi_yong_mo_shi`；`CHECK:ck_ti_mu_yi_shan_chu`；`CHECK:ck_ti_mu_zhu_guan_mo_shi`；`CHECK:ck_ti_mu_zhuang_tai`；`FOREIGN KEY:fk_ti_mu_dao_ru_pi_ci`；`FOREIGN KEY:fk_ti_mu_fu_ti_mu`；`FOREIGN KEY:fk_ti_mu_ke_mu`；`PRIMARY KEY:PRIMARY`；`UNIQUE:uk_ti_mu_nei_rong_ha_xi`。
-索引：`INDEX:idx_ti_mu_dao_ru_pi_ci(dao_ru_pi_ci_id)`；`INDEX:idx_ti_mu_fu_ti_mu(fu_ti_mu_id)`；`INDEX:idx_ti_mu_ke_mu_zhuang_tai_nan_du(ke_mu_id,zhuang_tai,nan_du)`；`UNIQUE/PRIMARY:PRIMARY(id)`；`UNIQUE/PRIMARY:uk_ti_mu_nei_rong_ha_xi(ke_mu_id,nei_rong_ha_xi)`。
+约束：`CHECK:ck_ti_mu_da_an_json`；`CHECK:ck_ti_mu_ke_pan_fen`；`CHECK:ck_ti_mu_lei_xing`；`CHECK:ck_ti_mu_nan_du`；`CHECK:ck_ti_mu_shi_yong_mo_shi`；`CHECK:ck_ti_mu_topic_category`；`CHECK:ck_ti_mu_visibility`；`CHECK:ck_ti_mu_yi_shan_chu`；`CHECK:ck_ti_mu_zhu_guan_mo_shi`；`CHECK:ck_ti_mu_zhuang_tai`；`FOREIGN KEY:fk_ti_mu_creator`；`FOREIGN KEY:fk_ti_mu_dao_ru_pi_ci`；`FOREIGN KEY:fk_ti_mu_fu_ti_mu`；`FOREIGN KEY:fk_ti_mu_ke_mu`；`FOREIGN KEY:fk_ti_mu_teaching_scope`；`PRIMARY KEY:PRIMARY`；`UNIQUE:uk_ti_mu_nei_rong_ha_xi`。
+索引：`INDEX:fk_ti_mu_teaching_scope(ren_ke_guan_xi_id)`；`INDEX:idx_ti_mu_creator_scope(chuang_jian_ren_id,ren_ke_guan_xi_id,zhuang_tai)`；`INDEX:idx_ti_mu_dao_ru_pi_ci(dao_ru_pi_ci_id)`；`INDEX:idx_ti_mu_fu_ti_mu(fu_ti_mu_id)`；`INDEX:idx_ti_mu_ke_mu_zhuang_tai_nan_du(ke_mu_id,zhuang_tai,nan_du)`；`INDEX:idx_ti_mu_visibility(ke_jian_fan_wei,ren_ke_guan_xi_id,ke_mu_id,zhuang_tai,yi_shan_chu)`；`UNIQUE/PRIMARY:PRIMARY(id)`；`UNIQUE/PRIMARY:uk_ti_mu_nei_rong_ha_xi(ke_mu_id,nei_rong_ha_xi)`。
 生命周期：由题目及权威答案事实对应服务创建和更新；归档/删除遵循表内状态、外键和业务审计规则。
 
 ### `ti_mu_fu_jian`
@@ -513,15 +517,17 @@
 
 ### `gao_pin_kao_dian`
 
-用途：班级科目高频考点。创建/演进：V8。
+用途：班级科目知识卡片/公式与口诀。创建/演进：V8。
 
 | 字段 | SQL 类型 | 可空 | 默认值 | 键/附加 | 说明 |
 |---|---|---:|---|---|---|
 | `id` | `bigint` | 否 | `NULL` | PRI, auto_increment | — |
 | `ren_ke_guan_xi_id` | `bigint` | 否 | `NULL` | MUL | 所属三元任课关系 |
 | `zhi_shi_dian_id` | `bigint` | 否 | `NULL` | MUL | 所属科目知识点 |
+| `zi_liao_lei_xing` | `varchar(32)` | 否 | `POINT` | — | — |
 | `biao_ti` | `varchar(200)` | 否 | `NULL` | — | — |
 | `nei_rong` | `text` | 否 | `NULL` | — | — |
+| `ke_xue_nei_rong` | `longtext` | 是 | `NULL` | — | — |
 | `ji_yi_kou_jue` | `varchar(500)` | 是 | `NULL` | — | — |
 | `chang_jian_wu_qu` | `text` | 是 | `NULL` | — | — |
 | `pai_xu` | `int` | 否 | `0` | — | — |
@@ -530,9 +536,45 @@
 | `geng_xin_shi_jian` | `datetime(3)` | 否 | `CURRENT_TIMESTAMP(3)` | DEFAULT_GENERATED on update CURRENT_TIMESTAMP(3) | — |
 | `yi_shan_chu` | `tinyint(1)` | 否 | `0` | — | — |
 
-约束：`CHECK:ck_gao_pin_kao_dian_content`；`CHECK:ck_gao_pin_kao_dian_deleted`；`CHECK:ck_gao_pin_kao_dian_order`；`CHECK:ck_gao_pin_kao_dian_status`；`CHECK:ck_gao_pin_kao_dian_title`；`FOREIGN KEY:fk_gao_pin_kao_dian_knowledge`；`FOREIGN KEY:fk_gao_pin_kao_dian_scope`；`PRIMARY KEY:PRIMARY`。
+约束：`CHECK:ck_gao_pin_kao_dian_content`；`CHECK:ck_gao_pin_kao_dian_deleted`；`CHECK:ck_gao_pin_kao_dian_order`；`CHECK:ck_gao_pin_kao_dian_status`；`CHECK:ck_gao_pin_kao_dian_title`；`CHECK:ck_gao_pin_kao_dian_type`；`FOREIGN KEY:fk_gao_pin_kao_dian_knowledge`；`FOREIGN KEY:fk_gao_pin_kao_dian_scope`；`PRIMARY KEY:PRIMARY`。
 索引：`INDEX:idx_gao_pin_kao_dian_knowledge(zhi_shi_dian_id)`；`INDEX:idx_gao_pin_kao_dian_scope_status(ren_ke_guan_xi_id,zhuang_tai,yi_shan_chu,pai_xu,id)`；`UNIQUE/PRIMARY:PRIMARY(id)`。
-生命周期：由班级科目高频考点对应服务创建和更新；归档/删除遵循表内状态、外键和业务审计规则。
+生命周期：由班级科目知识卡片/公式与口诀对应服务创建和更新；归档/删除遵循表内状态、外键和业务审计规则。
+
+### `gao_pin_kao_dian_fu_jian`
+
+用途：知识卡片受控图片附件。创建/演进：V21。
+
+| 字段 | SQL 类型 | 可空 | 默认值 | 键/附加 | 说明 |
+|---|---|---:|---|---|---|
+| `id` | `bigint` | 否 | `NULL` | PRI, auto_increment | — |
+| `gao_pin_kao_dian_id` | `bigint` | 否 | `NULL` | MUL | — |
+| `yuan_shi_wen_jian_ming` | `varchar(255)` | 否 | `NULL` | — | — |
+| `xiang_dui_lu_jing` | `varchar(1000)` | 否 | `NULL` | — | — |
+| `mime_lei_xing` | `varchar(32)` | 否 | `NULL` | — | — |
+| `nei_rong_ha_xi` | `char(64)` | 否 | `NULL` | — | — |
+| `wen_jian_da_xiao` | `bigint` | 否 | `NULL` | — | — |
+| `pai_xu` | `int` | 否 | `1` | — | — |
+| `zhuang_tai` | `varchar(16)` | 否 | `ACTIVE` | — | — |
+| `chuang_jian_shi_jian` | `datetime(3)` | 否 | `CURRENT_TIMESTAMP(3)` | DEFAULT_GENERATED | — |
+| `yi_shan_chu` | `tinyint(1)` | 否 | `0` | — | — |
+
+约束：`CHECK:ck_kao_dian_attachment_deleted`；`CHECK:ck_kao_dian_attachment_mime`；`CHECK:ck_kao_dian_attachment_order`；`CHECK:ck_kao_dian_attachment_size`；`CHECK:ck_kao_dian_attachment_status`；`FOREIGN KEY:fk_kao_dian_attachment_card`；`PRIMARY KEY:PRIMARY`；`UNIQUE:uk_kao_dian_attachment_hash`。
+索引：`INDEX:idx_kao_dian_attachment(gao_pin_kao_dian_id,zhuang_tai,yi_shan_chu,pai_xu)`；`UNIQUE/PRIMARY:PRIMARY(id)`；`UNIQUE/PRIMARY:uk_kao_dian_attachment_hash(gao_pin_kao_dian_id,nei_rong_ha_xi)`。
+生命周期：由知识卡片受控图片附件对应服务创建和更新；归档/删除遵循表内状态、外键和业务审计规则。
+
+### `gao_pin_kao_dian_zhi_shi_dian`
+
+用途：知识卡片多知识点关系。创建/演进：V21。
+
+| 字段 | SQL 类型 | 可空 | 默认值 | 键/附加 | 说明 |
+|---|---|---:|---|---|---|
+| `gao_pin_kao_dian_id` | `bigint` | 否 | `NULL` | PRI | — |
+| `zhi_shi_dian_id` | `bigint` | 否 | `NULL` | PRI | — |
+| `pai_xu` | `int` | 否 | `1` | — | — |
+
+约束：`CHECK:ck_kao_dian_point_order`；`FOREIGN KEY:fk_kao_dian_point_card`；`FOREIGN KEY:fk_kao_dian_point_point`；`PRIMARY KEY:PRIMARY`。
+索引：`INDEX:idx_kao_dian_point_reverse(zhi_shi_dian_id,gao_pin_kao_dian_id)`；`UNIQUE/PRIMARY:PRIMARY(gao_pin_kao_dian_id,zhi_shi_dian_id)`。
+生命周期：由知识卡片多知识点关系对应服务创建和更新；归档/删除遵循表内状态、外键和业务审计规则。
 
 ## Communication
 
@@ -557,7 +599,7 @@
 
 ### `si_xin_xiao_xi`
 
-用途：师生私信消息。创建/演进：V9。
+用途：支持撤回与按用户隐藏的师生私信消息。创建/演进：V9。
 
 | 字段 | SQL 类型 | 可空 | 默认值 | 键/附加 | 说明 |
 |---|---|---:|---|---|---|
@@ -568,11 +610,14 @@
 | `yi_du` | `tinyint` | 否 | `0` | — | — |
 | `fa_song_shi_jian` | `datetime(3)` | 否 | `CURRENT_TIMESTAMP(3)` | DEFAULT_GENERATED | — |
 | `yi_du_shi_jian` | `datetime(3)` | 是 | `NULL` | — | — |
+| `che_hui_shi_jian` | `datetime(3)` | 是 | `NULL` | — | — |
+| `fa_song_zhe_yi_cang` | `tinyint(1)` | 否 | `0` | — | — |
+| `jie_shou_zhe_yi_cang` | `tinyint(1)` | 否 | `0` | — | — |
 | `yi_shan_chu` | `tinyint` | 否 | `0` | — | — |
 
-约束：`CHECK:ck_si_xin_xiao_xi_content`；`CHECK:ck_si_xin_xiao_xi_deleted`；`CHECK:ck_si_xin_xiao_xi_read`；`CHECK:ck_si_xin_xiao_xi_read_time`；`FOREIGN KEY:fk_si_xin_xiao_xi_conversation`；`FOREIGN KEY:fk_si_xin_xiao_xi_sender`；`PRIMARY KEY:PRIMARY`。
-索引：`INDEX:fk_si_xin_xiao_xi_sender(fa_song_ren_yong_hu_id)`；`INDEX:idx_si_xin_xiao_xi_conversation_time(hui_hua_id,fa_song_shi_jian,id)`；`INDEX:idx_si_xin_xiao_xi_unread(hui_hua_id,yi_du,fa_song_ren_yong_hu_id,yi_shan_chu)`；`UNIQUE/PRIMARY:PRIMARY(id)`。
-生命周期：由师生私信消息对应服务创建和更新；归档/删除遵循表内状态、外键和业务审计规则。
+约束：`CHECK:ck_si_xin_xiao_xi_content`；`CHECK:ck_si_xin_xiao_xi_deleted`；`CHECK:ck_si_xin_xiao_xi_read`；`CHECK:ck_si_xin_xiao_xi_read_time`；`CHECK:ck_si_xin_xiao_xi_receiver_hidden`；`CHECK:ck_si_xin_xiao_xi_sender_hidden`；`FOREIGN KEY:fk_si_xin_xiao_xi_conversation`；`FOREIGN KEY:fk_si_xin_xiao_xi_sender`；`PRIMARY KEY:PRIMARY`。
+索引：`INDEX:fk_si_xin_xiao_xi_sender(fa_song_ren_yong_hu_id)`；`INDEX:idx_si_xin_xiao_xi_conversation_time(hui_hua_id,fa_song_shi_jian,id)`；`INDEX:idx_si_xin_xiao_xi_receiver_visibility(hui_hua_id,jie_shou_zhe_yi_cang,fa_song_shi_jian,id)`；`INDEX:idx_si_xin_xiao_xi_sender_visibility(hui_hua_id,fa_song_zhe_yi_cang,fa_song_shi_jian,id)`；`INDEX:idx_si_xin_xiao_xi_unread(hui_hua_id,yi_du,fa_song_ren_yong_hu_id,yi_shan_chu)`；`UNIQUE/PRIMARY:PRIMARY(id)`。
+生命周期：由支持撤回与按用户隐藏的师生私信消息对应服务创建和更新；归档/删除遵循表内状态、外键和业务审计规则。
 
 ## Audit
 
@@ -678,14 +723,16 @@
 
 ### `ai_hui_hua`
 
-用途：当前题 AI 会话。创建/演进：V13。
+用途：练习结果或专题题互斥上下文 AI 会话。创建/演进：V13。
 
 | 字段 | SQL 类型 | 可空 | 默认值 | 键/附加 | 说明 |
 |---|---|---:|---|---|---|
 | `id` | `bigint` | 否 | `NULL` | PRI, auto_increment | — |
 | `xue_sheng_id` | `bigint` | 否 | `NULL` | MUL | — |
-| `xue_sheng_da_ti_id` | `bigint` | 否 | `NULL` | MUL | — |
-| `lian_xi_ti_mu_id` | `bigint` | 否 | `NULL` | MUL | — |
+| `xue_sheng_da_ti_id` | `bigint` | 是 | `NULL` | MUL | — |
+| `lian_xi_ti_mu_id` | `bigint` | 是 | `NULL` | MUL | — |
+| `shang_xia_wen_lei_xing` | `varchar(24)` | 否 | `PRACTICE_RESULT` | — | — |
+| `zhuan_ti_ti_mu_id` | `bigint` | 是 | `NULL` | MUL | — |
 | `ai_mo_xing_pei_zhi_id` | `bigint` | 是 | `NULL` | MUL | — |
 | `si_kao_mo_shi` | `varchar(16)` | 否 | `STANDARD` | — | — |
 | `shi_fou_lian_wang` | `tinyint(1)` | 否 | `0` | — | — |
@@ -694,9 +741,9 @@
 | `chuang_jian_shi_jian` | `datetime(3)` | 否 | `CURRENT_TIMESTAMP(3)` | DEFAULT_GENERATED | — |
 | `geng_xin_shi_jian` | `datetime(3)` | 否 | `CURRENT_TIMESTAMP(3)` | DEFAULT_GENERATED on update CURRENT_TIMESTAMP(3) | — |
 
-约束：`CHECK:ck_ai_hui_hua_rounds`；`CHECK:ck_ai_hui_hua_search`；`CHECK:ck_ai_hui_hua_status`；`CHECK:ck_ai_hui_hua_thinking`；`FOREIGN KEY:fk_ai_hui_hua_da_ti`；`FOREIGN KEY:fk_ai_hui_hua_lian_xi_ti_mu`；`FOREIGN KEY:fk_ai_hui_hua_model`；`FOREIGN KEY:fk_ai_hui_hua_xue_sheng`；`PRIMARY KEY:PRIMARY`。
-索引：`INDEX:fk_ai_hui_hua_da_ti(xue_sheng_da_ti_id)`；`INDEX:fk_ai_hui_hua_lian_xi_ti_mu(lian_xi_ti_mu_id)`；`INDEX:fk_ai_hui_hua_model(ai_mo_xing_pei_zhi_id)`；`INDEX:idx_ai_hui_hua_xue_sheng_question(xue_sheng_id,lian_xi_ti_mu_id,geng_xin_shi_jian)`；`UNIQUE/PRIMARY:PRIMARY(id)`。
-生命周期：由当前题 AI 会话对应服务创建和更新；归档/删除遵循表内状态、外键和业务审计规则。
+约束：`CHECK:ck_ai_hui_hua_context`；`CHECK:ck_ai_hui_hua_rounds`；`CHECK:ck_ai_hui_hua_search`；`CHECK:ck_ai_hui_hua_status`；`CHECK:ck_ai_hui_hua_thinking`；`FOREIGN KEY:fk_ai_hui_hua_da_ti`；`FOREIGN KEY:fk_ai_hui_hua_lian_xi_ti_mu`；`FOREIGN KEY:fk_ai_hui_hua_model`；`FOREIGN KEY:fk_ai_hui_hua_topic_question`；`FOREIGN KEY:fk_ai_hui_hua_xue_sheng`；`PRIMARY KEY:PRIMARY`。
+索引：`INDEX:fk_ai_hui_hua_da_ti(xue_sheng_da_ti_id)`；`INDEX:fk_ai_hui_hua_lian_xi_ti_mu(lian_xi_ti_mu_id)`；`INDEX:fk_ai_hui_hua_model(ai_mo_xing_pei_zhi_id)`；`INDEX:fk_ai_hui_hua_topic_question(zhuan_ti_ti_mu_id)`；`INDEX:idx_ai_hui_hua_topic(xue_sheng_id,zhuan_ti_ti_mu_id,geng_xin_shi_jian)`；`INDEX:idx_ai_hui_hua_xue_sheng_question(xue_sheng_id,lian_xi_ti_mu_id,geng_xin_shi_jian)`；`UNIQUE/PRIMARY:PRIMARY(id)`。
+生命周期：由练习结果或专题题互斥上下文 AI 会话对应服务创建和更新；归档/删除遵循表内状态、外键和业务审计规则。
 
 ### `ai_xiao_xi`
 
