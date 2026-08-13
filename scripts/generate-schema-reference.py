@@ -82,11 +82,11 @@ def mysql_rows(query, fieldnames):
 
 columns = defaultdict(list)
 for row in mysql_rows(f"""
-    SELECT table_name,column_name,column_type,is_nullable,column_key,extra,
+    SELECT table_name,column_name,column_type,is_nullable,column_default,column_key,extra,
            REPLACE(REPLACE(COALESCE(column_comment,''),'\\t',' '),'\\n',' '),ordinal_position
     FROM information_schema.columns WHERE table_schema='{SCHEMA}' AND table_name<>'flyway_schema_history'
     ORDER BY table_name,ordinal_position
-""", ["table_name", "column_name", "column_type", "is_nullable", "column_key", "extra", "column_comment", "ordinal_position"]):
+""", ["table_name", "column_name", "column_type", "is_nullable", "column_default", "column_key", "extra", "column_comment", "ordinal_position"]):
     columns[row["table_name"]].append(row)
 
 constraints = defaultdict(list)
@@ -96,23 +96,37 @@ for row in mysql_rows(f"""
 """, ["table_name", "constraint_name", "constraint_type"]):
     constraints[row["table_name"]].append(f'{row["constraint_type"]}:{row["constraint_name"]}')
 
+indexes = defaultdict(list)
+for row in mysql_rows(f"""
+    SELECT table_name,index_name,non_unique,
+           GROUP_CONCAT(column_name ORDER BY seq_in_index SEPARATOR ',')
+    FROM information_schema.statistics
+    WHERE table_schema='{SCHEMA}' AND table_name<>'flyway_schema_history'
+    GROUP BY table_name,index_name,non_unique ORDER BY table_name,index_name
+""", ["table_name", "index_name", "non_unique", "columns"]):
+    kind = "INDEX" if row["non_unique"] == "1" else "UNIQUE/PRIMARY"
+    indexes[row["table_name"]].append(f'{kind}:{row["index_name"]}({row["columns"]})')
+
 lines = [
     f"# RIKE V{LATEST} 数据库结构参考", "",
     f"> 本文由 `information_schema` 只读生成，校验对象为隔离库 `{SCHEMA}` 的 Flyway V1–V{LATEST} 业务表。字段与约束以迁移脚本为准；`database/schema_snapshot_v{LATEST}.sql` 仅是便于查阅的纯结构快照，不能替代 Flyway。", "",
     "## 总体约定", "",
     "- MySQL 8.4，默认 `utf8mb4`。", "- 业务主键均为 `BIGINT` 自增标识；关系约束和状态枚举由外键、唯一索引、Check 与服务层共同维护。",
     "- `yi_shan_chu` 为软删除标识时，查询必须同时考虑状态字段。AI Key 只存在本地配置表，API/日志不得回显。", "",
+    "- 本参考完整列出 39 张业务表；每张表给出 MySQL 类型、NULL、默认值、主键/外键/UNIQUE/CHECK、精确索引与生命周期。", "",
 ]
 
 for group, tables in GROUPS.items():
     lines += [f"## {group}", ""]
     for table in sorted(tables):
         lines += [f"### `{table}`", "", f"用途：{PURPOSE[table]}。创建/演进：{migration(table)}。", "",
-                  "| 字段 | SQL 类型 | 可空 | 键/附加 | 说明 |", "|---|---|---:|---|---|"]
+                  "| 字段 | SQL 类型 | 可空 | 默认值 | 键/附加 | 说明 |", "|---|---|---:|---|---|---|"]
         for col in columns[table]:
             key = ", ".join(value for value in [col["column_key"], col["extra"]] if value) or "—"
-            lines.append(f'| `{col["column_name"]}` | `{escape(col["column_type"])}` | {"是" if col["is_nullable"] == "YES" else "否"} | {escape(key)} | {escape(col["column_comment"])} |')
+            default = "NULL" if col["column_default"] in (None, "NULL") else escape(col["column_default"])
+            lines.append(f'| `{col["column_name"]}` | `{escape(col["column_type"])}` | {"是" if col["is_nullable"] == "YES" else "否"} | `{default}` | {escape(key)} | {escape(col["column_comment"])} |')
         lines += ["", "约束：" + ("；".join(f"`{escape(c)}`" for c in constraints[table]) or "无命名约束") + "。",
+                  "索引：" + ("；".join(f"`{escape(i)}`" for i in indexes[table]) or "无") + "。",
                   f"生命周期：由{PURPOSE[table]}对应服务创建和更新；归档/删除遵循表内状态、外键和业务审计规则。", ""]
 
 OUTPUT.write_text("\n".join(lines), encoding="utf-8")
