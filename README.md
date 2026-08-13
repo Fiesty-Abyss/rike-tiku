@@ -1,6 +1,6 @@
 # RIKE 理科学习辅助系统
 
-> **分支事实：本分支对应 Draft PR [#33](https://github.com/Fiesty-Abyss/rike-tiku/pull/33)，当前为 Flyway V23、41 张业务表，尚未合并到 `main`。**
+> **仓库事实：`main` 当前仍是 PR #32 稳定代码基线，并已提供本 Draft 分支的远程预览入口；本分支对应 Draft PR [#33](https://github.com/Fiesty-Abyss/rike-tiku/pull/33)，当前为 Flyway V23、41 张业务表，尚未合并到 `main`。**
 
 面向高中物理、化学、生物的 Spring Boot 大模型题库系统。正式判分与 STANDARD 始终由确定性业务事实控制；AI 只承担解释、答疑和待人工审核的候选生成。
 
