@@ -1,6 +1,6 @@
 # 论文参考文献与官方资料
 
-核验日期：2026-08-12。下列条目只保存引用信息、用途和公开地址，不上传论文 PDF。GB/T 7714 著录可直接作为论文底稿；最终排版仍应按学校模板复核标点、作者人数和访问日期。BibTeX 见 [references.bib](references/references.bib)。
+核验日期：2026-08-13。学术 DOI 通过 Crossref 元数据并回到 DOI/出版方页面核对；预印本只按 arXiv 原始页面著录；政策与技术资料只采用官方机构或项目官方文档。下列条目只保存引用信息、用途和公开地址，不上传论文 PDF。BibTeX 见 [references.bib](references/references.bib)。
 
 ## 智能辅导与 AI 教育
 
@@ -18,7 +18,7 @@
 9. KÜCHEMANN S, STEINERT S, REVENGA N, et al. Physics task development of prospective physics teachers using ChatGPT[EB/OL]. arXiv:2304.10014, 2023. [https://arxiv.org/abs/2304.10014](https://arxiv.org/abs/2304.10014)。用于物理题目生成应用背景。
 10. BADENES-OLMEDO C, EYZAGUIRRE P. QuerIA: adaptive question generation and evaluation in higher education using large language models and contextual learning[J]. Expert Systems with Applications, 2026, 301: 130140. DOI: [10.1016/j.eswa.2025.130140](https://doi.org/10.1016/j.eswa.2025.130140)。用于候选题生成、评价和人工门禁讨论。
 
-## 教育规范与政策
+## 人机协同审核与生成式 AI 教育规范
 
 11. UNESCO. Guidance for generative AI in education and research[EB/OL]. 2023. [https://unesdoc.unesco.org/ark:/48223/pf0000386693](https://unesdoc.unesco.org/ark:/48223/pf0000386693)。用于教育场景中的人类监督、隐私与责任边界。
 12. 中华人民共和国教育部. 国家教育数字化战略行动2025年部署会召开[EB/OL]. 2025-03-28. [https://www.moe.gov.cn/jyb_xwfb/gzdt_gzdt/moe_1485/202503/t20250328_1185222.html](https://www.moe.gov.cn/jyb_xwfb/gzdt_gzdt/moe_1485/202503/t20250328_1185222.html)。用于教育数字化政策背景。
@@ -30,10 +30,11 @@
 15. DEEPSEEK. Create chat completion[EB/OL]. [https://api-docs.deepseek.com/api/create-chat-completion](https://api-docs.deepseek.com/api/create-chat-completion)。用于请求/响应、JSON output、thinking 与 Token 契约。
 16. DEEPSEEK. Models and pricing[EB/OL]. [https://api-docs.deepseek.com/quick_start/pricing](https://api-docs.deepseek.com/quick_start/pricing)。用于当前模型 ID 和成本说明。
 17. 智谱 AI. GLM-4.6V-Flash[EB/OL]. [https://docs.bigmodel.cn/cn/guide/models/free/glm-4.6v-flash](https://docs.bigmodel.cn/cn/guide/models/free/glm-4.6v-flash)。用于图像输入、文本输出和 thinking 开关契约。
-18. SPRING. Spring Boot container images[EB/OL]. [https://docs.spring.io/spring-boot/reference/packaging/container-images/](https://docs.spring.io/spring-boot/reference/packaging/container-images/)。用于可选容器化调研；当前本机交付不依赖 Docker。
-19. ORACLE. MySQL official image[EB/OL]. [https://hub.docker.com/_/mysql](https://hub.docker.com/_/mysql)。用于 MySQL 8.4 容器镜像调研；当前本机正式库仍使用现有 MySQL。
-20. DEEPSEEK. Thinking mode[EB/OL]. [https://api-docs.deepseek.com/guides/thinking_mode](https://api-docs.deepseek.com/guides/thinking_mode)。用于 `thinking`、`reasoning_effort` 与 reasoning content 的受控处理。
-21. 智谱 AI. Web Search[EB/OL]. [https://docs.bigmodel.cn/cn/guide/tools/web-search](https://docs.bigmodel.cn/cn/guide/tools/web-search)。用于结构化搜索请求、引擎选择与来源结果字段。
+18. SPRING. Spring Boot Reference[EB/OL]. [https://docs.spring.io/spring-boot/reference/](https://docs.spring.io/spring-boot/reference/)。用于第 3 章 Spring Boot 4 模块化单体、Web 与安全实现依据。
+19. ORACLE. MySQL 8.4 Reference Manual[EB/OL]. [https://dev.mysql.com/doc/refman/8.4/en/](https://dev.mysql.com/doc/refman/8.4/en/)。用于第 3 章 MySQL 8.4 字段类型、约束、索引和事务依据。
+20. BAOMIDOU. MyBatis-Plus Spring Boot 4 安装指南[EB/OL]. [https://baomidou.com/getting-started/install/](https://baomidou.com/getting-started/install/)。用于第 3 章持久层技术选型与 Spring Boot 4 Starter 依据。
+21. DEEPSEEK. Thinking mode[EB/OL]. [https://api-docs.deepseek.com/guides/thinking_mode](https://api-docs.deepseek.com/guides/thinking_mode)。用于第 3/4 章 `thinking`、`reasoning_effort` 与 reasoning content 的受控处理。
+22. 智谱 AI. Web Search[EB/OL]. [https://docs.bigmodel.cn/cn/guide/tools/web-search](https://docs.bigmodel.cn/cn/guide/tools/web-search)。用于第 3/4 章结构化搜索请求、引擎选择与来源结果字段。
 
 ## 使用原则
 

@@ -1,3 +1,5 @@
+-- RIKE V19 pure-structure snapshot: 39 business tables plus Flyway history; intentionally contains no INSERT data.
+-- Generated from isolated rike_tiku_demo for thesis reference; Flyway V1-V19 remains the migration authority.
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -1029,4 +1031,3 @@ CREATE TABLE `zhi_shi_dian` (
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-
