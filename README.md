@@ -2,6 +2,8 @@
 
 面向高中物理、化学、生物的 Spring Boot 大模型题库系统。系统把题库、练习判分、STANDARD 解析、错题学习、教师教学管理和受控 AI 能力放在同一条可追溯业务链中。
 
+> 默认 GitHub 首页的 `main` README 已提供本 Draft 分支的截图、代码、数据库、Excel、论文和文献远程预览入口；本分支保留以下完整最终交付 README。PR #33 仍为 Draft，尚未 ordinary merge。
+
 > 论文题目：面向高中物化生的 Spring Boot 大模型题库系统设计与实现
 
 ## 系统效果
