@@ -8,7 +8,7 @@
 
 系统后端采用 Java 25、Spring Boot 4.1、Spring Security、MyBatis-Plus、Flyway 和 MySQL 8.4；前端采用 Vue 3、TypeScript、Element Plus、GSAP 与 KaTeX。数据库由 Flyway V1–V29 管理，共 50 张业务表。正式判分由确定性规则完成，STANDARD 解析作为不可被 AI 覆盖的业务事实保存。DeepSeek 承担文本辅助，GLM 与 xAI 作为管理员显式选择的视觉 Provider，智谱 Web Search 提供结构化网络来源。学生 AI 变式题经 Schema V2、字段级解析、新颖度与确定性判分后仍处于待审核状态，只有教师或管理员评价通过才进入已发布题库。
 
-自动化采用随机临时 MySQL schema，匿名演示库从空库执行 23 个迁移后写入 378 道三科题目。PR #33 受影响后端专项已执行 35 项测试，前端新增功能专项执行 11 个文件、21 项测试；相应轮次均为 0 失败。该结果验证了实现和约束，但不代表已完成真实学生群体的教学效果实验。
+自动化采用随机临时 MySQL schema，匿名演示库从空库执行 Flyway V1–V29，共 29 个成功迁移并形成 50 张业务表。最终回归中，后端全量为 210 项测试并包含 3 项真实 Provider 条件跳过，前端全量为 67 个测试文件、214 项测试；本轮机器浏览器验证覆盖 14 条路线、20 项真实交互断言。真实 Provider 因没有轮换后的安全凭据统一记录为 `BLOCKED_EXTERNAL_PROVIDER`。这些数字用于说明当前工程验证范围，不代表真实学生群体的教学效果实验。
 
 关键词：高中理科；在线题库；Spring Boot；大语言模型；人工审核；确定性判分
 
@@ -140,13 +140,13 @@ API Key 只保存在本地模型配置表或环境变量中，管理 API 只返�
 
 ### 8.2 本轮已执行结果
 
-受影响后端专项包括 DeepSeek 请求映射、搜索安全、GLM Provider/Parser、AI 模型配置、候选生成、学生 AI 服务、密码恢复、共享判分和试卷服务，共 35 项测试，0 failures、0 errors、0 skipped。前端功能专项覆盖 11 个测试文件、21 项测试，同样全部通过。`vue-tsc --noEmit` 和 Vite build 通过，build 保留一个主 chunk 超过 500 kB 的警告。
+最终后端全量执行 210 项测试，0 failures、0 errors，并有 3 项依赖真实 Provider 凭据的 conditional skips；这些跳过项不计为真实调用通过。前端全量执行 67 个测试文件、214 项测试，全部通过。机器浏览器本轮覆盖 14 条路线和 20 项交互断言。`vue-tsc --noEmit` 和 Vite build 通过，build 保留一个主 chunk 超过 500 kB 的警告。学生试卷父页面的真实组件集成覆盖单选答案与 STANDARD；`AnswerDisplay` 组件专项分别覆盖单选、多选、填空、主观题和非法 JSON，二者不合并夸大为同一层级的覆盖。
 
 `rike_tiku_demo` 从空库 reset 后完整执行 V1–V29，得到 50 张业务表；seed/validate 核验 14 个匿名账号、3 个班级、4 位教师、9 名学生、9 条任课关系、66 张已审核知识卡片和 378 道题。该环境用于机器浏览器和论文截图，不包含正式人员数据或真实 Provider 凭据。
 
 ### 8.3 结果边界
 
-上述测试可以说明状态机、约束、权限和页面逻辑按预期运行。系统没有进行真实学校班级的对照实验，也没有问卷样本，因此本文不报告学习成绩提升、满意度或 AI 准确率。真实 Provider smoke 受本机 Key 和额度影响，缺失配置时应记录 NOT_RUN。
+上述测试可以说明状态机、约束、权限和页面逻辑按预期运行。系统没有进行真实学校班级的对照实验，也没有问卷样本，因此本文不报告学习成绩提升、满意度或 AI 准确率。当前没有可安全使用的轮换后凭据，DeepSeek variant、DeepSeek tutor、GLM Vision、xAI Vision 与 Web Search 的真实 smoke 均记录为 `BLOCKED_EXTERNAL_PROVIDER`，Mock/Fake 自动化不替代真实 Provider 结论。
 
 ## 9 结论与展望
 
