@@ -4,6 +4,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.neu.riketiku.demo.DemoDataService;
+import com.neu.riketiku.ai.AiProviderService;
+import com.neu.riketiku.ai.provider.AiModelResult;
+import com.neu.riketiku.ai.provider.AiTokenUsage;
 import com.neu.riketiku.renzheng.RenZhengYeWuYiChang;
 import com.neu.riketiku.tiku.admin.AdminQuestionIntegrationTestSupport;
 import java.math.BigDecimal;
@@ -14,6 +17,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
 
@@ -23,6 +29,7 @@ class PaperAssignmentIntegrationTest extends AdminQuestionIntegrationTestSupport
     @Autowired private PaperService papers;
     @Autowired private PaperAssignmentService assignments;
     @Autowired private JdbcTemplate jdbc;
+    @MockitoBean private AiProviderService aiProvider;
     private final ObjectMapper mapper = new ObjectMapper();
 
     @Test
@@ -62,6 +69,12 @@ class PaperAssignmentIntegrationTest extends AdminQuestionIntegrationTestSupport
         assertThat(after.questions().getFirst().standardAnalysis()).isNotBlank();
         assertThat(assignments.classStats(teacherUser, release.id()).submitted()).isEqualTo(1);
         assertThat(assignments.quality(teacherUser, paper.id()).notice()).contains("不代替教师审核");
+        when(aiProvider.generate(any())).thenReturn(new AiModelResult("fake-deepseek", "paper-test-model",
+                "覆盖范围可核对；难度与题量仍需教师复核；不会自动换题、改分或发布。", new AiTokenUsage(10, 8, 18), "stop"));
+        PaperAssignmentDtos.AiQualityAssessment ai = assignments.aiQuality(teacherUser, paper.id());
+        assertThat(ai.status()).isEqualTo("AI_ADVICE_READY");
+        assertThat(ai.notice()).contains("不代替教师审核");
+        assertThat(ai.content()).contains("不会自动换题");
     }
 
     private long id(String sql) { return jdbc.queryForObject(sql, Long.class); }

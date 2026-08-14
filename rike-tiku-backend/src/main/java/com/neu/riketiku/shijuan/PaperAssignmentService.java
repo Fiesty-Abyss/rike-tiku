@@ -1,5 +1,7 @@
 package com.neu.riketiku.shijuan;
 
+import com.neu.riketiku.ai.AiProviderService;
+import com.neu.riketiku.ai.provider.AiModelRequest;
 import com.neu.riketiku.renzheng.RenZhengYeWuYiChang;
 import com.neu.riketiku.tiku.QuestionDisplayTextNormalizer;
 import com.neu.riketiku.xueshenglianxi.ObjectiveAnswerGrader;
@@ -28,13 +30,15 @@ public class PaperAssignmentService {
     private final JdbcTemplate jdbc;
     private final ObjectiveAnswerGrader grader;
     private final QuestionDisplayTextNormalizer textNormalizer;
+    private final AiProviderService aiProvider;
     private final ObjectMapper mapper = new ObjectMapper();
 
     public PaperAssignmentService(JdbcTemplate jdbc, ObjectiveAnswerGrader grader,
-                                  QuestionDisplayTextNormalizer textNormalizer) {
+                                  QuestionDisplayTextNormalizer textNormalizer, AiProviderService aiProvider) {
         this.jdbc = jdbc;
         this.grader = grader;
         this.textNormalizer = textNormalizer;
+        this.aiProvider = aiProvider;
     }
 
     @Transactional
@@ -212,6 +216,22 @@ public class PaperAssignmentService {
                 "辅助建议，不代替教师审核",
                 List.of("题型分布: " + types, "知识点数: " + points.size(), "总分: " + paper.totalScore()),
                 risks, List.of("请结合班级薄弱点人工核对", "本评估不会换题、改分或发布试卷"));
+    }
+
+    @Transactional(readOnly = true)
+    public PaperAssignmentDtos.AiQualityAssessment aiQuality(long userId, long paperId) {
+        PaperAssignmentDtos.QualityAssessment facts = quality(userId, paperId);
+        String prompt = """
+                你是试卷质量辅助分析器。只依据下列确定性统计给出简洁中文建议，不推断学生成绩，不修改题目、分值或发布状态，禁止输出思维链。
+                输出四个短段落：覆盖评价、难度与题量风险、班级适配提醒、教师复核建议。
+                确定性统计：%s
+                已识别风险：%s
+                """.formatted(facts.coverage(), facts.risks());
+        var result = aiProvider.generate(AiModelRequest.text("PAPER_QUALITY_ASSESSMENT", prompt));
+        String content = result.content() == null ? "" : result.content().trim();
+        if (content.isBlank()) throw error("AI_PAPER_QUALITY_EMPTY", "AI 试卷质量评估未返回可用内容", HttpStatus.SERVICE_UNAVAILABLE);
+        return new PaperAssignmentDtos.AiQualityAssessment("AI_ADVICE_READY", "辅助建议，不代替教师审核",
+                result.providerCode(), result.modelCode(), content, facts);
     }
 
     private void saveAnswers(long submissionId, long releaseId, List<PaperAssignmentDtos.DraftAnswer> answers, boolean submitting) {

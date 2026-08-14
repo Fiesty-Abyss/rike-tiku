@@ -271,6 +271,7 @@ class UserTeachingDatabaseModelTest extends AdminQuestionIntegrationTestSupport 
             Flyway flyway = Flyway.configure()
                 .dataSource(testUrl, username, password)
                 .locations("classpath:db/migration")
+                .callbacks(new com.neu.riketiku.config.LegacyVariantModeFlywayCallback())
                 .cleanDisabled(true)
                 .load();
             assertThat(flyway.migrate().migrationsExecuted).isEqualTo(DatabaseSchemaFacts.LATEST_FLYWAY_VERSION);

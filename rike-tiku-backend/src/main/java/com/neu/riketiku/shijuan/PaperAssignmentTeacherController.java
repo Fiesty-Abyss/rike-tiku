@@ -38,4 +38,9 @@ public class PaperAssignmentTeacherController {
                                                          @PathVariable long paperId) {
         return service.quality(user.id(), paperId);
     }
+    @PostMapping("/{paperId}/quality-assessment/ai")
+    public PaperAssignmentDtos.AiQualityAssessment aiQuality(@AuthenticationPrincipal RenZhengYongHu user,
+                                                             @PathVariable long paperId) {
+        return service.aiQuality(user.id(), paperId);
+    }
 }
