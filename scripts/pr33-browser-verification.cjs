@@ -52,7 +52,11 @@ async function createPracticeResult(context) {
   if (!sessionResponse.ok()) throw new Error(`practice create ${sessionResponse.status()}`)
   const session = await sessionResponse.json()
   const question = session.questions[0]
-  const answer = question.questionType === 'MULTIPLE_CHOICE' ? [] : question.questionType === 'FILL_BLANK' ? [''] : ''
+  const answer = question.questionType === 'MULTIPLE_CHOICE'
+    ? [question.options.at(-1).label]
+    : question.questionType === 'FILL_BLANK'
+      ? Array.from({ length: Math.max(1, question.blankCount) }, () => '审计答案')
+      : question.options.at(-1).label
   const resultResponse = await context.request.post(`${api}/student/practice-sessions/${session.id}/submit`, {
     data: { answers: [{ practiceQuestionId: question.practiceQuestionId, answer, elapsedSeconds: 1 }] },
   })
@@ -103,7 +107,7 @@ async function main() {
     let context = await browser.newContext({ viewport: { width: 1440, height: 1000 } })
     let page = await context.newPage()
     await inspect(page, '/', '01-portal-desktop.png', 'RIKE')
-    await inspect(page, '/login', '02-login.png', '忘记密码？')
+    await inspect(page, '/login', '02-login.png', '申请密码恢复')
     await context.close()
 
     context = await browser.newContext({ viewport: { width: 390, height: 844 } })
@@ -117,6 +121,11 @@ async function main() {
     await inspect(page, '/student', '03-student-dashboard.png', '学习')
     await inspect(page, '/student/practice/new', '04-practice.png', '练习')
     await inspect(page, `/student/practice/${resultId}/result`, '05-result-standard.png', '标准解析')
+    await page.screenshot({ path: path.join(dir, '07-student-ai-analysis.png'), fullPage: true })
+    await page.getByRole('button', { name: '当前题目答疑' }).first().click()
+    await page.getByText('已绑定当前题目', { exact: false }).waitFor()
+    await page.screenshot({ path: path.join(dir, '08-student-ai-chat.png'), fullPage: true })
+    await page.keyboard.press('Escape')
     await inspect(page, '/student/wrong-questions', '06-wrong-questions.png', '错题')
     await captureVariantFixture(page, `/student/practice/${resultId}/result`)
     await context.close()
@@ -143,12 +152,6 @@ async function main() {
     await inspect(page, '/admin/password-recovery', '18-admin-password-notifications.png', '账号')
     await inspect(page, '/admin/ai-generation', '19-admin-ai-generation.png', 'AI')
     await context.close()
-
-    fs.copyFileSync(path.join(dir, '04-student-ai-analysis.png'), path.join(dir, '07-student-ai-analysis.png'))
-    fs.copyFileSync(path.join(dir, '05-student-current-question-chat.png'), path.join(dir, '08-student-ai-chat.png'))
-    fs.copyFileSync(path.join(dir, '12-system-architecture.svg'), path.join(dir, '22-system-architecture.svg'))
-    fs.copyFileSync(path.join(dir, '13-ai-controlled-flow.svg'), path.join(dir, '23-ai-controlled-flow.svg'))
-    fs.copyFileSync(path.join(dir, '14-database-modules.svg'), path.join(dir, '24-database-modules.svg'))
 
     const summary = {
       routes: records.length,
