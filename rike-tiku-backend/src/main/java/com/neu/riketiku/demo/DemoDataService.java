@@ -421,7 +421,7 @@ public class DemoDataService {
                 JOIN xue_sheng_dang_an s ON s.id=h.xue_sheng_id WHERE s.xue_hao LIKE 'DEMO_%'
                 """));
         expect("无秘密AI演示配置", 2, count("SELECT COUNT(*) FROM ai_mo_xing_pei_zhi WHERE mo_xing_dai_ma LIKE 'demo-disabled-%' AND api_mi_yao IS NULL AND shi_fou_qi_yong=0"));
-        System.out.println("演示数据校验通过: 14账号、3班级、4教师、9学生、9任课关系、12高频考点、55个叶子知识点、"
+        System.out.println("演示数据校验通过: 14账号、3班级、4教师、9学生、9任课关系、66张已审核知识卡片、55个叶子知识点、"
                 + FINAL_DEMO_QUESTION_COUNT + "道普通练习题（物理/化学/生物各120）+ Topic18，合计"
                 + TOTAL_DEMO_QUESTION_COUNT + "题；含1次匿名练习、1条错题、1个双向私信会话和2条无密钥禁用AI配置");
     }
@@ -497,10 +497,11 @@ public class DemoDataService {
 
     private void seedHighFrequencyPoint(long scopeId, long knowledgePointId, String title, String content,
             String memoryTrick, String commonMistake, int sortOrder) {
-        jdbc.update("""
+        long cardId=insert("""
                 INSERT INTO gao_pin_kao_dian(ren_ke_guan_xi_id,zhi_shi_dian_id,biao_ti,nei_rong,ji_yi_kou_jue,chang_jian_wu_qu,pai_xu,zhuang_tai)
                 VALUES (?,?,?,?,?,?,?,'PUBLISHED')
                 """, scopeId, knowledgePointId, title, content, memoryTrick, commonMistake, sortOrder);
+        jdbc.update("INSERT INTO gao_pin_kao_dian_zhi_shi_dian(gao_pin_kao_dian_id,zhi_shi_dian_id,pai_xu) VALUES (?,?,1)",cardId,knowledgePointId);
     }
 
     private void seedReviewedKnowledgeCards(Map<String,Long> scopes){List<String>types=List.of("POINT","FORMULA","CHEMICAL_EQUATION","SECONDARY_CONCLUSION","INSTRUMENT","MNEMONIC","TABLE","NOTE");for(String subject:List.of("PHYSICS","CHEMISTRY","BIOLOGY")){long scope=required(scopes,subject+"_199");List<Long>leaf=jdbc.query("SELECT z.id FROM zhi_shi_dian z JOIN ke_mu k ON k.id=z.ke_mu_id WHERE k.ke_mu_dai_ma=? AND z.ceng_ji=3 AND z.zhuang_tai='ACTIVE' AND z.yi_shan_chu=0 ORDER BY z.id",(rs,n)->rs.getLong(1),subject);if(leaf.isEmpty())throw new IllegalStateException(subject+"缺少叶子知识点");for(int i=0;i<18;i++){long point=leaf.get(i%leaf.size());String type=types.get(i%types.size());String title=(switch(subject){case "PHYSICS"->"物理";case "CHEMISTRY"->"化学";default->"生物";})+"审核知识卡片 "+(i+1);String content="本卡片是 RIKE 项目根据公开课程标准自编的课程核心知识总结，先确认概念、适用条件与单位，再结合例子使用。";long id=insert("INSERT INTO gao_pin_kao_dian(ren_ke_guan_xi_id,zhi_shi_dian_id,zi_liao_lei_xing,biao_ti,nei_rong,ke_xue_nei_rong,latex_nei_rong,shi_yong_tiao_jian,han_yi_tui_dao,chang_jian_wu_qu,li_zi,ji_yi_kou_jue,lai_yuan_ming_cheng,quan_li_zhuang_tai,pai_xu,zhuang_tai) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,'PROJECT_AUTHORED',?,'PUBLISHED')",scope,point,type,title,content,content,"FORMULA".equals(type)?"\\(x=x_0+vt\\)":null,"仅在题目给定条件满足时使用","由定义和守恒关系逐步推出","忽略适用条件或单位会导致错误","先代入一组简单数据检查数量级","先审条件，再列关系，最后验单位","RIKE项目自编课程卡片",10+i);jdbc.update("INSERT INTO gao_pin_kao_dian_zhi_shi_dian(gao_pin_kao_dian_id,zhi_shi_dian_id,pai_xu) VALUES (?,?,1)",id,point);}}}
@@ -677,6 +678,8 @@ public class DemoDataService {
 
     private void cleanInternal() {
         guardDatabaseName(currentDatabase());
+        cleanupDemoAiGeneration();
+        jdbc.update("DELETE i FROM zhi_shi_ka_pian_lian_xi_shi_li i JOIN xue_sheng_dang_an s ON s.id=i.xue_sheng_id WHERE s.xue_hao LIKE 'DEMO_%'");
         jdbc.update("DELETE a FROM shi_juan_xue_sheng_da_ti a JOIN shi_juan_ti_jiao s ON s.id=a.shi_juan_ti_jiao_id JOIN shi_juan_fa_bu r ON r.id=s.shi_juan_fa_bu_id JOIN shi_juan p ON p.id=r.shi_juan_id WHERE p.shi_juan_ming_cheng LIKE 'RIKE Demo %'");
         jdbc.update("DELETE s FROM shi_juan_ti_jiao s JOIN shi_juan_fa_bu r ON r.id=s.shi_juan_fa_bu_id JOIN shi_juan p ON p.id=r.shi_juan_id WHERE p.shi_juan_ming_cheng LIKE 'RIKE Demo %'");
         jdbc.update("DELETE i FROM shi_juan_fa_bu_ti_mu i JOIN shi_juan_fa_bu r ON r.id=i.shi_juan_fa_bu_id JOIN shi_juan p ON p.id=r.shi_juan_id WHERE p.shi_juan_ming_cheng LIKE 'RIKE Demo %'");
@@ -715,6 +718,29 @@ public class DemoDataService {
         demoKnowledgePaths().stream()
                 .sorted(Comparator.comparingInt(DemoDataService::pathDepth).reversed())
                 .forEach(path -> jdbc.update("DELETE FROM zhi_shi_dian WHERE wan_zheng_lu_jing=? AND id>9", path));
+    }
+
+    private void cleanupDemoAiGeneration() {
+        List<Long> taskIds = jdbc.queryForList("""
+                SELECT g.id FROM ai_sheng_cheng_ren_wu g
+                JOIN yong_hu u ON u.id=g.chuang_jian_ren_id
+                WHERE u.yong_hu_ming LIKE 'demo_%'
+                """, Long.class);
+        if (taskIds.isEmpty()) return;
+        for (long taskId : taskIds) {
+            List<Long> candidateIds = jdbc.queryForList(
+                    "SELECT ti_mu_id FROM ai_hou_xuan_ti_zhi_liang_ping_jia WHERE ai_sheng_cheng_ren_wu_id=?",
+                    Long.class, taskId);
+            jdbc.update("DELETE FROM zhi_shi_ka_pian_lian_xi_shi_li WHERE ai_sheng_cheng_ren_wu_id=?", taskId);
+            jdbc.update("DELETE FROM ai_xue_sheng_bian_shi_shi_li WHERE ai_sheng_cheng_ren_wu_id=?", taskId);
+            for (long questionId : candidateIds) {
+                for (String table : List.of("ti_mu_fu_jian", "ti_mu_shen_he_ji_lu", "ti_mu_lai_yuan", "ti_mu_zhi_shi_dian", "ti_mu_jie_xi", "ti_mu_xuan_xiang"))
+                    jdbc.update("DELETE FROM " + table + " WHERE ti_mu_id=?", questionId);
+            }
+            jdbc.update("DELETE FROM ai_hou_xuan_ti_zhi_liang_ping_jia WHERE ai_sheng_cheng_ren_wu_id=?", taskId);
+            for (long questionId : candidateIds) jdbc.update("DELETE FROM ti_mu WHERE id=?", questionId);
+            jdbc.update("DELETE FROM ai_sheng_cheng_ren_wu WHERE id=?", taskId);
+        }
     }
 
     private void seedTopicUnits(long adminId){
