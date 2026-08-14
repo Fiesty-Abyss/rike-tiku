@@ -7,14 +7,14 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "docs" / "DATABASE_SCHEMA_REFERENCE.md"
 SCHEMA = os.getenv("RIKE_SCHEMA_REFERENCE_DATABASE", "rike_tiku_demo")
-LATEST = 23
+LATEST = 29
 
 GROUPS = {
     "Authentication": {"yong_hu", "jiao_se", "yong_hu_jiao_se"},
     "Organization": {"ban_ji", "ban_ji_xue_sheng", "jiao_shi_dang_an", "xue_sheng_dang_an", "ren_ke_guan_xi"},
     "Question bank": {"ke_mu", "zhi_shi_dian", "ti_mu", "ti_mu_xuan_xiang", "ti_mu_jie_xi", "ti_mu_zhi_shi_dian", "ti_mu_lai_yuan", "ti_mu_fu_jian", "ti_mu_shen_he_ji_lu", "dao_ru_pi_ci"},
     "Practice": {"lian_xi_hui_hua", "lian_xi_ti_mu", "xue_sheng_da_ti", "xue_xi_jie_guo"},
-    "Wrong / mastery": {"cuo_ti_ji_lu", "gao_pin_kao_dian", "gao_pin_kao_dian_zhi_shi_dian", "gao_pin_kao_dian_fu_jian"},
+    "Wrong / mastery": {"cuo_ti_ji_lu", "gao_pin_kao_dian", "gao_pin_kao_dian_zhi_shi_dian", "gao_pin_kao_dian_fu_jian", "gao_pin_kao_dian_shen_he_ji_lu", "xue_sheng_zhi_shi_ka_pian_zhuang_tai", "zhi_shi_ka_pian_lian_xi_shi_li"},
     "Communication": {"si_xin_hui_hua", "si_xin_xiao_xi"},
     "Audit": {"guan_li_cao_zuo_ri_zhi"},
     "AI Provider": {"ai_diao_yong_ri_zhi", "ai_mo_xing_pei_zhi"},
@@ -22,7 +22,8 @@ GROUPS = {
     "Student AI variants": {"ai_xue_sheng_bian_shi_shi_li"},
     "AI generation / vision": {"ai_sheng_cheng_ren_wu", "ai_hou_xuan_ti_zhi_liang_ping_jia", "ai_shi_jue_shang_xia_wen"},
     "Account recovery": {"mi_ma_chong_zhi_shen_qing"},
-    "Paper": {"shi_juan", "shi_juan_ti_mu"},
+    "Paper": {"shi_juan", "shi_juan_ti_mu", "shi_juan_fa_bu", "shi_juan_fa_bu_ti_mu", "shi_juan_ti_jiao", "shi_juan_xue_sheng_da_ti"},
+    "Topic units": {"zhuan_ti_xue_xi_dan_yuan", "zhuan_ti_xue_xi_dan_yuan_ti_mu"},
 }
 
 PURPOSE = {
@@ -42,6 +43,11 @@ PURPOSE = {
     "ai_hou_xuan_ti_zhi_liang_ping_jia": "候选题人工质量评价", "ai_shi_jue_shang_xia_wen": "受控视觉上下文缓存",
     "ai_xue_sheng_bian_shi_shi_li": "绑定答题事实的学生结构化变式", "mi_ma_chong_zhi_shen_qing": "匿名密码恢复请求与处理事实",
     "shi_juan": "教师冻结试卷", "shi_juan_ti_mu": "试卷题目顺序与分值",
+    "shi_juan_fa_bu": "绑定任课范围的试卷发布", "shi_juan_fa_bu_ti_mu": "已发布试卷冻结题目快照",
+    "shi_juan_ti_jiao": "学生试卷草稿、提交与确定性得分", "shi_juan_xue_sheng_da_ti": "学生逐题作答事实",
+    "zhuan_ti_xue_xi_dan_yuan": "分层专题学习单元", "zhuan_ti_xue_xi_dan_yuan_ti_mu": "专题单元与题目关系",
+    "gao_pin_kao_dian_shen_he_ji_lu": "知识卡片人工审核轨迹", "xue_sheng_zhi_shi_ka_pian_zhuang_tai": "学生卡片收藏与掌握状态",
+    "zhi_shi_ka_pian_lian_xi_shi_li": "知识卡片临时生成练习及审核状态",
 }
 
 MIGRATION = {
@@ -55,6 +61,10 @@ MIGRATION = {
     14: {"ai_mo_xing_pei_zhi", "ai_sheng_cheng_ren_wu", "ai_hou_xuan_ti_zhi_liang_ping_jia", "ai_shi_jue_shang_xia_wen"},
     17: {"mi_ma_chong_zhi_shen_qing"}, 18: {"shi_juan", "shi_juan_ti_mu"}, 19: {"ai_xue_sheng_bian_shi_shi_li"},
     21: {"gao_pin_kao_dian_zhi_shi_dian", "gao_pin_kao_dian_fu_jian"},
+    26: {"zhuan_ti_xue_xi_dan_yuan", "zhuan_ti_xue_xi_dan_yuan_ti_mu"},
+    27: {"shi_juan_fa_bu", "shi_juan_fa_bu_ti_mu", "shi_juan_ti_jiao", "shi_juan_xue_sheng_da_ti"},
+    28: {"gao_pin_kao_dian_shen_he_ji_lu", "xue_sheng_zhi_shi_ka_pian_zhuang_tai"},
+    29: {"zhi_shi_ka_pian_lian_xi_shi_li"},
 }
 
 

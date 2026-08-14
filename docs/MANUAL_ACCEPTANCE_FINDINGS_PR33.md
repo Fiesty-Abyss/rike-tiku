@@ -1,21 +1,24 @@
-# PR #33 人工验收第二轮事实台账
+# PR #33 人工验收事实台账
 
-状态：`FINAL_USER_REVIEW_PENDING`
+更新时间：2026-08-14
+真人状态：`FINAL_USER_REVIEW_PENDING`
 
-本表将用户的 13 组人工现象绑定到代码根因、提交与证据。机器测试、Mock/夹具和 Provider smoke 均不代替真人复验；用户明确确认前，每项真人状态固定为 `FINAL_USER_REVIEW_PENDING`。
+机器测试、匿名 Demo、Mock/夹具和 Provider 合同测试均不替代用户真人复验。此前泄露的智谱凭据已视为永久失效，本轮未读取、调用、保存或复述；真实 Provider 分项为 `BLOCKED_EXTERNAL_PROVIDER`。
 
-| 编号 | 用户现象 | 代码根因 | 风险 | 修复范围 | 修复提交 | 自动化证据 | Provider 真实状态 | 真人复验 |
-|---|---|---|---|---|---|---|---|---|
-| MA33-01 | 默认 GitHub 首页无法看到 PR #33 最终资料 | `main` README 仍是 PR #32 口径，缺少跨分支导航 | HIGH | 仅 `main/README.md` 远程预览；合并回功能分支 | `473fbc7`、`cdc6032` | GitHub Contents API；9 张 raw 图片 HTTP 200；默认首页 HTML 含预览标题 | NOT_RUN | FINAL_USER_REVIEW_PENDING |
-| MA33-02 | 忘记密码 Dialog 被登录区域裁切，按钮样式粗糙 | Dialog 未 append 到 body，容器高度/滚动与移动端宽度边界不完整 | HIGH | 登录页、Dialog、样式及交互测试 | 本轮待提交 | 前端 Dialog 专项、type-check | NOT_RUN | FINAL_USER_REVIEW_PENDING |
-| MA33-03 | 学生 AI 变式真实生成失败且无目标难度 | 请求未携带目标难度，服务异常未稳定映射，任务/候选/实例缺少同事务收口 | HIGH | DTO、Controller、Service、前端、错误映射与真实 smoke | 本轮待提交 | DTO 1–5 校验、确定性判分、候选基数与事务测试；Key 未配置 | NOT_RUN | FINAL_USER_REVIEW_PENDING |
-| MA33-04 | 答对题默认不展示 STANDARD 与答疑入口 | 结果页以正确状态作为解析默认折叠条件 | MEDIUM | 结果页、AI 面板与测试 | 本轮待提交 | 前端结果页专项、type-check | NOT_RUN | FINAL_USER_REVIEW_PENDING |
-| MA33-05 | 学生题干显示“覆盖”等内部 Demo 标记 | Demo 种子把内部分类拼入可见题干，缺少精确展示规范化 | HIGH | DemoDataService、统一展示规范化、各读路径、数据统计 | PENDING | PENDING | NOT_RUN | FINAL_USER_REVIEW_PENDING |
-| MA33-06 | 综合/计算/流程/分析题阅读与 AI 支持不足 | SUBJECTIVE 专题缺受控子类型与统一 AI 上下文 | HIGH | V20/V23、Topic API/UI、复用学生 AI 会话 | 本轮待提交 | 随机库 V1→V23；专题筛选/本地草稿；互斥上下文编译/type-check | NOT_RUN | FINAL_USER_REVIEW_PENDING |
-| MA33-07 | 审核页直接展示答案 JSON | 页面直接把结构字段放进 `pre`，未复用统一答案组件 | HIGH | AnswerDisplay、管理员/教师审核、变式结果 | PENDING | PENDING | NOT_RUN | FINAL_USER_REVIEW_PENDING |
-| MA33-08 | GLM Vision 真实连接格式与测试图不符合当前官方契约 | Base64 使用 data URL；连接测试图视觉信息不足 | HIGH | Provider 请求、Parser、安全测试图与 smoke | 本轮待提交 | 官方当前 raw Base64 契约；Provider 单测；Key 未配置 | NOT_RUN | FINAL_USER_REVIEW_PENDING |
-| MA33-09 | 缺少教师班级私有题库及图片/公式资料 | 题目模型只有全局可见语义；知识资料能力过窄 | CRITICAL | V20/V21、范围权限、教师题库/导入/附件、知识卡片 | 本轮待提交 | 随机库约束；基础教师私有题 API/UI 已实现；完整附件/导入仍待补齐 | NOT_RUN | FINAL_USER_REVIEW_PENDING |
-| MA33-10 | 私信不能撤回或仅自己删除 | 消息表虽有软删除但缺双方独立可见性和撤回事实 | HIGH | V22、消息 API/UI、并发与摘要测试 | 本轮待提交 | `SiXinIntegrationTest` 撤回/独立隐藏；前端 type-check | NOT_RUN | FINAL_USER_REVIEW_PENDING |
-| MA33-11 | 经典题导入与 AI 关系说明不清 | UI 与文档缺少从模板到审核发布的内嵌说明 | MEDIUM | README、Excel 指南、管理员/教师导入页 | 本轮待提交 | 管理员导入页已有模板、Preview→Confirm→审核与 AI 关系说明 | NOT_RUN | FINAL_USER_REVIEW_PENDING |
-| MA33-12 | 本地三个目录可能含冗余、备份或秘密 | 历史临时证据未清理，备份目录仅有一份可恢复备份 | HIGH | 仓库外目录安全审计与最小清理 | 不产生 Git 提交 | `_LOCAL` 不存在；唯一备份保留并校验 SHA-256；无引用临时目录安全删除 | NOT_RUN | FINAL_USER_REVIEW_PENDING |
-| MA33-13 | 开发环境内存占用与重复进程不明 | 尚无分阶段 PID/端口/JVM 事实测量 | MEDIUM | 基线、联合运行、10 分钟稳定性和退出清理 | PENDING | PENDING | NOT_RUN | FINAL_USER_REVIEW_PENDING |
+| 编号 | 用户现象与根因 | 最终实现 | 自动化与机器浏览器证据 | 实现提交 | 真人复验 |
+|---|---|---|---|---|---|
+| MA33-01 | 默认首页与论文资料口径落后 | PR #33 README 以 18 个可见功能章节连接截图、精确代码、表、Flyway 与论文资料；明确 main 仍是 PR #32 基线 | README 本地链接/图片门禁；31 条匿名 Demo 路线 | 最终资料提交 | FINAL_USER_REVIEW_PENDING |
+| MA33-02 | 忘记密码入口缺 CSS，Dialog 曾被容器裁切 | Aqua Future 轻量入口、append-to-body、全视口遮罩、独立滚动和移动端宽度 | 组件交互测试；桌面/390px 截图 25/26 | `27dfcec` | FINAL_USER_REVIEW_PENDING |
+| MA33-03 | 变式错误被笼统映射，旧 Schema 要求模型回显内部 ID，写入非原子 | Schema V2、字段级 Parser、一次修复、六类变化方式、新颖度、单事务候选/评价/SUCCESS/实例，失败短事务 | Fake Provider 单/多选/填空、1–5 难度、回滚与 PENDING；09/10 明示 UI 夹具 | `5daa22f`、`27dfcec` | FINAL_USER_REVIEW_PENDING |
+| MA33-04 | 答对题默认折叠 STANDARD 和答疑 | 所有已提交题默认展开 STANDARD；答对题保留当前题答疑与变式，错因只用于答错题 | 结果页单测与 05/08 截图 | `27dfcec` | FINAL_USER_REVIEW_PENDING |
+| MA33-05 | Demo 内部“覆盖/变式”标签泄露到学生与 AI 路径 | 只对带受控 Demo 标识的前缀做统一展示规范化，覆盖练习、结果、错题、专题、试卷、打印、类似题与 Prompt | 正常“覆盖率/覆盖范围/植被覆盖”保留专项 | `27dfcec` | FINAL_USER_REVIEW_PENDING |
+| MA33-06 | 主观专题是一题一页、附件与 AI 上下文不足 | V26 专题单元引用 2–3 道 `ti_mu`，支持五类专题、STEM/OPTION/ANALYSIS 附件、本地草稿、STANDARD、10 轮专题 AI 与 PENDING 变式 | `TopicLearningIntegrationTest`；28 截图 | `12c5a13` | FINAL_USER_REVIEW_PENDING |
+| MA33-07 | 答案 JSON 直接显示 | `AnswerDisplay` 安全解析单选、多选、填空、主观和非法结构；诊断 JSON 默认折叠 | 组件五类结构测试；39 截图 | `27dfcec` | FINAL_USER_REVIEW_PENDING |
+| MA33-08 | GLM Base64/错误分类与 1×1 测试图不符合契约 | raw Base64、受控 HTTPS、防 SSRF、非零科学测试图、GLM/xAI 独立诊断与显式选择 | Vision 合同测试；38 截图；真实调用未执行 | `12c5a13` | FINAL_USER_REVIEW_PENDING |
+| MA33-09 | 私有题、知识卡片和图片资料链不完整 | V20/V21/V28/V29 完成范围私有题、附件、审核卡片、收藏/掌握、零基础讲解与统一生成练习 | 跨班/管理员不可见、附件权限、卡片生成原子回滚；30/32/33 截图 | `12c5a13`、`df9f0ba`、`c08c89a` | FINAL_USER_REVIEW_PENDING |
+| MA33-10 | 私信缺撤回/仅本人删除，操作按钮和确认定位不一致 | V22 软隐藏/撤回；低干扰菜单与居中 `ElMessageBox`，双方语义分离 | 后端并发/权限测试；浏览器真实 API 交互截图 40–42 | `27dfcec` | FINAL_USER_REVIEW_PENDING |
+| MA33-11 | 经典题导入与 AI 关系不清 | 7/19 列模板、Preview/Confirm、PENDING→人工审核→PUBLISHED；页面说明导入不会训练模型 | 模板集成测试；36/37 截图 | `27dfcec` | FINAL_USER_REVIEW_PENDING |
+| MA33-12 | 本地临时目录与备份风险 | 恢复包和正式库备份均在仓库外；公开资料秘密/绝对路径扫描；不提交数据库备份 | SHA-256、非空检查、Git ignore/secret scan | 不产生产品提交 | FINAL_USER_REVIEW_PENDING |
+| MA33-13 | 内存占用和重复进程缺证据 | 分阶段 PID/端口记录和 10 分钟三角色路由采样；只停止 RIKE PID | Java 278.7→295.2 MB，Vite 86.9→89.6 MB，非单调泄漏；停止后 18080/18081 释放 | 最终证据提交 | FINAL_USER_REVIEW_PENDING |
+
+附加九项闭环：错题筛选/再做/软归档、非模态当前题答疑、专题单元和附件、GLM/xAI、试卷发布/学生提交/画像、AI 试卷质量建议、append-only 日志分页/导出、知识卡片库、知识卡片生成练习均纳入 V29/50 表与 205 项后端全量门禁。真实 Provider 结果仍必须逐项独立记录，不能由 Mock 推导。

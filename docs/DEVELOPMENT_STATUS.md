@@ -1,12 +1,14 @@
 # 开发状态
 
-更新时间：2026-08-12
+更新时间：2026-08-14
 
 ## 当前状态
 
-> PR #33 最终增量（2026-08-12）：PR #32 已以 ordinary merge 合入，merge commit `359fe61e7622b7f623afa212d37c24145273d47b`。当前唯一最终分支为 `feat/final-product-completion`，Flyway 已扩展至 V19、39 张业务表；新增 10 轮答疑、DeepSeek V4 模型/思考选择、受控搜索、结构化学生变式、密码恢复通知和教师组卷/打印。Demo V1→V19、39 表、378 道 PUBLISHED 题已验证；最终人工验收仍为 `FINAL_MANUAL_ACCEPTANCE_PENDING`。
+> PR #33 最终增量（2026-08-14）：PR #32 已以 ordinary merge 合入，merge commit `359fe61e7622b7f623afa212d37c24145273d47b`。当前唯一最终分支为 `feat/final-product-completion`，Flyway 已扩展至 V29、50 张业务表；在原有 10 轮答疑、受控搜索、结构化学生变式、密码恢复和组卷基础上，完成错题再做/归档、专题单元、GLM/xAI 显式视觉 Provider、试卷发布/提交/画像、知识卡片审核与生成练习。Demo V1→V29、50 表、378 道 PUBLISHED 题已验证；最终人工验收仍为 `FINAL_USER_REVIEW_PENDING`。
 
-最终门禁：后端 186 tests（0 failures、0 errors、3 skipped），前端 66 files / 207 tests，type-check、build、audit 0 vulnerabilities，机器浏览器 17 routes 全绿。正式 `rike_tiku` 在仓库外 1,162,398-byte 备份后，仅用 Flyway 从 V14/35 正常迁移到 V19/39；378 道 PUBLISHED 和 9 个用户基线不变，未 reset、seed 或 repair。
+最终门禁：后端 205 tests（0 failures、0 errors、3 skipped）和 package 通过；前端 67 files / 213 tests、type-check、build、audit 0 vulnerabilities 通过；匿名 Demo 的两组机器浏览器合计 31 routes，0 console/page/unexpected-request error、0 overflow、0 missing assertion。09/10 变式截图明确是确定性 UI 夹具，不是 Provider PASS。真实 Provider 因没有可安全使用的轮换后凭据而分别记为 `BLOCKED_EXTERNAL_PROVIDER`。
+
+正式 `rike_tiku` 的迁移前真实版本为 V24/41 表。仓库外备份为 1,326,218 bytes，SHA-256 `039C9E885007EB79ED317E1A1E5C5A6DCEB7EC2746C0777957E41E60FE65E622`。首次迁移揭示 V25 与历史 `NUMERIC_CONDITION` 的约束兼容缺陷；从已校验备份恢复到 V24 后，由版本门禁 Flyway callback 将该旧枚举语义映射为 `CONDITION_RECOMBINATION`，随后 V25–V29 正常迁移。最终为 V29/50 表、0 failed migration；9 用户、389 题、378 PUBLISHED 不变，0 Demo 用户、0 测试卡片实例，未执行 seed 或 repair。
 
 PR #31 已由用户明确决定 ordinary merge，merge commit 为 `c79b7a6f93e32509989282995419bbaf64666182`。当前阶段为 PR #32 `chore/final-local-production-thesis-package`：本机正式库已备份并由 V11 正规迁移至 V14，论文资料包与最终维护环境已完成机器门禁，等待独立审查，不新增核心业务功能。
 

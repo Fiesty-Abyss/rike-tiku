@@ -1,14 +1,14 @@
 # AI 最终实验事实
 
-更新时间：2026-08-12
+更新时间：2026-08-14
 
 本文只记录 PR #31 已真实执行的数据，不推导 AI 准确率、用户满意度或虚构平均质量分。
 
 ## PR #33 增量说明
 
-PR #31 的真实调用数据继续作为历史实验事实，不外推到新模型、深度思考或搜索。PR #33 新增 DeepSeek V4 Flash/Pro 安全选择、STANDARD/DEEP 参数映射、智谱 SEARCH 与结构化学生变式；自动化使用 Fake/Mock HTTP 验证请求映射、429/超时/非法 URL、来源映射与判分，不把 Mock 写成真实 Provider PASS。真实 Key 不存在或未执行时统一记为 `NOT_RUN`。
+PR #31 的真实调用数据继续作为历史实验事实，不外推到当前 Schema V2、新颖度、GLM/xAI、深度思考或搜索。PR #33 自动化使用 Fake/Mock HTTP 验证请求映射、字段级 Parser、一次修复、新颖度、429/超时/非法 URL、确定性判分和原子回滚，不把 Mock 写成真实 Provider PASS。当前没有可安全使用的轮换后凭据，DeepSeek variant、DeepSeek tutor、GLM Vision、xAI Vision 与 Web Search 分别记为 `BLOCKED_EXTERNAL_PROVIDER`。
 
-GLM 管理端现在按 HTTP 400、401/403、429、5xx、TIMEOUT、INVALID_RESPONSE 与 CONFIGURATION_ERROR 安全分类，并只显示状态、延迟、时间和安全错误码。完整请求、Key、Base64、Prompt 与原始响应均不回显。
+GLM/xAI 管理端按 HTTP 400、401/403、429、5xx、TIMEOUT、INVALID_RESPONSE 与 CONFIGURATION_ERROR 安全分类，并只显示状态、延迟、时间和安全错误码。完整请求、Key、Authorization、Base64、Prompt、reasoning_content 与原始响应均不回显；Provider 由管理员显式选择，不隐式自动切换。
 
 ## DeepSeek 真实结果
 
