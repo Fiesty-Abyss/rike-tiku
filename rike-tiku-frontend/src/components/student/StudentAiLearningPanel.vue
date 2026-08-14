@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { nextTick, onMounted, ref, watch } from 'vue'
+import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import { ElMessage } from 'element-plus'
 import type { ApiError } from '../../api/http'
 import AiScientificContent from './AiScientificContent.vue'
@@ -9,8 +9,12 @@ import {
   type AiAnalysis, type AiConversation, type AiModelOption,
 } from '../../api/student/aiLearning'
 
-const props = withDefaults(defineProps<{ answerFactId?:number; topicQuestionId?:number; wrong?:boolean }>(),{wrong:false})
+interface QuestionContext {questionType:string;stem:string;options?:Array<{label:string;content:string}>;studentAnswer?:unknown;correctAnswer?:unknown;submitted:boolean}
+const props = withDefaults(defineProps<{ answerFactId?:number; topicQuestionId?:number; wrong?:boolean; questionContext?:QuestionContext }>(),{wrong:false})
+const emit=defineEmits<{visibility:[visible:boolean]}>()
 const topicMode = !!props.topicQuestionId
+const compactQuestion=ref(false)
+const mobileQuestionExpanded=ref(false)
 const analysis = ref<AiAnalysis | null>(null)
 const analysisLoading = ref(false)
 const analysisUnavailable = ref(false)
@@ -64,14 +68,15 @@ async function openTutor() {
   catch (error) { ElMessage.warning(safeError(error, '当前题目答疑暂不可用。')) }
   finally { chatLoading.value = false }
 }
+function answerText(value:unknown){if(value==null)return '未提供';if(typeof value==='string')return value;try{return JSON.stringify(value)}catch{return '结构化答案'}}
+const optionText=computed(()=>props.questionContext?.options?.map(item=>`${item.label}. ${item.content}`).join('　')||'无选项')
 
 async function startConversation() {
   chatLoading.value = true
   try {
     const options={ modelConfigId:selectedModelId.value, thinkingMode:thinkingMode.value, webSearch:webSearch.value }
     conversation.value = topicMode && props.topicQuestionId
-      ? await createTopicAiConversation(props.topicQuestionId,options)
-      : await createAiConversation(props.answerFactId!,options)
+      ? await createTopicAiConversation(props.topicQuestionId,options):await createAiConversation(props.answerFactId!,options)
   }
   catch (error) { ElMessage.warning(safeError(error, '当前题目答疑暂不可用。')) }
   finally { chatLoading.value = false }
@@ -91,6 +96,7 @@ async function send() {
 }
 
 watch(() => [props.answerFactId,props.topicQuestionId], () => { conversation.value = null; chatVisible.value = false; void loadAnalysis() })
+watch(chatVisible,value=>emit('visibility',value))
 onMounted(() => void loadAnalysis())
 </script>
 
@@ -116,8 +122,13 @@ onMounted(() => void loadAnalysis())
     <p v-else-if="!topicMode" class="student-ai-correct">本题已答对；仍可围绕当前题目继续提问。</p>
     <StudentAiVariantPanel v-if="answerFactId" :answer-fact-id="answerFactId" />
 
-    <el-drawer v-model="chatVisible" title="RIKE 理科学习助手" size="min(520px, 100%)" append-to-body>
+    <el-drawer v-model="chatVisible" title="RIKE 理科学习助手" size="min(500px, 100%)" append-to-body :modal="false" :lock-scroll="false" class="student-ai-docked-drawer">
       <div class="student-ai-chat" v-loading="chatLoading">
+        <section v-if="questionContext" class="student-ai-question-context" :class="{compact:compactQuestion}">
+          <div class="context-title"><strong>当前题目摘要</strong><el-button link @click="compactQuestion=!compactQuestion">{{ compactQuestion?'恢复':'缩小' }}</el-button></div>
+          <el-collapse-transition><div v-show="!compactQuestion" class="context-body"><p><b>题型：</b>{{ questionContext.questionType }}</p><p><b>题干：</b>{{ questionContext.stem }}</p><p><b>选项：</b>{{ optionText }}</p><p><b>学生答案：</b>{{ answerText(questionContext.studentAnswer) }}</p><p v-if="questionContext.submitted"><b>正确答案：</b>{{ answerText(questionContext.correctAnswer) }}</p></div></el-collapse-transition>
+          <button type="button" class="mobile-context-toggle" :aria-expanded="mobileQuestionExpanded" @click="mobileQuestionExpanded=!mobileQuestionExpanded">查看当前题目与选项</button><div v-show="mobileQuestionExpanded" class="mobile-context-body"><p>{{ questionContext.stem }}</p><p>{{ optionText }}</p></div>
+        </section>
         <p class="student-ai-chat-note"><strong>已绑定{{ topicMode ? '当前专题' : '当前题目' }}</strong><br>仅围绕本题，最多 10 轮；STANDARD 答案与解析不会被 AI 修改。</p>
         <div v-if="!conversation" class="student-ai-controls">
           <label>回答模型<select v-model="selectedModelId"><option v-for="item in modelOptions" :key="item.id" :value="item.id" :disabled="!item.available">{{ item.displayName }}{{ item.available ? '' : '（管理员尚未启用）' }}</option></select></label>
@@ -148,4 +159,6 @@ onMounted(() => void loadAnalysis())
 .student-ai-state{padding:18px 0 2px}.student-ai-chat{height:calc(100vh - 130px);display:flex;flex-direction:column}.student-ai-chat-note{margin:0 0 12px;padding:10px 12px;border-radius:12px;background:var(--el-fill-color-light);color:var(--el-text-color-secondary);font-size:13px}.student-ai-messages{flex:1;overflow:auto;padding:4px}.student-ai-empty{text-align:center;color:var(--el-text-color-placeholder);padding:50px 12px}.student-ai-message{max-width:88%;margin:12px 0}.student-ai-message>span{font-size:12px;color:var(--el-text-color-secondary)}.student-ai-message :deep(.ai-scientific-content){margin:4px 0;padding:10px 13px;border-radius:14px;background:var(--el-fill-color-light);text-align:left}.student-ai-message.is-user{margin-left:auto;text-align:right}.student-ai-message.is-user :deep(.ai-scientific-content){background:var(--el-color-primary-light-8)}.student-ai-composer{padding-top:12px;border-top:1px solid var(--el-border-color-lighter)}.student-ai-composer>div{display:flex;justify-content:space-between;align-items:center;margin-top:8px;color:var(--el-text-color-secondary);font-size:13px}
 .student-ai-controls{display:grid;gap:10px;margin-bottom:12px;padding:12px;border:1px solid var(--el-border-color-lighter);border-radius:12px}.student-ai-controls label{display:flex;gap:8px;align-items:center}.student-ai-controls select{min-width:190px;padding:6px}.student-ai-controls fieldset{display:flex;gap:16px;border:0;padding:0;margin:0}.student-ai-controls small,.student-ai-sources small{color:var(--el-text-color-secondary)}.student-ai-sources{margin:7px 0;padding:9px 12px 9px 28px;border-left:3px solid var(--el-color-primary-light-5);background:var(--el-fill-color-lighter);text-align:left}.student-ai-sources li+li{margin-top:5px}.student-ai-sources a{display:block;color:var(--el-color-primary);overflow-wrap:anywhere}
 @media(max-width:640px){.student-ai-heading{flex-direction:column}.student-ai-columns{grid-template-columns:1fr}.student-ai-heading .el-button{width:100%}}
+.student-ai-question-context{position:sticky;top:0;z-index:2;margin:0 0 12px;padding:12px;border:1px solid var(--el-border-color);border-radius:14px;background:var(--el-bg-color);box-shadow:0 6px 20px rgba(22,61,83,.08)}.context-title{display:flex;justify-content:space-between;align-items:center}.context-body{max-height:210px;overflow:auto}.context-body p,.mobile-context-body p{margin:7px 0;line-height:1.55}.mobile-context-toggle,.mobile-context-body{display:none}
+@media(max-width:640px){.context-body{display:none!important}.mobile-context-toggle{display:block;width:100%;padding:9px;border:0;border-radius:10px;background:var(--el-fill-color-light);color:var(--el-color-primary);font-weight:650}.mobile-context-body{display:block;max-height:180px;overflow:auto}}
 </style>

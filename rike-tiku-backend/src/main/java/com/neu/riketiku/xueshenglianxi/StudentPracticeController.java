@@ -72,11 +72,15 @@ public class StudentPracticeController {
     }
 
     @GetMapping("/wrong-questions")
-    public List<StudentPracticeDtos.WrongQuestionItem> wrongQuestions(
+    public StudentPracticeDtos.WrongQuestionPage wrongQuestions(
             @RequestParam(required = false) String subjectCode,
+            @RequestParam(required=false) Long knowledgePointId,@RequestParam(required=false) String status,@RequestParam(required=false) String keyword,@RequestParam(defaultValue="0") int page,@RequestParam(defaultValue="20") int size,
             @AuthenticationPrincipal RenZhengYongHu user) {
-        return service.wrongQuestions(user.id(), subjectCode);
+        return service.wrongQuestions(user.id(), subjectCode,knowledgePointId,status,keyword,page,Math.min(100,Math.max(1,size)));
     }
+
+    @PostMapping("/wrong-questions/{questionId}/retry") public StudentPracticeDtos.Session retry(@PathVariable Long questionId,@AuthenticationPrincipal RenZhengYongHu user){return service.retryWrongQuestion(user.id(),questionId);}
+    @PostMapping("/wrong-questions/{questionId}/archive") public void archive(@PathVariable Long questionId,@AuthenticationPrincipal RenZhengYongHu user){service.archiveWrongQuestion(user.id(),questionId);}
 
     @GetMapping("/wrong-questions/{questionId}")
     public StudentPracticeDtos.WrongQuestionDetail wrongQuestion(

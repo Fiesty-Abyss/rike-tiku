@@ -9,7 +9,9 @@ export interface PracticeQuestion { practiceQuestionId:number; questionId:number
 export interface PracticeSession { id:number; subjectId:number; subjectCode:string; subjectName:string; status:'CREATED'|'SUBMITTED'; questionCount:number; createdAt:string; submittedAt?:string; questions:PracticeQuestion[] }
 export interface PracticeResultQuestion { answerFactId:number; question:PracticeQuestion; studentAnswer:unknown; correctAnswer:unknown; standardAnalysis:string; correct:boolean; score:number }
 export interface PracticeResult { sessionId:number; subjectId:number; subjectCode:string; subjectName:string; totalCount:number; correctCount:number; totalScore:number; submittedAt:string; questions:PracticeResultQuestion[] }
-export interface WrongQuestion { questionId:number; subjectCode:string; subjectName:string; questionType:QuestionType; stemSummary:string; errorCount:number; consecutiveCorrectCount:number; status:'NEW'|'REVIEWING'|'MASTERED'; lastWrongAt:string }
+export interface WrongQuestion { questionId:number; subjectCode:string; subjectName:string; questionType:QuestionType; stemSummary:string; errorCount:number; consecutiveCorrectCount:number; status:'NEW'|'REVIEWING'|'MASTERED'; lastWrongAt:string; knowledgePoints:KnowledgePoint[] }
+export interface WrongQuestionPage { items:WrongQuestion[]; total:number; page:number; size:number }
+export interface WrongQuestionFilters { subjectCode?:string; knowledgePointId?:number; status?:string; keyword?:string; page?:number; size?:number }
 export interface WrongQuestionDetail { aiAnalysisAnswerFactId:number; wrongQuestion:WrongQuestion; stem:string; options:Option[]; latestStudentAnswer:unknown; correctAnswer:unknown; standardAnalysis:string; knowledgePoints:KnowledgePoint[]; attachments:Attachment[] }
 export interface CreatePracticeRequest { subjectId:number; knowledgePointIds?:number[]; questionTypes?:QuestionType[]; difficulty?:number; count:number; referenceQuestionId?:number }
 export type PracticeAvailabilityRequest = Omit<CreatePracticeRequest, 'count'>
@@ -21,5 +23,7 @@ export const fetchPracticeAvailability=(params:PracticeAvailabilityRequest)=>htt
 export const fetchPracticeSession=(id:number)=>http.get(`/student/practice-sessions/${id}`).then(r=>r.data as PracticeSession)
 export const submitPracticeSession=(id:number,body:SubmitPracticeRequest)=>http.post(`/student/practice-sessions/${id}/submit`,body).then(r=>r.data as PracticeResult)
 export const fetchPracticeResult=(id:number)=>http.get(`/student/practice-sessions/${id}/result`).then(r=>r.data as PracticeResult)
-export const fetchWrongQuestions=(subjectCode?:string)=>http.get('/student/wrong-questions',{params:subjectCode?{subjectCode}:undefined}).then(r=>r.data as WrongQuestion[])
+export const fetchWrongQuestions=(filters:WrongQuestionFilters|string={})=>{const params=typeof filters==='string'?{subjectCode:filters}:filters;return http.get('/student/wrong-questions',{params}).then(r=>r.data as WrongQuestionPage)}
 export const fetchWrongQuestion=(questionId:number)=>http.get(`/student/wrong-questions/${questionId}`).then(r=>r.data as WrongQuestionDetail)
+export const retryWrongQuestion=(questionId:number)=>http.post(`/student/wrong-questions/${questionId}/retry`).then(r=>r.data as PracticeSession)
+export const archiveWrongQuestion=(questionId:number)=>http.post(`/student/wrong-questions/${questionId}/archive`)
