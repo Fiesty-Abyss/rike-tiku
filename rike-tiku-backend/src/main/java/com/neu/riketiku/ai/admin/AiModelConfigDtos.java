@@ -24,7 +24,8 @@ public final class AiModelConfigDtos {
 
     public record ConnectionResult(boolean success, String provider, String model, long latencyMillis,
                                    String status, String visionSummaryPreview, String safeError,
-                                   String safeErrorCode,Integer httpStatus,LocalDateTime testedAt) { }
+                                   String safeErrorCode,Integer httpStatus,String providerErrorCode,
+                                   Long retryAfterSeconds,LocalDateTime testedAt) { }
 
     public record Page(List<Item> records) { }
 }

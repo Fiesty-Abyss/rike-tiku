@@ -2,8 +2,8 @@ package com.neu.riketiku.database;
 
 /** Single source of truth for runtime/demo schema gates and migration tests. */
 public final class DatabaseSchemaFacts {
-    public static final int LATEST_FLYWAY_VERSION = 25;
-    public static final int BUSINESS_TABLE_COUNT = 41;
+    public static final int LATEST_FLYWAY_VERSION = 26;
+    public static final int BUSINESS_TABLE_COUNT = 43;
 
     private DatabaseSchemaFacts() {
     }

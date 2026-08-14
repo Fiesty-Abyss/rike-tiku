@@ -18,6 +18,7 @@ class AiQuestionGenerationPromptFactory {
             严禁输出任何数据库 ID、用户 ID、知识点 ID、配置 ID、任课关系 ID、母题 ID、Markdown、HTML、推理过程或额外字段。
             changedDimensions 只能使用 SCENARIO、CONDITION、DATA、REPRESENTATION、REASONING_PATH、DISTRACTOR、KNOWLEDGE_COMBINATION，且至少两个。
             选择题答案使用 schemaVersion 1 的 optionLabels；填空题使用 blanks/acceptedAnswers。候选必须可解、答案与解析一致，不能只改数字、名称或选项顺序。
+            SUBJECTIVE 专题题的 options 必须为空数组，correctAnswer 只使用 {"type":"SUBJECTIVE"}；它不自动评分，standardAnalysis 是待审核 STANDARD 候选。
             """;
     private final ObjectMapper mapper=new ObjectMapper();
     AiModelRequest request(Mother mother,AiQuestionGenerationDtos.Generate command,String vision,int maxTokens){
