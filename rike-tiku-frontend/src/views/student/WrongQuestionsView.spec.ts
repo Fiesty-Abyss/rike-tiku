@@ -12,7 +12,7 @@ describe('错题本实时学科筛选', () => {
   const row = {questionId:3,subjectCode:'BIOLOGY',subjectName:'生物',questionType:'FILL_BLANK',stemSummary:'细胞结构',errorCount:1,consecutiveCorrectCount:0,status:'NEW',lastWrongAt:''}
   beforeEach(() => {
     vi.clearAllMocks()
-    fetchWrongQuestions.mockResolvedValue([row])
+    fetchWrongQuestions.mockResolvedValue({items:[row],total:1,page:0,size:20})
     fetchWrongQuestion.mockResolvedValue({aiAnalysisAnswerFactId:501,wrongQuestion:row,stem:'细胞结构题',options:[],latestStudentAnswer:['线粒体'],correctAnswer:['叶绿体'],standardAnalysis:'STANDARD 解析',knowledgePoints:[],attachments:[]})
   })
 
@@ -22,7 +22,7 @@ describe('错题本实时学科筛选', () => {
     }}})
     await flushPromises()
     expect(fetchWrongQuestions).toHaveBeenCalledTimes(1)
-    expect(fetchWrongQuestions).toHaveBeenCalledWith('BIOLOGY')
+    expect(fetchWrongQuestions).toHaveBeenCalledWith(expect.objectContaining({subjectCode:'BIOLOGY',page:0,size:20}))
     expect(wrapper.text()).toContain('细胞结构')
     expect(wrapper.text()).not.toContain('PHYSICS')
   })
@@ -37,7 +37,7 @@ describe('错题本实时学科筛选', () => {
       StudentAiLearningPanel:{props:['answerFactId','wrong'],template:'<div data-testid="wrong-ai-fact">{{ answerFactId }} / {{ wrong }}</div>'},
     }}})
     await flushPromises()
-    await wrapper.findAll('button').find(button => button.text() === '查看详情')!.trigger('click')
+    await wrapper.findAll('button').find(button => button.text() === '详情')!.trigger('click')
     await flushPromises()
     expect(fetchWrongQuestion).toHaveBeenCalledWith(3)
     expect(wrapper.get('[data-testid="wrong-ai-fact"]').text()).toBe('501 / true')

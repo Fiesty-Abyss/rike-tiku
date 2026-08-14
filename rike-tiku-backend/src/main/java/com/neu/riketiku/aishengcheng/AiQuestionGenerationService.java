@@ -35,7 +35,7 @@ import tools.jackson.databind.ObjectMapper;
 @Service
 public class AiQuestionGenerationService {
     private static final Set<String> TYPES=Set.of("SINGLE_CHOICE","MULTIPLE_CHOICE","FILL_BLANK");
-    private static final Set<String> MODES=Set.of("NUMERIC_CONDITION","SCENARIO","KNOWLEDGE_ANGLE","DISTRACTOR","COMBINED");
+    private static final Set<String> MODES=Set.of("SCENARIO_TRANSFER","CONDITION_RECOMBINATION","REPRESENTATION_SWITCH","MULTI_STEP_EXTENSION","DISTRACTOR_REDESIGN","COMBINED");
     private static final double SIMILARITY_THRESHOLD=.72;
     private final JdbcTemplate jdbc;
     private final AiProviderService provider;
@@ -43,6 +43,7 @@ public class AiQuestionGenerationService {
     private final VisionContextService visionContexts;
     private final AiQuestionGenerationPromptFactory prompts;
     private final AiCandidateParser parser;
+    private final AiCandidateNoveltyService novelty;
     private final QuestionContentHashService hashes;
     private final QuestionAdminService questions;
     private final TransactionTemplate transactions;
@@ -50,15 +51,19 @@ public class AiQuestionGenerationService {
 
     public AiQuestionGenerationService(JdbcTemplate jdbc,AiProviderService provider,
             AiRuntimeConfigurationService configurations,VisionContextService visionContexts,
-            AiQuestionGenerationPromptFactory prompts,AiCandidateParser parser,
+            AiQuestionGenerationPromptFactory prompts,AiCandidateParser parser,AiCandidateNoveltyService novelty,
             QuestionContentHashService hashes,QuestionAdminService questions,
             PlatformTransactionManager transactionManager){
         this.jdbc=jdbc;this.provider=provider;this.configurations=configurations;this.visionContexts=visionContexts;
-        this.prompts=prompts;this.parser=parser;this.hashes=hashes;this.questions=questions;
+        this.prompts=prompts;this.parser=parser;this.novelty=novelty;this.hashes=hashes;this.questions=questions;
         this.transactions=new TransactionTemplate(transactionManager);
     }
 
     public AiQuestionGenerationDtos.Task generate(long actorId,String role,AiQuestionGenerationDtos.Generate command){
+        return generate(actorId,role,command,null);
+    }
+
+    public AiQuestionGenerationDtos.Task generate(long actorId,String role,AiQuestionGenerationDtos.Generate command,TransactionalCandidateAction action){
         String actorRole=role.toUpperCase(Locale.ROOT); validateCommand(command);
         AiQuestionGenerationPromptFactory.Mother mother=mother(command.motherQuestionId());
         authorize(actorId,actorRole,mother.subjectId()); validatePoints(mother.subjectId(),command.knowledgePointIds());
@@ -77,20 +82,27 @@ public class AiQuestionGenerationService {
             AiRuntimeConfig runtime=configurations.text();
             int maxTokens=Math.max(64,Math.min(3000,runtime.maxTokens()));
             AiModelResult result=provider.generate(prompts.request(mother,command,vision.contextJson(),maxTokens));
-            List<AiCandidateParser.Candidate> candidates=parser.parse(result.content(),command.count(),command.questionType(),
-                    command.targetDifficulty(),new HashSet<>(command.knowledgePointIds()));
+            List<AiCandidateParser.Candidate> candidates;
+            try{candidates=parser.parse(result.content(),command.count(),command.questionType(),command.targetDifficulty(),command.variationMode());}
+            catch(AiCandidateParser.InvalidCandidateException first){
+                AiModelResult repaired=provider.generate(prompts.repair(result.content(),first,maxTokens));
+                try{candidates=parser.parse(repaired.content(),command.count(),command.questionType(),command.targetDifficulty(),command.variationMode());result=repaired;}
+                catch(AiCandidateParser.InvalidCandidateException second){throw new AiCandidateParser.InvalidCandidateException("REPAIR_FAILED_"+second.code(),second.field(),second.getMessage());}
+            }
             List<Prepared> prepared=prepare(mother,candidates);
             long latency=elapsed(started);
+            AiModelResult finalResult=result;
             transactions.executeWithoutResult(status->{
-                persist(taskId,actorId,prepared,vision.used());
+                List<Long> questionIds=persist(taskId,actorId,command.knowledgePointIds(),prepared,vision.used());
+                if(action!=null)action.persist(taskId,questionIds);
                 jdbc.update("""
                         UPDATE ai_sheng_cheng_ren_wu SET provider_dai_ma=?,model_dai_ma=?,zhuang_tai='SUCCESS',
                           yi_sheng_cheng_shu_liang=?,shi_fou_shi_yong_shi_jue=?,hao_shi_hao_miao=?,wan_cheng_shi_jian=CURRENT_TIMESTAMP(3)
                         WHERE id=?
-                        """,safe(result.providerCode()),safe(result.modelCode()),prepared.size(),vision.used(),latency,taskId);
+                        """,safe(finalResult.providerCode()),safe(finalResult.modelCode()),prepared.size(),vision.used(),latency,taskId);
             });
             return task(taskId,actorId,actorRole);
-        }catch(AiCandidateParser.InvalidCandidateException exception){markFailed(taskId,"INVALID_CANDIDATE_JSON",started);throw failEx("AI_CANDIDATE_INVALID","模型返回的候选题未通过严格校验",HttpStatus.SERVICE_UNAVAILABLE);}
+        }catch(AiCandidateParser.InvalidCandidateException exception){markFailed(taskId,exception.code(),started);throw failEx("AI_CANDIDATE_"+exception.code(),"候选题字段 "+exception.field()+" 未通过校验",HttpStatus.SERVICE_UNAVAILABLE);}
         catch(AiVisionException exception){markFailed(taskId,safe(exception.getMessage()),started);throw failEx("AI_VISION_UNAVAILABLE","母题依赖图片且视觉上下文不可用，未生成候选题",HttpStatus.SERVICE_UNAVAILABLE);}
         catch(AiProviderException exception){markFailed(taskId,exception.errorType().name(),started);throw failEx("AI_"+exception.errorType().name(),"AI 候选题生成暂不可用",HttpStatus.SERVICE_UNAVAILABLE);}
         catch(RenZhengYeWuYiChang exception){markFailed(taskId,exception.getCode(),started);throw exception;}
@@ -195,12 +207,15 @@ public class AiQuestionGenerationService {
             if(count("SELECT COUNT(*) FROM ti_mu WHERE ke_mu_id=? AND nei_rong_ha_xi=? AND yi_shan_chu=0",mother.subjectId(),hash)>0)
                 fail("QUESTION_DUPLICATE","候选题与现有题目完全重复，整批未写入",HttpStatus.CONFLICT);
             boolean suspected=existing.stream().anyMatch(stem->jaccard(candidate.stem(),stem)>=SIMILARITY_THRESHOLD);
-            values.add(new Prepared(candidate,hash,suspected));
+            AiCandidateNoveltyService.Result result=novelty.evaluate(mother.stem(),mother.optionsJson(),mother.analysis(),candidate);
+            if(!result.accepted())fail("AI_CANDIDATE_SIMILARITY_HIGH","候选题创新度不足："+result.rejectionReason(),HttpStatus.UNPROCESSABLE_ENTITY);
+            values.add(new Prepared(candidate,hash,suspected,result));
         }
         return List.copyOf(values);
     }
 
-    private void persist(long taskId,long actorId,List<Prepared> prepared,boolean visionUsed){
+    private List<Long> persist(long taskId,long actorId,List<Long> knowledgePointIds,List<Prepared> prepared,boolean visionUsed){
+        List<Long> ids=new ArrayList<>();
         for(Prepared value:prepared){
             AiCandidateParser.Candidate c=value.candidate();
             List<QuestionDtos.Option> options=c.options().stream().map(o->new QuestionDtos.Option(o.label(),o.content(),o.correct())).toList();
@@ -208,16 +223,20 @@ public class AiQuestionGenerationService {
                     .map(part->new QuestionDtos.Source(part,"AI_GENERATED","RIKE AI 候选变式题","USER_PROVIDED",null,null,null,null,null,"仅作为本地毕设候选内容，人工审核后发布")).toList();
             long subjectId=jdbc.queryForObject("SELECT ke_mu_id FROM ti_mu WHERE id=(SELECT mu_ti_mu_id FROM ai_sheng_cheng_ren_wu WHERE id=?)",Long.class,taskId);
             QuestionDtos.Save save=new QuestionDtos.Save(subjectId,c.questionType(),"ONLINE_PRACTICE",c.stem(),c.correctAnswer(),c.difficulty(),
-                    "AI 候选难度，待人工评价",true,options,c.standardAnalysis(),c.knowledgePointIds(),sources);
+                    "AI 候选难度，待人工评价",true,options,c.standardAnalysis(),knowledgePointIds,sources);
             long questionId=questions.create(save,actorId).question().id();
+            ids.add(questionId);
             jdbc.update("UPDATE ti_mu SET fu_ti_mu_id=? WHERE id=?",jdbc.queryForObject("SELECT mu_ti_mu_id FROM ai_sheng_cheng_ren_wu WHERE id=?",Long.class,taskId),questionId);
             questions.transition(questionId,"SUBMITTED","DRAFT","PENDING","AI 候选题进入人工审核",actorId);
             jdbc.update("""
                     INSERT INTO ai_hou_xuan_ti_zhi_liang_ping_jia
-                      (ai_sheng_cheng_ren_wu_id,ti_mu_id,bian_shi_zhai_yao,chong_fu_ti_shi,shi_fou_shi_yong_shi_jue)
-                    VALUES (?,?,?,?,?)
-                    """,taskId,questionId,c.variationSummary(),value.suspected()?"SUSPECTED_DUPLICATE":"NONE",visionUsed);
+                      (ai_sheng_cheng_ren_wu_id,ti_mu_id,bian_shi_zhai_yao,bian_shi_fang_shi,bian_hua_wei_du,
+                       xin_ying_du_fen_shu,xiang_si_du_fen_shu,ju_jue_yuan_yin,chong_fu_ti_shi,shi_fou_shi_yong_shi_jue)
+                    VALUES (?,?,?,?,CAST(? AS JSON),?,?,?,?,?)
+                    """,taskId,questionId,c.variationSummary(),c.variationMode(),mapper.writeValueAsString(c.changedDimensions()),
+                    value.novelty().noveltyScore(),value.novelty().similarityScore(),value.novelty().rejectionReason(),value.suspected()?"SUSPECTED_DUPLICATE":"NONE",visionUsed);
         }
+        return List.copyOf(ids);
     }
 
     private AiQuestionGenerationPromptFactory.Mother mother(long id){
@@ -296,7 +315,8 @@ public class AiQuestionGenerationService {
     private String blank(String v){return v==null||v.isBlank()?null:v.trim();}
     private void fail(String code,String message,HttpStatus status){throw failEx(code,message,status);}
     private RenZhengYeWuYiChang failEx(String code,String message,HttpStatus status){return new RenZhengYeWuYiChang(code,message,status);}
-    private record Prepared(AiCandidateParser.Candidate candidate,String hash,boolean suspected){ }
+    @FunctionalInterface public interface TransactionalCandidateAction{void persist(long taskId,List<Long> questionIds);}
+    private record Prepared(AiCandidateParser.Candidate candidate,String hash,boolean suspected,AiCandidateNoveltyService.Result novelty){ }
     private record MotherBase(long id,long subjectId,String subjectCode,String type,String usageMode,String stem,String answer,String analysis){ }
     private record CandidateAuth(long subjectId,long taskId){ }
     private record RetryableTask(long id,String status,int generated,int candidates){ }
