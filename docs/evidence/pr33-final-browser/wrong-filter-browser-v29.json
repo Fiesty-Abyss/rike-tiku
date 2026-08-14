@@ -1,0 +1,54 @@
+{
+  "generatedAt": "2026-08-14T08:06:35.267Z",
+  "database": "rike_tiku_demo",
+  "steps": [
+    {
+      "name": "open-all-wrong-questions",
+      "pass": true
+    },
+    {
+      "name": "biology-filter-only-biology",
+      "pass": true
+    },
+    {
+      "name": "biology-knowledge-filter-request-uses-stable-id",
+      "pass": true,
+      "url": "/api/v1/student/wrong-questions?subjectCode=BIOLOGY&knowledgePointId=84&page=0&size=20"
+    },
+    {
+      "name": "biology-knowledge-filter-stable-id-and-path",
+      "pass": true
+    },
+    {
+      "name": "switch-physics-clears-biology-knowledge-point",
+      "pass": true
+    }
+  ],
+  "consoleErrors": [],
+  "pageErrors": [],
+  "failedRequests": [],
+  "apiResponses": [
+    {
+      "url": "http://localhost:18080/student/wrong-questions",
+      "status": 200
+    },
+    {
+      "url": "http://localhost:18081/api/v1/student/wrong-questions?page=0&size=20",
+      "status": 200
+    },
+    {
+      "url": "http://localhost:18081/api/v1/student/wrong-questions?subjectCode=BIOLOGY&page=0&size=20",
+      "status": 200
+    },
+    {
+      "url": "http://localhost:18081/api/v1/student/wrong-questions?subjectCode=BIOLOGY&knowledgePointId=84&page=0&size=20",
+      "status": 200
+    },
+    {
+      "url": "http://localhost:18081/api/v1/student/wrong-questions?subjectCode=PHYSICS&page=0&size=20",
+      "status": 200
+    }
+  ],
+  "overflow": false,
+  "pass": true
+}
