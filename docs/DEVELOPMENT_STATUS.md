@@ -6,7 +6,7 @@
 
 > PR #33 最终增量（2026-08-14）：PR #32 已以 ordinary merge 合入，merge commit `359fe61e7622b7f623afa212d37c24145273d47b`。当前唯一最终分支为 `feat/final-product-completion`，Flyway 已扩展至 V29、50 张业务表；在原有 10 轮答疑、受控搜索、结构化学生变式、密码恢复和组卷基础上，完成错题再做/归档、专题单元、GLM/xAI 显式视觉 Provider、试卷发布/提交/画像、知识卡片审核与生成练习。Demo V1→V29、50 表、378 道 PUBLISHED 题已验证；最终人工验收仍为 `FINAL_USER_REVIEW_PENDING`。
 
-最终门禁：后端 205 tests（0 failures、0 errors、3 skipped）和 package 通过；前端 67 files / 213 tests、type-check、build、audit 0 vulnerabilities 通过；匿名 Demo 的两组机器浏览器合计 31 routes，0 console/page/unexpected-request error、0 overflow、0 missing assertion。09/10 变式截图明确是确定性 UI 夹具，不是 Provider PASS。真实 Provider 因没有可安全使用的轮换后凭据而分别记为 `BLOCKED_EXTERNAL_PROVIDER`。
+最终门禁：后端 210 tests（0 failures、0 errors、3 skipped）和 package 通过；前端 67 files / 214 tests、type-check、build、audit 0 vulnerabilities 通过；匿名 Demo 的两组机器浏览器合计 31 routes，本轮 14 routes / 20 assertions，0 console/page/unexpected-request error、0 overflow、0 missing/assertion failure。09/10 变式截图明确是确定性 UI 夹具，不是 Provider PASS。真实 Provider 因没有可安全使用的轮换后凭据而分别记为 `BLOCKED_EXTERNAL_PROVIDER`。
 
 正式 `rike_tiku` 的迁移前真实版本为 V24/41 表。仓库外备份为 1,326,218 bytes，SHA-256 `039C9E885007EB79ED317E1A1E5C5A6DCEB7EC2746C0777957E41E60FE65E622`。首次迁移揭示 V25 与历史 `NUMERIC_CONDITION` 的约束兼容缺陷；从已校验备份恢复到 V24 后，由版本门禁 Flyway callback 将该旧枚举语义映射为 `CONDITION_RECOMBINATION`，随后 V25–V29 正常迁移。最终为 V29/50 表、0 failed migration；9 用户、389 题、378 PUBLISHED 不变，0 Demo 用户、0 测试卡片实例，未执行 seed 或 repair。
 
