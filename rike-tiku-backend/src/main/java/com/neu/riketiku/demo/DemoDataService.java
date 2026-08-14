@@ -122,8 +122,10 @@ public class DemoDataService {
         }
         seedTopicUnits(users.get("demo_admin"));
         seedHighFrequencyPoints(scopes, points);
+        seedReviewedKnowledgeCards(scopes);
         seedVisualQuestionCoverage();
         seedAcceptanceFacts(users, scopes);
+        seedPaperAssignment(users, scopes);
         validateSeed();
         System.out.println("演示数据写入完成。14个固定演示账号、3个班级、4位教师、9名学生；固定密码: " + DEMO_PASSWORD + "（仅限本地演示库）");
     }
@@ -183,13 +185,14 @@ public class DemoDataService {
         expect("三元任课关系", 3, count("SELECT COUNT(*) FROM ren_ke_guan_xi r JOIN ban_ji b ON b.id=r.ban_ji_id JOIN jiao_shi_dang_an t ON t.id=r.jiao_shi_id WHERE b.ban_ji_bian_ma='DEMO_CLASS_01' AND t.gong_hao='DEMO_T001' AND r.zhuang_tai='ACTIVE'"));
         expect("六条场景任课关系", 6, count("SELECT COUNT(*) FROM ren_ke_guan_xi r JOIN ban_ji b ON b.id=r.ban_ji_id JOIN jiao_shi_dang_an t ON t.id=r.jiao_shi_id WHERE b.ban_ji_bian_ma IN ('DEMO_CLASS_199','DEMO_CLASS_200') AND t.gong_hao IN ('DEMO_T_PHYSICS','DEMO_T_BIOLOGY','DEMO_T_CHEMISTRY') AND r.zhuang_tai='ACTIVE'"));
         expect("九条ACTIVE任课关系", 9, count("SELECT COUNT(*) FROM ren_ke_guan_xi r JOIN jiao_shi_dang_an t ON t.id=r.jiao_shi_id WHERE t.gong_hao LIKE 'DEMO_T%' AND r.zhuang_tai='ACTIVE'"));
-        expect("十二条高频考点", 12, count("SELECT COUNT(*) FROM gao_pin_kao_dian h JOIN ren_ke_guan_xi r ON r.id=h.ren_ke_guan_xi_id JOIN ban_ji b ON b.id=r.ban_ji_id WHERE b.ban_ji_bian_ma IN ('DEMO_CLASS_199','DEMO_CLASS_200') AND h.zhuang_tai='ACTIVE' AND h.yi_shan_chu=0"));
-        expect("每条场景任课关系两个高频考点", 6, count("""
+        expect("三科知识卡片与高频考点", 66, count("SELECT COUNT(*) FROM gao_pin_kao_dian h JOIN ren_ke_guan_xi r ON r.id=h.ren_ke_guan_xi_id JOIN ban_ji b ON b.id=r.ban_ji_id WHERE b.ban_ji_bian_ma IN ('DEMO_CLASS_199','DEMO_CLASS_200') AND h.zhuang_tai='PUBLISHED' AND h.yi_shan_chu=0"));
+        for(String code:List.of("PHYSICS","CHEMISTRY","BIOLOGY"))expect(code+"22张已审核知识卡片",22,count("SELECT COUNT(*) FROM gao_pin_kao_dian h JOIN ren_ke_guan_xi r ON r.id=h.ren_ke_guan_xi_id JOIN ke_mu k ON k.id=r.ke_mu_id WHERE k.ke_mu_dai_ma=? AND h.zhuang_tai='PUBLISHED' AND h.yi_shan_chu=0",code));
+        expect("每条场景任课关系至少两个知识卡片", 6, count("""
                 SELECT COUNT(*) FROM (
                     SELECT r.id FROM ren_ke_guan_xi r JOIN ban_ji b ON b.id=r.ban_ji_id
-                    LEFT JOIN gao_pin_kao_dian h ON h.ren_ke_guan_xi_id=r.id AND h.zhuang_tai='ACTIVE' AND h.yi_shan_chu=0
+                    LEFT JOIN gao_pin_kao_dian h ON h.ren_ke_guan_xi_id=r.id AND h.zhuang_tai='PUBLISHED' AND h.yi_shan_chu=0
                     WHERE b.ban_ji_bian_ma IN ('DEMO_CLASS_199','DEMO_CLASS_200') AND r.zhuang_tai='ACTIVE'
-                    GROUP BY r.id HAVING COUNT(h.id)=2
+                    GROUP BY r.id HAVING COUNT(h.id)>=2
                 ) scopes_with_points
                 """));
         expect("高频考点知识点同科", 0, count("""
@@ -345,6 +348,7 @@ public class DemoDataService {
         expect("活动图片附件", 26, count("SELECT COUNT(*) FROM ti_mu_fu_jian f JOIN ti_mu q ON q.id=f.ti_mu_id WHERE q.ti_gan LIKE '【演示】%' AND f.fu_jian_lei_xing='IMAGE' AND f.zhuang_tai='ACTIVE' AND f.yi_shan_chu=0"));
         expect("专题学习单元", 3, count("SELECT COUNT(*) FROM zhuan_ti_xue_xi_dan_yuan WHERE lai_yuan_ming_cheng='RIKE匿名Demo专题单元' AND zhuang_tai='PUBLISHED' AND yi_shan_chu=0"));
         expect("专题单元三级题", 9, count("SELECT COUNT(*) FROM zhuan_ti_xue_xi_dan_yuan_ti_mu i JOIN zhuan_ti_xue_xi_dan_yuan u ON u.id=i.dan_yuan_id WHERE u.lai_yuan_ming_cheng='RIKE匿名Demo专题单元'"));
+        expect("匿名Demo班级试卷发布", 1, count("SELECT COUNT(*) FROM shi_juan_fa_bu r JOIN shi_juan p ON p.id=r.shi_juan_id WHERE p.shi_juan_ming_cheng='RIKE Demo 199班物理小测'"));
         for(String code:List.of("PHYSICS","CHEMISTRY","BIOLOGY"))expect(code+"八类项目自制视觉题",8,count("""
                 SELECT COUNT(DISTINCT q.id) FROM ti_mu q JOIN ke_mu s ON s.id=q.ke_mu_id
                 JOIN ti_mu_fu_jian f ON f.ti_mu_id=q.id AND f.guan_lian_wei_zhi='QUESTION' AND f.yuan_shi_wen_jian_ming LIKE 'rike-visual-%'
@@ -495,9 +499,11 @@ public class DemoDataService {
             String memoryTrick, String commonMistake, int sortOrder) {
         jdbc.update("""
                 INSERT INTO gao_pin_kao_dian(ren_ke_guan_xi_id,zhi_shi_dian_id,biao_ti,nei_rong,ji_yi_kou_jue,chang_jian_wu_qu,pai_xu,zhuang_tai)
-                VALUES (?,?,?,?,?,?,?,'ACTIVE')
+                VALUES (?,?,?,?,?,?,?,'PUBLISHED')
                 """, scopeId, knowledgePointId, title, content, memoryTrick, commonMistake, sortOrder);
     }
+
+    private void seedReviewedKnowledgeCards(Map<String,Long> scopes){List<String>types=List.of("POINT","FORMULA","CHEMICAL_EQUATION","SECONDARY_CONCLUSION","INSTRUMENT","MNEMONIC","TABLE","NOTE");for(String subject:List.of("PHYSICS","CHEMISTRY","BIOLOGY")){long scope=required(scopes,subject+"_199");List<Long>leaf=jdbc.query("SELECT z.id FROM zhi_shi_dian z JOIN ke_mu k ON k.id=z.ke_mu_id WHERE k.ke_mu_dai_ma=? AND z.ceng_ji=3 AND z.zhuang_tai='ACTIVE' AND z.yi_shan_chu=0 ORDER BY z.id",(rs,n)->rs.getLong(1),subject);if(leaf.isEmpty())throw new IllegalStateException(subject+"缺少叶子知识点");for(int i=0;i<18;i++){long point=leaf.get(i%leaf.size());String type=types.get(i%types.size());String title=(switch(subject){case "PHYSICS"->"物理";case "CHEMISTRY"->"化学";default->"生物";})+"审核知识卡片 "+(i+1);String content="本卡片是 RIKE 项目根据公开课程标准自编的课程核心知识总结，先确认概念、适用条件与单位，再结合例子使用。";long id=insert("INSERT INTO gao_pin_kao_dian(ren_ke_guan_xi_id,zhi_shi_dian_id,zi_liao_lei_xing,biao_ti,nei_rong,ke_xue_nei_rong,latex_nei_rong,shi_yong_tiao_jian,han_yi_tui_dao,chang_jian_wu_qu,li_zi,ji_yi_kou_jue,lai_yuan_ming_cheng,quan_li_zhuang_tai,pai_xu,zhuang_tai) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,'PROJECT_AUTHORED',?,'PUBLISHED')",scope,point,type,title,content,content,"FORMULA".equals(type)?"\\(x=x_0+vt\\)":null,"仅在题目给定条件满足时使用","由定义和守恒关系逐步推出","忽略适用条件或单位会导致错误","先代入一组简单数据检查数量级","先审条件，再列关系，最后验单位","RIKE项目自编课程卡片",10+i);jdbc.update("INSERT INTO gao_pin_kao_dian_zhi_shi_dian(gao_pin_kao_dian_id,zhi_shi_dian_id,pai_xu) VALUES (?,?,1)",id,point);}}}
 
     private Map<String, Long> seedKnowledgePoints(Map<String, Long> subjects) {
         Map<String, LinkedHashSet<String>> leafPaths = new HashMap<>();
@@ -648,8 +654,35 @@ public class DemoDataService {
         jdbc.update("INSERT INTO ti_mu_shen_he_ji_lu (ti_mu_id,shen_he_dong_zuo,yuan_zhuang_tai,mu_biao_zhuang_tai,shen_he_ren_id,shen_he_yi_jian) VALUES (?,'APPROVED','PENDING','PUBLISHED',?,'专题演示题审核通过')", questionId, adminId);
     }
 
+    private void seedPaperAssignment(Map<String,Long> users,Map<String,Long> scopes){
+        long teacher=jdbc.queryForObject("SELECT id FROM jiao_shi_dang_an WHERE yong_hu_id=?",Long.class,required(users,"demo_physics_admin"));
+        long subject=jdbc.queryForObject("SELECT ke_mu_id FROM ren_ke_guan_xi WHERE id=?",Long.class,required(scopes,"PHYSICS_199"));
+        long paper=insert("INSERT INTO shi_juan(chuang_jian_jiao_shi_id,ke_mu_id,shi_juan_ming_cheng,zu_juan_mo_shi,zong_fen,zhuang_tai) VALUES (?,?, 'RIKE Demo 199班物理小测','MANUAL',30,'READY')",teacher,subject);
+        List<Long> questions=jdbc.queryForList("SELECT id FROM ti_mu WHERE ke_mu_id=? AND ti_mu_lei_xing IN ('SINGLE_CHOICE','MULTIPLE_CHOICE','FILL_BLANK') AND zhuang_tai='PUBLISHED' AND yi_shan_chu=0 ORDER BY id LIMIT 3",Long.class,subject);
+        for(int index=0;index<questions.size();index++)jdbc.update("INSERT INTO shi_juan_ti_mu(shi_juan_id,ti_mu_id,ti_mu_shun_xu,fen_zhi) VALUES (?,?,?,10)",paper,questions.get(index),index+1);
+        long scope=required(scopes,"PHYSICS_199");Map<String,Object> facts=jdbc.queryForMap("SELECT ban_ji_id,ke_mu_id,jiao_shi_id FROM ren_ke_guan_xi WHERE id=?",scope);
+        long release=insert("""
+                INSERT INTO shi_juan_fa_bu(shi_juan_id,ren_ke_guan_xi_id,ban_ji_id,ke_mu_id,fa_bu_jiao_shi_id,ban_ben_hao,kuai_zhao_ha_xi,fa_bu_shi_jian,jie_zhi_shi_jian,zhuang_tai)
+                VALUES (?,?,?,?,?,1,SHA2(CONCAT('RIKE-DEMO-PAPER-',?),256),CURRENT_TIMESTAMP(3),DATE_ADD(CURRENT_TIMESTAMP(3),INTERVAL 30 DAY),'PUBLISHED')
+                """,paper,scope,facts.get("ban_ji_id"),facts.get("ke_mu_id"),facts.get("jiao_shi_id"),paper);
+        jdbc.update("""
+                INSERT INTO shi_juan_fa_bu_ti_mu(shi_juan_fa_bu_id,ti_mu_id,ti_mu_shun_xu,fen_zhi,ti_mu_lei_xing,ti_gan_kuai_zhao,xuan_xiang_kuai_zhao,zheng_que_da_an_kuai_zhao,biao_zhun_jie_xi_kuai_zhao,zhi_shi_dian_kuai_zhao)
+                SELECT ?,q.id,i.ti_mu_shun_xu,i.fen_zhi,q.ti_mu_lei_xing,q.ti_gan,
+                  (SELECT JSON_ARRAYAGG(JSON_OBJECT('label',o.xuan_xiang_biao_shi,'content',o.xuan_xiang_nei_rong)) FROM ti_mu_xuan_xiang o WHERE o.ti_mu_id=q.id AND o.yi_shan_chu=0),
+                  q.zheng_que_da_an,a.jie_xi_nei_rong,
+                  (SELECT JSON_ARRAYAGG(p.wan_zheng_lu_jing) FROM ti_mu_zhi_shi_dian qp JOIN zhi_shi_dian p ON p.id=qp.zhi_shi_dian_id WHERE qp.ti_mu_id=q.id AND qp.yi_shan_chu=0)
+                FROM shi_juan_ti_mu i JOIN ti_mu q ON q.id=i.ti_mu_id JOIN ti_mu_jie_xi a ON a.ti_mu_id=q.id AND a.jie_xi_lei_xing='STANDARD' WHERE i.shi_juan_id=?
+                """,release,paper);
+    }
+
     private void cleanInternal() {
         guardDatabaseName(currentDatabase());
+        jdbc.update("DELETE a FROM shi_juan_xue_sheng_da_ti a JOIN shi_juan_ti_jiao s ON s.id=a.shi_juan_ti_jiao_id JOIN shi_juan_fa_bu r ON r.id=s.shi_juan_fa_bu_id JOIN shi_juan p ON p.id=r.shi_juan_id WHERE p.shi_juan_ming_cheng LIKE 'RIKE Demo %'");
+        jdbc.update("DELETE s FROM shi_juan_ti_jiao s JOIN shi_juan_fa_bu r ON r.id=s.shi_juan_fa_bu_id JOIN shi_juan p ON p.id=r.shi_juan_id WHERE p.shi_juan_ming_cheng LIKE 'RIKE Demo %'");
+        jdbc.update("DELETE i FROM shi_juan_fa_bu_ti_mu i JOIN shi_juan_fa_bu r ON r.id=i.shi_juan_fa_bu_id JOIN shi_juan p ON p.id=r.shi_juan_id WHERE p.shi_juan_ming_cheng LIKE 'RIKE Demo %'");
+        jdbc.update("DELETE r FROM shi_juan_fa_bu r JOIN shi_juan p ON p.id=r.shi_juan_id WHERE p.shi_juan_ming_cheng LIKE 'RIKE Demo %'");
+        jdbc.update("DELETE i FROM shi_juan_ti_mu i JOIN shi_juan p ON p.id=i.shi_juan_id WHERE p.shi_juan_ming_cheng LIKE 'RIKE Demo %'");
+        jdbc.update("DELETE FROM shi_juan WHERE shi_juan_ming_cheng LIKE 'RIKE Demo %'");
         jdbc.update("DELETE i FROM zhuan_ti_xue_xi_dan_yuan_ti_mu i JOIN zhuan_ti_xue_xi_dan_yuan u ON u.id=i.dan_yuan_id WHERE u.lai_yuan_ming_cheng='RIKE匿名Demo专题单元'");
         jdbc.update("DELETE FROM zhuan_ti_xue_xi_dan_yuan WHERE lai_yuan_ming_cheng='RIKE匿名Demo专题单元'");
         jdbc.update("DELETE FROM ai_mo_xing_pei_zhi WHERE mo_xing_dai_ma LIKE 'demo-disabled-%' AND api_mi_yao IS NULL");
@@ -664,6 +697,12 @@ public class DemoDataService {
         jdbc.update("DELETE h FROM lian_xi_hui_hua h JOIN xue_sheng_dang_an s ON s.id=h.xue_sheng_id WHERE s.xue_hao LIKE 'DEMO_%'");
         for (String table : List.of("ti_mu_fu_jian", "ti_mu_shen_he_ji_lu", "ti_mu_lai_yuan", "ti_mu_zhi_shi_dian", "ti_mu_jie_xi", "ti_mu_xuan_xiang")) jdbc.update("DELETE child FROM " + table + " child JOIN ti_mu q ON q.id=child.ti_mu_id WHERE q.ti_gan LIKE '【演示】%' OR q.ti_gan LIKE '【专题演示】%'");
         jdbc.update("DELETE FROM ti_mu WHERE ti_gan LIKE '【演示】%' OR ti_gan LIKE '【专题演示】%'");
+        jdbc.update("DELETE x FROM ai_xiao_xi x JOIN ai_hui_hua a ON a.id=x.ai_hui_hua_id JOIN gao_pin_kao_dian h ON h.id=a.zhi_shi_ka_pian_id JOIN ren_ke_guan_xi r ON r.id=h.ren_ke_guan_xi_id JOIN ban_ji b ON b.id=r.ban_ji_id WHERE b.ban_ji_bian_ma LIKE 'DEMO_CLASS_%'");
+        jdbc.update("DELETE a FROM ai_hui_hua a JOIN gao_pin_kao_dian h ON h.id=a.zhi_shi_ka_pian_id JOIN ren_ke_guan_xi r ON r.id=h.ren_ke_guan_xi_id JOIN ban_ji b ON b.id=r.ban_ji_id WHERE b.ban_ji_bian_ma LIKE 'DEMO_CLASS_%'");
+        jdbc.update("DELETE s FROM xue_sheng_zhi_shi_ka_pian_zhuang_tai s JOIN gao_pin_kao_dian h ON h.id=s.gao_pin_kao_dian_id JOIN ren_ke_guan_xi r ON r.id=h.ren_ke_guan_xi_id JOIN ban_ji b ON b.id=r.ban_ji_id WHERE b.ban_ji_bian_ma LIKE 'DEMO_CLASS_%'");
+        jdbc.update("DELETE v FROM gao_pin_kao_dian_shen_he_ji_lu v JOIN gao_pin_kao_dian h ON h.id=v.gao_pin_kao_dian_id JOIN ren_ke_guan_xi r ON r.id=h.ren_ke_guan_xi_id JOIN ban_ji b ON b.id=r.ban_ji_id WHERE b.ban_ji_bian_ma LIKE 'DEMO_CLASS_%'");
+        jdbc.update("DELETE f FROM gao_pin_kao_dian_fu_jian f JOIN gao_pin_kao_dian h ON h.id=f.gao_pin_kao_dian_id JOIN ren_ke_guan_xi r ON r.id=h.ren_ke_guan_xi_id JOIN ban_ji b ON b.id=r.ban_ji_id WHERE b.ban_ji_bian_ma LIKE 'DEMO_CLASS_%'");
+        jdbc.update("DELETE p FROM gao_pin_kao_dian_zhi_shi_dian p JOIN gao_pin_kao_dian h ON h.id=p.gao_pin_kao_dian_id JOIN ren_ke_guan_xi r ON r.id=h.ren_ke_guan_xi_id JOIN ban_ji b ON b.id=r.ban_ji_id WHERE b.ban_ji_bian_ma LIKE 'DEMO_CLASS_%'");
         jdbc.update("DELETE h FROM gao_pin_kao_dian h JOIN ren_ke_guan_xi r ON r.id=h.ren_ke_guan_xi_id JOIN ban_ji b ON b.id=r.ban_ji_id WHERE b.ban_ji_bian_ma LIKE 'DEMO_CLASS_%'");
         jdbc.update("DELETE r FROM ren_ke_guan_xi r JOIN ban_ji b ON b.id=r.ban_ji_id WHERE b.ban_ji_bian_ma LIKE 'DEMO_CLASS_%'");
         jdbc.update("DELETE bx FROM ban_ji_xue_sheng bx JOIN ban_ji b ON b.id=bx.ban_ji_id WHERE b.ban_ji_bian_ma LIKE 'DEMO_CLASS_%'");

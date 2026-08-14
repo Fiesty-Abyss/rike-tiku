@@ -5,14 +5,15 @@ import type { ApiError } from '../../api/http'
 import AiScientificContent from './AiScientificContent.vue'
 import StudentAiVariantPanel from './StudentAiVariantPanel.vue'
 import {
-  createAiConversation, createTopicAiConversation, fetchAiAnalysis, fetchAiCapabilities, fetchAiModelOptions, generateAiAnalysis, sendAiMessage,
+  createAiConversation, createKnowledgeCardAiConversation, createTopicAiConversation, fetchAiAnalysis, fetchAiCapabilities, fetchAiModelOptions, generateAiAnalysis, sendAiMessage,
   type AiAnalysis, type AiConversation, type AiModelOption,
 } from '../../api/student/aiLearning'
 
 interface QuestionContext {questionType:string;stem:string;options?:Array<{label:string;content:string}>;studentAnswer?:unknown;correctAnswer?:unknown;submitted:boolean}
-const props = withDefaults(defineProps<{ answerFactId?:number; topicQuestionId?:number; wrong?:boolean; questionContext?:QuestionContext }>(),{wrong:false})
+const props = withDefaults(defineProps<{ answerFactId?:number; topicQuestionId?:number; knowledgeCardId?:number; wrong?:boolean; questionContext?:QuestionContext }>(),{wrong:false})
 const emit=defineEmits<{visibility:[visible:boolean]}>()
 const topicMode = !!props.topicQuestionId
+const cardMode = !!props.knowledgeCardId
 const compactQuestion=ref(false)
 const mobileQuestionExpanded=ref(false)
 const analysis = ref<AiAnalysis | null>(null)
@@ -75,8 +76,11 @@ async function startConversation() {
   chatLoading.value = true
   try {
     const options={ modelConfigId:selectedModelId.value, thinkingMode:thinkingMode.value, webSearch:webSearch.value }
-    conversation.value = topicMode && props.topicQuestionId
-      ? await createTopicAiConversation(props.topicQuestionId,options):await createAiConversation(props.answerFactId!,options)
+    conversation.value = cardMode && props.knowledgeCardId
+      ? await createKnowledgeCardAiConversation(props.knowledgeCardId,options)
+      : topicMode && props.topicQuestionId
+        ? await createTopicAiConversation(props.topicQuestionId,options)
+        : await createAiConversation(props.answerFactId!,options)
   }
   catch (error) { ElMessage.warning(safeError(error, '当前题目答疑暂不可用。')) }
   finally { chatLoading.value = false }
@@ -95,7 +99,7 @@ async function send() {
   finally { sending.value = false }
 }
 
-watch(() => [props.answerFactId,props.topicQuestionId], () => { conversation.value = null; chatVisible.value = false; void loadAnalysis() })
+watch(() => [props.answerFactId,props.topicQuestionId,props.knowledgeCardId], () => { conversation.value = null; chatVisible.value = false; void loadAnalysis() })
 watch(chatVisible,value=>emit('visibility',value))
 onMounted(() => void loadAnalysis())
 </script>
@@ -103,10 +107,10 @@ onMounted(() => void loadAnalysis())
 <template>
   <section class="student-ai-panel" aria-label="AI 学习辅助">
     <div class="student-ai-heading">
-      <div><span class="student-ai-label">{{ topicMode ? 'AI 专题讲解' : 'AI 辅助分析' }}</span><p>{{ topicMode ? '基于题干、STANDARD 与知识点讲解；不提交、不评分、不修改 STANDARD。' : '基于本次正式答案提供个性化提示，不替代标准解析与正式判分。' }}</p></div>
-      <el-button type="primary" plain @click="openTutor">{{ topicMode ? '当前专题答疑' : '当前题目答疑' }}</el-button>
+      <div><span class="student-ai-label">{{ cardMode ? 'AI 零基础讲解' : topicMode ? 'AI 专题讲解' : 'AI 辅助分析' }}</span><p>{{ cardMode ? '从名词、符号和适用条件开始讲解；不覆盖已经人工审核的卡片事实。' : topicMode ? '基于题干、STANDARD 与知识点讲解；不提交、不评分、不修改 STANDARD。' : '基于本次正式答案提供个性化提示，不替代标准解析与正式判分。' }}</p></div>
+      <el-button type="primary" plain @click="openTutor">{{ cardMode ? '从零开始讲解' : topicMode ? '当前专题答疑' : '当前题目答疑' }}</el-button>
     </div>
-    <template v-if="!topicMode && wrong">
+    <template v-if="!topicMode && !cardMode && wrong">
       <div v-if="analysisLoading" class="student-ai-state"><el-skeleton :rows="3" animated /><span>正在生成错因分析…</span></div>
       <div v-else-if="analysis?.status === 'SUCCESS'" class="student-ai-result">
         <el-tag effect="plain">{{ errorTypeLabel(analysis.errorType) }}</el-tag>
@@ -119,7 +123,7 @@ onMounted(() => void loadAnalysis())
         <el-button type="primary" :loading="analysisLoading" @click="generate">{{ analysisUnavailable || analysis?.status === 'FAILED' ? '重试生成' : '生成 AI 错因分析' }}</el-button>
       </div>
     </template>
-    <p v-else-if="!topicMode" class="student-ai-correct">本题已答对；仍可围绕当前题目继续提问。</p>
+    <p v-else-if="!topicMode && !cardMode" class="student-ai-correct">本题已答对；仍可围绕当前题目继续提问。</p>
     <StudentAiVariantPanel v-if="answerFactId" :answer-fact-id="answerFactId" />
 
     <el-drawer v-model="chatVisible" title="RIKE 理科学习助手" size="min(500px, 100%)" append-to-body :modal="false" :lock-scroll="false" class="student-ai-docked-drawer">
@@ -129,7 +133,7 @@ onMounted(() => void loadAnalysis())
           <el-collapse-transition><div v-show="!compactQuestion" class="context-body"><p><b>题型：</b>{{ questionContext.questionType }}</p><p><b>题干：</b>{{ questionContext.stem }}</p><p><b>选项：</b>{{ optionText }}</p><p><b>学生答案：</b>{{ answerText(questionContext.studentAnswer) }}</p><p v-if="questionContext.submitted"><b>正确答案：</b>{{ answerText(questionContext.correctAnswer) }}</p></div></el-collapse-transition>
           <button type="button" class="mobile-context-toggle" :aria-expanded="mobileQuestionExpanded" @click="mobileQuestionExpanded=!mobileQuestionExpanded">查看当前题目与选项</button><div v-show="mobileQuestionExpanded" class="mobile-context-body"><p>{{ questionContext.stem }}</p><p>{{ optionText }}</p></div>
         </section>
-        <p class="student-ai-chat-note"><strong>已绑定{{ topicMode ? '当前专题' : '当前题目' }}</strong><br>仅围绕本题，最多 10 轮；STANDARD 答案与解析不会被 AI 修改。</p>
+        <p class="student-ai-chat-note"><strong>已绑定{{ cardMode ? '当前知识卡片' : topicMode ? '当前专题' : '当前题目' }}</strong><br>仅围绕当前学习上下文，最多 10 轮；已审核事实、STANDARD 答案与解析不会被 AI 修改。</p>
         <div v-if="!conversation" class="student-ai-controls">
           <label>回答模型<select v-model="selectedModelId"><option v-for="item in modelOptions" :key="item.id" :value="item.id" :disabled="!item.available">{{ item.displayName }}{{ item.available ? '' : '（管理员尚未启用）' }}</option></select></label>
           <fieldset><legend>回答方式</legend><label><input v-model="thinkingMode" type="radio" value="STANDARD">标准回答</label><label><input v-model="thinkingMode" type="radio" value="DEEP">深度思考</label></fieldset>
