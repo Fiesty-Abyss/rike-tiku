@@ -1,12 +1,12 @@
 # RIKE 理科学习辅助系统
 
-> **分支事实：`main` 当前仍是 PR #32 稳定代码基线。下面展示的是远程 [`feat/final-product-completion`](https://github.com/Fiesty-Abyss/rike-tiku/tree/feat/final-product-completion) / Draft PR [#33](https://github.com/Fiesty-Abyss/rike-tiku/pull/33) 的产品预览；PR #33 尚未合并。V23 与 41 张业务表是功能分支事实，不是 `main` 已实现事实。**
+> **分支事实：`main` 当前仍是 PR #32 稳定代码基线。下面 18 个功能章节展示的是远程 [`feat/final-product-completion`](https://github.com/Fiesty-Abyss/rike-tiku/tree/feat/final-product-completion) / Draft PR [#33](https://github.com/Fiesty-Abyss/rike-tiku/pull/33) 的产品预览；PR #33 尚未合并。Flyway V29 与 50 张业务表是功能分支事实，尚未进入 `main` 产品代码。**
 
 面向高中物理、化学、生物的 Spring Boot 大模型题库系统。正式判分与 STANDARD 始终由确定性业务事实控制；AI 只承担解释、答疑和待人工审核的候选生成。
 
 - [论文插图原始证据](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/docs/evidence/thesis-final/README.md) · [功能—截图—代码—表索引](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/docs/FEATURE_SCREENSHOT_CODE_INDEX.md)
 - [Excel 精确导入指南](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/docs/EXCEL_IMPORT_GUIDE.md) · [学生模板](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/docs/templates/student-import-template.xlsx) · [题目模板](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/docs/templates/question-import-template.xlsx)
-- [V23 数据库参考](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/docs/DATABASE_SCHEMA_REFERENCE.md) · [V23 纯结构快照](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/database/schema_snapshot_v23.sql) · [SQL 示例](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/docs/SQL_EXAMPLES.md)
+- [V29 数据库参考](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/docs/DATABASE_SCHEMA_REFERENCE.md) · [V29 纯结构快照](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/database/schema_snapshot_v29.sql) · [SQL 示例](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/docs/SQL_EXAMPLES.md)
 - [论文初稿](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/docs/thesis/RIKE_THESIS_DRAFT.md) · [事实核对表](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/docs/thesis/RIKE_THESIS_FACT_CHECK.md) · [答辩提纲](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/docs/thesis/RIKE_DEFENSE_OUTLINE.md)
 
 ## 1. 公共门户
@@ -288,12 +288,206 @@ Provider 配置与学生业务 API 分离，前端只能提交受控模型 ID。
 - 可用于论文第 3 章技术架构、第 6 章 Provider 边界和第 7 章隐私治理。
 - [DeepSeek API](https://api-docs.deepseek.com/api/create-chat-completion)；[GLM-4.6V-Flash](https://docs.bigmodel.cn/cn/guide/models/free/glm-4.6v-flash)；[UNESCO 生成式 AI 教育指南](https://unesdoc.unesco.org/ark:/48223/pf0000386693)。
 
+## 10. 错题筛选、再做与软归档
+
+[![错题筛选与复习](https://raw.githubusercontent.com/Fiesty-Abyss/rike-tiku/feat/final-product-completion/docs/evidence/thesis-final/27-wrong-question-review.png)](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/docs/evidence/thesis-final/27-wrong-question-review.png)
+
+### 功能说明
+
+学生可按学科、知识点稳定 ID、状态和关键词筛选错题，并发起冻结单题的“再做一次”。做对后可软归档，历史答题、错误次数、掌握度与 AI 分析不会被删除，再次做错会重新激活。
+
+### 设计思路
+
+归档是学习状态而非数据删除；所有学生与 AI 可见题干统一清除经 Demo 标识确认的内部前缀，不误删“覆盖率”“覆盖范围”等正常正文。
+
+### 实现映射
+
+| 层次 | 精确实现 |
+|---|---|
+| 路由 / Vue | [`/student/wrong-questions` · `WrongQuestionsView.vue`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-frontend/src/views/student/WrongQuestionsView.vue) |
+| TypeScript API | [`student/practice.ts`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-frontend/src/api/student/practice.ts) |
+| Controller / Service | [`StudentPracticeController.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/neu/riketiku/xueshenglianxi/StudentPracticeController.java) · [`StudentPracticeService.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/neu/riketiku/xueshenglianxi/StudentPracticeService.java) |
+| 表 / Flyway | `cuo_ti_ji_lu`、`lian_xi_hui_hua`、`xue_sheng_da_ti` · [`V7`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/resources/db/migration/V7__create_student_practice_and_wrong_question_tables.sql) |
+| 测试 / 技术 | [`StudentPracticeIntegrationTest.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/test/java/com/neu/riketiku/xueshenglianxi/StudentPracticeIntegrationTest.java) · 软归档、冻结快照、确定性判分 |
+
+### 论文写作提示与参考
+
+可用于第 4 章学习事实生命周期与第 5 章复习闭环；不能把归档写成删除历史。[MySQL 事务模型](https://dev.mysql.com/doc/refman/8.4/en/innodb-transaction-model.html)。
+
+## 11. 综合题专题单元与附件
+
+[![专题单元与图片题](https://raw.githubusercontent.com/Fiesty-Abyss/rike-tiku/feat/final-product-completion/docs/evidence/thesis-final/28-topic-units.png)](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/docs/evidence/thesis-final/28-topic-units.png)
+
+### 功能说明
+
+专题单元引用 2–3 道既有 `TOPIC_LEARNING` 题，按基础理解、情境迁移和综合提升组织；支持题干/解析附件、本地草稿、STANDARD、专题答疑和待审核专题变式。主观题不自动评分，草稿不上传。
+
+### 实现映射
+
+| 层次 | 精确实现 |
+|---|---|
+| 路由 / Vue / API | [`TopicLearningView.vue`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-frontend/src/views/student/TopicLearningView.vue) · [`topicLearning.ts`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-frontend/src/api/student/topicLearning.ts) |
+| Controller / Service | [`TopicLearningController.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/neu/riketiku/zhuantixuexi/TopicLearningController.java) · [`TopicLearningService.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/neu/riketiku/zhuantixuexi/TopicLearningService.java) |
+| 表 / Flyway | `zhuan_ti_xue_xi_dan_yuan`、`zhuan_ti_xue_xi_dan_yuan_ti_mu`、`ti_mu_fu_jian` · [`V26`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/resources/db/migration/V26__add_topic_units_and_xai_vision_provider.sql) |
+| 测试 / 技术 | [`TopicLearningIntegrationTest.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/test/java/com/neu/riketiku/zhuantixuexi/TopicLearningIntegrationTest.java) · 应用层范围授权、安全附件、KaTeX |
+
+### 论文写作提示与参考
+
+可用于第 4 章专题单元模型与第 6 章多模态边界；不能声称 AI 对主观题评分。[UNESCO 生成式 AI 教育指南](https://unesdoc.unesco.org/ark:/48223/pf0000386693)。
+
+## 12. 私信、撤回与仅本人删除
+
+[![私信操作菜单](https://raw.githubusercontent.com/Fiesty-Abyss/rike-tiku/feat/final-product-completion/docs/evidence/thesis-final/31-message-actions.png)](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/docs/evidence/thesis-final/31-message-actions.png)
+
+### 功能说明
+
+发送者可在服务端五分钟窗口内撤回，双方均看到中性占位；任一参与者可仅从自己的列表隐藏消息，不影响对方和数据库审计事实。操作菜单使用居中的确认框，并明确两种语义。
+
+### 实现映射
+
+| 层次 | 精确实现 |
+|---|---|
+| 路由 / Vue / API | [`MessageConversationView.vue`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-frontend/src/views/messages/MessageConversationView.vue) · [`messages.ts`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-frontend/src/api/messages.ts) |
+| Controller / Service | [`SiXinController.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/neu/riketiku/sixin/SiXinController.java) · [`SiXinFuWu.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/neu/riketiku/sixin/SiXinFuWu.java) |
+| 表 / Flyway | `si_xin_hui_hua`、`si_xin_xiao_xi` · [`V22`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/resources/db/migration/V22__add_message_recall_and_per_user_hiding.sql) |
+| 测试 / 技术 | [`MessageConversationView.spec.ts`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-frontend/src/views/messages/MessageConversationView.spec.ts) · 软隐藏、服务端时间、幂等冲突 |
+
+### 论文写作提示与参考
+
+可用于第 5 章通信交互和第 7 章审计保留；不能描述为物理删除。[OWASP Logging Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html)。
+
+## 13. 教师班级私有题库
+
+[![教师私有班级题库](https://raw.githubusercontent.com/Fiesty-Abyss/rike-tiku/feat/final-product-completion/docs/evidence/thesis-final/32-private-question-bank.png)](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/docs/evidence/thesis-final/32-private-question-bank.png)
+
+### 功能说明
+
+教师选择本人 ACTIVE 任课范围后新建、导入、编辑并发布班级私有题。学生仅能看到主班级与对应科目的私有 `PUBLISHED` 题；其他班级、其他教师及管理员普通题库 API 不返回其内容。
+
+### 实现映射
+
+| 层次 | 精确实现 |
+|---|---|
+| 路由 / Vue / API | [`TeacherPrivateQuestionBankView.vue`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-frontend/src/views/teacher/TeacherPrivateQuestionBankView.vue) · [`privateQuestions.ts`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-frontend/src/api/teacher/privateQuestions.ts) |
+| Controller / Service | [`TeacherPrivateQuestionController.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/neu/riketiku/tiku/teacher/TeacherPrivateQuestionController.java) · [`TeacherPrivateQuestionService.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/neu/riketiku/tiku/teacher/TeacherPrivateQuestionService.java) |
+| 表 / Flyway | `ti_mu`、`ren_ke_guan_xi`、`ti_mu_fu_jian` · [`V20`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/resources/db/migration/V20__add_scoped_questions_and_topic_categories.sql) |
+| 测试 / 技术 | [`UserTeachingDatabaseModelTest.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/test/java/com/neu/riketiku/zhanghao/UserTeachingDatabaseModelTest.java) · 服务端范围复核、404 防枚举、安全下载 |
+
+### 论文写作提示与参考
+
+可用于第 4 章范围模型与第 7 章横向越权防护；这是应用层隔离，不是对数据库所有者的密码学不可见。[Spring Method Security](https://docs.spring.io/spring-security/reference/servlet/authorization/method-security.html)。
+
+## 14. 试卷发布、学生提交与画像
+
+[![试卷发布与质量评估](https://raw.githubusercontent.com/Fiesty-Abyss/rike-tiku/feat/final-product-completion/docs/evidence/thesis-final/34-paper-publish-quality.png)](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/docs/evidence/thesis-final/34-paper-publish-quality.png)
+
+### 功能说明
+
+教师把 READY 试卷发布到本人任课班级；系统冻结题目、选项、分值、答案和 STANDARD。学生自动保存草稿并幂等提交，客观题确定性判分；教师查看 SQL/规则计算的班级统计和学生画像。
+
+### 实现映射
+
+| 层次 | 精确实现 |
+|---|---|
+| 路由 / Vue / API | [`TeacherPaperBuilderView.vue`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-frontend/src/views/teacher/TeacherPaperBuilderView.vue)、[`StudentPapersView.vue`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-frontend/src/views/student/StudentPapersView.vue) · [`teacher/papers.ts`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-frontend/src/api/teacher/papers.ts)、[`student/papers.ts`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-frontend/src/api/student/papers.ts) |
+| Controller / Service | [`PaperAssignmentTeacherController.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/neu/riketiku/shijuan/PaperAssignmentTeacherController.java) · [`PaperAssignmentStudentController.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/neu/riketiku/shijuan/PaperAssignmentStudentController.java) · [`PaperAssignmentService.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/neu/riketiku/shijuan/PaperAssignmentService.java) |
+| 表 / Flyway | `shi_juan_fa_bu`、`shi_juan_fa_bu_ti_mu`、`shi_juan_ti_jiao`、`shi_juan_xue_sheng_da_ti` · [`V27`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/resources/db/migration/V27__add_paper_publication_and_student_submissions.sql) |
+| 测试 / 技术 | [`PaperAssignmentIntegrationTest.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/test/java/com/neu/riketiku/shijuan/PaperAssignmentIntegrationTest.java) · 冻结快照、幂等、确定性判分、SQL 聚合 |
+
+### 论文写作提示与参考
+
+可用于第 4 章试卷事实模型、第 5 章发布链及第 6 章 AI 辅助质量建议；AI 不改题、不改分、不发布。[Spring Transaction Management](https://docs.spring.io/spring-framework/reference/data-access/transaction.html)。
+
+## 15. 知识卡片、零基础讲解与生成练习
+
+[![知识卡片学习页](https://raw.githubusercontent.com/Fiesty-Abyss/rike-tiku/feat/final-product-completion/docs/evidence/thesis-final/30-knowledge-cards.png)](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/docs/evidence/thesis-final/30-knowledge-cards.png)
+
+### 功能说明
+
+学生按学科、知识点和类型查看经审核的公式、方程式、二级结论、仪器、口诀、表格与笔记，并可收藏、标记掌握、请求零基础讲解或生成临时练习。生成题复用统一 Candidate Schema、Parser、新颖度和 PENDING 审核链。
+
+### 实现映射
+
+| 层次 | 精确实现 |
+|---|---|
+| 路由 / Vue / API | [`StudentKnowledgeCardsView.vue`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-frontend/src/views/student/StudentKnowledgeCardsView.vue) · [`knowledgeCards.ts`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-frontend/src/api/student/knowledgeCards.ts) |
+| Controller / Service | [`KnowledgeCardStudentController.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/neu/riketiku/zhishikapian/KnowledgeCardStudentController.java) · [`KnowledgeCardService.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/neu/riketiku/zhishikapian/KnowledgeCardService.java) · [`KnowledgeCardPracticeService.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/neu/riketiku/zhishikapian/KnowledgeCardPracticeService.java) |
+| 表 / Flyway | `gao_pin_kao_dian`、`gao_pin_kao_dian_shen_he_ji_lu`、`xue_sheng_zhi_shi_ka_pian_zhuang_tai`、`zhi_shi_ka_pian_lian_xi_shi_li` · [`V28`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/resources/db/migration/V28__complete_reviewed_science_cards.sql)、[`V29`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/resources/db/migration/V29__add_knowledge_card_practice_instances.sql) |
+| 测试 / 技术 | [`KnowledgeCardIntegrationTest.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/test/java/com/neu/riketiku/zhishikapian/KnowledgeCardIntegrationTest.java)、[`KnowledgeCardPracticeIntegrationTest.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/test/java/com/neu/riketiku/zhishikapian/KnowledgeCardPracticeIntegrationTest.java) · KaTeX、人工审核、确定性判分 |
+
+### 论文写作提示与参考
+
+可用于第 5 章知识支架和第 6 章受控生成；近年高频只由有年份、合法来源、非 Demo/AI 的真题统计，样本不足时不让 AI 猜测。[教育部普通高中课程方案和课程标准](http://www.moe.gov.cn/srcsite/A26/s8001/202006/t20200603_462199.html)。
+
+## 16. 操作日志检索与导出
+
+[![操作日志分页检索](https://raw.githubusercontent.com/Fiesty-Abyss/rike-tiku/feat/final-product-completion/docs/evidence/thesis-final/35-operation-log-search.png)](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/docs/evidence/thesis-final/35-operation-log-search.png)
+
+### 功能说明
+
+管理员按日期、操作者、模块、动作、结果、业务对象和关键词分页检索 append-only 日志并受控导出。页面不会一次加载全部日志，也不提供修改单条历史的接口。
+
+### 实现映射
+
+| 层次 | 精确实现 |
+|---|---|
+| 路由 / Vue / API | [`OperationLogsView.vue`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-frontend/src/views/admin/OperationLogsView.vue) · [`operationLogs.ts`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-frontend/src/api/admin/operationLogs.ts) |
+| Controller / Service | [`GuanLiCaoZuoRiZhiController.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/neu/riketiku/guanlicaozuorizhi/GuanLiCaoZuoRiZhiController.java) · [`GuanLiCaoZuoRiZhiFuWu.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/neu/riketiku/guanlicaozuorizhi/GuanLiCaoZuoRiZhiFuWu.java) |
+| 表 / Flyway | `guan_li_cao_zuo_ri_zhi` · [`V11`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/resources/db/migration/V11__create_admin_operation_log.sql) |
+| 测试 / 技术 | [`GuanLiCaoZuoRiZhiIntegrationTest.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/test/java/com/neu/riketiku/guanlicaozuorizhi/GuanLiCaoZuoRiZhiIntegrationTest.java) · append-only、分页、CSV |
+
+### 论文写作提示与参考
+
+可用于第 7 章可追责性；日志不保存密码、Key、Prompt、答案正文或 Base64。[OWASP Logging Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html)。
+
+## 17. 管理员学生导入与题库审核
+
+[![学生导入页面](https://raw.githubusercontent.com/Fiesty-Abyss/rike-tiku/feat/final-product-completion/docs/evidence/thesis-final/37-student-import.png)](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/docs/evidence/thesis-final/37-student-import.png)
+
+### 功能说明
+
+学生导入采用精确 7 列模板，题库导入采用精确 19 列模板；Preview 不写库，Confirm 重新解析、校验文件 hash 并以单事务写入。题目导入后只能进入 PENDING，必须人工审核后才能 PUBLISHED。
+
+### 实现映射
+
+| 层次 | 精确实现 |
+|---|---|
+| 路由 / Vue / API | [`StudentImportView.vue`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-frontend/src/views/admin/StudentImportView.vue) · [`admin/studentImport.ts`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-frontend/src/api/admin/studentImport.ts) |
+| Controller / Service | [`StudentImportController.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/neu/riketiku/xueshengdaoru/StudentImportController.java) · [`StudentImportService.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/neu/riketiku/xueshengdaoru/StudentImportService.java) |
+| 表 / Flyway | `dao_ru_pi_ci`、`ti_mu`、`ti_mu_shen_he_ji_lu`、`yong_hu`、`xue_sheng_dang_an` · [`V2`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/resources/db/migration/V2__create_question_core_tables.sql)、[`V5`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/resources/db/migration/V5__create_user_role_and_profile_tables.sql) |
+| 测试 / 技术 | [`FinalImportTemplatesIntegrationTest.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/test/java/com/neu/riketiku/tiku/daoru/FinalImportTemplatesIntegrationTest.java) · Apache POI、SHA-256、Preview/Confirm、事务 |
+
+### 论文写作提示与参考
+
+可用于第 5 章批量导入与第 7 章来源/权利门禁；Excel 导入不会训练模型。[Apache POI 官方文档](https://poi.apache.org/components/spreadsheet/)。
+
+## 18. 多视觉 Provider 显式配置
+
+[![GLM 与 xAI 视觉配置](https://raw.githubusercontent.com/Fiesty-Abyss/rike-tiku/feat/final-product-completion/docs/evidence/thesis-final/38-vision-provider-config.png)](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/docs/evidence/thesis-final/38-vision-provider-config.png)
+
+### 功能说明
+
+管理员可分别配置 GLM 与 xAI 的 VISION 模型、超时和受控模型代码，并显式选择当前 Provider；系统不隐式自动切换。配置页只显示 Key 是否存在，诊断区分认证、限流、参数、模型、账户、超时与响应结构错误。
+
+### 实现映射
+
+| 层次 | 精确实现 |
+|---|---|
+| 路由 / Vue / API | [`AdminAiModelsView.vue`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-frontend/src/views/admin/AdminAiModelsView.vue) · [`aiModels.ts`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-frontend/src/api/admin/aiModels.ts) |
+| Controller / Service | [`AiModelConfigController.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/neu/riketiku/ai/admin/AiModelConfigController.java) · [`AiModelConfigService.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/neu/riketiku/ai/admin/AiModelConfigService.java) |
+| 表 / Flyway | `ai_mo_xing_pei_zhi`、`ai_diao_yong_ri_zhi`、`ai_shi_jue_shang_xia_wen` · [`V26`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/resources/db/migration/V26__add_topic_units_and_xai_vision_provider.sql) |
+| 测试 / 技术 | [`GlmVisionProviderTest.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/test/java/com/neu/riketiku/ai/vision/GlmVisionProviderTest.java)、[`XaiVisionProviderTest.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/test/java/com/neu/riketiku/ai/vision/XaiVisionProviderTest.java) · OpenAI-compatible 消息、raw Base64、安全错误映射、metadata-only 日志 |
+
+### 论文写作提示与参考
+
+可用于第 6 章可插拔 Provider 和降级设计；Mock 合同测试不等于真实调用。[智谱 GLM-4.6V-Flash](https://docs.bigmodel.cn/cn/guide/models/free/glm-4.6v-flash)；[xAI Vision](https://docs.x.ai/docs/guides/image-understanding)。
+
 ## 工程、数据库与论文导航
 
-- 技术栈：Java 25、Spring Boot 4.1、Vue 3、TypeScript、MySQL 8.4、Flyway V1–V23。
-- 数据模型：41 张业务表；[字段/约束参考](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/docs/DATABASE_SCHEMA_REFERENCE.md)、[纯结构快照](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/database/schema_snapshot_v23.sql)、[ER 模块图](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/database/diagrams/rike_tiku_er.md)。
+- 技术栈：Java 25、Spring Boot 4.1、Vue 3、TypeScript、MySQL 8.4、Flyway V1–V29。
+- 数据模型：50 张业务表；[字段/约束参考](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/docs/DATABASE_SCHEMA_REFERENCE.md)、[纯结构快照](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/database/schema_snapshot_v29.sql)、[ER 模块图](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/database/diagrams/rike_tiku_er.md)。
 - Excel：[学生模板](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/docs/templates/student-import-template.xlsx)、[题目19列模板](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/docs/templates/question-import-template.xlsx)、[Preview/Confirm 指南](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/docs/EXCEL_IMPORT_GUIDE.md)。
 - 论文：[写作资料中心](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/docs/THESIS_WRITING_HUB.md)、[论文初稿](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/docs/thesis/RIKE_THESIS_DRAFT.md)、[事实核对表](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/docs/thesis/RIKE_THESIS_FACT_CHECK.md)、[答辩提纲](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/docs/thesis/RIKE_DEFENSE_OUTLINE.md)。
 - 完整文献：[THESIS_REFERENCES.md](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/docs/THESIS_REFERENCES.md)；引用管理：[references.bib](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/docs/references/references.bib)。文献用于说明研究与设计依据，不代表 RIKE 自身实验结果。
 
-真实 Provider 状态以当前验收记录为准：DeepSeek variant、DeepSeek tutor、GLM Vision、Web Search 均为 `NOT_RUN`。人工验收状态为 `FINAL_USER_REVIEW_PENDING`。
+真实 Provider 状态以当前验收记录为准：DeepSeek variant、DeepSeek tutor、GLM Vision、xAI Vision、Web Search 均因没有可安全使用的轮换后凭据而为 `BLOCKED_EXTERNAL_PROVIDER`；Mock/Fake 只用于自动化，不记作真实调用。人工验收状态为 `FINAL_USER_REVIEW_PENDING`。
