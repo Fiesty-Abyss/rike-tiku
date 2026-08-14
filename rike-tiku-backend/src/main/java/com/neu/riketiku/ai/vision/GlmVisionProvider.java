@@ -44,7 +44,7 @@ public final class GlmVisionProvider implements AiVisionProvider {
             try {
                 HttpResponse<String> response = client.send(httpRequest, HttpResponse.BodyHandlers.ofString());
                 if (response.statusCode() >= 200 && response.statusCode() < 300) return success(response.body());
-                AiVisionException failure = httpFailure(response.statusCode());
+                AiVisionException failure = httpFailure(response);
                 if (attempt < retries && retryable(failure.errorType())) continue;
                 throw failure;
             } catch (HttpTimeoutException exception) {
@@ -107,13 +107,21 @@ public final class GlmVisionProvider implements AiVisionProvider {
         }
     }
     private String endpoint() { String base=config.baseUrl().replaceAll("/+$", ""); return base.endsWith("/chat/completions")?base:base+"/chat/completions"; }
-    private AiVisionException httpFailure(int status) {
+    private AiVisionException httpFailure(HttpResponse<String> response) {
+        int status=response.statusCode();String code=null;String providerMessage=null;
+        try{JsonNode error=mapper.readTree(response.body()).path("error");code=error.path("code").asText(null);providerMessage=error.path("message").asText(null);}catch(Exception ignored){}
+        Long retryAfter=response.headers().firstValue("Retry-After").flatMap(value->{try{return java.util.Optional.of(Long.parseLong(value));}catch(Exception ignored){return java.util.Optional.empty();}}).orElse(null);
         if (status == 400) return new AiVisionException(AiProviderErrorType.CONFIGURATION_ERROR, "Vision request format rejected",status);
         if (status == 401 || status == 403) return new AiVisionException(AiProviderErrorType.AUTHENTICATION_ERROR, "Vision provider authentication failed",status);
-        if (status == 429) return new AiVisionException(AiProviderErrorType.RATE_LIMITED, "Vision provider rate limited",status);
+        if (status == 429) return new AiVisionException(AiProviderErrorType.RATE_LIMITED, classify429(code,providerMessage),status,code,retryAfter);
         if (status >= 500) return new AiVisionException(AiProviderErrorType.PROVIDER_UNAVAILABLE, "Vision provider unavailable",status);
         return new AiVisionException(AiProviderErrorType.UNKNOWN, "Vision provider rejected request",status);
     }
+    private String classify429(String code,String message){String value=((code==null?"":code)+" "+(message==null?"":message)).toLowerCase();
+        if(value.contains("balance")||value.contains("quota")||value.contains("余额")||value.contains("额度"))return "GLM 账户余额或配额不足";
+        if(value.contains("concurrent")||value.contains("并发"))return "GLM 并发额度已满";
+        if(value.contains("account")||value.contains("账户"))return "GLM 账户状态异常";
+        return "GLM 请求频率受限";}
     private boolean retryable(AiProviderErrorType type) { return type == AiProviderErrorType.RATE_LIMITED || type == AiProviderErrorType.PROVIDER_UNAVAILABLE; }
     private AiVisionException invalid() { return new AiVisionException(AiProviderErrorType.INVALID_RESPONSE, "Vision provider returned invalid response"); }
     private Integer integer(JsonNode node) { return node.canConvertToInt() ? node.intValue() : null; }

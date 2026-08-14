@@ -51,6 +51,7 @@ const router = createRouter({
         { path: 'practice/:id/result', name: 'student-practice-result', component: () => import('../views/student/PracticeResultView.vue') },
         { path: 'wrong-questions', name: 'student-wrong-questions', component: () => import('../views/student/WrongQuestionsView.vue') },
         { path: 'topics', name: 'student-topics', component: () => import('../views/student/TopicLearningView.vue') },
+        { path: 'topics/units/:unitId(\\d+)', name: 'student-topic-unit', component: () => import('../views/student/TopicLearningView.vue') },
         { path: 'topics/:id(\\d+)', name: 'student-topic-detail', component: () => import('../views/student/TopicLearningView.vue') },
       ],
     },

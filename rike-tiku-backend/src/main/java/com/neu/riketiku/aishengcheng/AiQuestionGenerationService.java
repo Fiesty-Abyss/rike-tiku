@@ -35,7 +35,7 @@ import tools.jackson.databind.ObjectMapper;
 
 @Service
 public class AiQuestionGenerationService {
-    private static final Set<String> TYPES=Set.of("SINGLE_CHOICE","MULTIPLE_CHOICE","FILL_BLANK");
+    private static final Set<String> TYPES=Set.of("SINGLE_CHOICE","MULTIPLE_CHOICE","FILL_BLANK","SUBJECTIVE");
     private static final Set<String> MODES=Set.of("SCENARIO_TRANSFER","CONDITION_RECOMBINATION","REPRESENTATION_SWITCH","MULTI_STEP_EXTENSION","DISTRACTOR_REDESIGN","COMBINED");
     private static final double SIMILARITY_THRESHOLD=.72;
     private final JdbcTemplate jdbc;
@@ -68,8 +68,10 @@ public class AiQuestionGenerationService {
     public AiQuestionGenerationDtos.Task generate(long actorId,String role,AiQuestionGenerationDtos.Generate command,TransactionalCandidateAction action){
         String actorRole=role.toUpperCase(Locale.ROOT); validateCommand(command);
         AiQuestionGenerationPromptFactory.Mother mother=mother(command.motherQuestionId());
-        authorize(actorId,actorRole,mother.subjectId()); validatePoints(mother.subjectId(),command.knowledgePointIds());
-        if("STUDENT".equals(actorRole)&&command.count()!=1)fail("AI_STUDENT_VARIANT_COUNT_INVALID","学生每次只能生成 1 道变式题",HttpStatus.BAD_REQUEST);
+        if("SUBJECTIVE".equals(command.questionType())&&!"TOPIC_LEARNING".equals(mother.usageMode()))fail("AI_TOPIC_MOTHER_INVALID","主观专题变式只能绑定已发布专题母题",HttpStatus.BAD_REQUEST);
+        if("STUDENT".equals(actorRole)&&"SUBJECTIVE".equals(command.questionType()))authorizeTopicStudent(actorId,mother.id());else authorize(actorId,actorRole,mother.subjectId());
+        validatePoints(mother.subjectId(),command.knowledgePointIds());
+        if("STUDENT".equals(actorRole)&&!"SUBJECTIVE".equals(command.questionType())&&command.count()!=1)fail("AI_STUDENT_VARIANT_COUNT_INVALID","学生客观变式每次只能生成 1 道题",HttpStatus.BAD_REQUEST);
         long pending=count("""
                 SELECT COUNT(DISTINCT q.id) FROM ti_mu q JOIN ti_mu_lai_yuan s ON s.ti_mu_id=q.id
                 WHERE q.fu_ti_mu_id=? AND q.zhuang_tai='PENDING' AND q.yi_shan_chu=0
@@ -224,11 +226,18 @@ public class AiQuestionGenerationService {
             List<QuestionDtos.Source> sources=List.of("QUESTION","ANSWER","STANDARD_ANALYSIS").stream()
                     .map(part->new QuestionDtos.Source(part,"AI_GENERATED","RIKE AI 候选变式题","USER_PROVIDED",null,null,null,null,null,"仅作为本地毕设候选内容，人工审核后发布")).toList();
             long subjectId=jdbc.queryForObject("SELECT ke_mu_id FROM ti_mu WHERE id=(SELECT mu_ti_mu_id FROM ai_sheng_cheng_ren_wu WHERE id=?)",Long.class,taskId);
-            QuestionDtos.Save save=new QuestionDtos.Save(subjectId,c.questionType(),"ONLINE_PRACTICE",c.stem(),c.correctAnswer(),c.difficulty(),
-                    "AI 候选难度，待人工评价",true,options,c.standardAnalysis(),knowledgePointIds,sources);
+            boolean subjective="SUBJECTIVE".equals(c.questionType());
+            QuestionDtos.Save save=new QuestionDtos.Save(subjectId,c.questionType(),subjective?"TOPIC_LEARNING":"ONLINE_PRACTICE",c.stem(),c.correctAnswer(),c.difficulty(),
+                    "AI 候选难度，待人工评价",!subjective,options,c.standardAnalysis(),knowledgePointIds,sources);
             long questionId=questions.create(save,actorId).question().id();
             ids.add(questionId);
             jdbc.update("UPDATE ti_mu SET fu_ti_mu_id=? WHERE id=?",jdbc.queryForObject("SELECT mu_ti_mu_id FROM ai_sheng_cheng_ren_wu WHERE id=?",Long.class,taskId),questionId);
+            jdbc.update("""
+                    UPDATE ti_mu candidate JOIN ti_mu mother ON mother.id=?
+                    SET candidate.ke_jian_fan_wei=mother.ke_jian_fan_wei,candidate.ren_ke_guan_xi_id=mother.ren_ke_guan_xi_id,
+                        candidate.zhuan_ti_lei_xing=mother.zhuan_ti_lei_xing
+                    WHERE candidate.id=?
+                    """,jdbc.queryForObject("SELECT mu_ti_mu_id FROM ai_sheng_cheng_ren_wu WHERE id=?",Long.class,taskId),questionId);
             questions.transition(questionId,"SUBMITTED","DRAFT","PENDING","AI 候选题进入人工审核",actorId);
             jdbc.update("""
                     INSERT INTO ai_hou_xuan_ti_zhi_liang_ping_jia
@@ -290,6 +299,13 @@ public class AiQuestionGenerationService {
             SELECT COUNT(*) FROM jiao_shi_dang_an j JOIN ren_ke_guan_xi r ON r.jiao_shi_id=j.id
             WHERE j.yong_hu_id=? AND j.zhuang_tai='ACTIVE' AND j.yi_shan_chu=0 AND r.ke_mu_id=? AND r.zhuang_tai='ACTIVE'
             """,actorId,subjectId)==0)fail("AI_GENERATION_FORBIDDEN","无权操作该科目候选题",HttpStatus.FORBIDDEN);}
+    private void authorizeTopicStudent(long actorId,long questionId){if(count("""
+            SELECT COUNT(*) FROM ti_mu q JOIN xue_sheng_dang_an xs ON xs.yong_hu_id=? AND xs.zhuang_tai='ACTIVE' AND xs.yi_shan_chu=0
+            WHERE q.id=? AND q.ti_mu_lei_xing='SUBJECTIVE' AND q.shi_yong_mo_shi='TOPIC_LEARNING' AND q.zhuang_tai='PUBLISHED' AND q.yi_shan_chu=0
+              AND (q.ke_jian_fan_wei='GLOBAL' OR EXISTS(SELECT 1 FROM ban_ji_xue_sheng bx JOIN ren_ke_guan_xi r
+                ON r.id=q.ren_ke_guan_xi_id AND r.ban_ji_id=bx.ban_ji_id AND r.zhuang_tai='ACTIVE'
+                WHERE bx.xue_sheng_id=xs.id AND bx.shi_fou_zhu_ban_ji=1 AND bx.zhuang_tai='ACTIVE' AND bx.tui_chu_shi_jian IS NULL))
+            """,actorId,questionId)!=1)fail("AI_GENERATION_FORBIDDEN","无权生成该专题题的候选变式",HttpStatus.FORBIDDEN);}
     private CandidateAuth candidateAuth(long id){return jdbc.query("SELECT q.ke_mu_id,v.ai_sheng_cheng_ren_wu_id FROM ai_hou_xuan_ti_zhi_liang_ping_jia v JOIN ti_mu q ON q.id=v.ti_mu_id WHERE q.id=?",(rs,row)->new CandidateAuth(rs.getLong(1),rs.getLong(2)),id).stream().findFirst().orElseThrow(()->failEx("AI_CANDIDATE_NOT_FOUND","AI 候选题不存在",HttpStatus.NOT_FOUND));}
     private List<AiQuestionGenerationDtos.Candidate> candidates(long taskId){return jdbc.query("SELECT ti_mu_id FROM ai_hou_xuan_ti_zhi_liang_ping_jia WHERE ai_sheng_cheng_ren_wu_id=? ORDER BY id",(rs,row)->candidate(rs.getLong(1)),taskId);}
     private AiQuestionGenerationDtos.Candidate candidate(long id){
