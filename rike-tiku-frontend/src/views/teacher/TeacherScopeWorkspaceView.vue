@@ -140,6 +140,7 @@ onMounted(() => void load())
         <p v-if="workspace">{{ workspace.className }} · {{ workspace.subjectName }}</p>
       </div>
       <div class="scope-header-actions">
+        <el-button type="primary" plain @click="router.push(`/teacher/scopes/${scopeId}/knowledge-cards`)">知识卡片</el-button>
         <el-button type="primary" plain @click="router.push('/messages')">消息<span v-if="unreadCount">（{{ unreadCount }} 条未读）</span></el-button>
         <el-button @click="back">返回任教范围</el-button>
       </div>

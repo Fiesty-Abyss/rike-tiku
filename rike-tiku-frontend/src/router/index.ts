@@ -53,6 +53,9 @@ const router = createRouter({
         { path: 'topics', name: 'student-topics', component: () => import('../views/student/TopicLearningView.vue') },
         { path: 'topics/units/:unitId(\\d+)', name: 'student-topic-unit', component: () => import('../views/student/TopicLearningView.vue') },
         { path: 'topics/:id(\\d+)', name: 'student-topic-detail', component: () => import('../views/student/TopicLearningView.vue') },
+        { path: 'papers', name: 'student-papers', component: () => import('../views/student/StudentPapersView.vue') },
+        { path: 'papers/:releaseId(\\d+)', name: 'student-paper-detail', component: () => import('../views/student/StudentPapersView.vue') },
+        { path: 'knowledge-cards', name: 'student-knowledge-cards', component: () => import('../views/student/StudentKnowledgeCardsView.vue') },
       ],
     },
     {
@@ -74,6 +77,7 @@ const router = createRouter({
       meta: { requiresAuth: true, roles: ['TEACHER'] },
     },
     { path: '/teacher/private-questions', name: 'teacher-private-questions', component: () => import('../views/teacher/TeacherPrivateQuestionBankView.vue'), meta: { requiresAuth: true, roles: ['TEACHER'] } },
+    { path: '/teacher/scopes/:scopeId(\\d+)/knowledge-cards', name: 'teacher-knowledge-cards', component: () => import('../views/teacher/TeacherKnowledgeCardsView.vue'), meta: { requiresAuth: true, roles: ['TEACHER'] } },
     { path: '/teacher/papers', name: 'teacher-papers', component: () => import('../views/teacher/TeacherPaperBuilderView.vue'), meta: { requiresAuth: true, roles: ['TEACHER'] } },
     { path: '/teacher/papers/:id(\\d+)/:version(student|answer)', name: 'teacher-paper-preview', component: () => import('../views/teacher/PaperPreviewView.vue'), meta: { requiresAuth: true, roles: ['TEACHER'] } },
     {
