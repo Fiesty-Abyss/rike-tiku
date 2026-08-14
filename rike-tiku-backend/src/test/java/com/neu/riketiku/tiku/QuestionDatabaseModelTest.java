@@ -33,7 +33,11 @@ class QuestionDatabaseModelTest extends AdminQuestionIntegrationTestSupport {
         "guan_li_cao_zuo_ri_zhi", "ai_diao_yong_ri_zhi", "ai_cuo_ti_fen_xi", "ai_hui_hua", "ai_xiao_xi",
         "ai_mo_xing_pei_zhi", "ai_sheng_cheng_ren_wu", "ai_hou_xuan_ti_zhi_liang_ping_jia", "ai_shi_jue_shang_xia_wen",
         "mi_ma_chong_zhi_shen_qing", "shi_juan", "shi_juan_ti_mu", "ai_xue_sheng_bian_shi_shi_li",
-        "gao_pin_kao_dian_zhi_shi_dian", "gao_pin_kao_dian_fu_jian"
+        "gao_pin_kao_dian_zhi_shi_dian", "gao_pin_kao_dian_fu_jian",
+        "zhuan_ti_xue_xi_dan_yuan", "zhuan_ti_xue_xi_dan_yuan_ti_mu",
+        "shi_juan_fa_bu", "shi_juan_fa_bu_ti_mu", "shi_juan_ti_jiao", "shi_juan_xue_sheng_da_ti",
+        "gao_pin_kao_dian_shen_he_ji_lu", "xue_sheng_zhi_shi_ka_pian_zhuang_tai",
+        "zhi_shi_ka_pian_lian_xi_shi_li"
     );
 
     @Autowired

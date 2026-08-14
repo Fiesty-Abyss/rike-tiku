@@ -1,0 +1,3 @@
+package com.neu.riketiku.zhishikapian;
+import jakarta.validation.constraints.*;import java.util.List;import tools.jackson.databind.JsonNode;
+public final class KnowledgeCardPracticeDtos{private KnowledgeCardPracticeDtos(){}public record Generate(@NotBlank String questionType,@NotNull @Min(1)@Max(5)Integer difficulty,@NotBlank String variationMode,@NotNull @Min(1)@Max(3)Integer count){}public record Answer(@NotNull JsonNode answer){}public record Option(String label,String content){}public record Exercise(Long id,Long cardId,Long taskId,Long questionId,String status,String questionType,String stem,int difficulty,int answerSlots,List<Option>options,JsonNode studentAnswer,Boolean correct,JsonNode correctAnswer,String aiAnalysis,String variationSummary){} }

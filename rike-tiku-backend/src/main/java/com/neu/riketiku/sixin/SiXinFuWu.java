@@ -250,7 +250,7 @@ public class SiXinFuWu {
                        h.zui_hou_xiao_xi_shi_jian,
                        (SELECT COUNT(*) FROM si_xin_xiao_xi m WHERE m.hui_hua_id=h.id AND m.yi_du=0 AND m.yi_shan_chu=0
                          AND m.che_hui_shi_jian IS NULL AND m.jie_shou_zhe_yi_cang=0 AND m.fa_song_ren_yong_hu_id<>?),
-                       CASE WHEN h.zhuang_tai='PUBLISHED' AND r.zhuang_tai='ACTIVE'
+                       CASE WHEN h.zhuang_tai='ACTIVE' AND r.zhuang_tai='ACTIVE'
                          AND t.zhuang_tai='ACTIVE' AND t.yi_shan_chu=0 AND tu.zhang_hao_zhuang_tai='ENABLED' AND tu.yi_shan_chu=0
                          AND p.zhuang_tai='ACTIVE' AND p.yi_shan_chu=0 AND pu.zhang_hao_zhuang_tai='ENABLED' AND pu.yi_shan_chu=0
                          AND b.zhuang_tai='ACTIVE' AND b.yi_shan_chu=0 AND k.zhuang_tai='ACTIVE' AND k.yi_shan_chu=0

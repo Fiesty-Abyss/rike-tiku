@@ -41,7 +41,7 @@ class UserTeachingDatabaseModelTest extends AdminQuestionIntegrationTestSupport 
         "ai_xue_sheng_bian_shi_shi_li", "gao_pin_kao_dian_zhi_shi_dian", "gao_pin_kao_dian_fu_jian",
         "zhuan_ti_xue_xi_dan_yuan", "zhuan_ti_xue_xi_dan_yuan_ti_mu",
         "shi_juan_fa_bu", "shi_juan_fa_bu_ti_mu", "shi_juan_ti_jiao", "shi_juan_xue_sheng_da_ti",
-        "gao_pin_kao_dian_shen_he_ji_lu", "xue_sheng_zhi_shi_ka_pian_zhuang_tai"
+        "gao_pin_kao_dian_shen_he_ji_lu", "xue_sheng_zhi_shi_ka_pian_zhuang_tai", "zhi_shi_ka_pian_lian_xi_shi_li"
     );
 
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(4);
