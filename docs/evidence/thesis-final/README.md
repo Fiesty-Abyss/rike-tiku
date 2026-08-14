@@ -1,6 +1,6 @@
-# 论文最终匿名截图清单（01–24）
+# 论文最终匿名截图清单（01–42）
 
-本目录是 PR #33 唯一论文插图目录，只保留连续、无歧义的 01–24 文件及机器检查清单 `browser-results-pr33.json`。PR #32 的旧编号别名已迁至 [`../pr32-thesis-history`](../pr32-thesis-history/README.md)，没有删除审计证据。
+本目录是 PR #33 唯一论文插图目录，包含连续、无歧义的 01–42 文件及机器检查清单 `browser-results-pr33.json`。PR #32 的旧编号别名已迁至 [`../pr32-thesis-history`](../pr32-thesis-history/README.md)，没有删除审计证据。
 
 - 桌面视口 1440×1000；移动视口 390×844；页面全长截图的实际像素高度可大于视口。
 - “Demo API”表示访问匿名 `rike_tiku_demo` 的真实后端接口，不表示调用了真实 DeepSeek、GLM 或 Search Provider。
@@ -33,6 +33,24 @@
 | `21-student-mobile.png` | 移动学生首页 | `/student` | 390×844 | 匿名 Demo 学生与统计 | Demo API | 否 |
 | `22-system-architecture.svg` | 系统架构 | 非页面路由 | 1600×900 SVG | 当前模块与运行依赖 | 仓库事实绘图 | 否 |
 | `23-ai-controlled-flow.svg` | AI 受控业务流 | 非页面路由 | 1600×900 SVG | 当前 AI / STANDARD / 审核边界 | 仓库事实绘图 | 否 |
-| `24-database-modules.svg` | V19 数据库模块 | 非页面路由 | 1600×900 SVG | Flyway V1–V19 与 39 表 | 仓库事实绘图 | 否 |
+| `24-database-modules.svg` | V29 数据库模块 | 非页面路由 | 1600×900 SVG | Flyway V1–V29 与 50 表 | 仓库事实绘图 | 否 |
+| `25-password-recovery-desktop.png` | 密码恢复桌面弹窗 | `/login` | 1440×900 | 匿名 Demo CAPTCHA | Demo API | 否 |
+| `26-password-recovery-mobile.png` | 密码恢复移动弹窗 | `/login` | 390×844 | 匿名 Demo CAPTCHA | Demo API | 否 |
+| `27-wrong-question-review.png` | 错题筛选、再做与归档 | `/student/wrong-questions` | 1440×900 | 匿名 Demo 错题事实 | Demo API | 否 |
+| `28-topic-units.png` | 专题单元与附件 | `/student/topics` | 1440×900 | 匿名 Demo 专题 | Demo API | 否 |
+| `29-student-papers.png` | 学生试卷任务 | `/student/papers` | 1440×900 | 匿名 Demo 发布事实 | Demo API | 否 |
+| `30-knowledge-cards.png` | 学生知识卡片 | `/student/knowledge-cards` | 1440×900 | 匿名 Demo 已审核卡片 | Demo API | 否 |
+| `31-message-actions.png` | 私信与低干扰操作入口 | `/messages/:id` | 1440×900 | 匿名 Demo 会话 | Demo API | 否 |
+| `32-private-question-bank.png` | 教师班级私有题库 | `/teacher/private-questions` | 1440×900 | 匿名 Demo 任课范围 | Demo API | 否 |
+| `33-teacher-knowledge-cards.png` | 教师知识卡片审核 | `/teacher/knowledge-cards` | 1440×900 | 匿名 Demo 卡片 | Demo API | 否 |
+| `34-paper-publish-quality.png` | 试卷发布与 AI 质量评估入口 | `/teacher/papers` | 1440×900 | 匿名 Demo；AI 未真实调用 | Demo API | 否 |
+| `35-operation-log-search.png` | 操作日志分页检索 | `/admin/operation-logs` | 1440×900 | 匿名 Demo 安全元数据 | Demo API | 否 |
+| `36-question-import.png` | 19 列题库导入 | `/admin/question-import` | 1440×900 | 匿名 Demo | Demo API | 否 |
+| `37-student-import.png` | 7 列学生导入 | `/admin/student-import` | 1440×900 | 匿名 Demo | Demo API | 否 |
+| `38-vision-provider-config.png` | GLM / xAI 显式配置 | `/admin/ai-models` | 1440×900 | 无 Key 的安全配置元数据 | Demo API；无真实 Provider | 否 |
+| `39-question-review.png` | 管理员题目审核 | `/admin/questions` | 1440×900 | 匿名 Demo | Demo API | 否 |
+| `40-message-menu.png` | 消息操作菜单 | `/messages/:id` | 1440×900 | 匿名 Demo 会话 | Demo API | 否 |
+| `41-message-recall-confirm.png` | 居中撤回确认 | `/messages/:id` | 1440×900 | 匿名 Demo 会话 | Demo API | 否 |
+| `42-message-delete-confirm.png` | 居中仅本人删除确认 | `/messages/:id` | 1440×900 | 匿名 Demo 会话 | Demo API | 否 |
 
-`browser-results-pr33.json` 记录本轮 17 条实际路由的机器检查：0 console error、0 page error、0 failed request、0 horizontal overflow、0 missing assertion。该 JSON 与 09/10 夹具都不得解释为真人验收或真实 Provider PASS。
+`browser-results-pr33.json` 记录 17 条基础路线；[`../pr33-final-browser/browser-results-v29.json`](../pr33-final-browser/browser-results-v29.json) 记录 14 条新增路线与消息交互。合计 31 条机器检查均为 0 console error、0 page error、0 unexpected failed request、0 horizontal overflow、0 missing assertion。该 JSON 与 09/10 夹具都不得解释为真人验收或真实 Provider PASS。

@@ -28,7 +28,21 @@ erDiagram
     TI_MU_XUAN_XIANG o|--o{ TI_MU_FU_JIAN : "选项附件"
     TI_MU ||--o{ TI_MU_LAI_YUAN : "分项来源"
     TI_MU ||--o{ TI_MU_SHEN_HE_JI_LU : "审核轨迹"
+    TI_MU ||--o{ ZHUAN_TI_XUE_XI_DAN_YUAN_TI_MU : "专题引用"
+    ZHUAN_TI_XUE_XI_DAN_YUAN ||--o{ ZHUAN_TI_XUE_XI_DAN_YUAN_TI_MU : "组织2至3题"
+    SHI_JUAN ||--o{ SHI_JUAN_FA_BU : "发布"
+    REN_KE_GUAN_XI ||--o{ SHI_JUAN_FA_BU : "授权班级科目"
+    SHI_JUAN_FA_BU ||--o{ SHI_JUAN_FA_BU_TI_MU : "冻结题目"
+    SHI_JUAN_FA_BU ||--o{ SHI_JUAN_TI_JIAO : "学生提交"
+    SHI_JUAN_TI_JIAO ||--o{ SHI_JUAN_XUE_SHENG_DA_TI : "逐题事实"
+    GAO_PIN_KAO_DIAN ||--o{ GAO_PIN_KAO_DIAN_SHEN_HE_JI_LU : "卡片审核"
+    GAO_PIN_KAO_DIAN ||--o{ XUE_SHENG_ZHI_SHI_KA_PIAN_ZHUANG_TAI : "收藏掌握"
+    GAO_PIN_KAO_DIAN ||--o{ ZHI_SHI_KA_PIAN_LIAN_XI_SHI_LI : "生成练习"
 ```
+
+## V29 结构口径
+
+当前结构为 Flyway V1–V29、50 张业务表。V25 保存候选题新颖度审计元数据；V26 增加专题单元并扩展显式 GLM/xAI 视觉配置；V27 增加试卷发布快照、学生提交和逐题事实；V28 完成知识卡片审核与学生状态；V29 增加知识卡片生成练习实例。纯结构细节见 [`schema_snapshot_v29.sql`](../schema_snapshot_v29.sql)。
 
 ## 权限数据路径
 
