@@ -1,72 +1,66 @@
 {
-  "generatedAt": "2026-08-14T04:08:57.581Z",
-  "fixtureDisclosure": "Screenshots 09 and 10 use a deterministic intercepted variant response to verify UI states; all other routes use rike_tiku_demo APIs.",
+  "generatedAt": "2026-08-14T04:12:09.388Z",
+  "database": "rike_tiku_demo",
+  "providerDisclosure": "Provider-dependent screens were not called because rotated credentials are absent. Existing variant screenshots 09/10 are explicitly deterministic UI fixtures.",
   "summary": {
-    "routes": 17,
+    "routes": 14,
     "consoleErrors": 0,
     "pageErrors": 0,
     "failedRequests": 0,
     "overflows": [],
-    "missingExpected": []
+    "missingExpected": [],
+    "assertionFailures": []
   },
-  "records": [
+  "assertions": [
     {
-      "route": "/",
-      "consoleErrors": [],
-      "pageErrors": [],
-      "failedRequests": [],
-      "status": 200,
-      "finalPath": "/",
-      "expected": true,
-      "overflow": false
+      "name": "password-recovery-desktop",
+      "pass": true
     },
     {
-      "route": "/login",
+      "name": "password-recovery-mobile-overflow",
+      "pass": true
+    },
+    {
+      "name": "199-paper-visible",
+      "pass": true
+    },
+    {
+      "name": "topic-unit-has-three-questions",
+      "pass": true
+    },
+    {
+      "name": "message-confirm-centered",
+      "pass": true
+    },
+    {
+      "name": "message-recalled-state",
+      "pass": true
+    },
+    {
+      "name": "message-hidden-for-self",
+      "pass": true
+    },
+    {
+      "name": "200-paper-hidden",
+      "pass": true
+    },
+    {
+      "name": "recalled-hidden-from-peer",
+      "pass": true
+    },
+    {
+      "name": "self-deleted-remains-for-peer",
+      "pass": true
+    }
+  ],
+  "records": [
+    {
+      "route": "/login/student",
       "consoleErrors": [],
       "pageErrors": [],
       "failedRequests": [],
       "status": 200,
       "finalPath": "/login",
-      "expected": true,
-      "overflow": false
-    },
-    {
-      "route": "/",
-      "consoleErrors": [],
-      "pageErrors": [],
-      "failedRequests": [],
-      "status": 200,
-      "finalPath": "/",
-      "expected": true,
-      "overflow": false
-    },
-    {
-      "route": "/student",
-      "consoleErrors": [],
-      "pageErrors": [],
-      "failedRequests": [],
-      "status": 200,
-      "finalPath": "/student",
-      "expected": true,
-      "overflow": false
-    },
-    {
-      "route": "/student/practice/new",
-      "consoleErrors": [],
-      "pageErrors": [],
-      "failedRequests": [],
-      "status": 200,
-      "finalPath": "/student/practice/new",
-      "expected": true,
-      "overflow": false
-    },
-    {
-      "route": "/student/practice/5/result",
-      "consoleErrors": [],
-      "pageErrors": [],
-      "failedRequests": [],
-      "status": 200,
-      "finalPath": "/student/practice/5/result",
       "expected": true,
       "overflow": false
     },
@@ -81,32 +75,62 @@
       "overflow": false
     },
     {
-      "route": "/student",
+      "route": "/student/topics",
       "consoleErrors": [],
       "pageErrors": [],
       "failedRequests": [],
       "status": 200,
-      "finalPath": "/student",
+      "finalPath": "/student/topics",
       "expected": true,
       "overflow": false
     },
     {
-      "route": "/teacher",
+      "route": "/student/papers",
       "consoleErrors": [],
       "pageErrors": [],
       "failedRequests": [],
       "status": 200,
-      "finalPath": "/teacher",
+      "finalPath": "/student/papers",
       "expected": true,
       "overflow": false
     },
     {
-      "route": "/teacher/ai-generation",
+      "route": "/student/knowledge-cards",
       "consoleErrors": [],
       "pageErrors": [],
       "failedRequests": [],
       "status": 200,
-      "finalPath": "/teacher/ai-generation",
+      "finalPath": "/student/knowledge-cards",
+      "expected": true,
+      "overflow": false
+    },
+    {
+      "route": "/messages/1",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedRequests": [],
+      "status": 200,
+      "finalPath": "/messages/1",
+      "expected": true,
+      "overflow": false
+    },
+    {
+      "route": "/teacher/private-questions",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedRequests": [],
+      "status": 200,
+      "finalPath": "/teacher/private-questions",
+      "expected": true,
+      "overflow": false
+    },
+    {
+      "route": "/teacher/scopes/4/knowledge-cards",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedRequests": [],
+      "status": 200,
+      "finalPath": "/teacher/scopes/4/knowledge-cards",
       "expected": true,
       "overflow": false
     },
@@ -121,32 +145,32 @@
       "overflow": false
     },
     {
-      "route": "/teacher/papers/2/student",
+      "route": "/admin/operation-logs",
       "consoleErrors": [],
       "pageErrors": [],
       "failedRequests": [],
       "status": 200,
-      "finalPath": "/teacher/papers/2/student",
+      "finalPath": "/admin/operation-logs",
       "expected": true,
       "overflow": false
     },
     {
-      "route": "/teacher/papers/2/answer",
+      "route": "/admin/questions/import",
       "consoleErrors": [],
       "pageErrors": [],
       "failedRequests": [],
       "status": 200,
-      "finalPath": "/teacher/papers/2/answer",
+      "finalPath": "/admin/questions/import",
       "expected": true,
       "overflow": false
     },
     {
-      "route": "/admin",
+      "route": "/admin/students/import",
       "consoleErrors": [],
       "pageErrors": [],
       "failedRequests": [],
       "status": 200,
-      "finalPath": "/admin",
+      "finalPath": "/admin/students/import",
       "expected": true,
       "overflow": false
     },
@@ -161,22 +185,12 @@
       "overflow": false
     },
     {
-      "route": "/admin/password-recovery",
+      "route": "/admin/questions",
       "consoleErrors": [],
       "pageErrors": [],
       "failedRequests": [],
       "status": 200,
-      "finalPath": "/admin/password-recovery",
-      "expected": true,
-      "overflow": false
-    },
-    {
-      "route": "/admin/ai-generation",
-      "consoleErrors": [],
-      "pageErrors": [],
-      "failedRequests": [],
-      "status": 200,
-      "finalPath": "/admin/ai-generation",
+      "finalPath": "/admin/questions",
       "expected": true,
       "overflow": false
     }
