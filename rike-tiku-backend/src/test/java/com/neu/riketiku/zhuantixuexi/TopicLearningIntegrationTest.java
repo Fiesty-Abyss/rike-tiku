@@ -32,6 +32,15 @@ class TopicLearningIntegrationTest extends AdminQuestionIntegrationTestSupport {
         assertThat(detail.material()).isNotBlank();
         assertThat(detail.standardAnalysis()).contains("步骤");
         assertThat(detail.knowledgePoints()).isNotEmpty();
+        var units=service.units(userId,null);
+        assertThat(units).hasSize(3).allSatisfy(unit->assertThat(unit.questionCount()).isEqualTo(3));
+        var unit=service.unit(userId,units.getFirst().id());
+        assertThat(unit.questions()).extracting(TopicLearningDtos.UnitQuestion::stage)
+                .containsExactly("FOUNDATION","TRANSFER","ADVANCED");
+        var illustrated=all.stream().filter(item->item.title().equals("力学综合计算")).findFirst().orElseThrow();
+        var illustratedDetail=service.detail(userId,illustrated.id());
+        assertThat(illustratedDetail.stemAttachments()).singleElement().satisfies(item->assertThat(item.contentUrl()).contains("/topic-learning/"));
+        assertThat(illustratedDetail.analysisAttachments()).hasSize(1);
         assertThat(jdbc.queryForObject("""
                 SELECT COUNT(*) FROM ti_mu WHERE id=? AND ti_mu_lei_xing='SUBJECTIVE'
                   AND shi_yong_mo_shi='TOPIC_LEARNING' AND shi_fou_ke_zi_dong_pan_fen=0

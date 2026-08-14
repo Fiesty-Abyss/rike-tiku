@@ -38,7 +38,8 @@ class UserTeachingDatabaseModelTest extends AdminQuestionIntegrationTestSupport 
         "guan_li_cao_zuo_ri_zhi", "ai_diao_yong_ri_zhi", "ai_cuo_ti_fen_xi", "ai_hui_hua", "ai_xiao_xi",
         "ai_mo_xing_pei_zhi", "ai_sheng_cheng_ren_wu", "ai_hou_xuan_ti_zhi_liang_ping_jia",
         "ai_shi_jue_shang_xia_wen", "mi_ma_chong_zhi_shen_qing", "shi_juan", "shi_juan_ti_mu",
-        "ai_xue_sheng_bian_shi_shi_li", "gao_pin_kao_dian_zhi_shi_dian", "gao_pin_kao_dian_fu_jian"
+        "ai_xue_sheng_bian_shi_shi_li", "gao_pin_kao_dian_zhi_shi_dian", "gao_pin_kao_dian_fu_jian",
+        "zhuan_ti_xue_xi_dan_yuan", "zhuan_ti_xue_xi_dan_yuan_ti_mu"
     );
 
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(4);
@@ -277,7 +278,7 @@ class UserTeachingDatabaseModelTest extends AdminQuestionIntegrationTestSupport 
                 assertThat(singleInt(statement,
                     "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='" + schema
                         + "' AND table_name <> 'flyway_schema_history'"))
-                    .isEqualTo(41);
+                    .isEqualTo(DatabaseSchemaFacts.BUSINESS_TABLE_COUNT);
                 assertThat(singleInt(statement, "SELECT COUNT(*) FROM ti_mu")).isEqualTo(3);
                 assertThat(singleInt(statement,
                     "SELECT COUNT(*) FROM flyway_schema_history WHERE success=1"))

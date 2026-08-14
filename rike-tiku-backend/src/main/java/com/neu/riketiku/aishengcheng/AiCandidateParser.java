@@ -14,7 +14,7 @@ import tools.jackson.databind.ObjectMapper;
 class AiCandidateParser {
     private static final Set<String> ROOT_FIELDS=Set.of("schemaVersion","candidates");
     private static final Set<String> FIELDS=Set.of("stem","questionType","difficulty","options","correctAnswer","standardAnalysis","variationMode","variationSummary","changedDimensions");
-    private static final Set<String> TYPES=Set.of("SINGLE_CHOICE","MULTIPLE_CHOICE","FILL_BLANK");
+    private static final Set<String> TYPES=Set.of("SINGLE_CHOICE","MULTIPLE_CHOICE","FILL_BLANK","SUBJECTIVE");
     private static final Set<String> MODES=Set.of("SCENARIO_TRANSFER","CONDITION_RECOMBINATION","REPRESENTATION_SWITCH","MULTI_STEP_EXTENSION","DISTRACTOR_REDESIGN","COMBINED");
     private static final Set<String> DIMENSIONS=Set.of("SCENARIO","CONDITION","DATA","REPRESENTATION","REASONING_PATH","DISTRACTOR","KNOWLEDGE_COMBINATION");
     private static final Pattern FENCE=Pattern.compile("(?s)^\\s*```(?:json)?\\s*([\\s\\S]*?)\\s*```\\s*$",Pattern.CASE_INSENSITIVE);
@@ -80,6 +80,10 @@ class AiCandidateParser {
     }
 
     private void validateAnswer(String type,List<Option> options,JsonNode answer,String path){
+        if("SUBJECTIVE".equals(type)){
+            if(!options.isEmpty()||!"SUBJECTIVE".equals(answer.path("type").asText()))throw invalid("ANSWER_INVALID",path,"主观专题题不提供客观选项且答案类型必须为 SUBJECTIVE");
+            return;
+        }
         if("FILL_BLANK".equals(type)){
             if(!options.isEmpty()||answer.path("schemaVersion").asInt(-1)!=1||!type.equals(answer.path("type").asText())||!answer.path("blanks").isArray()||answer.path("blanks").isEmpty())throw invalid("ANSWER_INVALID",path,"填空答案结构非法");
             for(JsonNode blank:answer.path("blanks")){JsonNode accepted=blank.path("acceptedAnswers");if(!blank.isObject()||!accepted.isArray()||accepted.isEmpty()||accepted.size()>8)throw invalid("ANSWER_INVALID",path,"每空必须提供可接受答案");for(JsonNode value:accepted)if(!value.isTextual()||value.asText().isBlank()||value.asText().length()>300||danger(value.asText()))throw invalid("ANSWER_INVALID",path,"可接受答案非法");}

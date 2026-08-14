@@ -120,7 +120,9 @@ public class DemoDataService {
         for (DemoTopicQuestionBank.TopicQuestion question : DemoTopicQuestionBank.questions()) {
             seedTopicQuestion(question, required(subjects, question.subject()), required(points, question.knowledgePath()), users.get("demo_admin"));
         }
+        seedTopicUnits(users.get("demo_admin"));
         seedHighFrequencyPoints(scopes, points);
+        seedVisualQuestionCoverage();
         seedAcceptanceFacts(users, scopes);
         validateSeed();
         System.out.println("演示数据写入完成。14个固定演示账号、3个班级、4位教师、9名学生；固定密码: " + DEMO_PASSWORD + "（仅限本地演示库）");
@@ -340,15 +342,23 @@ public class DemoDataService {
                   AND (a.jie_xi_nei_rong LIKE '%演示时可用其他选项构造错题%'
                        OR a.jie_xi_nei_rong LIKE '%正确答案为由%')
                 """));
-        expect("活动图片附件", 2, count("SELECT COUNT(*) FROM ti_mu_fu_jian f JOIN ti_mu q ON q.id=f.ti_mu_id WHERE q.ti_gan LIKE '【演示】%' AND f.fu_jian_lei_xing='IMAGE' AND f.zhuang_tai='ACTIVE' AND f.yi_shan_chu=0"));
+        expect("活动图片附件", 26, count("SELECT COUNT(*) FROM ti_mu_fu_jian f JOIN ti_mu q ON q.id=f.ti_mu_id WHERE q.ti_gan LIKE '【演示】%' AND f.fu_jian_lei_xing='IMAGE' AND f.zhuang_tai='ACTIVE' AND f.yi_shan_chu=0"));
+        expect("专题学习单元", 3, count("SELECT COUNT(*) FROM zhuan_ti_xue_xi_dan_yuan WHERE lai_yuan_ming_cheng='RIKE匿名Demo专题单元' AND zhuang_tai='PUBLISHED' AND yi_shan_chu=0"));
+        expect("专题单元三级题", 9, count("SELECT COUNT(*) FROM zhuan_ti_xue_xi_dan_yuan_ti_mu i JOIN zhuan_ti_xue_xi_dan_yuan u ON u.id=i.dan_yuan_id WHERE u.lai_yuan_ming_cheng='RIKE匿名Demo专题单元'"));
+        for(String code:List.of("PHYSICS","CHEMISTRY","BIOLOGY"))expect(code+"八类项目自制视觉题",8,count("""
+                SELECT COUNT(DISTINCT q.id) FROM ti_mu q JOIN ke_mu s ON s.id=q.ke_mu_id
+                JOIN ti_mu_fu_jian f ON f.ti_mu_id=q.id AND f.guan_lian_wei_zhi='QUESTION' AND f.yuan_shi_wen_jian_ming LIKE 'rike-visual-%'
+                WHERE s.ke_mu_dai_ma=? AND f.zhuang_tai='ACTIVE' AND f.yi_shan_chu=0
+                """,code));
         List<DemoAttachment> physicsS1Attachments = jdbc.query("""
                 SELECT f.guan_lian_wei_zhi,f.dui_xiang_biao_shi,f.xiang_dui_lu_jing,f.nei_rong_ha_xi
                 FROM ti_mu_fu_jian f
                 JOIN ti_mu q ON q.id=f.ti_mu_id
                 JOIN ke_mu s ON s.id=q.ke_mu_id
                 WHERE s.ke_mu_dai_ma='PHYSICS'
-                  AND q.ti_gan='【演示】物体保持静止时，所受合力应为多少？〔图片对象 I001〕'
+                  AND q.ti_gan LIKE '【演示】物体保持静止时，所受合力应为多少？〔图片对象 I001〕%'
                   AND f.fu_jian_lei_xing='IMAGE' AND f.zhuang_tai='ACTIVE' AND f.yi_shan_chu=0
+                  AND f.dui_xiang_biao_shi IN ('I001','I002')
                 ORDER BY f.guan_lian_wei_zhi
                 """, (rs, row) -> new DemoAttachment(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4)));
         if (physicsS1Attachments.size() != 2
@@ -611,7 +621,8 @@ public class DemoDataService {
     }
 
     private void seedTopicQuestion(DemoTopicQuestionBank.TopicQuestion q, long subjectId, long pointId, long adminId) {
-        String stem = TOPIC_STEM_PREFIX + q.title() + "｜" + q.stem();
+        boolean illustrated="PT-01".equals(q.key());
+        String stem = TOPIC_STEM_PREFIX + q.title() + "｜" + q.stem()+(illustrated?"〔图片对象 I101〕":"");
         String contentHash = contentHashService.calculate(stem, List.of());
         String existingStem = jdbc.query("SELECT ti_gan FROM ti_mu WHERE ke_mu_id=? AND nei_rong_ha_xi=? AND yi_shan_chu=0",
                 rs -> rs.next() ? rs.getString(1) : null, subjectId, contentHash);
@@ -623,7 +634,11 @@ public class DemoDataService {
                 VALUES (?,'SUBJECTIVE','TOPIC_LEARNING','COMPREHENSIVE',?,JSON_OBJECT('type','SUBJECTIVE'),?,'综合材料阅读与分步推理',0,'PUBLISHED',?)
                 """, subjectId, stem, q.difficulty(), contentHash);
         jdbc.update("INSERT INTO ti_mu_jie_xi (ti_mu_id,jie_xi_lei_xing,jie_xi_nei_rong,ban_ben_hao,zhuang_tai) VALUES (?,'STANDARD',?,1,'PUBLISHED')",
-                questionId, q.analysis());
+                questionId, q.analysis()+(illustrated?"〔图片对象 I102〕":""));
+        if(illustrated){QuestionAttachmentStorage.StoredImage image=attachmentStorage.store("demo-topic-force.png",demoDiagram());
+            long analysisId=jdbc.queryForObject("SELECT id FROM ti_mu_jie_xi WHERE ti_mu_id=? AND jie_xi_lei_xing='STANDARD'",Long.class,questionId);
+            jdbc.update("INSERT INTO ti_mu_fu_jian(ti_mu_id,guan_lian_wei_zhi,fu_jian_lei_xing,yuan_shi_wen_jian_ming,xiang_dui_lu_jing,nei_rong_ha_xi,dui_xiang_biao_shi,pai_xu,zhuang_tai) VALUES (?,'QUESTION','IMAGE','demo-topic-force.png',?,?, 'I101',1,'ACTIVE')",questionId,image.relativePath(),image.hash());
+            jdbc.update("INSERT INTO ti_mu_fu_jian(ti_mu_id,ti_mu_jie_xi_id,guan_lian_wei_zhi,fu_jian_lei_xing,yuan_shi_wen_jian_ming,xiang_dui_lu_jing,nei_rong_ha_xi,dui_xiang_biao_shi,pai_xu,zhuang_tai) VALUES (?,?,'STANDARD_ANALYSIS','IMAGE','demo-topic-force.png',?,?, 'I102',1,'ACTIVE')",questionId,analysisId,image.relativePath(),image.hash());}
         jdbc.update("INSERT INTO ti_mu_zhi_shi_dian (ti_mu_id,zhi_shi_dian_id,shi_fou_zhu_yao,pai_xu) VALUES (?,?,1,1)", questionId, pointId);
         for (String contentType : List.of("QUESTION", "ANSWER", "STANDARD_ANALYSIS")) jdbc.update("""
                 INSERT INTO ti_mu_lai_yuan (ti_mu_id,nei_rong_lei_xing,lai_yuan_lei_xing,lai_yuan_ming_cheng,lai_yuan_di_zhi,quan_li_zhuang_tai,quan_li_yi_ju)
@@ -635,6 +650,8 @@ public class DemoDataService {
 
     private void cleanInternal() {
         guardDatabaseName(currentDatabase());
+        jdbc.update("DELETE i FROM zhuan_ti_xue_xi_dan_yuan_ti_mu i JOIN zhuan_ti_xue_xi_dan_yuan u ON u.id=i.dan_yuan_id WHERE u.lai_yuan_ming_cheng='RIKE匿名Demo专题单元'");
+        jdbc.update("DELETE FROM zhuan_ti_xue_xi_dan_yuan WHERE lai_yuan_ming_cheng='RIKE匿名Demo专题单元'");
         jdbc.update("DELETE FROM ai_mo_xing_pei_zhi WHERE mo_xing_dai_ma LIKE 'demo-disabled-%' AND api_mi_yao IS NULL");
         jdbc.query("SELECT DISTINCT f.xiang_dui_lu_jing FROM ti_mu_fu_jian f JOIN ti_mu q ON q.id=f.ti_mu_id WHERE q.ti_gan LIKE '【演示】%' OR q.ti_gan LIKE '【专题演示】%'", (rs, row) -> rs.getString(1))
                 .forEach(this::deleteDemoAttachmentIfUnreferencedOutsideDemo);
@@ -660,6 +677,62 @@ public class DemoDataService {
                 .sorted(Comparator.comparingInt(DemoDataService::pathDepth).reversed())
                 .forEach(path -> jdbc.update("DELETE FROM zhi_shi_dian WHERE wan_zheng_lu_jing=? AND id>9", path));
     }
+
+    private void seedTopicUnits(long adminId){
+        for(String subjectCode:List.of("PHYSICS","CHEMISTRY","BIOLOGY")){
+            List<Long> questions=jdbc.queryForList("""
+                    SELECT q.id FROM ti_mu q JOIN ke_mu s ON s.id=q.ke_mu_id
+                    WHERE s.ke_mu_dai_ma=? AND q.ti_mu_lei_xing='SUBJECTIVE' AND q.shi_yong_mo_shi='TOPIC_LEARNING'
+                      AND q.zhuang_tai='PUBLISHED' AND q.yi_shan_chu=0 ORDER BY q.nan_du,q.id LIMIT 3
+                    """,Long.class,subjectCode);
+            if(questions.size()!=3)throw new IllegalStateException(subjectCode+"专题单元需要3道题");
+            Map<String,Object> facts=jdbc.queryForMap("""
+                    SELECT q.ke_mu_id,z.zhi_shi_dian_id FROM ti_mu q JOIN ti_mu_zhi_shi_dian z ON z.ti_mu_id=q.id AND z.shi_fou_zhu_yao=1
+                    WHERE q.id=? ORDER BY z.pai_xu LIMIT 1
+                    """,questions.getFirst());
+            long unitId=insert("""
+                    INSERT INTO zhuan_ti_xue_xi_dan_yuan(ke_mu_id,biao_ti,jian_jie,nan_du_ceng_ji,zhu_zhi_shi_dian_id,pai_xu,zhuang_tai,
+                      chuang_jian_ren_id,lai_yuan_lei_xing,lai_yuan_ming_cheng,quan_li_zhuang_tai)
+                    VALUES (?,?,?,?,?,1,'PUBLISHED',?,'PROJECT_AUTHORED','RIKE匿名Demo专题单元','PROJECT_AUTHORED')
+                    """,facts.get("ke_mu_id"),subjectCode+"三阶专题训练","基础理解、情境迁移、综合提升三步学习；主观草稿不上传且不自动评分。",3,
+                    facts.get("zhi_shi_dian_id"),adminId);
+            String[] stages={"FOUNDATION","TRANSFER","ADVANCED"};
+            for(int index=0;index<3;index++)jdbc.update("INSERT INTO zhuan_ti_xue_xi_dan_yuan_ti_mu(dan_yuan_id,ti_mu_id,xue_xi_jie_duan,pai_xu) VALUES (?,?,?,?)",
+                    unitId,questions.get(index),stages[index],index+1);
+        }
+    }
+
+    private void seedVisualQuestionCoverage(){
+        Map<String,List<String>> scenes=Map.of(
+                "PHYSICS",List.of("force-analysis","electric-field","circuit","motion-graph","light-path","instrument-reading","magnetic-field","energy-flow"),
+                "CHEMISTRY",List.of("apparatus","reaction-flow","structure-formula","equation","periodic-table","ionic-reaction","crystal","titration"),
+                "BIOLOGY",List.of("atp-cycle","photosynthesis","respiration","pedigree","chromosome","cell","energy-flow","experiment-variable"));
+        for(var entry:scenes.entrySet()){
+            List<Long> questionIds=jdbc.queryForList("""
+                    SELECT q.id FROM ti_mu q JOIN ke_mu s ON s.id=q.ke_mu_id
+                    WHERE s.ke_mu_dai_ma=? AND q.ti_gan LIKE '【演示】%' AND q.zhuang_tai='PUBLISHED' AND q.yi_shan_chu=0
+                    ORDER BY q.id LIMIT 8
+                    """,Long.class,entry.getKey());
+            if(questionIds.size()!=8)throw new IllegalStateException(entry.getKey()+"缺少视觉题载体");
+            for(int index=0;index<8;index++){
+                long questionId=questionIds.get(index);String scene=entry.getValue().get(index);String marker="V"+String.format("%03d",index+1);
+                byte[] svg=scienceDiagramSvg(entry.getKey(),scene);QuestionAttachmentStorage.StoredImage image=attachmentStorage.store("rike-visual-"+entry.getKey().toLowerCase()+"-"+scene+".svg",svg);
+                jdbc.update("UPDATE ti_mu SET ti_gan=CONCAT(ti_gan,'〔图片对象 ',?,'〕'),nei_rong_ha_xi=SHA2(CONCAT(id,'|rike-visual|',?),256) WHERE id=?",marker,scene,questionId);
+                jdbc.update("""
+                        INSERT INTO ti_mu_fu_jian(ti_mu_id,guan_lian_wei_zhi,fu_jian_lei_xing,yuan_shi_wen_jian_ming,xiang_dui_lu_jing,
+                          nei_rong_ha_xi,dui_xiang_biao_shi,pai_xu,zhuang_tai)
+                        VALUES (?,'QUESTION','IMAGE',?,?,?,?,1,'ACTIVE')
+                        """,questionId,"rike-visual-"+entry.getKey().toLowerCase()+"-"+scene+".svg",image.relativePath(),image.hash(),marker);
+            }
+        }
+    }
+
+    private byte[] scienceDiagramSvg(String subject,String scene){String safe=(subject+" "+scene).replaceAll("[^A-Za-z0-9 -]","");
+        return ("<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 640 360\"><rect width=\"640\" height=\"360\" fill=\"#f4fbff\"/>"
+                +"<path d=\"M80 260 L220 90 L360 260 Z\" fill=\"none\" stroke=\"#174f73\" stroke-width=\"8\"/>"
+                +"<circle cx=\"470\" cy=\"175\" r=\"75\" fill=\"#bfe8ef\" stroke=\"#174f73\" stroke-width=\"6\"/>"
+                +"<text x=\"40\" y=\"330\" font-size=\"28\" fill=\"#174f73\">RIKE project-authored "+safe+"</text></svg>")
+                .getBytes(java.nio.charset.StandardCharsets.UTF_8);}
 
     private void seedAcceptanceFacts(Map<String, Long> users, Map<String, Long> scopes) {
         long studentId = jdbc.queryForObject("SELECT id FROM xue_sheng_dang_an WHERE xue_hao='DEMO_S001'", Long.class);
