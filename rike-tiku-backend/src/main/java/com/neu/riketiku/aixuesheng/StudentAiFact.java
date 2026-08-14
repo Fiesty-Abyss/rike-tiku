@@ -4,7 +4,7 @@ record StudentAiFact(
         Long answerFactId,
         long studentId,
         Long practiceQuestionId,
-        long questionId,
+        Long questionId,
         String subjectCode,
         String questionType,
         String stem,

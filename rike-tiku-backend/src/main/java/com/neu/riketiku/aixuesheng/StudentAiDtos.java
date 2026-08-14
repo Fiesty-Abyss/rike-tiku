@@ -21,7 +21,7 @@ public final class StudentAiDtos {
             LocalDateTime createdAt,
             LocalDateTime updatedAt) { }
 
-    public record CreateConversationRequest(Long answerFactId, Long topicQuestionId, String contextType,
+    public record CreateConversationRequest(Long answerFactId, Long topicQuestionId, Long knowledgeCardId, String contextType,
                                             Long modelConfigId, String thinkingMode, Boolean webSearch) { }
 
     public record SendMessageRequest(
@@ -36,6 +36,7 @@ public final class StudentAiDtos {
             Long id,
             Long answerFactId,
             Long topicQuestionId,
+            Long knowledgeCardId,
             String contextType,
             Long questionId,
             String status,

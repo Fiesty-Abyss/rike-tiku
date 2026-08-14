@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.HexFormat;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 import java.util.regex.Pattern;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -138,26 +139,26 @@ public class StudentAiService {
 
     @Transactional
     public StudentAiDtos.Conversation createConversation(Long userId, Long answerFactId) {
-        return createConversation(userId, answerFactId, null, "PRACTICE_RESULT", null, "STANDARD", false);
+        return createConversation(userId, answerFactId, null, null, "PRACTICE_RESULT", null, "STANDARD", false);
     }
 
     @Transactional
     public StudentAiDtos.Conversation createConversation(Long userId, Long answerFactId, Long modelConfigId,
                                                          String rawThinkingMode, boolean webSearch) {
-        return createConversation(userId,answerFactId,null,"PRACTICE_RESULT",modelConfigId,rawThinkingMode,webSearch);
+        return createConversation(userId,answerFactId,null,null,"PRACTICE_RESULT",modelConfigId,rawThinkingMode,webSearch);
     }
 
     @Transactional
-    public StudentAiDtos.Conversation createConversation(Long userId, Long answerFactId, Long topicQuestionId,
+    public StudentAiDtos.Conversation createConversation(Long userId, Long answerFactId, Long topicQuestionId, Long knowledgeCardId,
                                                          String rawContextType, Long modelConfigId,
                                                          String rawThinkingMode, boolean webSearch) {
-        String contextType = "TOPIC_QUESTION".equalsIgnoreCase(rawContextType) ? "TOPIC_QUESTION" : "PRACTICE_RESULT";
-        if (("PRACTICE_RESULT".equals(contextType) && (answerFactId == null || topicQuestionId != null))
-                || ("TOPIC_QUESTION".equals(contextType) && (topicQuestionId == null || answerFactId != null))) {
+        String contextType = Set.of("TOPIC_QUESTION","KNOWLEDGE_CARD").contains(String.valueOf(rawContextType).toUpperCase(Locale.ROOT))?String.valueOf(rawContextType).toUpperCase(Locale.ROOT):"PRACTICE_RESULT";
+        if (("PRACTICE_RESULT".equals(contextType) && (answerFactId == null || topicQuestionId != null || knowledgeCardId!=null))
+                || ("TOPIC_QUESTION".equals(contextType) && (topicQuestionId == null || answerFactId != null || knowledgeCardId!=null))
+                || ("KNOWLEDGE_CARD".equals(contextType) && (knowledgeCardId==null || answerFactId!=null || topicQuestionId!=null))) {
             throw failure("AI_CONVERSATION_CONTEXT_INVALID", "AI 会话必须且只能绑定一种题目上下文", HttpStatus.BAD_REQUEST);
         }
-        StudentAiFact fact = "TOPIC_QUESTION".equals(contextType)
-                ? requireTopicFact(userId,topicQuestionId) : requireFact(userId, answerFactId);
+        StudentAiFact fact = switch(contextType){case "TOPIC_QUESTION"->requireTopicFact(userId,topicQuestionId);case "KNOWLEDGE_CARD"->requireCardFact(userId,knowledgeCardId);default->requireFact(userId,answerFactId);};
         String thinkingMode = "DEEP".equalsIgnoreCase(rawThinkingMode) ? "DEEP" : "STANDARD";
         if (modelConfigId != null) runtimeConfigurations.text(modelConfigId);
         boolean effectiveWebSearch = webSearch && runtimeConfigurations.searchAvailable();
@@ -165,17 +166,18 @@ public class StudentAiService {
         jdbc.update(connection -> {
             PreparedStatement statement = connection.prepareStatement("""
                     INSERT INTO ai_hui_hua (xue_sheng_id,xue_sheng_da_ti_id,lian_xi_ti_mu_id,shang_xia_wen_lei_xing,
-                      zhuan_ti_ti_mu_id,ai_mo_xing_pei_zhi_id,si_kao_mo_shi,shi_fou_lian_wang,zhuang_tai,lei_ji_lun_shu)
-                    VALUES (?,?,?,?,?,?,?,?, 'ACTIVE',0)
+                      zhuan_ti_ti_mu_id,zhi_shi_ka_pian_id,ai_mo_xing_pei_zhi_id,si_kao_mo_shi,shi_fou_lian_wang,zhuang_tai,lei_ji_lun_shu)
+                    VALUES (?,?,?,?,?,?,?,?,?, 'ACTIVE',0)
                     """, Statement.RETURN_GENERATED_KEYS);
             statement.setLong(1, fact.studentId());
             if (fact.answerFactId() == null) statement.setNull(2,java.sql.Types.BIGINT); else statement.setLong(2,fact.answerFactId());
             if (fact.practiceQuestionId() == null) statement.setNull(3,java.sql.Types.BIGINT); else statement.setLong(3,fact.practiceQuestionId());
             statement.setString(4,contextType);
             if (topicQuestionId == null) statement.setNull(5,java.sql.Types.BIGINT); else statement.setLong(5,topicQuestionId);
-            if (modelConfigId == null) statement.setNull(6, java.sql.Types.BIGINT); else statement.setLong(6, modelConfigId);
-            statement.setString(7, thinkingMode);
-            statement.setBoolean(8, effectiveWebSearch);
+            if (knowledgeCardId == null) statement.setNull(6,java.sql.Types.BIGINT); else statement.setLong(6,knowledgeCardId);
+            if (modelConfigId == null) statement.setNull(7, java.sql.Types.BIGINT); else statement.setLong(7, modelConfigId);
+            statement.setString(8, thinkingMode);
+            statement.setBoolean(9, effectiveWebSearch);
             return statement;
         }, holder);
         return conversation(userId, holder.getKey().longValue());
@@ -197,8 +199,7 @@ public class StudentAiService {
         if (content.isEmpty() || content.length() > 500) {
             throw failure("AI_MESSAGE_INVALID", "追问内容需为 1 至 500 字", HttpStatus.BAD_REQUEST);
         }
-        StudentAiFact fact = "TOPIC_QUESTION".equals(row.contextType())
-                ? requireTopicFact(userId,row.topicQuestionId()) : requireFact(userId, row.answerFactId());
+        StudentAiFact fact = switch(row.contextType()){case "TOPIC_QUESTION"->requireTopicFact(userId,row.topicQuestionId());case "KNOWLEDGE_CARD"->requireCardFact(userId,row.knowledgeCardId());default->requireFact(userId,row.answerFactId());};
         String assistant = guardedReply(content);
         List<WebSearchResult> sources = List.of();
         if (assistant == null) {
@@ -208,7 +209,7 @@ public class StudentAiService {
                     catch (WebSearchException ignored) { sources = List.of(); }
                 }
                 AiModelResult result = provider.generate(prompts.tutor(fact, recentMessages(row.id()), content,
-                        visionContext(fact.questionId()), row.thinkingMode(), sources), row.modelConfigId());
+                        fact.questionId()==null?null:visionContext(fact.questionId()), row.thinkingMode(), sources), row.modelConfigId());
                 assistant = safeAssistant(result.content());
             } catch (AiProviderException exception) {
                 throw providerFailure(exception);
@@ -264,6 +265,15 @@ public class StudentAiService {
                 .stream().findFirst().orElseThrow(this::notFound);
     }
 
+    private StudentAiFact requireCardFact(Long userId,Long cardId){if(userId==null||cardId==null)throw notFound();return jdbc.query("""
+            SELECT xs.id,k.ke_mu_dai_ma,h.biao_ti,h.nei_rong,h.latex_nei_rong,h.shi_yong_tiao_jian,h.han_yi_tui_dao,h.chang_jian_wu_qu,h.li_zi,h.ji_yi_kou_jue,
+              COALESCE((SELECT JSON_ARRAYAGG(p.wan_zheng_lu_jing) FROM gao_pin_kao_dian_zhi_shi_dian hp JOIN zhi_shi_dian p ON p.id=hp.zhi_shi_dian_id WHERE hp.gao_pin_kao_dian_id=h.id),JSON_ARRAY())
+            FROM gao_pin_kao_dian h JOIN ren_ke_guan_xi r ON r.id=h.ren_ke_guan_xi_id JOIN ke_mu k ON k.id=r.ke_mu_id
+            JOIN ban_ji_xue_sheng bx ON bx.ban_ji_id=r.ban_ji_id AND bx.shi_fou_zhu_ban_ji=1 AND bx.zhuang_tai='ACTIVE' AND bx.tui_chu_shi_jian IS NULL
+            JOIN xue_sheng_dang_an xs ON xs.id=bx.xue_sheng_id AND xs.yong_hu_id=? AND xs.zhuang_tai='ACTIVE' AND xs.yi_shan_chu=0
+            WHERE h.id=? AND h.zhuang_tai='PUBLISHED' AND h.yi_shan_chu=0
+            """,(rs,n)->{String reviewed="审核正文："+rs.getString(4)+"\nLaTeX："+String.valueOf(rs.getString(5))+"\n适用条件："+String.valueOf(rs.getString(6))+"\n含义与推导："+String.valueOf(rs.getString(7))+"\n常见误区："+String.valueOf(rs.getString(8))+"\n例子："+String.valueOf(rs.getString(9))+"\n口诀："+String.valueOf(rs.getString(10));return new StudentAiFact(null,rs.getLong(1),null,null,rs.getString(2),"KNOWLEDGE_CARD",rs.getString(3),null,null,null,reviewed,rs.getString(11),false);},userId,cardId).stream().findFirst().orElseThrow(this::notFound);}
+
     private StudentAiDtos.Analysis findAnalysis(StudentAiFact fact, boolean forCache) {
         return jdbc.query("""
                 SELECT zhuang_tai,cuo_wu_lei_xing,cuo_wu_yuan_yin,zheng_que_si_lu,
@@ -298,7 +308,7 @@ public class StudentAiService {
         if (userId == null || id == null) throw notFound();
         String sql = """
                 SELECT h.id,h.xue_sheng_id,h.xue_sheng_da_ti_id,COALESCE(lt.ti_mu_id,h.zhuan_ti_ti_mu_id),
-                       h.shang_xia_wen_lei_xing,h.zhuan_ti_ti_mu_id,h.zhuang_tai,h.lei_ji_lun_shu,
+                       h.shang_xia_wen_lei_xing,h.zhuan_ti_ti_mu_id,h.zhi_shi_ka_pian_id,h.zhuang_tai,h.lei_ji_lun_shu,
                        h.ai_mo_xing_pei_zhi_id,h.si_kao_mo_shi,h.shi_fou_lian_wang
                 FROM ai_hui_hua h
                 JOIN xue_sheng_dang_an xs ON xs.id=h.xue_sheng_id
@@ -306,8 +316,8 @@ public class StudentAiService {
                 WHERE h.id=? AND xs.yong_hu_id=? AND xs.zhuang_tai='ACTIVE' AND xs.yi_shan_chu=0
                 """ + (lock ? " FOR UPDATE" : "");
         return jdbc.query(sql, (rs, n) -> new ConversationRow(rs.getLong(1), rs.getLong(2), rs.getObject(3,Long.class),
-                rs.getLong(4),rs.getString(5),rs.getObject(6,Long.class),rs.getString(7),rs.getInt(8),
-                rs.getObject(9, Long.class), rs.getString(10),rs.getBoolean(11)), id, userId)
+                rs.getObject(4,Long.class),rs.getString(5),rs.getObject(6,Long.class),rs.getObject(7,Long.class),rs.getString(8),rs.getInt(9),
+                rs.getObject(10, Long.class), rs.getString(11),rs.getBoolean(12)), id, userId)
                 .stream().findFirst().orElseThrow(this::notFound);
     }
 
@@ -339,7 +349,7 @@ public class StudentAiService {
     }
 
     private StudentAiDtos.Conversation toConversation(ConversationRow row, List<StudentAiDtos.Message> messages) {
-        return new StudentAiDtos.Conversation(row.id(), row.answerFactId(),row.topicQuestionId(),row.contextType(), row.questionId(), row.status(), row.rounds(),
+        return new StudentAiDtos.Conversation(row.id(), row.answerFactId(),row.topicQuestionId(),row.knowledgeCardId(),row.contextType(), row.questionId(), row.status(), row.rounds(),
                 MAX_ROUNDS, Math.max(0, MAX_ROUNDS - row.rounds()), row.modelConfigId(), row.thinkingMode(),
                 row.webSearch(), messages);
     }
@@ -424,8 +434,8 @@ public class StudentAiService {
         return new RenZhengYeWuYiChang(code, message, status);
     }
 
-    private record ConversationRow(long id, long studentId, Long answerFactId, long questionId,
-                                   String contextType,Long topicQuestionId,String status, int rounds, Long modelConfigId, String thinkingMode,
+    private record ConversationRow(long id, long studentId, Long answerFactId, Long questionId,
+                                   String contextType,Long topicQuestionId,Long knowledgeCardId,String status, int rounds, Long modelConfigId, String thinkingMode,
                                    boolean webSearch) { }
     private record AnalysisLock(String status, String hash) { }
 }

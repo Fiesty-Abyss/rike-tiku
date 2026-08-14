@@ -50,7 +50,7 @@ public class StudentAiController {
     public StudentAiDtos.Conversation createConversation(
             @Valid @RequestBody StudentAiDtos.CreateConversationRequest request,
             @AuthenticationPrincipal RenZhengYongHu user) {
-        return service.createConversation(user.id(), request.answerFactId(), request.topicQuestionId(),
+        return service.createConversation(user.id(), request.answerFactId(), request.topicQuestionId(), request.knowledgeCardId(),
                 request.contextType(), request.modelConfigId(), request.thinkingMode(),
                 Boolean.TRUE.equals(request.webSearch()));
     }

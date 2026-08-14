@@ -61,7 +61,7 @@ public class JiaoShiGaoPinKaoDianFuWu {
         jdbc.update("""
                 INSERT INTO gao_pin_kao_dian(
                     ren_ke_guan_xi_id,zhi_shi_dian_id,biao_ti,nei_rong,ji_yi_kou_jue,chang_jian_wu_qu,pai_xu,zhuang_tai)
-                VALUES (?,?,?,?,?,?,?,'ACTIVE')
+                VALUES (?,?,?,?,?,?,?,'PUBLISHED')
                 """, scopeId, request.knowledgePointId(), trim(request.title()), trim(request.content()),
                 trim(request.memoryTrick()), trim(request.commonMistake()), request.sortOrder());
         return findTeacherPointById(userId, lastId());
@@ -82,8 +82,8 @@ public class JiaoShiGaoPinKaoDianFuWu {
     @Transactional
     public GaoPinKaoDianXiangYing updateStatus(long userId, long pointId, GaoPinKaoDianZhuangTaiQingQiu request) {
         requirePointScope(userId, pointId);
-        if (!"ACTIVE".equals(request.status()) && !"DISABLED".equals(request.status())) {
-            fail("HIGH_FREQUENCY_STATUS_INVALID", "高频考点状态只能是启用或停用", HttpStatus.BAD_REQUEST);
+        if (!"PUBLISHED".equals(request.status()) && !"DISABLED".equals(request.status())) {
+            fail("HIGH_FREQUENCY_STATUS_INVALID", "知识卡片状态只能是已发布或停用", HttpStatus.BAD_REQUEST);
         }
         jdbc.update("UPDATE gao_pin_kao_dian SET zhuang_tai=? WHERE id=? AND yi_shan_chu=0", request.status(), pointId);
         return findTeacherPointById(userId, pointId);
@@ -108,7 +108,7 @@ public class JiaoShiGaoPinKaoDianFuWu {
                        h.ji_yi_kou_jue,h.chang_jian_wu_qu,h.pai_xu,t.xing_ming
                 FROM ban_ji_xue_sheng bx
                 JOIN ren_ke_guan_xi r ON r.ban_ji_id=bx.ban_ji_id AND r.ke_mu_id=? AND r.zhuang_tai='ACTIVE'
-                JOIN gao_pin_kao_dian h ON h.ren_ke_guan_xi_id=r.id AND h.zhuang_tai='ACTIVE' AND h.yi_shan_chu=0
+                JOIN gao_pin_kao_dian h ON h.ren_ke_guan_xi_id=r.id AND h.zhuang_tai='PUBLISHED' AND h.yi_shan_chu=0
                 JOIN zhi_shi_dian k ON k.id=h.zhi_shi_dian_id AND k.ke_mu_id=r.ke_mu_id
                     AND k.zhuang_tai='ACTIVE' AND k.yi_shan_chu=0
                 JOIN jiao_shi_dang_an t ON t.id=r.jiao_shi_id AND t.zhuang_tai='ACTIVE' AND t.yi_shan_chu=0
