@@ -38,4 +38,6 @@ public final class PaperAssignmentDtos {
                                  List<String> weakPoints, List<String> recommendedReviewOrder) {}
     public record QualityAssessment(String status, String notice, List<String> coverage,
                                     List<String> risks, List<String> suggestions) {}
+    public record AiQualityAssessment(String status, String notice, String provider, String model,
+                                      String content, QualityAssessment deterministicFacts) {}
 }
