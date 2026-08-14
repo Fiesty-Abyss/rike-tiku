@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.imageio.ImageIO;
+import com.neu.riketiku.database.DatabaseSchemaFacts;
 import com.neu.riketiku.tiku.admin.QuestionContentHashService;
 import com.neu.riketiku.tiku.admin.QuestionContentHashService.OptionContent;
 import com.neu.riketiku.tiku.fujian.QuestionAttachmentStorage;
@@ -61,11 +62,17 @@ public class DemoDataService {
         guardDatabaseName(database);
         int version = jdbc.queryForObject("SELECT MAX(CAST(version AS UNSIGNED)) FROM flyway_schema_history WHERE success=1", Integer.class);
         int tableCount = jdbc.queryForObject("SELECT COUNT(*) FROM information_schema.tables WHERE table_schema=DATABASE() AND table_name<>'flyway_schema_history'", Integer.class);
-        if (version != 23 || tableCount != 41) {
-            throw new IllegalStateException("演示库必须完整执行V1-V23且包含41张业务表，当前V" + version + "，" + tableCount + "张");
+        if (version != DatabaseSchemaFacts.LATEST_FLYWAY_VERSION
+                || tableCount != DatabaseSchemaFacts.BUSINESS_TABLE_COUNT) {
+            throw new IllegalStateException("演示库必须完整执行V1-V"
+                    + DatabaseSchemaFacts.LATEST_FLYWAY_VERSION + "且包含"
+                    + DatabaseSchemaFacts.BUSINESS_TABLE_COUNT + "张业务表，当前V"
+                    + version + "，" + tableCount + "张");
         }
         expect("管理员操作日志表", 1, count("SELECT COUNT(*) FROM information_schema.tables WHERE table_schema=DATABASE() AND table_name='guan_li_cao_zuo_ri_zhi'"));
-        System.out.println("演示数据库结构校验通过: " + database + "，V1-V23，41张业务表");
+        System.out.println("演示数据库结构校验通过: " + database + "，V1-V"
+                + DatabaseSchemaFacts.LATEST_FLYWAY_VERSION + "，"
+                + DatabaseSchemaFacts.BUSINESS_TABLE_COUNT + "张业务表");
     }
 
     @Transactional
@@ -114,6 +121,7 @@ public class DemoDataService {
             seedTopicQuestion(question, required(subjects, question.subject()), required(points, question.knowledgePath()), users.get("demo_admin"));
         }
         seedHighFrequencyPoints(scopes, points);
+        seedAcceptanceFacts(users, scopes);
         validateSeed();
         System.out.println("演示数据写入完成。14个固定演示账号、3个班级、4位教师、9名学生；固定密码: " + DEMO_PASSWORD + "（仅限本地演示库）");
     }
@@ -378,10 +386,30 @@ public class DemoDataService {
                   AND TRIM(s.quan_li_yi_ju)<>'' AND s.yi_shan_chu=0
                 """));
         expect("审核轨迹", FINAL_DEMO_QUESTION_COUNT * 2, count("SELECT COUNT(*) FROM ti_mu_shen_he_ji_lu r JOIN ti_mu q ON q.id=r.ti_mu_id WHERE q.ti_gan LIKE '【演示】%' AND r.shen_he_dong_zuo IN ('SUBMITTED','APPROVED')"));
-        for (String table : List.of("lian_xi_hui_hua", "lian_xi_ti_mu", "xue_sheng_da_ti", "xue_xi_jie_guo", "cuo_ti_ji_lu", "si_xin_hui_hua", "si_xin_xiao_xi")) expect(table + "初始记录", 0, count("SELECT COUNT(*) FROM " + table));
+        expect("演示学生练习记录", 1, count("""
+                SELECT COUNT(*) FROM lian_xi_hui_hua h JOIN xue_sheng_dang_an s ON s.id=h.xue_sheng_id
+                WHERE s.xue_hao LIKE 'DEMO_%'
+                """));
+        expect("演示学生答题事实", 1, count("""
+                SELECT COUNT(*) FROM xue_sheng_da_ti a JOIN xue_sheng_dang_an s ON s.id=a.xue_sheng_id
+                WHERE s.xue_hao LIKE 'DEMO_%'
+                """));
+        expect("演示学生错题记录", 1, count("""
+                SELECT COUNT(*) FROM cuo_ti_ji_lu c JOIN xue_sheng_dang_an s ON s.id=c.xue_sheng_id
+                WHERE s.xue_hao LIKE 'DEMO_%'
+                """));
+        expect("演示学生私信会话", 1, count("""
+                SELECT COUNT(*) FROM si_xin_hui_hua h JOIN xue_sheng_dang_an s ON s.id=h.xue_sheng_id
+                WHERE s.xue_hao LIKE 'DEMO_%'
+                """));
+        expect("演示私信消息", 2, count("""
+                SELECT COUNT(*) FROM si_xin_xiao_xi m JOIN si_xin_hui_hua h ON h.id=m.hui_hua_id
+                JOIN xue_sheng_dang_an s ON s.id=h.xue_sheng_id WHERE s.xue_hao LIKE 'DEMO_%'
+                """));
+        expect("无秘密AI演示配置", 2, count("SELECT COUNT(*) FROM ai_mo_xing_pei_zhi WHERE mo_xing_dai_ma LIKE 'demo-disabled-%' AND api_mi_yao IS NULL AND shi_fou_qi_yong=0"));
         System.out.println("演示数据校验通过: 14账号、3班级、4教师、9学生、9任课关系、12高频考点、55个叶子知识点、"
                 + FINAL_DEMO_QUESTION_COUNT + "道普通练习题（物理/化学/生物各120）+ Topic18，合计"
-                + TOTAL_DEMO_QUESTION_COUNT + "题；学习与私信记录为0");
+                + TOTAL_DEMO_QUESTION_COUNT + "题；含1次匿名练习、1条错题、1个双向私信会话和2条无密钥禁用AI配置");
     }
 
     public static void guardDatabaseName(String database) {
@@ -607,6 +635,7 @@ public class DemoDataService {
 
     private void cleanInternal() {
         guardDatabaseName(currentDatabase());
+        jdbc.update("DELETE FROM ai_mo_xing_pei_zhi WHERE mo_xing_dai_ma LIKE 'demo-disabled-%' AND api_mi_yao IS NULL");
         jdbc.query("SELECT DISTINCT f.xiang_dui_lu_jing FROM ti_mu_fu_jian f JOIN ti_mu q ON q.id=f.ti_mu_id WHERE q.ti_gan LIKE '【演示】%' OR q.ti_gan LIKE '【专题演示】%'", (rs, row) -> rs.getString(1))
                 .forEach(this::deleteDemoAttachmentIfUnreferencedOutsideDemo);
         jdbc.update("DELETE m FROM si_xin_xiao_xi m JOIN si_xin_hui_hua h ON h.id=m.hui_hua_id JOIN xue_sheng_dang_an s ON s.id=h.xue_sheng_id WHERE s.xue_hao LIKE 'DEMO_%'");
@@ -630,6 +659,46 @@ public class DemoDataService {
         demoKnowledgePaths().stream()
                 .sorted(Comparator.comparingInt(DemoDataService::pathDepth).reversed())
                 .forEach(path -> jdbc.update("DELETE FROM zhi_shi_dian WHERE wan_zheng_lu_jing=? AND id>9", path));
+    }
+
+    private void seedAcceptanceFacts(Map<String, Long> users, Map<String, Long> scopes) {
+        long studentId = jdbc.queryForObject("SELECT id FROM xue_sheng_dang_an WHERE xue_hao='DEMO_S001'", Long.class);
+        Map<String,Object> question = jdbc.queryForMap("""
+                SELECT q.id,q.ke_mu_id,q.ti_mu_lei_xing,q.nan_du,q.ti_gan,CAST(q.zheng_que_da_an AS CHAR) answer,
+                  a.jie_xi_nei_rong,
+                  CAST((SELECT JSON_ARRAYAGG(JSON_OBJECT('label',o.xuan_xiang_biao_shi,'content',o.xuan_xiang_nei_rong))
+                    FROM ti_mu_xuan_xiang o WHERE o.ti_mu_id=q.id AND o.yi_shan_chu=0) AS CHAR) options,
+                  CAST((SELECT JSON_ARRAYAGG(JSON_OBJECT('id',z.id,'name',z.zhi_shi_dian_ming_cheng,'path',z.wan_zheng_lu_jing))
+                    FROM ti_mu_zhi_shi_dian qz JOIN zhi_shi_dian z ON z.id=qz.zhi_shi_dian_id
+                    WHERE qz.ti_mu_id=q.id AND qz.yi_shan_chu=0) AS CHAR) points
+                FROM ti_mu q JOIN ti_mu_jie_xi a ON a.ti_mu_id=q.id AND a.jie_xi_lei_xing='STANDARD'
+                WHERE q.ti_gan LIKE '【演示】%' AND q.ti_mu_lei_xing='SINGLE_CHOICE' AND q.zhuang_tai='PUBLISHED'
+                ORDER BY q.id LIMIT 1
+                """);
+        long sessionId=insert("INSERT INTO lian_xi_hui_hua(xue_sheng_id,ke_mu_id,zhuang_tai,ti_mu_shu,ti_jiao_shi_jian) VALUES (?,?,'SUBMITTED',1,CURRENT_TIMESTAMP(3))",studentId,question.get("ke_mu_id"));
+        long frozenId=insert("""
+                INSERT INTO lian_xi_ti_mu(lian_xi_hui_hua_id,ti_mu_id,ti_mu_shun_xu,fen_zhi,ti_mu_lei_xing,nan_du_kuai_zhao,
+                  ti_gan_kuai_zhao,xuan_xiang_kuai_zhao,zheng_que_da_an_kuai_zhao,biao_zhun_jie_xi_kuai_zhao,zhi_shi_dian_kuai_zhao)
+                VALUES (?,?,1,1,?,?,?,CAST(? AS JSON),CAST(? AS JSON),?,CAST(? AS JSON))
+                """,sessionId,question.get("id"),question.get("ti_mu_lei_xing"),question.get("nan_du"),
+                normalizeDemoStem(String.valueOf(question.get("ti_gan"))),question.get("options"),question.get("answer"),question.get("jie_xi_nei_rong"),question.get("points"));
+        long answerId=insert("INSERT INTO xue_sheng_da_ti(lian_xi_ti_mu_id,xue_sheng_id,xue_sheng_da_an,shi_fou_zheng_que,de_fen,yong_shi_miao_shu,ti_jiao_shi_jian) VALUES (?,?,JSON_QUOTE('B'),0,0,36,CURRENT_TIMESTAMP(3))",frozenId,studentId);
+        jdbc.update("INSERT INTO xue_xi_jie_guo(lian_xi_hui_hua_id,zong_ti_shu,zheng_que_shu,zong_de_fen,ti_jiao_shi_jian) VALUES (?,1,0,0,CURRENT_TIMESTAMP(3))",sessionId);
+        jdbc.update("INSERT INTO cuo_ti_ji_lu(xue_sheng_id,ti_mu_id,cuo_wu_ci_shu,lian_xu_zheng_que_ci_shu,zhuang_tai,zui_jin_da_ti_id,zui_jin_cuo_wu_shi_jian) VALUES (?,?,1,0,'NEW',?,CURRENT_TIMESTAMP(3))",studentId,question.get("id"),answerId);
+
+        long messageStudent=jdbc.queryForObject("SELECT id FROM xue_sheng_dang_an WHERE xue_hao='DEMO_199_01'",Long.class);
+        long conversation=insert("INSERT INTO si_xin_hui_hua(ren_ke_guan_xi_id,xue_sheng_id,zui_hou_xiao_xi_shi_jian) VALUES (?,?,CURRENT_TIMESTAMP(3))",required(scopes,"PHYSICS_199"),messageStudent);
+        jdbc.update("INSERT INTO si_xin_xiao_xi(hui_hua_id,fa_song_ren_yong_hu_id,nei_rong,yi_du,yi_du_shi_jian) VALUES (?,?,?,1,CURRENT_TIMESTAMP(3)),(?,?,?,0,NULL)",
+                conversation,users.get("demo_physics_admin"),"请先写出受力对象，再检查方向。",conversation,users.get("demo_199_01"),"收到，我会按步骤复习。" );
+        jdbc.update("INSERT INTO ai_mo_xing_pei_zhi(provider_dai_ma,mo_xing_dai_ma,api_di_zhi,api_mi_yao,yong_tu,shi_fou_qi_yong,shi_fou_mo_ren) VALUES ('DEEPSEEK','demo-disabled-text','https://api.deepseek.com',NULL,'TEXT',0,0),('GLM','demo-disabled-vision','https://open.bigmodel.cn/api/paas/v4',NULL,'VISION',0,0)");
+    }
+
+    private String normalizeDemoStem(String value) {
+        String result=value==null?"":value;
+        if(result.startsWith(TOPIC_STEM_PREFIX))result=result.substring(TOPIC_STEM_PREFIX.length());
+        else if(result.startsWith(DEMO_STEM_PREFIX))result=result.substring(DEMO_STEM_PREFIX.length());
+        if(result.startsWith("覆盖：")||result.startsWith("变式："))result=result.substring(3);
+        return result;
     }
 
     private void deleteDemoAttachmentIfUnreferencedOutsideDemo(String relativePath) {

@@ -9,6 +9,7 @@ import com.neu.riketiku.ai.search.WebSearchException;
 import com.neu.riketiku.ai.search.WebSearchRequest;
 import com.neu.riketiku.ai.search.WebSearchResult;
 import com.neu.riketiku.renzheng.RenZhengYeWuYiChang;
+import com.neu.riketiku.tiku.QuestionDisplayTextNormalizer;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.sql.PreparedStatement;
@@ -48,12 +49,14 @@ public class StudentAiService {
     private final VisionContextService visionContexts;
     private final WebSearchClient webSearch;
     private final AiRuntimeConfigurationService runtimeConfigurations;
+    private final QuestionDisplayTextNormalizer textNormalizer;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     public StudentAiService(JdbcTemplate jdbc, StudentAiProviderClient provider,
                             StudentAiPromptFactory prompts, StudentAiAnalysisParser parser,
                             VisionContextService visionContexts, WebSearchClient webSearch,
-                            AiRuntimeConfigurationService runtimeConfigurations) {
+                            AiRuntimeConfigurationService runtimeConfigurations,
+                            QuestionDisplayTextNormalizer textNormalizer) {
         this.jdbc = jdbc;
         this.provider = provider;
         this.prompts = prompts;
@@ -61,6 +64,7 @@ public class StudentAiService {
         this.visionContexts = visionContexts;
         this.webSearch = webSearch;
         this.runtimeConfigurations = runtimeConfigurations;
+        this.textNormalizer = textNormalizer;
     }
 
     @Transactional(readOnly = true)
@@ -256,7 +260,7 @@ public class StudentAiService {
                     WHERE bx.xue_sheng_id=xs.id AND bx.shi_fou_zhu_ban_ji=1 AND bx.zhuang_tai='ACTIVE'
                       AND bx.tui_chu_shi_jian IS NULL AND r.zhuang_tai='ACTIVE'))
                 """,(rs,n)->new StudentAiFact(null,rs.getLong(2),null,rs.getLong(4),rs.getString(5),rs.getString(6),
-                rs.getString(7),null,null,null,rs.getString(11),rs.getString(12),false),userId,questionId)
+                textNormalizer.normalize(rs.getString(7)),null,null,null,rs.getString(11),rs.getString(12),false),userId,questionId)
                 .stream().findFirst().orElseThrow(this::notFound);
     }
 
