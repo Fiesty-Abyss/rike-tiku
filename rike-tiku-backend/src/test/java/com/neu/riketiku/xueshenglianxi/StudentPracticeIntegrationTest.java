@@ -403,9 +403,9 @@ class StudentPracticeIntegrationTest extends AdminQuestionIntegrationTestSupport
         jdbc.update("UPDATE cuo_ti_ji_lu SET zui_jin_cuo_wu_shi_jian='2026-08-10 23:59:59' WHERE ti_mu_id=?",
                 questionId);
 
-        var onDate = service.wrongQuestions(userId, "PHYSICS", pointId, "NEW", null,
+        var onDate = service.wrongQuestions(userId, "PHYSICS", pointId, "ACTIVE", null,
                 LocalDate.of(2026, 8, 10), LocalDate.of(2026, 8, 10), 0, 20);
-        var afterDate = service.wrongQuestions(userId, "PHYSICS", pointId, "NEW", null,
+        var afterDate = service.wrongQuestions(userId, "PHYSICS", pointId, "ACTIVE", null,
                 LocalDate.of(2026, 8, 11), LocalDate.of(2026, 8, 12), 0, 20);
 
         assertThat(onDate.total()).isEqualTo(1);
@@ -416,6 +416,39 @@ class StudentPracticeIntegrationTest extends AdminQuestionIntegrationTestSupport
                 LocalDate.of(2026, 8, 12), LocalDate.of(2026, 8, 11), 0, 20))
                 .isInstanceOf(RenZhengYeWuYiChang.class)
                 .hasMessageContaining("结束日期不能早于开始日期");
+    }
+
+    @Test
+    @Transactional
+    void mapsPublicWrongQuestionFiltersToRealLifecycleStatesAndReactivatesArchivedMistakes() {
+        long userId = student("wrong_status");
+        long questionId = questionForSubject(1L, "SINGLE_CHOICE", 1);
+        long pointId = jdbc.queryForObject("SELECT zhi_shi_dian_id FROM ti_mu_zhi_shi_dian WHERE ti_mu_id=?", Long.class, questionId);
+        var first = service.create(userId, new StudentPracticeDtos.CreateRequest(1L, List.of(pointId), List.of("SINGLE_CHOICE"), 1, 1));
+        service.submit(userId, first.id(), new StudentPracticeDtos.SubmitRequest(List.of(
+                new StudentPracticeDtos.Answer(first.questions().getFirst().practiceQuestionId(), JsonNodeFactory.instance.textNode("B"), 1))));
+
+        assertThat(service.wrongQuestions(userId,null,null,"ACTIVE",null,null,null,0,20).items())
+                .extracting(StudentPracticeDtos.WrongQuestionItem::status).containsExactly("NEW");
+        jdbc.update("UPDATE cuo_ti_ji_lu SET zhuang_tai='REVIEWING' WHERE ti_mu_id=?",questionId);
+        assertThat(service.wrongQuestions(userId,null,null,"ACTIVE",null,null,null,0,20).items())
+                .extracting(StudentPracticeDtos.WrongQuestionItem::status).containsExactly("REVIEWING");
+
+        service.archiveWrongQuestion(userId,questionId);
+        assertThat(service.wrongQuestions(userId,null,null,"ACTIVE",null,null,null,0,20).items()).isEmpty();
+        assertThat(service.wrongQuestions(userId,null,null,"MASTERED",null,null,null,0,20).items())
+                .extracting(StudentPracticeDtos.WrongQuestionItem::questionId).containsExactly(questionId);
+        assertThatThrownBy(() -> service.wrongQuestions(userId,null,null,"NEW",null,null,null,0,20))
+                .isInstanceOfSatisfying(RenZhengYeWuYiChang.class,error -> {
+                    assertThat(error.getCode()).isEqualTo("WRONG_QUESTION_STATUS_INVALID");
+                    assertThat(error.getStatus().value()).isEqualTo(400);
+                });
+
+        var retry = service.retryWrongQuestion(userId,questionId);
+        service.submit(userId,retry.id(),new StudentPracticeDtos.SubmitRequest(List.of(
+                new StudentPracticeDtos.Answer(retry.questions().getFirst().practiceQuestionId(),JsonNodeFactory.instance.textNode("B"),1))));
+        assertThat(service.wrongQuestions(userId,null,null,"ACTIVE",null,null,null,0,20).items())
+                .extracting(StudentPracticeDtos.WrongQuestionItem::status).containsExactly("NEW");
     }
 
     private void submitSingle(long userId, long knowledgePointId, String label) {

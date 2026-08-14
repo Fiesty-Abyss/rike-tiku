@@ -24,6 +24,9 @@ application-local.properties
 **/dist/
 **/.vite/
 
+# Runtime/Demo attachment objects (the two checked-in fixtures remain tracked)
+rike-tiku-backend/data/question-attachments/images/*/*
+
 # Operating system files
 .DS_Store
 Thumbs.db

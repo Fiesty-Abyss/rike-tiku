@@ -49,8 +49,11 @@ public class TopicLearningController {
     public AiQuestionGenerationDtos.Task variants(@PathVariable Long id,@Valid @RequestBody TopicLearningDtos.VariantRequest request,
             @AuthenticationPrincipal RenZhengYongHu user){
         TopicLearningDtos.TopicDetail topic=service.detail(user.id(),id);
-        List<Long> points=topic.knowledgePoints().stream().map(TopicLearningDtos.KnowledgePoint::id).toList();
-        return generation.generate(user.id(),"STUDENT",new AiQuestionGenerationDtos.Generate(id,"SUBJECTIVE",points,
-                request.targetDifficulty(),request.variationMode(),request.count()));
+        List<Long> points=request.keepPrimaryKnowledgePoint()
+                ? topic.knowledgePoints().stream().limit(1).map(TopicLearningDtos.KnowledgePoint::id).toList()
+                : topic.knowledgePoints().stream().map(TopicLearningDtos.KnowledgePoint::id).toList();
+        return generation.generateTopic(user.id(),new AiQuestionGenerationDtos.Generate(id,"SUBJECTIVE",points,
+                request.targetDifficulty(),request.variationMode(),request.count()),
+                request.requireVisualContext(),request.keepPrimaryKnowledgePoint());
     }
 }
