@@ -77,6 +77,7 @@ class QuestionAttachmentHttpIntegrationTest extends AdminQuestionIntegrationTest
         jdbc.update("DELETE FROM xue_sheng_dang_an WHERE yong_hu_id IN (SELECT id FROM yong_hu WHERE yong_hu_ming IN ('attachment_owner','attachment_other'))");
         jdbc.update("DELETE FROM yong_hu_jiao_se WHERE yong_hu_id IN (SELECT id FROM yong_hu WHERE yong_hu_ming IN ('attachment_admin','attachment_owner','attachment_other'))");
         jdbc.update("DELETE FROM yong_hu WHERE yong_hu_ming IN ('attachment_admin','attachment_owner','attachment_other')");
+        jdbc.update("DELETE FROM zhi_shi_dian WHERE wan_zheng_lu_jing LIKE '附件权限>%'");
     }
 
     @Test
@@ -90,7 +91,13 @@ class QuestionAttachmentHttpIntegrationTest extends AdminQuestionIntegrationTest
         long questionAttachmentId = attachment(questionId, null, "QUESTION", image, "I001");
         long analysisAttachmentId = attachment(questionId, analysisId, "STANDARD_ANALYSIS", image, "I002");
 
-        var session = practice.create(ownerId, new StudentPracticeDtos.CreateRequest(1L, null, List.of("SINGLE_CHOICE"), null, 1));
+        String pointPath = "附件权限>" + UUID.randomUUID().toString().replace("-", "");
+        jdbc.update("INSERT INTO zhi_shi_dian(ke_mu_id,zhi_shi_dian_ming_cheng,wan_zheng_lu_jing,ceng_ji,pai_xu,zhuang_tai) VALUES (1,?,?,1,999,'ACTIVE')",
+                pointPath, pointPath);
+        long pointId = jdbc.queryForObject("SELECT LAST_INSERT_ID()", Long.class);
+        jdbc.update("DELETE FROM ti_mu_zhi_shi_dian WHERE ti_mu_id=?", questionId);
+        jdbc.update("INSERT INTO ti_mu_zhi_shi_dian(ti_mu_id,zhi_shi_dian_id,shi_fou_zhu_yao,pai_xu) VALUES (?,?,1,1)", questionId, pointId);
+        var session = practice.create(ownerId, new StudentPracticeDtos.CreateRequest(1L, List.of(pointId), List.of("SINGLE_CHOICE"), null, 1));
         long otherQuestionId = question("其他题干〔图片对象 I001〕", "其他解析〔图片对象 I002〕");
         long otherAnalysisId = jdbc.queryForObject("SELECT id FROM ti_mu_jie_xi WHERE ti_mu_id=? AND jie_xi_lei_xing='STANDARD'", Long.class, otherQuestionId);
         long otherAttachmentId = attachment(otherQuestionId, null, "QUESTION", image, "I001");

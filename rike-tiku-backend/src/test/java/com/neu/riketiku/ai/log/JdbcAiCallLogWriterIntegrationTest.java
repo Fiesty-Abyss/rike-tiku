@@ -6,6 +6,7 @@ import com.neu.riketiku.ai.provider.AiModelRequest;
 import com.neu.riketiku.ai.provider.AiModelResult;
 import com.neu.riketiku.ai.provider.AiProviderErrorType;
 import com.neu.riketiku.ai.provider.AiTokenUsage;
+import com.neu.riketiku.database.DatabaseSchemaFacts;
 import com.neu.riketiku.tiku.admin.AdminQuestionIntegrationTestSupport;
 import java.util.Map;
 import java.util.UUID;
@@ -32,7 +33,7 @@ class JdbcAiCallLogWriterIntegrationTest extends AdminQuestionIntegrationTestSup
                 "deepseek", "deepseek-v4-flash", AiProviderErrorType.TIMEOUT, 101);
 
         assertThat(jdbc.queryForObject("SELECT MAX(CAST(version AS UNSIGNED)) FROM flyway_schema_history WHERE success=1",
-                Integer.class)).isEqualTo(23);
+                Integer.class)).isEqualTo(DatabaseSchemaFacts.LATEST_FLYWAY_VERSION);
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM ai_diao_yong_ri_zhi", Integer.class))
                 .isEqualTo(baselineCount + 2);
         Map<String, Object> success = jdbc.queryForMap(
