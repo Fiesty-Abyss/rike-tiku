@@ -106,8 +106,9 @@ public final class StudentPracticeDtos {
             int errorCount,
             int consecutiveCorrectCount,
             String status,
-            LocalDateTime lastWrongAt) {
+            LocalDateTime lastWrongAt,List<KnowledgePoint> knowledgePoints) {
     }
+    public record WrongQuestionPage(List<WrongQuestionItem> items,long total,int page,int size){}
 
     public record Attachment(Long id, String position, String type, String fileName, String objectMarker, String status,
                              String renderStatus, String contentUrl) {

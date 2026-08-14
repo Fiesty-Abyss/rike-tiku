@@ -17,6 +17,7 @@ const loading = ref(true)
 const onlyWrong = ref(false)
 const currentQuestionId = ref<number | null>(null)
 const analysisExpanded = ref(true)
+const aiDocked = ref(false)
 const visibleQuestions = computed(() => result.value?.questions.filter(item => !onlyWrong.value || !item.correct) || [])
 const currentIndex = computed(() => Math.max(0, visibleQuestions.value.findIndex(item => item.question.practiceQuestionId === currentQuestionId.value)))
 const item = computed(() => visibleQuestions.value[currentIndex.value] || null)
@@ -65,7 +66,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <section class="student-page result-page" :data-subject="environment" v-loading="loading">
+  <section class="student-page result-page" :class="{'has-ai-dock':aiDocked}" :data-subject="environment" v-loading="loading">
     <template v-if="result">
       <header class="result-summary">
         <div><span class="result-kicker">{{ result.subjectName }} · 本次练习</span><h1>{{ result.totalScore }} 分</h1><p>共 {{ result.totalCount }} 题，答对 {{ result.correctCount }} 题。</p></div>
@@ -83,10 +84,14 @@ onMounted(async () => {
         <div class="knowledge-chip-row"><span>知识点</span><el-button v-for="point in item.question.knowledgePoints" :key="point.id" class="knowledge-chip" round plain @click="openKnowledgePoint(point.id)">{{ point.path }}</el-button></div>
         <p v-if="item.correct" class="result-correct-guidance">本题已答对，也可以继续检查思路。</p>
         <section class="analysis-panel"><button type="button" class="analysis-toggle" :aria-expanded="analysisExpanded" @click="analysisExpanded = !analysisExpanded"><span>标准解析</span><span>{{ analysisExpanded ? '收起' : '展开' }}</span></button><div v-show="analysisExpanded" class="analysis-content"><StandardAnalysis :content="item.standardAnalysis" :attachments="item.question.attachments" /></div></section>
-        <StudentAiLearningPanel :answer-fact-id="item.answerFactId" :wrong="!item.correct" />
+        <StudentAiLearningPanel :answer-fact-id="item.answerFactId" :wrong="!item.correct" :question-context="{questionType:item.question.questionType,stem:item.question.stem,options:item.question.options,studentAnswer:item.studentAnswer,correctAnswer:item.correctAnswer,submitted:true}" @visibility="aiDocked=$event" />
         <div class="result-next-actions"><el-button :disabled="currentIndex === 0" @click="move(-1)">上一题</el-button><el-button type="primary" plain @click="similarPractice">练习类似题</el-button><el-button :disabled="currentIndex >= visibleQuestions.length - 1" @click="move(1)">下一题</el-button></div>
       </article>
       </Transition>
     </template>
   </section>
 </template>
+
+<style scoped>
+.result-page{transition:padding-right .22s ease}.result-page.has-ai-dock{padding-right:520px}@media(max-width:900px){.result-page.has-ai-dock{padding-right:0}}
+</style>

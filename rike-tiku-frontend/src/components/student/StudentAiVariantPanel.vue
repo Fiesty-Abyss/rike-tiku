@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { ElMessage } from 'element-plus'
-import { answerAiVariant, discardAiVariant, generateAiVariant, submitAiVariantReview, type AiVariant } from '../../api/student/aiLearning'
+import { answerAiVariant, discardAiVariant, generateAiVariant, submitAiVariantReview, type AiVariant, type VariationMode } from '../../api/student/aiLearning'
 import type { ApiError } from '../../api/http'
 import AiScientificContent from './AiScientificContent.vue'
 import AnswerDisplay from '../question/AnswerDisplay.vue'
@@ -10,6 +10,7 @@ const props = defineProps<{ answerFactId:number }>()
 const variant = ref<AiVariant>()
 const loading = ref(false)
 const targetDifficulty = ref<number | undefined>()
+const variationMode = ref<VariationMode>('COMBINED')
 const single = ref('')
 const multiple = ref<string[]>([])
 const blanks = ref<string[]>([''])
@@ -18,12 +19,12 @@ const canAnswer = computed(() => variant.value?.questionType === 'SINGLE_CHOICE'
 const safeMessages:Record<string,string> = {
   AI_PROVIDER_DISABLED:'AI Provider 尚未启用，请联系管理员。', AI_AUTHENTICATION_ERROR:'AI Provider 认证失败，请联系管理员。',
   AI_RATE_LIMITED:'AI 请求过于频繁，请稍后再试。', AI_TIMEOUT:'AI 生成超时，请稍后重试。',
-  AI_INVALID_RESPONSE:'AI 返回的题目结构未通过校验，请换一题。', AI_PENDING_LIMIT_REACHED:'该母题待审核候选题已达上限。',
+  AI_CANDIDATE_EMPTY_CONTENT:'AI 返回内容为空，请稍后重试。',AI_CANDIDATE_FIELD_MISSING:'AI 返回的题目结构缺失，请换一种变化方式。',AI_CANDIDATE_OPTIONS_INVALID:'AI 返回的选项不完整。',AI_CANDIDATE_ANSWER_OPTION_MISMATCH:'AI 返回的答案与选项不一致。',AI_CANDIDATE_SIMILARITY_HIGH:'生成内容与母题过于相似，请换一种变化方式。', AI_PENDING_LIMIT_REACHED:'该母题待审核候选题已达上限。',
   AI_VARIANT_KNOWLEDGE_MISSING:'当前题缺少可用知识点，暂不能生成变式。', AI_VARIANT_GENERATION_FAILED:'AI 变式生成失败，未创建练习实例。',
 }
 function resetAnswer(){single.value='';multiple.value=[];blanks.value=['']}
 function warn(error:unknown){const api=error as ApiError;ElMessage.warning(safeMessages[api.code || ''] || api.message || 'AI 变式暂不可用，请稍后重试。')}
-async function generate(){loading.value=true;try{variant.value=await generateAiVariant(props.answerFactId,targetDifficulty.value);resetAnswer()}catch(error){warn(error)}finally{loading.value=false}}
+async function generate(){loading.value=true;try{variant.value=await generateAiVariant(props.answerFactId,targetDifficulty.value,variationMode.value);resetAnswer()}catch(error){warn(error)}finally{loading.value=false}}
 async function answer(){if(!variant.value||!canAnswer.value)return;const value=variant.value.questionType==='SINGLE_CHOICE'?single.value:variant.value.questionType==='MULTIPLE_CHOICE'?multiple.value:blanks.value;try{variant.value=await answerAiVariant(variant.value.id,value)}catch(error){warn(error)}}
 async function replace(){try{if(variant.value&&variant.value.status!=='SUBMITTED_FOR_REVIEW')await discardAiVariant(variant.value.id);variant.value=undefined;await generate()}catch(error){warn(error)}}
 async function submit(){if(!variant.value)return;try{variant.value=await submitAiVariantReview(variant.value.id)}catch(error){warn(error)}}
@@ -38,10 +39,13 @@ async function leaveForNow(){if(!variant.value)return;try{await discardAiVariant
           <option :value="undefined">保持母题难度</option><option :value="1">1 基础</option><option :value="2">2 较易</option><option :value="3">3 中等</option><option :value="4">4 较难</option><option :value="5">5 困难</option>
         </select>
       </label>
+      <label>变化方式
+        <select v-model="variationMode"><option value="SCENARIO_TRANSFER">情境迁移</option><option value="CONDITION_RECOMBINATION">条件重组</option><option value="REPRESENTATION_SWITCH">表达形式转换</option><option value="MULTI_STEP_EXTENSION">多步骤扩展</option><option value="DISTRACTOR_REDESIGN">干扰项重构</option><option value="COMBINED">综合变式</option></select>
+      </label>
       <el-button type="primary" :loading="loading" @click="generate">生成变式题</el-button>
     </div>
     <article v-else>
-      <div class="variant-meta"><el-tag>难度 {{ variant.difficulty }}</el-tag><span>AI 候选 · 尚未成为正式 STANDARD</span></div>
+      <div class="variant-meta"><el-tag>难度 {{ variant.difficulty }}</el-tag><el-tag effect="plain">{{ variant.variationMode }}</el-tag><span>AI 候选 · 尚未成为正式 STANDARD</span></div>
       <AiScientificContent :content="variant.stem"/>
       <el-checkbox-group v-if="variant.questionType==='MULTIPLE_CHOICE'" v-model="multiple" :disabled="submitted"><el-checkbox v-for="option in variant.options" :key="option.label" :value="option.label">{{option.label}}. {{option.content}}</el-checkbox></el-checkbox-group>
       <el-radio-group v-else-if="variant.questionType==='SINGLE_CHOICE'" v-model="single" :disabled="submitted"><el-radio v-for="option in variant.options" :key="option.label" :value="option.label">{{option.label}}. {{option.content}}</el-radio></el-radio-group>

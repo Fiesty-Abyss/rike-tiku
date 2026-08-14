@@ -5,6 +5,7 @@ import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
 import com.neu.riketiku.renzheng.RenZhengYeWuYiChang;
 import com.neu.riketiku.tiku.fujian.QuestionAttachmentContentService;
+import com.neu.riketiku.tiku.QuestionDisplayTextNormalizer;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -33,13 +34,15 @@ public class StudentPracticeService {
     private static final Pattern OBJECT_MARKER = Pattern.compile("〔(?:图片|公式)对象\\s+([IF]\\d{3})〕");
     private final JdbcTemplate jdbc;
     private final QuestionAttachmentContentService attachmentContentService;
+    private final QuestionDisplayTextNormalizer textNormalizer;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     public StudentPracticeService(JdbcTemplate jdbc, QuestionAttachmentContentService attachmentContentService,
-                                  ObjectiveAnswerGrader objectiveAnswerGrader) {
+                                  ObjectiveAnswerGrader objectiveAnswerGrader,QuestionDisplayTextNormalizer textNormalizer) {
         this.jdbc = jdbc;
         this.attachmentContentService = attachmentContentService;
         this.objectiveAnswerGrader = objectiveAnswerGrader;
+        this.textNormalizer=textNormalizer;
     }
 
     @Transactional(readOnly = true)
@@ -195,7 +198,7 @@ public class StudentPracticeService {
     }
 
     @Transactional(readOnly = true)
-    public List<StudentPracticeDtos.WrongQuestionItem> wrongQuestions(Long userId, String subjectCode) {
+    public StudentPracticeDtos.WrongQuestionPage wrongQuestions(Long userId,String subjectCode,Long knowledgePointId,String status,String keyword,int page,int size) {
         long studentId = requireStudent(userId);
         String normalizedSubjectCode = subjectCode == null || subjectCode.isBlank()
                 ? null : subjectCode.trim().toUpperCase(Locale.ROOT);
@@ -203,18 +206,23 @@ public class StudentPracticeService {
                 normalizedSubjectCode) != 1) {
             fail("PRACTICE_SUBJECT_NOT_FOUND", "科目不存在或已停用", HttpStatus.BAD_REQUEST);
         }
-        return jdbc.query("""
+        StringBuilder sql=new StringBuilder("""
                 SELECT c.ti_mu_id,s.ke_mu_dai_ma,s.ke_mu_ming_cheng,lt.ti_mu_lei_xing,LEFT(lt.ti_gan_kuai_zhao,120),
-                       c.cuo_wu_ci_shu,c.lian_xu_zheng_que_ci_shu,c.zhuang_tai,c.zui_jin_cuo_wu_shi_jian
+                       c.cuo_wu_ci_shu,c.lian_xu_zheng_que_ci_shu,c.zhuang_tai,c.zui_jin_cuo_wu_shi_jian,
+                       COALESCE((SELECT JSON_ARRAYAGG(JSON_OBJECT('id',z.id,'name',z.zhi_shi_dian_ming_cheng,'path',z.wan_zheng_lu_jing)) FROM ti_mu_zhi_shi_dian tz JOIN zhi_shi_dian z ON z.id=tz.zhi_shi_dian_id WHERE tz.ti_mu_id=c.ti_mu_id AND tz.yi_shan_chu=0),'[]')
                 FROM cuo_ti_ji_lu c
                 JOIN xue_sheng_da_ti da ON da.id=c.zui_jin_da_ti_id
                 JOIN lian_xi_ti_mu lt ON lt.id=da.lian_xi_ti_mu_id
                 JOIN lian_xi_hui_hua h ON h.id=lt.lian_xi_hui_hua_id
                 JOIN ke_mu s ON s.id=h.ke_mu_id
-                WHERE c.xue_sheng_id=? AND (? IS NULL OR s.ke_mu_dai_ma=?)
-                ORDER BY c.zui_jin_cuo_wu_shi_jian DESC,c.id DESC
-                """, (rs, row) -> wrongItem(rs), studentId, normalizedSubjectCode, normalizedSubjectCode);
+                WHERE c.xue_sheng_id=?
+                """);List<Object>args=new ArrayList<>();args.add(studentId);if(normalizedSubjectCode!=null){sql.append(" AND s.ke_mu_dai_ma=?");args.add(normalizedSubjectCode);}if(knowledgePointId!=null){sql.append(" AND EXISTS(SELECT 1 FROM ti_mu_zhi_shi_dian tz WHERE tz.ti_mu_id=c.ti_mu_id AND tz.zhi_shi_dian_id=? AND tz.yi_shan_chu=0)");args.add(knowledgePointId);}if(status!=null&&!status.isBlank()){sql.append(" AND c.zhuang_tai=?");args.add(status.trim().toUpperCase(Locale.ROOT));}else sql.append(" AND c.zhuang_tai<>'MASTERED'");if(keyword!=null&&!keyword.isBlank()){sql.append(" AND lt.ti_gan_kuai_zhao LIKE ?");args.add("%"+keyword.trim()+"%");}long total=count("SELECT COUNT(*) FROM ("+sql+") w",args.toArray());sql.append(" ORDER BY c.zui_jin_cuo_wu_shi_jian DESC,c.id DESC LIMIT ? OFFSET ?");args.add(size);args.add(page*size);List<StudentPracticeDtos.WrongQuestionItem>items=jdbc.query(sql.toString(),(rs,row)->wrongItem(rs),args.toArray());return new StudentPracticeDtos.WrongQuestionPage(items,total,page,size);
     }
+    public List<StudentPracticeDtos.WrongQuestionItem> wrongQuestions(Long userId,String subjectCode){return wrongQuestions(userId,subjectCode,null,null,null,0,100).items();}
+
+    @Transactional public void archiveWrongQuestion(Long userId,Long questionId){long studentId=requireStudent(userId);if(jdbc.update("UPDATE cuo_ti_ji_lu SET zhuang_tai='MASTERED' WHERE xue_sheng_id=? AND ti_mu_id=?",studentId,questionId)!=1)fail("WRONG_QUESTION_NOT_FOUND","错题不存在",HttpStatus.NOT_FOUND);}
+
+    @Transactional public StudentPracticeDtos.Session retryWrongQuestion(Long userId,Long questionId){long studentId=requireStudent(userId);Long subject=jdbc.query("SELECT q.ke_mu_id FROM cuo_ti_ji_lu c JOIN ti_mu q ON q.id=c.ti_mu_id WHERE c.xue_sheng_id=? AND c.ti_mu_id=?",rs->rs.next()?rs.getLong(1):null,studentId,questionId);if(subject==null)fail("WRONG_QUESTION_NOT_FOUND","错题不存在",HttpStatus.NOT_FOUND);return create(userId,new StudentPracticeDtos.CreateRequest(subject,List.of(),List.of(),null,1,questionId));}
 
     @Transactional(readOnly = true)
     public StudentPracticeDtos.WrongQuestionDetail wrongQuestion(Long userId, Long questionId) {
@@ -374,8 +382,8 @@ public class StudentPracticeService {
                 INSERT INTO lian_xi_ti_mu(lian_xi_hui_hua_id,ti_mu_id,ti_mu_shun_xu,fen_zhi,ti_mu_lei_xing,nan_du_kuai_zhao,ti_gan_kuai_zhao,
                     xuan_xiang_kuai_zhao,zheng_que_da_an_kuai_zhao,biao_zhun_jie_xi_kuai_zhao,zhi_shi_dian_kuai_zhao)
                 VALUES (?,?,?,?,?,?,?,?,?,?,?)
-                """, sessionId, question.id(), order, BigDecimal.ONE, question.type(), question.difficulty(), question.stem(),
-                question.options().isEmpty() ? null : writeJson(question.options()), question.correctAnswer(), question.standardAnalysis(),
+                """, sessionId, question.id(), order, BigDecimal.ONE, question.type(), question.difficulty(),
+                textNormalizer.normalize(question.stem()), question.options().isEmpty() ? null : writeJson(question.options()), question.correctAnswer(), question.standardAnalysis(),
                 writeJson(question.knowledgePoints()));
     }
 
@@ -460,7 +468,7 @@ public class StudentPracticeService {
 
     private StudentPracticeDtos.SessionQuestion toSafeQuestion(FrozenQuestion question, long sessionId, String sessionStatus) {
         int blankCount = "FILL_BLANK".equals(question.type()) ? readJson(question.correctAnswer()).path("blanks").size() : 0;
-        return new StudentPracticeDtos.SessionQuestion(question.id(), question.questionId(), question.order(), question.type(), question.stem(), question.difficulty(),
+        return new StudentPracticeDtos.SessionQuestion(question.id(), question.questionId(), question.order(), question.type(), textNormalizer.normalize(question.stem()), question.difficulty(),
                 question.score(), blankCount, readOptions(question.options()), readKnowledgePoints(question.knowledgePoints()), sessionAttachments(question.questionId(), sessionId, sessionStatus));
     }
 
@@ -597,7 +605,7 @@ public class StudentPracticeService {
 
     private StudentPracticeDtos.WrongQuestionItem wrongItem(ResultSet rs) throws SQLException {
         return new StudentPracticeDtos.WrongQuestionItem(rs.getLong(1), rs.getString(2), rs.getString(3), rs.getString(4),
-                rs.getString(5), rs.getInt(6), rs.getInt(7), rs.getString(8), rs.getObject(9, LocalDateTime.class));
+                textNormalizer.normalize(rs.getString(5)), rs.getInt(6), rs.getInt(7), rs.getString(8), rs.getObject(9, LocalDateTime.class),readKnowledgePoints(rs.getString(10)));
     }
 
     private List<StudentPracticeDtos.KnowledgePoint> activeKnowledgePoints(long subjectId) {
@@ -638,9 +646,12 @@ public class StudentPracticeService {
 
     private List<StudentPracticeDtos.KnowledgePoint> readKnowledgePoints(String json) {
         try {
-            return objectMapper.readValue(json, new TypeReference<List<StudentPracticeDtos.KnowledgePoint>>() { });
+            if(json==null||json.isBlank())return List.of();JsonNode nodes=objectMapper.readTree(json);if(!nodes.isArray())return List.of();
+            List<StudentPracticeDtos.KnowledgePoint> values=new ArrayList<>();
+            for(JsonNode node:nodes){long id=node.path("id").asLong(node.path("knowledgePointId").asLong());String name=node.path("name").asText(node.path("knowledgePointName").asText());String path=node.path("path").asText(node.path("fullPath").asText(name));if(id>0&&!name.isBlank())values.add(new StudentPracticeDtos.KnowledgePoint(id,name,path));}
+            return List.copyOf(values);
         } catch (Exception exception) {
-            throw business("PRACTICE_SNAPSHOT_INVALID", "练习知识点快照损坏", HttpStatus.CONFLICT);
+            return List.of();
         }
     }
 

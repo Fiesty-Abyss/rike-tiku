@@ -37,8 +37,8 @@ class StudentAiVariantServiceIntegrationTest extends AdminQuestionIntegrationTes
 
     @Test void singleChoiceGeneratesAnswersGradesAndSubmitsPendingWithoutChangingMotherStandard() {
         Fixture f=fixture("SINGLE_CHOICE",2);
-        provider.answers.add(candidate("SINGLE_CHOICE",3,f.pointId,"[\"A\"]"));
-        var generated=service.generate(f.userId,f.factId,3);
+        provider.answers.add(candidate("SINGLE_CHOICE",3,"[\"A\"]","SCENARIO_TRANSFER"));
+        var generated=service.generate(f.userId,f.factId,3,"SCENARIO_TRANSFER");
         assertThat(generated.status()).isEqualTo("READY");
         assertThat(generated.difficulty()).isEqualTo(3);
         assertThat(generated.correctAnswer()).isNull();
@@ -55,21 +55,21 @@ class StudentAiVariantServiceIntegrationTest extends AdminQuestionIntegrationTes
     @Test void supportsMultipleChoiceFillBlankAllDifficultiesAndMotherDifficultyDefault() {
         for(int difficulty=1;difficulty<=5;difficulty++){
             Fixture f=fixture("MULTIPLE_CHOICE",difficulty);
-            provider.answers.add(candidate("MULTIPLE_CHOICE",difficulty,f.pointId,"[\"A\",\"C\"]"));
+            provider.answers.add(candidate("MULTIPLE_CHOICE",difficulty,"[\"A\",\"C\"]","COMBINED"));
             var v=service.generate(f.userId,f.factId,difficulty);
             assertThat(service.answer(f.userId,v.id(),mapper.readTree("[\"A\",\"C\"]")).correct()).isTrue();
         }
         Fixture fill=fixture("FILL_BLANK",4);
-        provider.answers.add(candidate("FILL_BLANK",4,fill.pointId,"[\"9.8\"]"));
+        provider.answers.add(candidate("FILL_BLANK",4,"[\"9.8\"]","COMBINED"));
         var v=service.generate(fill.userId,fill.factId,null);
         assertThat(v.difficulty()).isEqualTo(4);
         assertThat(service.answer(fill.userId,v.id(),mapper.readTree("[\"9.8\"]")).correct()).isTrue();
     }
 
     @Test void invalidProviderStructureLeavesFailedTaskButNoOrphanCandidateOrInstance() {
-        Fixture f=fixture("SINGLE_CHOICE",2); provider.answers.add("{broken");
+        Fixture f=fixture("SINGLE_CHOICE",2); provider.answers.add("{broken");provider.answers.add("{still-broken");
         assertThatThrownBy(()->service.generate(f.userId,f.factId,2))
-                .isInstanceOfSatisfying(RenZhengYeWuYiChang.class,e->assertThat(e.getCode()).isEqualTo("AI_INVALID_RESPONSE"));
+                .isInstanceOfSatisfying(RenZhengYeWuYiChang.class,e->assertThat(e.getCode()).startsWith("AI_CANDIDATE_"));
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM ai_sheng_cheng_ren_wu WHERE chuang_jian_ren_id=? AND zhuang_tai='FAILED'",Integer.class,f.userId)).isEqualTo(1);
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM ai_xue_sheng_bian_shi_shi_li WHERE xue_sheng_da_ti_id=?",Integer.class,f.factId)).isZero();
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM ti_mu WHERE fu_ti_mu_id=?",Integer.class,f.motherId)).isZero();
@@ -93,10 +93,10 @@ class StudentAiVariantServiceIntegrationTest extends AdminQuestionIntegrationTes
         return new Fixture(user,fact,mother,point);
     }
 
-    private String candidate(String type,int difficulty,long point,String labels){
+    private String candidate(String type,int difficulty,String labels,String mode){
         String answer=type.equals("FILL_BLANK")?"{\"schemaVersion\":1,\"type\":\"FILL_BLANK\",\"blanks\":[{\"acceptedAnswers\":[\"9.8\"],\"caseSensitive\":false}]}":"{\"schemaVersion\":1,\"type\":\""+type+"\",\"optionLabels\":"+labels+"}";
-        String options=type.equals("FILL_BLANK")?"[]":"[{\"label\":\"A\",\"content\":\"正确\",\"correct\":true},{\"label\":\"B\",\"content\":\"错误\",\"correct\":false},{\"label\":\"C\",\"content\":\"条件三\",\"correct\":"+labels.contains("C")+"}]";
-        return "{\"candidates\":[{\"stem\":\"匿名变式"+UUID.randomUUID()+"\",\"questionType\":\""+type+"\",\"difficulty\":"+difficulty+",\"options\":"+options+",\"correctAnswer\":"+answer+",\"standardAnalysis\":\"AI 解析，仅用于本次练习\",\"knowledgePoints\":["+point+"],\"variationSummary\":\"受控变式\"}]}";
+        String options=type.equals("FILL_BLANK")?"[]":"[{\"label\":\"A\",\"content\":\"新情境下应先列出约束关系\",\"correct\":true},{\"label\":\"B\",\"content\":\"可以忽略新增边界条件\",\"correct\":false},{\"label\":\"C\",\"content\":\"需要联合两步推理得到结论\",\"correct\":"+labels.contains("C")+"}]";
+        return "{\"schemaVersion\":2,\"candidates\":[{\"stem\":\"空间实验站中的新情境要求分步判断"+UUID.randomUUID()+"\",\"questionType\":\""+type+"\",\"difficulty\":"+difficulty+",\"options\":"+options+",\"correctAnswer\":"+answer+",\"standardAnalysis\":\"先识别新情境条件，再分步骤应用知识点完成判断。\",\"variationMode\":\""+mode+"\",\"variationSummary\":\"重组情境与条件并调整推理路径\",\"changedDimensions\":[\"SCENARIO\",\"CONDITION\",\"REASONING_PATH\"]}]}";
     }
     private record Fixture(long userId,long factId,long motherId,long pointId){}
     @TestConfiguration static class Config{
