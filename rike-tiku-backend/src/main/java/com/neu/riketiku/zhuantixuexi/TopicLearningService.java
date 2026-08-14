@@ -46,7 +46,9 @@ public class TopicLearningService {
                 JOIN ke_mu s ON s.id=u.ke_mu_id
                 JOIN zhi_shi_dian k ON k.id=u.zhu_zhi_shi_dian_id
                 JOIN zhuan_ti_xue_xi_dan_yuan_ti_mu i ON i.dan_yuan_id=u.id
-                JOIN ti_mu q ON q.id=i.ti_mu_id AND q.zhuang_tai='PUBLISHED' AND q.yi_shan_chu=0
+                JOIN ti_mu q ON q.id=i.ti_mu_id AND q.ke_mu_id=u.ke_mu_id
+                  AND q.ti_mu_lei_xing='SUBJECTIVE' AND q.shi_yong_mo_shi='TOPIC_LEARNING'
+                  AND q.shi_fou_ke_zi_dong_pan_fen=0 AND q.zhuang_tai='PUBLISHED' AND q.yi_shan_chu=0
                 WHERE u.zhuang_tai='PUBLISHED' AND u.yi_shan_chu=0 AND (? IS NULL OR s.ke_mu_dai_ma=?)
                   AND (q.ke_jian_fan_wei='GLOBAL' OR EXISTS (
                     SELECT 1 FROM xue_sheng_dang_an xs
@@ -69,11 +71,27 @@ public class TopicLearningService {
                 .orElseThrow(()->new RenZhengYeWuYiChang("TOPIC_UNIT_NOT_FOUND","专题单元不存在或不可访问",HttpStatus.NOT_FOUND));
         List<TopicLearningDtos.UnitQuestion> questions=jdbc.query("""
                 SELECT i.xue_xi_jie_duan,i.pai_xu,q.id,s.id,s.ke_mu_dai_ma,s.ke_mu_ming_cheng,q.ti_gan,q.zhuan_ti_lei_xing,q.nan_du
-                FROM zhuan_ti_xue_xi_dan_yuan_ti_mu i JOIN ti_mu q ON q.id=i.ti_mu_id JOIN ke_mu s ON s.id=q.ke_mu_id
-                WHERE i.dan_yuan_id=? ORDER BY i.pai_xu
+                FROM zhuan_ti_xue_xi_dan_yuan_ti_mu i
+                JOIN zhuan_ti_xue_xi_dan_yuan u ON u.id=i.dan_yuan_id AND u.zhuang_tai='PUBLISHED' AND u.yi_shan_chu=0
+                JOIN ti_mu q ON q.id=i.ti_mu_id AND q.ke_mu_id=u.ke_mu_id
+                  AND q.ti_mu_lei_xing='SUBJECTIVE' AND q.shi_yong_mo_shi='TOPIC_LEARNING'
+                  AND q.shi_fou_ke_zi_dong_pan_fen=0 AND q.zhuang_tai='PUBLISHED' AND q.yi_shan_chu=0
+                JOIN ke_mu s ON s.id=q.ke_mu_id
+                WHERE i.dan_yuan_id=?
+                  AND (q.ke_jian_fan_wei='GLOBAL' OR EXISTS (
+                    SELECT 1 FROM xue_sheng_dang_an xs
+                    JOIN ban_ji_xue_sheng bx ON bx.xue_sheng_id=xs.id AND bx.shi_fou_zhu_ban_ji=1
+                      AND bx.zhuang_tai='ACTIVE' AND bx.tui_chu_shi_jian IS NULL
+                    JOIN ren_ke_guan_xi r ON r.id=q.ren_ke_guan_xi_id AND r.ban_ji_id=bx.ban_ji_id
+                      AND r.ke_mu_id=q.ke_mu_id AND r.zhuang_tai='ACTIVE'
+                    WHERE xs.yong_hu_id=?))
+                ORDER BY i.pai_xu
                 """,(rs,row)->new TopicLearningDtos.UnitQuestion(rs.getString(1),rs.getInt(2),
                 new TopicLearningDtos.TopicItem(rs.getLong(3),rs.getLong(4),rs.getString(5),rs.getString(6),
-                        splitStem(rs.getString(7))[0],rs.getString(8),rs.getInt(9),knowledgePoints(rs.getLong(3)))),unitId);
+                        splitStem(rs.getString(7))[0],rs.getString(8),rs.getInt(9),knowledgePoints(rs.getLong(3)))),unitId,userId);
+        if(questions.size()<2||questions.size()>3){
+            throw new RenZhengYeWuYiChang("TOPIC_UNIT_NOT_FOUND","专题单元不存在或可访问题目不足",HttpStatus.NOT_FOUND);
+        }
         return new TopicLearningDtos.UnitDetail(header.id(),header.subjectId(),header.subjectCode(),header.subjectName(),
                 header.title(),header.introduction(),header.difficulty(),header.primaryKnowledgePoint(),questions);
     }

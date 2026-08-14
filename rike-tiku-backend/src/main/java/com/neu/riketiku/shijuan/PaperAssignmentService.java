@@ -182,22 +182,34 @@ public class PaperAssignmentService {
     @Transactional(readOnly = true)
     public PaperAssignmentDtos.StudentProfile studentProfile(long userId, long releaseId, long studentId) {
         teacherRelease(userId, releaseId);
+        long authorizedScope = jdbc.queryForObject("""
+                SELECT r.ren_ke_guan_xi_id
+                FROM shi_juan_fa_bu r
+                JOIN ren_ke_guan_xi scope ON scope.id=r.ren_ke_guan_xi_id AND scope.zhuang_tai='ACTIVE'
+                JOIN jiao_shi_dang_an teacher ON teacher.id=scope.jiao_shi_id AND teacher.yong_hu_id=?
+                WHERE r.id=? AND r.fa_bu_jiao_shi_id=teacher.id
+                """, Long.class, userId, releaseId);
         long allowed = jdbc.queryForObject("""
                 SELECT COUNT(*) FROM shi_juan_fa_bu r JOIN ban_ji_xue_sheng b ON b.ban_ji_id=r.ban_ji_id
-                WHERE r.id=? AND b.xue_sheng_id=?
+                WHERE r.id=? AND b.xue_sheng_id=? AND b.shi_fou_zhu_ban_ji=1
+                  AND b.zhuang_tai='ACTIVE' AND b.tui_chu_shi_jian IS NULL
                 """, Long.class, releaseId, studentId);
         if (allowed == 0) throw error("PAPER_STUDENT_FORBIDDEN", "学生不属于该发布班级", HttpStatus.NOT_FOUND);
         List<PaperAssignmentDtos.StudentTrend> trend = jdbc.query("""
                 SELECT r.id,p.shi_juan_ming_cheng,s.ti_jiao_shi_jian,s.ke_guan_de_fen,s.ke_guan_zong_fen
                 FROM shi_juan_ti_jiao s JOIN shi_juan_fa_bu r ON r.id=s.shi_juan_fa_bu_id JOIN shi_juan p ON p.id=r.shi_juan_id
-                WHERE s.xue_sheng_id=? AND s.zhuang_tai='SUBMITTED' ORDER BY s.ti_jiao_shi_jian
+                WHERE s.xue_sheng_id=? AND s.zhuang_tai='SUBMITTED'
+                  AND r.ren_ke_guan_xi_id=?
+                ORDER BY s.ti_jiao_shi_jian
                 """, (rs, row) -> new PaperAssignmentDtos.StudentTrend(rs.getLong(1), rs.getString(2), rs.getTimestamp(3).toLocalDateTime(),
-                rs.getBigDecimal(4), rs.getBigDecimal(5), percent(rs.getBigDecimal(4), rs.getBigDecimal(5))), studentId);
+                rs.getBigDecimal(4), rs.getBigDecimal(5), percent(rs.getBigDecimal(4), rs.getBigDecimal(5))), studentId,authorizedScope);
         List<String> weakTypes = jdbc.query("""
                 SELECT i.ti_mu_lei_xing FROM shi_juan_ti_jiao s JOIN shi_juan_xue_sheng_da_ti a ON a.shi_juan_ti_jiao_id=s.id
-                JOIN shi_juan_fa_bu_ti_mu i ON i.id=a.shi_juan_fa_bu_ti_mu_id WHERE s.xue_sheng_id=? AND a.zhuang_tai='GRADED'
+                JOIN shi_juan_fa_bu r ON r.id=s.shi_juan_fa_bu_id
+                JOIN shi_juan_fa_bu_ti_mu i ON i.id=a.shi_juan_fa_bu_ti_mu_id
+                WHERE s.xue_sheng_id=? AND a.zhuang_tai='GRADED' AND r.ren_ke_guan_xi_id=?
                 GROUP BY i.ti_mu_lei_xing HAVING AVG(a.shi_fou_zheng_que)<0.6 ORDER BY AVG(a.shi_fou_zheng_que)
-                """, (rs, row) -> rs.getString(1), studentId);
+                """, (rs, row) -> rs.getString(1), studentId,authorizedScope);
         List<String> weakPoints = classStats(userId, releaseId).weakPoints();
         return new PaperAssignmentDtos.StudentProfile(studentId, trend, weakTypes, weakPoints, weakPoints);
     }
@@ -263,7 +275,9 @@ public class PaperAssignmentService {
     private PaperAssignmentDtos.Release teacherRelease(long user,long release){return jdbc.query("""
             SELECT r.id,r.shi_juan_id,p.shi_juan_ming_cheng,k.ke_mu_ming_cheng,b.ban_ji_ming_cheng,r.fa_bu_shi_jian,r.jie_zhi_shi_jian,r.zhuang_tai,NULL,NULL,NULL
             FROM shi_juan_fa_bu r JOIN shi_juan p ON p.id=r.shi_juan_id JOIN ke_mu k ON k.id=r.ke_mu_id JOIN ban_ji b ON b.id=r.ban_ji_id
-            JOIN jiao_shi_dang_an j ON j.id=r.fa_bu_jiao_shi_id WHERE r.id=? AND j.yong_hu_id=?
+            JOIN ren_ke_guan_xi scope ON scope.id=r.ren_ke_guan_xi_id AND scope.zhuang_tai='ACTIVE'
+            JOIN jiao_shi_dang_an j ON j.id=scope.jiao_shi_id AND j.id=r.fa_bu_jiao_shi_id
+            WHERE r.id=? AND j.yong_hu_id=?
             """,(rs,row)->release(rs),release,user).stream().findFirst().orElseThrow(()->error("PAPER_RELEASE_NOT_FOUND","发布不存在或无权访问",HttpStatus.NOT_FOUND));}
     private PaperAssignmentDtos.Release studentRelease(long student,long release){return jdbc.query("""
             SELECT r.id,r.shi_juan_id,p.shi_juan_ming_cheng,k.ke_mu_ming_cheng,b.ban_ji_ming_cheng,r.fa_bu_shi_jian,r.jie_zhi_shi_jian,r.zhuang_tai,COALESCE(s.zhuang_tai,'NOT_STARTED'),s.ke_guan_de_fen,s.ke_guan_zong_fen

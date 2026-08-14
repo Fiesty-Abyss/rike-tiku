@@ -2,7 +2,7 @@
 import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { archiveWrongQuestion, fetchPracticeOptions, fetchWrongQuestion, fetchWrongQuestions, retryWrongQuestion, type KnowledgePoint, type WrongQuestion, type WrongQuestionDetail } from '../../api/student/practice'
+import { archiveWrongQuestion, fetchPracticeOptions, fetchWrongQuestion, fetchWrongQuestions, retryWrongQuestion, type KnowledgePoint, type WrongQuestion, type WrongQuestionDetail, type WrongQuestionFilterStatus } from '../../api/student/practice'
 import type { ApiError } from '../../api/http'
 import QuestionContent from '../../components/question/QuestionContent.vue'
 import AnswerDisplay from '../../components/question/AnswerDisplay.vue'
@@ -17,7 +17,7 @@ const records = ref<WrongQuestion[]>([])
 const total = ref(0)
 const page = ref(1)
 const keyword = ref('')
-const reviewStatus = ref('')
+const reviewStatus = ref<WrongQuestionFilterStatus>()
 const knowledgePointId = ref<number>()
 const knowledgePoints = ref<KnowledgePoint[]>([])
 const wrongDates = ref<[string,string] | null>(null)
@@ -29,7 +29,7 @@ const state = (value: string) => ({ NEW: '新错题', REVIEWING: '复习中', MA
 
 async function load() {
   loading.value = true
-  try { const data=await fetchWrongQuestions({subjectCode:subjectCode.value,knowledgePointId:knowledgePointId.value,status:reviewStatus.value||undefined,keyword:keyword.value||undefined,wrongFrom:wrongDates.value?.[0],wrongTo:wrongDates.value?.[1],page:page.value-1,size:20});records.value=Array.isArray(data)?data:data.items;total.value=Array.isArray(data)?data.length:data.total }
+  try { const data=await fetchWrongQuestions({subjectCode:subjectCode.value,knowledgePointId:knowledgePointId.value,status:reviewStatus.value,keyword:keyword.value||undefined,wrongFrom:wrongDates.value?.[0],wrongTo:wrongDates.value?.[1],page:page.value-1,size:20});records.value=Array.isArray(data)?data:data.items;total.value=Array.isArray(data)?data.length:data.total }
   catch (error) { const api = error as ApiError; ElMessage.error(api.message || '错题本加载失败。') }
   finally { loading.value = false }
 }
