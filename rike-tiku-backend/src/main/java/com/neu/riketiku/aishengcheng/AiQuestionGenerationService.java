@@ -72,6 +72,12 @@ public class AiQuestionGenerationService {
         return generate(actorId,role,command,mother(command.motherQuestionId()),action,false);
     }
 
+    public AiQuestionGenerationDtos.Task generateTopic(long actorId,AiQuestionGenerationDtos.Generate command,
+                                                         boolean requireVisualContext,boolean keepPrimaryKnowledgePoint){
+        return generate(actorId,"STUDENT",command,mother(command.motherQuestionId()),null,false,
+                requireVisualContext,"TOPIC|visual="+requireVisualContext+"|primary="+keepPrimaryKnowledgePoint);
+    }
+
     public AiQuestionGenerationDtos.Task generateFromKnowledgeCard(long actorId,long cardId,String questionType,int difficulty,String variationMode,int count,TransactionalCandidateAction action){
         CardMother card=jdbc.query("""
                 SELECT h.id,r.ke_mu_id,k.ke_mu_dai_ma,h.biao_ti,h.nei_rong,h.latex_nei_rong,h.shi_yong_tiao_jian,h.han_yi_tui_dao,h.chang_jian_wu_qu,h.li_zi,h.ji_yi_kou_jue
@@ -92,6 +98,12 @@ public class AiQuestionGenerationService {
     }
 
     private AiQuestionGenerationDtos.Task generate(long actorId,String role,AiQuestionGenerationDtos.Generate command,AiQuestionGenerationPromptFactory.Mother mother,TransactionalCandidateAction action,boolean alreadyAuthorized){
+        return generate(actorId,role,command,mother,action,alreadyAuthorized,null,"");
+    }
+
+    private AiQuestionGenerationDtos.Task generate(long actorId,String role,AiQuestionGenerationDtos.Generate command,
+            AiQuestionGenerationPromptFactory.Mother mother,TransactionalCandidateAction action,boolean alreadyAuthorized,
+            Boolean requireVisualContext,String requestDiscriminator){
         String actorRole=role.toUpperCase(Locale.ROOT); validateCommand(command);
         if("SUBJECTIVE".equals(command.questionType())&&!"TOPIC_LEARNING".equals(mother.usageMode()))fail("AI_TOPIC_MOTHER_INVALID","主观专题变式只能绑定已发布专题母题",HttpStatus.BAD_REQUEST);
         if(!alreadyAuthorized){if("STUDENT".equals(actorRole)&&"SUBJECTIVE".equals(command.questionType()))authorizeTopicStudent(actorId,mother.id());else authorize(actorId,actorRole,mother.subjectId());}
@@ -103,7 +115,7 @@ public class AiQuestionGenerationService {
                   AND s.lai_yuan_lei_xing='AI_GENERATED' AND s.yi_shan_chu=0
                 """,mother.id());
         if(pending+command.count()>6) fail("AI_PENDING_LIMIT_REACHED","同一母题最多保留 6 道待审核 AI 候选题",HttpStatus.CONFLICT);
-        String requestHash=requestHash(actorId,actorRole,command);
+        String requestHash=requestHash(actorId,actorRole,command,requestDiscriminator);
         Long taskId=insertTask(actorId,actorRole,command,requestHash);
         long started=System.nanoTime();
         try{
@@ -111,9 +123,13 @@ public class AiQuestionGenerationService {
             // complete mother context. The representative question exists only to keep
             // the generated candidate attached to the existing question lineage; its
             // attachments must not leak into the card prompt.
-            VisionContextService.Resolution vision=alreadyAuthorized
+            VisionContextService.Resolution vision=alreadyAuthorized||Boolean.FALSE.equals(requireVisualContext)
                     ? new VisionContextService.Resolution(null,false,true,0,false)
                     : visionContexts.resolve(mother.id(),true);
+            if(Boolean.TRUE.equals(requireVisualContext)&&!vision.used()){
+                throw new AiVisionException(com.neu.riketiku.ai.provider.AiProviderErrorType.CONFIGURATION_ERROR,
+                        "VISION_ATTACHMENT_REQUIRED");
+            }
             AiRuntimeConfig runtime=configurations.text();
             int maxTokens=Math.max(64,Math.min(3000,runtime.maxTokens()));
             AiModelResult result=provider.generate(prompts.request(mother,command,vision.contextJson(),maxTokens));
@@ -136,7 +152,7 @@ public class AiQuestionGenerationService {
                         WHERE id=?
                         """,safe(finalResult.providerCode()),safe(finalResult.modelCode()),prepared.size(),vision.used(),latency,taskId);
             });
-            return task(taskId,actorId,actorRole,alreadyAuthorized);
+            return task(taskId,actorId,actorRole,true);
         }catch(AiCandidateParser.InvalidCandidateException exception){markFailed(taskId,exception.code(),started);throw failEx("AI_CANDIDATE_"+exception.code(),"候选题字段 "+exception.field()+" 未通过校验",HttpStatus.SERVICE_UNAVAILABLE);}
         catch(AiVisionException exception){markFailed(taskId,safe(exception.getMessage()),started);throw failEx("AI_VISION_UNAVAILABLE","母题依赖图片且视觉上下文不可用，未生成候选题",HttpStatus.SERVICE_UNAVAILABLE);}
         catch(AiProviderException exception){markFailed(taskId,exception.errorType().name(),started);throw failEx("AI_"+exception.errorType().name(),"AI 候选题生成暂不可用",HttpStatus.SERVICE_UNAVAILABLE);}
@@ -357,7 +373,7 @@ public class AiQuestionGenerationService {
         List<AiQuestionGenerationDtos.KnowledgePoint> points=jdbc.query("SELECT p.id,p.zhi_shi_dian_ming_cheng FROM ti_mu_zhi_shi_dian qp JOIN zhi_shi_dian p ON p.id=qp.zhi_shi_dian_id WHERE qp.ti_mu_id=? AND qp.yi_shan_chu=0 ORDER BY qp.pai_xu",(rs,row)->new AiQuestionGenerationDtos.KnowledgePoint(rs.getLong(1),rs.getString(2)),id);
         return new AiQuestionGenerationDtos.Candidate(b.id(),b.taskId(),b.stem(),b.type(),b.difficulty(),b.status(),b.summary(),b.warning(),b.vision(),b.provider(),b.model(),b.answer(),b.analysis(),points,b.quality());
     }
-    private String requestHash(long actorId,String role,AiQuestionGenerationDtos.Generate c){List<Long> points=c.knowledgePointIds().stream().sorted().toList();return sha(actorId+"|"+role+"|"+c.motherQuestionId()+"|"+c.questionType()+"|"+points+"|"+c.targetDifficulty()+"|"+c.variationMode()+"|"+AiQuestionGenerationPromptFactory.PROMPT_VERSION);}
+    private String requestHash(long actorId,String role,AiQuestionGenerationDtos.Generate c,String discriminator){List<Long> points=c.knowledgePointIds().stream().sorted().toList();return sha(actorId+"|"+role+"|"+c.motherQuestionId()+"|"+c.questionType()+"|"+points+"|"+c.targetDifficulty()+"|"+c.variationMode()+"|"+AiQuestionGenerationPromptFactory.PROMPT_VERSION+"|"+discriminator);}
     private double jaccard(String a,String b){Set<String>x=ngrams(a),y=ngrams(b);if(x.isEmpty()||y.isEmpty())return 0;Set<String>intersection=new HashSet<>(x);intersection.retainAll(y);Set<String>union=new HashSet<>(x);union.addAll(y);return (double)intersection.size()/union.size();}
     private Set<String> ngrams(String value){String n=value==null?"":value.replaceAll("[\\s\\p{Punct}]","").toLowerCase(Locale.ROOT);Set<String>r=new LinkedHashSet<>();for(int i=0;i+3<=n.length();i++)r.add(n.substring(i,i+3));return r;}
     private String sha(String value){try{return HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(value.getBytes(StandardCharsets.UTF_8)));}catch(Exception e){throw new IllegalStateException(e);}}

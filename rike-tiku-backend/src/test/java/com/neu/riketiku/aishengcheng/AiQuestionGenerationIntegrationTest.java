@@ -90,6 +90,29 @@ class AiQuestionGenerationIntegrationTest extends AdminQuestionIntegrationTestSu
         assertThat(service.generate(teacher,"TEACHER",request(published,point,"SCENARIO_TRANSFER",1)).status()).isEqualTo("SUCCESS");
     }
 
+    @Test @Transactional
+    void topicVisualFlagChangesGenerationBehaviorInsteadOfSilentlyFallingBack(){
+        long student=user("topic_student");
+        String suffix=UUID.randomUUID().toString().replace("-","").substring(0,10);
+        jdbc.update("INSERT INTO xue_sheng_dang_an(yong_hu_id,xue_hao,xing_ming,nian_ji) VALUES (?,?,?,?)",student,"TOP"+suffix,"匿名专题学生","高二");
+        long point=point();
+        long mother=mother("无图片专题母题");
+        jdbc.update("UPDATE ti_mu SET ti_mu_lei_xing='SUBJECTIVE',shi_yong_mo_shi='TOPIC_LEARNING',shi_fou_ke_zi_dong_pan_fen=0,zheng_que_da_an=CAST(? AS JSON) WHERE id=?",
+                "{\"schemaVersion\":1,\"type\":\"SUBJECTIVE\"}",mother);
+        provider.answer("""
+                {"schemaVersion":2,"candidates":[{"stem":"在全新实验材料中分析两个独立条件并写出完整推理过程","questionType":"SUBJECTIVE","difficulty":3,"options":[],"correctAnswer":{"schemaVersion":1,"type":"SUBJECTIVE"},"standardAnalysis":"先识别实验变量，再分别分析两个条件，最后综合得到结论。","variationMode":"COMBINED","variationSummary":"更换实验场景并重组推理条件","changedDimensions":["SCENARIO","REASONING_PATH"]}]}
+                """);
+        var textOnly=new AiQuestionGenerationDtos.Generate(mother,"SUBJECTIVE",List.of(point),3,"COMBINED",1);
+        var generated=service.generateTopic(student,textOnly,false,true);
+        assertThat(generated.status()).isEqualTo("SUCCESS");
+        assertThat(generated.visionUsed()).isFalse();
+
+        var visualRequired=new AiQuestionGenerationDtos.Generate(mother,"SUBJECTIVE",List.of(point),3,"SCENARIO_TRANSFER",1);
+        assertThatThrownBy(() -> service.generateTopic(student,visualRequired,true,true))
+                .isInstanceOfSatisfying(RenZhengYeWuYiChang.class,error -> assertThat(error.getCode()).isEqualTo("AI_VISION_UNAVAILABLE"));
+        assertThat(jdbc.queryForObject("SELECT zhuang_tai FROM ai_sheng_cheng_ren_wu WHERE mu_ti_mu_id=? AND bian_shi_fang_shi='SCENARIO_TRANSFER'",String.class,mother)).isEqualTo("FAILED");
+    }
+
     @Test
     void rollsBackWholeCandidateBatchWhenSecondQualityInsertFails(){
         long admin=user("atomic");long point=point();long mother=mother("批次原子性母题");

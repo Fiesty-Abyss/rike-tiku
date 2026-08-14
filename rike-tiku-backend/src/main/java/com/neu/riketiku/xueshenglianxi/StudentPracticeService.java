@@ -217,13 +217,42 @@ public class StudentPracticeService {
                 JOIN lian_xi_hui_hua h ON h.id=lt.lian_xi_hui_hua_id
                 JOIN ke_mu s ON s.id=h.ke_mu_id
                 WHERE c.xue_sheng_id=?
-                """);List<Object>args=new ArrayList<>();args.add(studentId);if(normalizedSubjectCode!=null){sql.append(" AND s.ke_mu_dai_ma=?");args.add(normalizedSubjectCode);}if(knowledgePointId!=null){sql.append(" AND EXISTS(SELECT 1 FROM ti_mu_zhi_shi_dian tz WHERE tz.ti_mu_id=c.ti_mu_id AND tz.zhi_shi_dian_id=? AND tz.yi_shan_chu=0)");args.add(knowledgePointId);}if(status!=null&&!status.isBlank()){sql.append(" AND c.zhuang_tai=?");args.add(status.trim().toUpperCase(Locale.ROOT));}else sql.append(" AND c.zhuang_tai<>'MASTERED'");if(keyword!=null&&!keyword.isBlank()){sql.append(" AND lt.ti_gan_kuai_zhao LIKE ?");args.add("%"+keyword.trim()+"%");}if(wrongFrom!=null){sql.append(" AND c.zui_jin_cuo_wu_shi_jian>=?");args.add(wrongFrom.atStartOfDay());}if(wrongTo!=null){if(wrongFrom!=null&&wrongTo.isBefore(wrongFrom))fail("WRONG_QUESTION_DATE_RANGE_INVALID","结束日期不能早于开始日期",HttpStatus.BAD_REQUEST);sql.append(" AND c.zui_jin_cuo_wu_shi_jian<?");args.add(wrongTo.plusDays(1).atStartOfDay());}long total=count("SELECT COUNT(*) FROM ("+sql+") w",args.toArray());sql.append(" ORDER BY c.zui_jin_cuo_wu_shi_jian DESC,c.id DESC LIMIT ? OFFSET ?");args.add(size);args.add(page*size);List<StudentPracticeDtos.WrongQuestionItem>items=jdbc.query(sql.toString(),(rs,row)->wrongItem(rs),args.toArray());return new StudentPracticeDtos.WrongQuestionPage(items,total,page,size);
+                """);List<Object>args=new ArrayList<>();args.add(studentId);if(normalizedSubjectCode!=null){sql.append(" AND s.ke_mu_dai_ma=?");args.add(normalizedSubjectCode);}if(knowledgePointId!=null){sql.append(" AND EXISTS(SELECT 1 FROM ti_mu_zhi_shi_dian tz WHERE tz.ti_mu_id=c.ti_mu_id AND tz.zhi_shi_dian_id=? AND tz.yi_shan_chu=0)");args.add(knowledgePointId);}appendWrongQuestionStatusFilter(sql,status);if(keyword!=null&&!keyword.isBlank()){sql.append(" AND lt.ti_gan_kuai_zhao LIKE ?");args.add("%"+keyword.trim()+"%");}if(wrongFrom!=null){sql.append(" AND c.zui_jin_cuo_wu_shi_jian>=?");args.add(wrongFrom.atStartOfDay());}if(wrongTo!=null){if(wrongFrom!=null&&wrongTo.isBefore(wrongFrom))fail("WRONG_QUESTION_DATE_RANGE_INVALID","结束日期不能早于开始日期",HttpStatus.BAD_REQUEST);sql.append(" AND c.zui_jin_cuo_wu_shi_jian<?");args.add(wrongTo.plusDays(1).atStartOfDay());}long total=count("SELECT COUNT(*) FROM ("+sql+") w",args.toArray());sql.append(" ORDER BY c.zui_jin_cuo_wu_shi_jian DESC,c.id DESC LIMIT ? OFFSET ?");args.add(size);args.add(page*size);List<StudentPracticeDtos.WrongQuestionItem>items=jdbc.query(sql.toString(),(rs,row)->wrongItem(rs),args.toArray());return new StudentPracticeDtos.WrongQuestionPage(items,total,page,size);
+    }
+
+    private void appendWrongQuestionStatusFilter(StringBuilder sql,String status){
+        String filter=status==null||status.isBlank()?"ACTIVE":status.trim().toUpperCase(Locale.ROOT);
+        switch(filter){
+            case "ACTIVE" -> sql.append(" AND c.zhuang_tai IN ('NEW','REVIEWING')");
+            case "MASTERED" -> sql.append(" AND c.zhuang_tai='MASTERED'");
+            default -> fail("WRONG_QUESTION_STATUS_INVALID","错题状态筛选仅支持 ACTIVE 或 MASTERED",HttpStatus.BAD_REQUEST);
+        }
     }
     public List<StudentPracticeDtos.WrongQuestionItem> wrongQuestions(Long userId,String subjectCode){return wrongQuestions(userId,subjectCode,null,null,null,null,null,0,100).items();}
 
     @Transactional public void archiveWrongQuestion(Long userId,Long questionId){long studentId=requireStudent(userId);if(jdbc.update("UPDATE cuo_ti_ji_lu SET zhuang_tai='MASTERED' WHERE xue_sheng_id=? AND ti_mu_id=?",studentId,questionId)!=1)fail("WRONG_QUESTION_NOT_FOUND","错题不存在",HttpStatus.NOT_FOUND);}
 
-    @Transactional public StudentPracticeDtos.Session retryWrongQuestion(Long userId,Long questionId){long studentId=requireStudent(userId);Long subject=jdbc.query("SELECT q.ke_mu_id FROM cuo_ti_ji_lu c JOIN ti_mu q ON q.id=c.ti_mu_id WHERE c.xue_sheng_id=? AND c.ti_mu_id=?",rs->rs.next()?rs.getLong(1):null,studentId,questionId);if(subject==null)fail("WRONG_QUESTION_NOT_FOUND","错题不存在",HttpStatus.NOT_FOUND);return create(userId,new StudentPracticeDtos.CreateRequest(subject,List.of(),List.of(),null,1,questionId));}
+    @Transactional public StudentPracticeDtos.Session retryWrongQuestion(Long userId,Long questionId){
+        long studentId=requireStudent(userId);
+        WrongRetrySource source=jdbc.query("""
+                SELECT h.ke_mu_id,lt.id FROM cuo_ti_ji_lu c
+                JOIN xue_sheng_da_ti da ON da.id=c.zui_jin_da_ti_id
+                JOIN lian_xi_ti_mu lt ON lt.id=da.lian_xi_ti_mu_id
+                JOIN lian_xi_hui_hua h ON h.id=lt.lian_xi_hui_hua_id
+                WHERE c.xue_sheng_id=? AND c.ti_mu_id=?
+                """,(rs,row)->new WrongRetrySource(rs.getLong(1),rs.getLong(2)),studentId,questionId).stream().findFirst()
+                .orElseThrow(()->business("WRONG_QUESTION_NOT_FOUND","错题不存在",HttpStatus.NOT_FOUND));
+        jdbc.update("INSERT INTO lian_xi_hui_hua(xue_sheng_id,ke_mu_id,zhuang_tai,ti_mu_shu) VALUES (?,?,'CREATED',1)",studentId,source.subjectId());
+        long sessionId=requiredLastInsertId();
+        jdbc.update("""
+                INSERT INTO lian_xi_ti_mu(lian_xi_hui_hua_id,ti_mu_id,ti_mu_shun_xu,fen_zhi,ti_mu_lei_xing,nan_du_kuai_zhao,
+                  ti_gan_kuai_zhao,xuan_xiang_kuai_zhao,zheng_que_da_an_kuai_zhao,biao_zhun_jie_xi_kuai_zhao,zhi_shi_dian_kuai_zhao)
+                SELECT ?,ti_mu_id,1,fen_zhi,ti_mu_lei_xing,nan_du_kuai_zhao,ti_gan_kuai_zhao,xuan_xiang_kuai_zhao,
+                  zheng_que_da_an_kuai_zhao,biao_zhun_jie_xi_kuai_zhao,zhi_shi_dian_kuai_zhao
+                FROM lian_xi_ti_mu WHERE id=?
+                """,sessionId,source.practiceQuestionId());
+        return session(userId,sessionId);
+    }
 
     @Transactional(readOnly = true)
     public StudentPracticeDtos.WrongQuestionDetail wrongQuestion(Long userId, Long questionId) {
@@ -718,6 +747,7 @@ public class StudentPracticeService {
                                     List<StudentPracticeDtos.KnowledgePoint> knowledgePoints) {
     }
     private record AttachmentRow(long id, String position, String type, String status, String marker, String path, String hash) { }
+    private record WrongRetrySource(long subjectId,long practiceQuestionId) { }
 
     private record SessionHeader(long id, long subjectId, String subjectCode, String subjectName, String status, int questionCount,
                                  LocalDateTime createdAt, LocalDateTime submittedAt) {

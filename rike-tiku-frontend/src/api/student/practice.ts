@@ -11,7 +11,8 @@ export interface PracticeResultQuestion { answerFactId:number; question:Practice
 export interface PracticeResult { sessionId:number; subjectId:number; subjectCode:string; subjectName:string; totalCount:number; correctCount:number; totalScore:number; submittedAt:string; questions:PracticeResultQuestion[] }
 export interface WrongQuestion { questionId:number; subjectCode:string; subjectName:string; questionType:QuestionType; stemSummary:string; errorCount:number; consecutiveCorrectCount:number; status:'NEW'|'REVIEWING'|'MASTERED'; lastWrongAt:string; knowledgePoints:KnowledgePoint[] }
 export interface WrongQuestionPage { items:WrongQuestion[]; total:number; page:number; size:number }
-export interface WrongQuestionFilters { subjectCode?:string; knowledgePointId?:number; status?:string; keyword?:string; wrongFrom?:string; wrongTo?:string; page?:number; size?:number }
+export type WrongQuestionFilterStatus = 'ACTIVE' | 'MASTERED'
+export interface WrongQuestionFilters { subjectCode?:string; knowledgePointId?:number; status?:WrongQuestionFilterStatus; keyword?:string; wrongFrom?:string; wrongTo?:string; page?:number; size?:number }
 export interface WrongQuestionDetail { aiAnalysisAnswerFactId:number; wrongQuestion:WrongQuestion; stem:string; options:Option[]; latestStudentAnswer:unknown; correctAnswer:unknown; standardAnalysis:string; knowledgePoints:KnowledgePoint[]; attachments:Attachment[] }
 export interface CreatePracticeRequest { subjectId:number; knowledgePointIds?:number[]; questionTypes?:QuestionType[]; difficulty?:number; count:number; referenceQuestionId?:number }
 export type PracticeAvailabilityRequest = Omit<CreatePracticeRequest, 'count'>
