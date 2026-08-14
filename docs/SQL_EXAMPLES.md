@@ -1,6 +1,6 @@
 # 常用只读 SQL 示例
 
-> 当前结构为 Flyway V23、41 张业务表。以下新增示例只用于本地核验，不包含账号、姓名、Key 或密码。
+> 当前结构为 Flyway V29、50 张业务表。以下示例只用于本地核验，不包含账号、姓名、Key 或密码。
 
 ```sql
 SELECT version, description, success
