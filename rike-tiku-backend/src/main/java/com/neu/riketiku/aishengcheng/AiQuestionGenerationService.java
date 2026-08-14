@@ -10,6 +10,7 @@ import com.neu.riketiku.ai.vision.VisionContextService;
 import com.neu.riketiku.renzheng.RenZhengYeWuYiChang;
 import com.neu.riketiku.tiku.admin.QuestionAdminService;
 import com.neu.riketiku.tiku.admin.QuestionContentHashService;
+import com.neu.riketiku.tiku.QuestionDisplayTextNormalizer;
 import com.neu.riketiku.tiku.admin.QuestionDtos;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -46,16 +47,17 @@ public class AiQuestionGenerationService {
     private final AiCandidateNoveltyService novelty;
     private final QuestionContentHashService hashes;
     private final QuestionAdminService questions;
+    private final QuestionDisplayTextNormalizer textNormalizer;
     private final TransactionTemplate transactions;
     private final ObjectMapper mapper=new ObjectMapper();
 
     public AiQuestionGenerationService(JdbcTemplate jdbc,AiProviderService provider,
             AiRuntimeConfigurationService configurations,VisionContextService visionContexts,
             AiQuestionGenerationPromptFactory prompts,AiCandidateParser parser,AiCandidateNoveltyService novelty,
-            QuestionContentHashService hashes,QuestionAdminService questions,
+            QuestionContentHashService hashes,QuestionAdminService questions,QuestionDisplayTextNormalizer textNormalizer,
             PlatformTransactionManager transactionManager){
         this.jdbc=jdbc;this.provider=provider;this.configurations=configurations;this.visionContexts=visionContexts;
-        this.prompts=prompts;this.parser=parser;this.novelty=novelty;this.hashes=hashes;this.questions=questions;
+        this.prompts=prompts;this.parser=parser;this.novelty=novelty;this.hashes=hashes;this.questions=questions;this.textNormalizer=textNormalizer;
         this.transactions=new TransactionTemplate(transactionManager);
     }
 
@@ -250,7 +252,7 @@ public class AiQuestionGenerationService {
                 .stream().findFirst().orElseThrow(()->failEx("AI_MOTHER_QUESTION_UNAVAILABLE","只能从已发布且有 STANDARD 解析的母题生成",HttpStatus.CONFLICT));
         String options=mapper.writeValueAsString(jdbc.query("SELECT xuan_xiang_biao_shi,xuan_xiang_nei_rong,shi_fou_zheng_que FROM ti_mu_xuan_xiang WHERE ti_mu_id=? AND yi_shan_chu=0 ORDER BY pai_xu",
                 (rs,row)->java.util.Map.of("label",rs.getString(1),"content",rs.getString(2),"correct",rs.getBoolean(3)),id));
-        return new AiQuestionGenerationPromptFactory.Mother(base.id(),base.subjectId(),base.subjectCode(),base.type(),base.usageMode(),base.stem(),options,base.answer(),base.analysis());
+        return new AiQuestionGenerationPromptFactory.Mother(base.id(),base.subjectId(),base.subjectCode(),base.type(),base.usageMode(),textNormalizer.normalize(base.stem()),options,base.answer(),base.analysis());
     }
 
     private Long insertTask(long actorId,String role,AiQuestionGenerationDtos.Generate c,String hash){

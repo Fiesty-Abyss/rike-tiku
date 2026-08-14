@@ -75,6 +75,26 @@ class StudentAiVariantServiceIntegrationTest extends AdminQuestionIntegrationTes
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM ti_mu WHERE fu_ti_mu_id=?",Integer.class,f.motherId)).isZero();
     }
 
+    @Test void instanceInsertFailureRollsBackCandidateQualityAndSuccessThenMarksTaskFailed() {
+        Fixture f=fixture("SINGLE_CHOICE",2);
+        provider.answers.add(candidate("SINGLE_CHOICE",2,"[\"A\"]","CONDITION_RECOMBINATION"));
+        String trigger="fail_variant_instance_"+UUID.randomUUID().toString().replace("-","").substring(0,8);
+        jdbc.execute("CREATE TRIGGER "+trigger+" BEFORE INSERT ON ai_xue_sheng_bian_shi_shi_li FOR EACH ROW SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='forced variant instance failure'");
+        try {
+            assertThatThrownBy(()->service.generate(f.userId,f.factId,2,"CONDITION_RECOMBINATION"))
+                    .isInstanceOfSatisfying(RenZhengYeWuYiChang.class,e->assertThat(e.getCode()).isEqualTo("AI_VARIANT_GENERATION_FAILED"));
+        } finally {
+            jdbc.execute("DROP TRIGGER IF EXISTS "+trigger);
+        }
+        long taskId=jdbc.queryForObject("SELECT MAX(id) FROM ai_sheng_cheng_ren_wu WHERE chuang_jian_ren_id=?",Long.class,f.userId);
+        assertThat(jdbc.queryForObject("SELECT zhuang_tai FROM ai_sheng_cheng_ren_wu WHERE id=?",String.class,taskId)).isEqualTo("FAILED");
+        assertThat(jdbc.queryForObject("SELECT yi_sheng_cheng_shu_liang FROM ai_sheng_cheng_ren_wu WHERE id=?",Integer.class,taskId)).isZero();
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM ti_mu WHERE fu_ti_mu_id=?",Integer.class,f.motherId)).isZero();
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM ai_hou_xuan_ti_zhi_liang_ping_jia WHERE ai_sheng_cheng_ren_wu_id=?",Integer.class,taskId)).isZero();
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM ai_xue_sheng_bian_shi_shi_li WHERE ai_sheng_cheng_ren_wu_id=?",Integer.class,taskId)).isZero();
+        assertThat(jdbc.queryForObject("SELECT jie_xi_nei_rong FROM ti_mu_jie_xi WHERE ti_mu_id=? AND jie_xi_lei_xing='STANDARD'",String.class,f.motherId)).isEqualTo("母题 STANDARD");
+    }
+
     private Fixture fixture(String type,int difficulty){
         String suffix=UUID.randomUUID().toString().replace("-","").substring(0,10);
         jdbc.update("INSERT INTO yong_hu(yong_hu_ming,mi_ma_zhai_yao,shi_fou_shou_ci_deng_lu) VALUES (?,?,0)","variant_"+suffix,"x".repeat(60));

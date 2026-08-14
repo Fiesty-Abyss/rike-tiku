@@ -2,6 +2,7 @@ package com.neu.riketiku.xueshenglianxi;
 
 import com.neu.riketiku.renzheng.RenZhengYongHu;
 import jakarta.validation.Valid;
+import java.time.LocalDate;
 import java.util.List;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
@@ -74,9 +75,11 @@ public class StudentPracticeController {
     @GetMapping("/wrong-questions")
     public StudentPracticeDtos.WrongQuestionPage wrongQuestions(
             @RequestParam(required = false) String subjectCode,
-            @RequestParam(required=false) Long knowledgePointId,@RequestParam(required=false) String status,@RequestParam(required=false) String keyword,@RequestParam(defaultValue="0") int page,@RequestParam(defaultValue="20") int size,
+            @RequestParam(required=false) Long knowledgePointId,@RequestParam(required=false) String status,
+            @RequestParam(required=false) String keyword,@RequestParam(required=false) LocalDate wrongFrom,
+            @RequestParam(required=false) LocalDate wrongTo,@RequestParam(defaultValue="0") int page,@RequestParam(defaultValue="20") int size,
             @AuthenticationPrincipal RenZhengYongHu user) {
-        return service.wrongQuestions(user.id(), subjectCode,knowledgePointId,status,keyword,page,Math.min(100,Math.max(1,size)));
+        return service.wrongQuestions(user.id(), subjectCode,knowledgePointId,status,keyword,wrongFrom,wrongTo,page,Math.min(100,Math.max(1,size)));
     }
 
     @PostMapping("/wrong-questions/{questionId}/retry") public StudentPracticeDtos.Session retry(@PathVariable Long questionId,@AuthenticationPrincipal RenZhengYongHu user){return service.retryWrongQuestion(user.id(),questionId);}

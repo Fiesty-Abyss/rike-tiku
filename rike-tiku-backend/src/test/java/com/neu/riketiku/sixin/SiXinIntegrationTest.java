@@ -30,9 +30,9 @@ class SiXinIntegrationTest extends AdminQuestionIntegrationTestSupport {
         try {
             long physics199 = scope("DEMO_T_PHYSICS", "DEMO_CLASS_199", 1);
             long physics200 = scope("DEMO_T_PHYSICS", "DEMO_CLASS_200", 1);
-            long student199 = student("DEMO_199_01");
+            long student199 = student("DEMO_199_02");
             long student200 = student("DEMO_200_01");
-            String studentToken = login("demo_199_01", "STUDENT");
+            String studentToken = login("demo_199_02", "STUDENT");
             String otherStudentToken = login("demo_200_01", "STUDENT");
             String teacherToken = login("demo_physics_admin", "TEACHER");
             String adminToken = login("demo_admin", "ADMIN");

@@ -2,7 +2,7 @@
 import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { archiveWrongQuestion, fetchWrongQuestion, fetchWrongQuestions, retryWrongQuestion, type WrongQuestion, type WrongQuestionDetail } from '../../api/student/practice'
+import { archiveWrongQuestion, fetchPracticeOptions, fetchWrongQuestion, fetchWrongQuestions, retryWrongQuestion, type KnowledgePoint, type WrongQuestion, type WrongQuestionDetail } from '../../api/student/practice'
 import type { ApiError } from '../../api/http'
 import QuestionContent from '../../components/question/QuestionContent.vue'
 import AnswerDisplay from '../../components/question/AnswerDisplay.vue'
@@ -19,6 +19,8 @@ const page = ref(1)
 const keyword = ref('')
 const reviewStatus = ref('')
 const knowledgePointId = ref<number>()
+const knowledgePoints = ref<KnowledgePoint[]>([])
+const wrongDates = ref<[string,string] | null>(null)
 const detail = ref<WrongQuestionDetail | null>(null)
 const visible = ref(false)
 const subjectCode = computed(() => String(route.query.subjectCode || '').trim().toUpperCase() || undefined)
@@ -27,7 +29,7 @@ const state = (value: string) => ({ NEW: '新错题', REVIEWING: '复习中', MA
 
 async function load() {
   loading.value = true
-  try { const data=await fetchWrongQuestions({subjectCode:subjectCode.value,knowledgePointId:knowledgePointId.value,status:reviewStatus.value||undefined,keyword:keyword.value||undefined,page:page.value-1,size:20});records.value=Array.isArray(data)?data:data.items;total.value=Array.isArray(data)?data.length:data.total }
+  try { const data=await fetchWrongQuestions({subjectCode:subjectCode.value,knowledgePointId:knowledgePointId.value,status:reviewStatus.value||undefined,keyword:keyword.value||undefined,wrongFrom:wrongDates.value?.[0],wrongTo:wrongDates.value?.[1],page:page.value-1,size:20});records.value=Array.isArray(data)?data:data.items;total.value=Array.isArray(data)?data.length:data.total }
   catch (error) { const api = error as ApiError; ElMessage.error(api.message || '错题本加载失败。') }
   finally { loading.value = false }
 }
@@ -53,14 +55,15 @@ function similarPractice() {
   void router.push({ path: '/student/practice/new', query: { subjectCode: detail.value.wrongQuestion.subjectCode, knowledgePointId: point.id, referenceQuestionId: detail.value.wrongQuestion.questionId, count: 5 } })
 }
 
-watch(subjectCode, () => {page.value=1;void load()})
-onMounted(() => void load())
+async function loadKnowledgePoints(){const data=await fetchPracticeOptions();knowledgePoints.value=data.knowledgePoints}
+watch(subjectCode, () => {page.value=1;knowledgePointId.value=undefined;void load();void loadKnowledgePoints()})
+onMounted(() => {void load();void loadKnowledgePoints()})
 </script>
 
 <template>
   <section class="student-page wrong-book-page" :data-subject="environment">
     <div class="student-page-heading"><div><h1>{{ subjectCode ? '本学科错题' : '错题本' }}</h1><p>提交后实时更新；连续两次答对后标为已掌握，但不删除历史记录。</p></div><el-button @click="router.push({path:'/student/practice/new',query:subjectCode?{subjectCode}:undefined})">创建练习</el-button></div>
-    <div class="wrong-book-filters"><el-input v-model="keyword" clearable placeholder="搜索题干关键词" @keyup.enter="page=1;load()"/><el-select v-model="reviewStatus" clearable placeholder="复习状态" @change="page=1;load()"><el-option label="活跃错题" value="ACTIVE"/><el-option label="已掌握/已归档" value="MASTERED"/></el-select><el-input-number v-model="knowledgePointId" :min="1" controls-position="right" placeholder="知识点 ID"/><el-button type="primary" @click="page=1;load()">筛选</el-button><span>当前筛选 {{ total }} 题</span></div>
+    <div class="wrong-book-filters"><el-input v-model="keyword" clearable placeholder="搜索题干关键词" @keyup.enter="page=1;load()"/><el-select v-model="reviewStatus" clearable placeholder="复习状态" @change="page=1;load()"><el-option label="活跃错题" value="ACTIVE"/><el-option label="已掌握/已归档" value="MASTERED"/></el-select><el-select v-model="knowledgePointId" clearable filterable placeholder="按知识点完整路径"><el-option v-for="point in knowledgePoints" :key="point.id" :label="point.path" :value="point.id"/></el-select><el-date-picker v-model="wrongDates" type="daterange" value-format="YYYY-MM-DD" start-placeholder="开始日期" end-placeholder="结束日期"/><el-button type="primary" @click="page=1;load()">筛选</el-button><span>当前筛选 {{ total }} 题</span></div>
     <el-table v-loading="loading" :data="records" class="data-table" empty-text="当前筛选下没有错题。"><el-table-column prop="subjectName" label="学科" width="100"/><el-table-column prop="stemSummary" label="题干摘要" min-width="260" show-overflow-tooltip /><el-table-column label="知识点" min-width="220"><template #default="{row}"><span>{{ (row.knowledgePoints||[]).map((p:any)=>p.path).join('；')||'未关联' }}</span></template></el-table-column><el-table-column prop="errorCount" label="错误次数" width="90"/><el-table-column prop="lastWrongAt" label="最近错误" width="180"/><el-table-column label="状态" width="100"><template #default="{row}"><el-tag>{{ state(row.status) }}</el-tag></template></el-table-column><el-table-column label="操作" width="230"><template #default="{row}"><el-button link type="primary" @click="show(row)">详情</el-button><el-button link type="primary" @click="retry(row)">再做一次</el-button><el-button v-if="row.status!=='MASTERED'" link @click="archive(row)">移出</el-button></template></el-table-column></el-table>
     <el-pagination v-if="total>20" v-model:current-page="page" :page-size="20" :total="total" layout="prev, pager, next" @current-change="load"/>
     <el-drawer v-model="visible" title="错题详情" size="min(760px,100%)"><template v-if="detail"><h2><QuestionContent :content="detail.stem" :attachments="detail.attachments" position="QUESTION" /></h2><el-table v-if="detail.options.length" :data="detail.options" class="data-table"><el-table-column prop="label" label="选项" width="90"/><el-table-column label="内容"><template #default="{row}"><QuestionContent :content="row.content" :attachments="detail.attachments" position="OPTION" /></template></el-table-column></el-table><div class="answer-comparison"><div><span>最近答案</span><AnswerDisplay :question-type="detail.wrongQuestion.questionType" :value="detail.latestStudentAnswer" :options="detail.options" :attachments="detail.attachments" /></div><div><span>正确答案</span><AnswerDisplay :question-type="detail.wrongQuestion.questionType" :value="detail.correctAnswer" :options="detail.options" :attachments="detail.attachments" /></div></div><section class="analysis-panel"><h3>标准解析</h3><StandardAnalysis :content="detail.standardAnalysis" :attachments="detail.attachments" /></section><StudentAiLearningPanel :answer-fact-id="detail.aiAnalysisAnswerFactId" :wrong="true" /><div class="knowledge-chip-row"><span>知识点</span><el-button v-for="point in detail.knowledgePoints" :key="point.id" class="knowledge-chip" round plain @click="openKnowledgePoint(point.id)">{{ point.path }}</el-button></div><el-button type="primary" plain @click="similarPractice">练习类似题</el-button></template></el-drawer>
@@ -68,5 +71,5 @@ onMounted(() => void load())
 </template>
 
 <style scoped>
-.wrong-book-filters{display:grid;grid-template-columns:minmax(220px,1fr) 180px 160px auto auto;gap:12px;align-items:center;margin:18px 0}.el-pagination{justify-content:flex-end;margin-top:18px}@media(max-width:760px){.wrong-book-filters{grid-template-columns:1fr}.wrong-book-filters>*{width:100%}}
+.wrong-book-filters{display:grid;grid-template-columns:minmax(200px,1fr) 150px minmax(220px,1fr) 260px auto auto;gap:12px;align-items:center;margin:18px 0}.el-pagination{justify-content:flex-end;margin-top:18px}@media(max-width:980px){.wrong-book-filters{grid-template-columns:1fr 1fr}}@media(max-width:760px){.wrong-book-filters{grid-template-columns:1fr}.wrong-book-filters>*{width:100%}}
 </style>

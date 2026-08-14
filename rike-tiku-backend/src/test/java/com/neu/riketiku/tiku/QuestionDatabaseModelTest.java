@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.neu.riketiku.tiku.admin.AdminQuestionIntegrationTestSupport;
+import com.neu.riketiku.database.DatabaseSchemaFacts;
 import com.neu.riketiku.tiku.entity.KeMu;
 import com.neu.riketiku.tiku.entity.TiMu;
 import com.neu.riketiku.tiku.entity.TiMuFuJian;
@@ -57,7 +58,7 @@ class QuestionDatabaseModelTest extends AdminQuestionIntegrationTestSupport {
         assertThat(Set.copyOf(tables)).isEqualTo(BUSINESS_TABLES);
         Integer migrations = jdbcTemplate.queryForObject(
             "SELECT COUNT(*) FROM flyway_schema_history WHERE success = 1", Integer.class);
-        assertThat(migrations).isEqualTo(23);
+        assertThat(migrations).isEqualTo(DatabaseSchemaFacts.LATEST_FLYWAY_VERSION);
     }
 
     @Test

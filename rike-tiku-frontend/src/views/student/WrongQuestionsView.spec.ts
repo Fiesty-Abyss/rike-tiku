@@ -3,9 +3,9 @@ import { flushPromises, mount } from '@vue/test-utils'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import WrongQuestionsView from './WrongQuestionsView.vue'
 
-const { fetchWrongQuestions, fetchWrongQuestion } = vi.hoisted(() => ({ fetchWrongQuestions: vi.fn(), fetchWrongQuestion:vi.fn() }))
+const { fetchWrongQuestions, fetchWrongQuestion, fetchPracticeOptions } = vi.hoisted(() => ({ fetchWrongQuestions: vi.fn(), fetchWrongQuestion:vi.fn(), fetchPracticeOptions:vi.fn() }))
 vi.mock('vue-router', () => ({ useRoute: () => ({ query: { subjectCode:'BIOLOGY' } }), useRouter: () => ({ push:vi.fn() }) }))
-vi.mock('../../api/student/practice', () => ({ fetchWrongQuestions, fetchWrongQuestion }))
+vi.mock('../../api/student/practice', () => ({ fetchWrongQuestions, fetchWrongQuestion, fetchPracticeOptions, archiveWrongQuestion:vi.fn(), retryWrongQuestion:vi.fn() }))
 vi.mock('element-plus', () => ({ ElMessage:{error:vi.fn()} }))
 
 describe('错题本实时学科筛选', () => {
@@ -13,6 +13,7 @@ describe('错题本实时学科筛选', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     fetchWrongQuestions.mockResolvedValue({items:[row],total:1,page:0,size:20})
+    fetchPracticeOptions.mockResolvedValue({subjects:[],knowledgePoints:[{id:71,name:'细胞结构',path:'分子与细胞>细胞结构'}]})
     fetchWrongQuestion.mockResolvedValue({aiAnalysisAnswerFactId:501,wrongQuestion:row,stem:'细胞结构题',options:[],latestStudentAnswer:['线粒体'],correctAnswer:['叶绿体'],standardAnalysis:'STANDARD 解析',knowledgePoints:[],attachments:[]})
   })
 

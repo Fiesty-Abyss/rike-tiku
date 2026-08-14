@@ -10,6 +10,7 @@ import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -198,7 +199,7 @@ public class StudentPracticeService {
     }
 
     @Transactional(readOnly = true)
-    public StudentPracticeDtos.WrongQuestionPage wrongQuestions(Long userId,String subjectCode,Long knowledgePointId,String status,String keyword,int page,int size) {
+    public StudentPracticeDtos.WrongQuestionPage wrongQuestions(Long userId,String subjectCode,Long knowledgePointId,String status,String keyword,LocalDate wrongFrom,LocalDate wrongTo,int page,int size) {
         long studentId = requireStudent(userId);
         String normalizedSubjectCode = subjectCode == null || subjectCode.isBlank()
                 ? null : subjectCode.trim().toUpperCase(Locale.ROOT);
@@ -216,9 +217,9 @@ public class StudentPracticeService {
                 JOIN lian_xi_hui_hua h ON h.id=lt.lian_xi_hui_hua_id
                 JOIN ke_mu s ON s.id=h.ke_mu_id
                 WHERE c.xue_sheng_id=?
-                """);List<Object>args=new ArrayList<>();args.add(studentId);if(normalizedSubjectCode!=null){sql.append(" AND s.ke_mu_dai_ma=?");args.add(normalizedSubjectCode);}if(knowledgePointId!=null){sql.append(" AND EXISTS(SELECT 1 FROM ti_mu_zhi_shi_dian tz WHERE tz.ti_mu_id=c.ti_mu_id AND tz.zhi_shi_dian_id=? AND tz.yi_shan_chu=0)");args.add(knowledgePointId);}if(status!=null&&!status.isBlank()){sql.append(" AND c.zhuang_tai=?");args.add(status.trim().toUpperCase(Locale.ROOT));}else sql.append(" AND c.zhuang_tai<>'MASTERED'");if(keyword!=null&&!keyword.isBlank()){sql.append(" AND lt.ti_gan_kuai_zhao LIKE ?");args.add("%"+keyword.trim()+"%");}long total=count("SELECT COUNT(*) FROM ("+sql+") w",args.toArray());sql.append(" ORDER BY c.zui_jin_cuo_wu_shi_jian DESC,c.id DESC LIMIT ? OFFSET ?");args.add(size);args.add(page*size);List<StudentPracticeDtos.WrongQuestionItem>items=jdbc.query(sql.toString(),(rs,row)->wrongItem(rs),args.toArray());return new StudentPracticeDtos.WrongQuestionPage(items,total,page,size);
+                """);List<Object>args=new ArrayList<>();args.add(studentId);if(normalizedSubjectCode!=null){sql.append(" AND s.ke_mu_dai_ma=?");args.add(normalizedSubjectCode);}if(knowledgePointId!=null){sql.append(" AND EXISTS(SELECT 1 FROM ti_mu_zhi_shi_dian tz WHERE tz.ti_mu_id=c.ti_mu_id AND tz.zhi_shi_dian_id=? AND tz.yi_shan_chu=0)");args.add(knowledgePointId);}if(status!=null&&!status.isBlank()){sql.append(" AND c.zhuang_tai=?");args.add(status.trim().toUpperCase(Locale.ROOT));}else sql.append(" AND c.zhuang_tai<>'MASTERED'");if(keyword!=null&&!keyword.isBlank()){sql.append(" AND lt.ti_gan_kuai_zhao LIKE ?");args.add("%"+keyword.trim()+"%");}if(wrongFrom!=null){sql.append(" AND c.zui_jin_cuo_wu_shi_jian>=?");args.add(wrongFrom.atStartOfDay());}if(wrongTo!=null){if(wrongFrom!=null&&wrongTo.isBefore(wrongFrom))fail("WRONG_QUESTION_DATE_RANGE_INVALID","结束日期不能早于开始日期",HttpStatus.BAD_REQUEST);sql.append(" AND c.zui_jin_cuo_wu_shi_jian<?");args.add(wrongTo.plusDays(1).atStartOfDay());}long total=count("SELECT COUNT(*) FROM ("+sql+") w",args.toArray());sql.append(" ORDER BY c.zui_jin_cuo_wu_shi_jian DESC,c.id DESC LIMIT ? OFFSET ?");args.add(size);args.add(page*size);List<StudentPracticeDtos.WrongQuestionItem>items=jdbc.query(sql.toString(),(rs,row)->wrongItem(rs),args.toArray());return new StudentPracticeDtos.WrongQuestionPage(items,total,page,size);
     }
-    public List<StudentPracticeDtos.WrongQuestionItem> wrongQuestions(Long userId,String subjectCode){return wrongQuestions(userId,subjectCode,null,null,null,0,100).items();}
+    public List<StudentPracticeDtos.WrongQuestionItem> wrongQuestions(Long userId,String subjectCode){return wrongQuestions(userId,subjectCode,null,null,null,null,null,0,100).items();}
 
     @Transactional public void archiveWrongQuestion(Long userId,Long questionId){long studentId=requireStudent(userId);if(jdbc.update("UPDATE cuo_ti_ji_lu SET zhuang_tai='MASTERED' WHERE xue_sheng_id=? AND ti_mu_id=?",studentId,questionId)!=1)fail("WRONG_QUESTION_NOT_FOUND","错题不存在",HttpStatus.NOT_FOUND);}
 
