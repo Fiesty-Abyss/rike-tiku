@@ -4,10 +4,14 @@
 
 ## 浏览器
 
-- [`browser-results-v29.json`](browser-results-v29.json)：14 条新增路线和交互，0 console error、0 page error、0 unexpected failed request、0 horizontal overflow、0 missing assertion。
+- [`browser-results-v29.json`](browser-results-v29.json)：14 条真实路由、20 项交互断言，0 console error、0 page error、0 unexpected failed request、0 horizontal overflow、0 missing assertion、0 assertion failure。
 - [`../thesis-final/browser-results-pr33.json`](../thesis-final/browser-results-pr33.json)：17 条基础路线。两组共 31 条。
 - 消息场景通过真实 Demo API 验证居中确认、发送者撤回后双方占位、仅本人删除后对方仍可见。
-- 199 班试卷可见、200 班列表为空，专题单元显示 3 道题；密码恢复覆盖 1440×900 与 390×844。
+- 错题本真实执行 ACTIVE 筛选、详情、单题再做、软归档和 MASTERED 回查；不是只打开路由。
+- 专题单元详情和页面都验证 2–3 道题，逐题请求可访问；专项集成测试另验证跨班私有题和 DRAFT 不泄露。
+- 199 班试卷真实作答并提交，结果页用真实 `AnswerDisplay` 展示人类可读答案与 STANDARD；200 班列表为空且直接访问返回 404。
+- 物理教师读取真实班级统计和学生画像；同一学生的化学/生物趋势不进入结果，化学教师访问物理发布画像返回 404。
+- 知识卡片真实执行收藏状态更新；密码恢复覆盖 1366×768 与 390×844。
 - 09/10 变式截图是明确披露的确定性 UI 夹具，仅验证结构化作答和判分界面；真实 DeepSeek 未调用。
 
 ## 性能

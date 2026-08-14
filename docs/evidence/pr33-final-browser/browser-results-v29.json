@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-14T04:12:09.388Z",
+  "generatedAt": "2026-08-14T07:02:09.229Z",
   "database": "rike_tiku_demo",
   "providerDisclosure": "Provider-dependent screens were not called because rotated credentials are absent. Existing variant screenshots 09/10 are explicitly deterministic UI fixtures.",
   "summary": {
@@ -21,11 +21,35 @@
       "pass": true
     },
     {
+      "name": "wrong-active-detail-opened",
+      "pass": true
+    },
+    {
+      "name": "wrong-single-question-retry-created",
+      "pass": true
+    },
+    {
+      "name": "wrong-archived-filter-shows-item",
+      "pass": true
+    },
+    {
+      "name": "topic-unit-detail-has-2-to-3-authorized-questions",
+      "pass": true
+    },
+    {
+      "name": "topic-unit-ui-renders-2-to-3-questions",
+      "pass": true
+    },
+    {
       "name": "199-paper-visible",
       "pass": true
     },
     {
-      "name": "topic-unit-has-three-questions",
+      "name": "paper-submit-human-readable-answer-and-standard",
+      "pass": true
+    },
+    {
+      "name": "knowledge-card-favorite-state-updated",
       "pass": true
     },
     {
@@ -45,11 +69,27 @@
       "pass": true
     },
     {
+      "name": "topic-unit-cross-class-does-not-leak-private-question",
+      "pass": true
+    },
+    {
       "name": "recalled-hidden-from-peer",
       "pass": true
     },
     {
       "name": "self-deleted-remains-for-peer",
+      "pass": true
+    },
+    {
+      "name": "teacher-class-stats-real-api",
+      "pass": true
+    },
+    {
+      "name": "teacher-student-profile-current-physics-scope-only",
+      "pass": true
+    },
+    {
+      "name": "other-subject-teacher-profile-forbidden",
       "pass": true
     }
   ],
@@ -85,12 +125,12 @@
       "overflow": false
     },
     {
-      "route": "/student/papers",
+      "route": "/student/papers/1",
       "consoleErrors": [],
       "pageErrors": [],
       "failedRequests": [],
       "status": 200,
-      "finalPath": "/student/papers",
+      "finalPath": "/student/papers/1",
       "expected": true,
       "overflow": false
     },
