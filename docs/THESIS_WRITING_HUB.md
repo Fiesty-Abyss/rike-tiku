@@ -20,7 +20,8 @@
 | 14. 截图 | [PR #33 最终截图](evidence/thesis-final/README.md) | 论文可用的 01—42 匿名截图与图表 |
 | 15. 开发过程 | [开发时间线](DEVELOPMENT_TIMELINE.md) | PR、迁移、问题与解决方案 |
 | 16. 中期检查 | [中期进展材料草稿](MIDTERM_PROGRESS_SUMMARY.md) | 学校中期检查材料底稿 |
-| 17. 参考文献 | [文献与官方资料](THESIS_REFERENCES.md)、[BibTeX](references/references.bib) | 相关工作、政策与技术引用 |
+| 17. 正式参考文献 | [22条正式白名单](THESIS_REFERENCES.md)、[正式 BibTeX](references/references.bib) | 开题报告和毕业论文正文唯一允许引用的文献 |
+| 17a. 扩展研究资料 | [research-only 警示与索引](references/research-only/README.md)、[研究资料 BibTeX](references/research-only/research_materials.bib) | 仅供工程调研，不得进入老师审查版本 |
 | 18. 创新点 | [答辩事实与问答](DEFENSE_FACTS_AND_QA.md) | 受控 AI、视觉桥接、人工审核与降级 |
 | 19. 局限 | [AI 实验结果](AI_FINAL_EXPERIMENT_RESULTS.md)、[人体工学复查](HUMAN_FACTORS_REVIEW.md) | 外部限流、单机部署、人工验收待完成 |
 | 20. 答辩问答 | [答辩事实与问答](DEFENSE_FACTS_AND_QA.md) | 真实实现口径 |

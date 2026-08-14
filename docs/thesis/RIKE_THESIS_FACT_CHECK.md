@@ -17,13 +17,19 @@
 | 密码恢复不泄露账号存在性 | 统一响应与集成测试 | 已核验 |
 | 教师组卷受任教学科约束 | PaperService 集成测试 | 已核验 |
 | AI 科学文本不使用未过滤 v-html | `AiScientificContent` 源码与测试 | 已核验 |
-| 后端集中受影响专项 | 35 tests，0 failures/errors/skipped | 已执行 |
-| 前端新增功能专项 | 11 files、21 tests | 已执行 |
-| 后端最终全量 | 205 tests，0 failures，0 errors，3 skipped；package 通过 | 已执行 |
-| 前端最终全量 | 67 files、213 tests；type-check/build/audit 通过 | 已执行 |
-| 机器浏览器 | 31 routes，0 console/page/unexpected-request error，0 overflow、0 missing assertion | 已执行；09/10 使用已披露 UI 夹具 |
+| 本轮后端权限与筛选专项 | 31 tests，0 failures/errors/skipped | 已执行 |
+| 本轮前端答案与学生页专项 | 4 files、14 tests | 已执行 |
+| 后端最终全量 | 210 tests，0 failures，0 errors，3 skipped；package 通过 | 已执行；3 项为真实 Provider smoke |
+| 前端最终全量 | 67 files、214 tests；type-check/build/audit 通过 | 已执行 |
+| 机器浏览器 | 31 routes；本轮 14 routes / 20 assertions，0 console/page/unexpected-request error，0 overflow、0 missing/assertion failure | 已执行；09/10 使用已披露 UI 夹具 |
 | 正式库迁移 | 仓库外 1,326,218-byte 备份（SHA-256 `039C9E885007EB79ED317E1A1E5C5A6DCEB7EC2746C0777957E41E60FE65E622`）后，由 Flyway 从实际 V24 正常迁移到 V29；9 用户、389 题/378 PUBLISHED 基线不变，0 Demo 用户、0 卡片测试实例 | 已核验；未 seed/repair |
 | 真实 DeepSeek/GLM/xAI/Search 本轮 smoke | 没有可安全使用的轮换后凭据，未消费真实 Provider | BLOCKED_EXTERNAL_PROVIDER；历史结果不外推为本轮 PASS |
 | 真人用户验收、问卷或学习成效提升 | 无本轮数据 | 禁止声称 |
 
 论文中的“有效”只指指定测试或约束得到验证，不等同于教学效果经真实学生群体实验证明。
+
+## 正式参考文献边界
+
+开题报告与毕业论文正文只能引用 `docs/THESIS_REFERENCES.md` 及
+`docs/references/references.bib` 中固定的 22 条白名单文献。扩展调研资料已经物理隔离到
+`docs/references/research-only/`，不得作为老师审查版本的正文引用或参考文献。本仓库未包含学校正式开题报告 Word 模板；相关内容仍需待套用学校模板。

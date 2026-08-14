@@ -16,7 +16,7 @@
 | `origin/feat/final-product-completion` | `2e0c1332f66df29cc9e4f2edc6c15393688edf82` |
 | PR #33 | OPEN / Draft / GitHub 字段 `MERGEABLE` / 未合并 |
 | PR base/head | `c8747c8…` / `2e0c133…` |
-| PR commit/file count | 14 commits / 100 files |
+| PR commit/file count | 该历史审计时点的统计已失效；当前值必须由 PR API 实时读取 |
 | PR body HEAD | `99296dce65f2eb400474d7e64a803e4a2e174b32`，已过期 |
 | PR body数据库口径 | V23 / 41 表 / `schema_snapshot_v23.sql`，未记录仓库已有 V24 |
 
