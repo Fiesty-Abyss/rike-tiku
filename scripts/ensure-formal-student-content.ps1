@@ -1,7 +1,7 @@
 [CmdletBinding()]
 param(
     [string]$Database = 'rike_tiku',
-    [string]$ContentPath = (Join-Path $PSScriptRoot '..\docs\content\high-frequency-points.v1.json')
+    [string]$ContentPath = (Join-Path $PSScriptRoot '..\docs\content\high-frequency-points.v2.json')
 )
 
 Set-StrictMode -Version Latest

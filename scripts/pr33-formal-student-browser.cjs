@@ -20,6 +20,9 @@ function assert(name, pass, detail = '') {
   assertions.push({ name, pass: Boolean(pass), detail })
   if (!pass) console.error(`ASSERTION_FAILED ${name} ${detail}`)
 }
+function hasRawScientificMarkup(text) {
+  return /\\(?:\\(|\\)|\\[|\\]|ce\{|frac\{|sum|cdot|tan|pi|mu|vec|times|text\{)/.test(text)
+}
 async function json(response) {
   if (!response.ok()) throw new Error(`HTTP ${response.status()} ${response.url()}`)
   return response.json()
@@ -92,7 +95,14 @@ async function main() {
     const wrongQuestionId = wrongItems[0]?.questionId || wrongItems[0]?.id
 
     const units = await json(await context.request.get(`${api}/student/topic-learning/units`))
-    assert('formal-topic-unit-count', Array.isArray(units) && units.length >= 6, `count=${Array.isArray(units) ? units.length : 'invalid'}`)
+    assert('formal-topic-unit-count', Array.isArray(units) && units.length >= 15, `count=${Array.isArray(units) ? units.length : 'invalid'}`)
+    if (Array.isArray(units)) {
+      const subjectCounts = units.reduce((counts, item) => {
+        counts[item.subjectCode] = (counts[item.subjectCode] || 0) + 1
+        return counts
+      }, {})
+      assert('formal-topic-subject-coverage', subjectCounts.PHYSICS >= 6 && subjectCounts.CHEMISTRY >= 5 && subjectCounts.BIOLOGY >= 4, JSON.stringify(subjectCounts))
+    }
     const unit = units[0]
     if (unit?.id) {
       const detail = await json(await context.request.get(`${api}/student/topic-learning/units/${unit.id}`))
@@ -117,11 +127,16 @@ async function main() {
       await inspect(page, `/student/topics/units/${unit.id}`, '专题单元', 'student-topic-unit-detail.png')
       const unitPageText = await page.locator('body').innerText()
       assert('topic-page-stage-navigation', unitPageText.includes('基础理解') && await page.locator('.topic-unit-navigation button').count() === 3)
+      assert('topic-detail-no-raw-scientific-markup', !hasRawScientificMarkup(unitPageText), 'raw TeX delimiter or command found in visible text')
+      assert('topic-detail-no-render-fallback', await page.locator('[data-render-status="fallback"]').count() === 0)
     }
 
     await inspect(page, '/student/knowledge-cards', '物化生高频考点与二级结论', 'student-high-frequency-points.png')
     const cardsText = await page.locator('body').innerText()
     assert('knowledge-card-human-readable', !cardsText.includes('最近3年') && !cardsText.includes('生成练习') && !cardsText.includes('"scientificContent"'))
+    assert('knowledge-card-no-raw-scientific-markup', !hasRawScientificMarkup(cardsText), 'raw TeX delimiter or command found in visible text')
+    assert('knowledge-card-no-render-fallback', await page.locator('[data-render-status="fallback"]').count() === 0)
+    assert('knowledge-card-has-rendered-math', await page.locator('.katex').count() > 0)
 
     if (wrongQuestionId) {
       const retry = await context.request.post(`${api}/student/wrong-questions/${wrongQuestionId}/retry`)

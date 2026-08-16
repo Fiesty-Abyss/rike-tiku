@@ -19,7 +19,7 @@ const canAnswer = computed(() => variant.value?.questionType === 'SINGLE_CHOICE'
 const safeMessages:Record<string,string> = {
   AI_PROVIDER_DISABLED:'AI Provider 尚未启用，请联系管理员。', AI_AUTHENTICATION_ERROR:'AI Provider 认证失败，请联系管理员。',
   AI_RATE_LIMITED:'AI 请求过于频繁，请稍后再试。', AI_TIMEOUT:'AI 生成超时，请稍后重试。',
-  AI_CANDIDATE_EMPTY_CONTENT:'生成结果格式不完整，系统已尝试修复一次，请重新生成。',AI_CANDIDATE_FIELD_MISSING:'生成结果格式不完整，系统已尝试修复一次，请重新生成。',AI_CANDIDATE_QUESTION_TYPE_INVALID:'生成结果题型不一致，请重新选择变化方式。',AI_CANDIDATE_ANSWER_OPTION_MISMATCH:'生成结果答案与选项不一致，未写入题库。',AI_CANDIDATE_ANSWER_INVALID:'生成结果答案与选项不一致，未写入题库。',AI_CANDIDATE_CHANGED_DIMENSIONS_INSUFFICIENT:'生成结果创新度不足，请更换变化方式。',AI_CANDIDATE_SIMILARITY_HIGH:'生成结果创新度不足，请更换变化方式。', AI_PENDING_LIMIT_REACHED:'该母题待审核候选题已达上限。',
+  AI_CANDIDATE_EMPTY_CONTENT:'生成结果格式不完整，系统已尝试修复一次，请重新生成。',AI_CANDIDATE_FIELD_MISSING:'生成结果格式不完整，系统已尝试修复一次，请重新生成。',AI_CANDIDATE_QUESTION_TYPE_INVALID:'生成结果题型不一致，请重新选择变化方式。',AI_CANDIDATE_ANSWER_OPTION_MISMATCH:'生成结果答案与选项不一致，未写入题库。',AI_CANDIDATE_ANSWER_INVALID:'生成结果答案与选项不一致，未写入题库。',AI_CANDIDATE_CHANGED_DIMENSIONS_INSUFFICIENT:'变化维度不足，系统未保存候选。',AI_CANDIDATE_SIMILARITY_HIGH:'系统已自动调整一次，但候选仍与原题过于接近，请更换变化方式。',AI_CANDIDATE_VARIATION_DIMENSIONS_INSUFFICIENT:'变化维度与所选变化方式不匹配，系统未保存候选。',AI_CANDIDATE_DIFFICULTY_COMPLEXITY_MISMATCH:'目标难度缺少足够的复杂度变化，系统未保存候选。', AI_PENDING_LIMIT_REACHED:'该母题待审核候选题已达上限。',
   AI_VARIANT_KNOWLEDGE_MISSING:'当前题缺少可用知识点，暂不能生成变式。', AI_VARIANT_GENERATION_FAILED:'AI 变式生成失败，未创建练习实例。',
 }
 function resetAnswer(){single.value='';multiple.value=[];blanks.value=['']}
@@ -45,7 +45,8 @@ async function leaveForNow(){if(!variant.value)return;try{await discardAiVariant
       <p v-if="loading" class="ai-waiting">正在生成，真实模型可能需要几十秒</p><el-button type="primary" :loading="loading" :disabled="loading" @click="generate">生成变式题</el-button>
     </div>
     <article v-else>
-      <div class="variant-meta"><el-tag>难度 {{ variant.difficulty }}</el-tag><el-tag effect="plain">{{ variant.variationMode }}</el-tag><span>AI 候选 · 尚未成为正式 STANDARD</span></div>
+      <div class="variant-meta"><el-tag>难度 {{ variant.difficulty }}</el-tag><el-tag effect="plain">{{ variant.variationMode }}</el-tag><el-tag v-if="variant.noveltyDecision==='ACCEPT'" type="success">新颖度通过</el-tag><el-tag v-else-if="variant.noveltyDecision==='WARN'" type="warning">新颖度提示</el-tag><span>AI 候选 · 尚未成为正式 STANDARD</span></div>
+      <el-alert v-if="variant.noveltyDecision==='WARN'" title="这道候选题与母题存在部分表达或结构相似，仍允许你预览和作答；提交后必须由教师人工审核，不会自动发布。" type="warning" :closable="false" />
       <AiScientificContent :content="variant.stem"/>
       <el-checkbox-group v-if="variant.questionType==='MULTIPLE_CHOICE'" v-model="multiple" :disabled="submitted"><el-checkbox v-for="option in variant.options" :key="option.label" :value="option.label">{{option.label}}. {{option.content}}</el-checkbox></el-checkbox-group>
       <el-radio-group v-else-if="variant.questionType==='SINGLE_CHOICE'" v-model="single" :disabled="submitted"><el-radio v-for="option in variant.options" :key="option.label" :value="option.label">{{option.label}}. {{option.content}}</el-radio></el-radio-group>

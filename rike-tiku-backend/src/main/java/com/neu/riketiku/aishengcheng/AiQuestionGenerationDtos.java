@@ -27,7 +27,9 @@ public final class AiQuestionGenerationDtos {
                             int difficulty, String status, String variationSummary,
                             String duplicateWarning, boolean visionUsed, String provider,
                             String model, String correctAnswer, String standardAnalysis,
-                            List<KnowledgePoint> knowledgePoints, Quality quality) { }
+                            List<KnowledgePoint> knowledgePoints, Quality quality,
+                            String noveltyDecision, Double noveltyScore, Double similarityScore,
+                            String noveltyReason) { }
     public record KnowledgePoint(Long id, String name) { }
     public record Quality(Integer subjectCorrectness, Integer answerCorrectness,
                           Integer solvability, Integer knowledgeConsistency,

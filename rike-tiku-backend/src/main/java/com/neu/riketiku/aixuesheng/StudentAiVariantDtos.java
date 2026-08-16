@@ -13,5 +13,6 @@ public final class StudentAiVariantDtos {
     public record Option(String label,String content){}
     public record Variant(Long id,Long answerFactId,Long motherQuestionId,Long questionId,String status,String variationMode,
                           String questionType,String stem,int difficulty,List<Option> options,JsonNode studentAnswer,
-                          Boolean correct,JsonNode correctAnswer,String aiAnalysis,String reviewStatus){}
+                          Boolean correct,JsonNode correctAnswer,String aiAnalysis,String reviewStatus,
+                          String noveltyDecision,Double noveltyScore,Double similarityScore,String noveltyReason){}
 }
