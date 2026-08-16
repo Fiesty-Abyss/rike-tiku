@@ -1,6 +1,6 @@
 # RIKE 论文事实核对表
 
-更新时间：2026-08-14
+更新时间：2026-08-16
 
 | 论文陈述 | 可核验依据 | 状态 |
 |---|---|---|
@@ -17,12 +17,14 @@
 | 密码恢复不泄露账号存在性 | 统一响应与集成测试 | 已核验 |
 | 教师组卷受任教学科约束 | PaperService 集成测试 | 已核验 |
 | AI 科学文本不使用未过滤 v-html | `AiScientificContent` 源码与测试 | 已核验 |
-| 本轮后端权限与筛选专项 | 31 tests，0 failures/errors/skipped | 已执行 |
-| 本轮前端答案与学生页专项 | 4 files、14 tests | 已执行 |
-| 后端最终全量 | 210 tests，0 failures，0 errors，3 skipped；package 通过 | 已执行；3 项为真实 Provider smoke |
-| 前端最终全量 | 67 files、214 tests；type-check/build/audit 通过 | 已执行 |
-| 机器浏览器 | 31 routes；本轮 14 routes / 20 assertions，0 console/page/unexpected-request error，0 overflow、0 missing/assertion failure | 已执行；09/10 使用已披露 UI 夹具 |
-| 正式库迁移 | 仓库外 1,326,218-byte 备份（SHA-256 `039C9E885007EB79ED317E1A1E5C5A6DCEB7EC2746C0777957E41E60FE65E622`）后，由 Flyway 从实际 V24 正常迁移到 V29；9 用户、389 题/378 PUBLISHED 基线不变，0 Demo 用户、0 卡片测试实例 | 已核验；未 seed/repair |
+| 本轮点名后端专项 | 39 tests，0 failures，0 errors；使用随机临时 schema，包含题目前缀、判分、学生变式、候选 Parser、候选生命周期和专题单元 | 已执行 |
+| 本轮学生前端专项 | 9 files、30 tests，0 failures；type-check/build 通过 | 已执行 |
+| 后端最终全量 | `mvn clean test`：212 tests，0 failures，0 errors，3 skipped；`mvn -DskipTests package` 通过 | 已执行 |
+| 前端最终全量 | 68 files、219 tests；type-check、build、`npm audit --omit=dev` 通过，0 vulnerabilities | 已执行 |
+| 机器浏览器 | 正式 `rike_tiku` 4 routes / 19 assertions，0 console/page/failed-request error，0 overflow；独立临时 profile | 已执行；不等同真人验收 |
+| 正式库迁移与本轮内容 | 仓库外 1,326,218-byte 备份（SHA-256 `039C9E885007EB79ED317E1A1E5C5A6DCEB7EC2746C0777957E41E60FE65E622`）后，由 Flyway 从实际 V24 正常迁移到 V29；9 用户、389 题/378 PUBLISHED 基线不变；本轮核验 6 单元、18 关系、65 张已发布卡片（60 张结构化来源） | 已核验；无新迁移 |
+| V1–V29 checksum 与临时库 | 正式 `flyway_schema_history` 29 行均 `success=1`；V1–V29 迁移文件在本轮无改动；最终回查无 `rike_tiku_` 临时 schema | 已核验 |
+| Word/PPT 交付物 | `docs/thesis/deliverables/` 下生成通用 Word 事实稿和 12 页 PPT；OOXML/PPTX 结构、文字、图片和边界检查通过；本机无 Word/PowerPoint/LibreOffice 渲染器 | 已生成；系统视觉渲染待学校环境复核 |
 | 真实 DeepSeek/GLM/xAI/Search 本轮 smoke | 没有可安全使用的轮换后凭据，未消费真实 Provider | BLOCKED_EXTERNAL_PROVIDER；历史结果不外推为本轮 PASS |
 | 真人用户验收、问卷或学习成效提升 | 无本轮数据 | 禁止声称 |
 

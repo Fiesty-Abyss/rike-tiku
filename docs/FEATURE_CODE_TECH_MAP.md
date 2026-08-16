@@ -1,6 +1,6 @@
 # 功能、代码、数据库与技术映射
 
-> PR #33 的最终路由、截图、前端 API、Controller、Service、表和 Flyway 逐项索引见 [FEATURE_SCREENSHOT_CODE_INDEX](FEATURE_SCREENSHOT_CODE_INDEX.md)。当前数据库基线为 Flyway V19、39 张业务表；本文中 V14/35 表描述保留为 PR #32 历史事实。
+> PR #33 的最终路由、截图、前端 API、Controller、Service、表和 Flyway 逐项索引见 [FEATURE_SCREENSHOT_CODE_INDEX](FEATURE_SCREENSHOT_CODE_INDEX.md)。当前数据库基线为 Flyway V29、50 张业务表；早期 V14/35 表描述仅作为历史阶段信息保留。
 
 路径均核对当前代码。前端路由集中于 `src/router/index.ts`；后端 API 统一以 `/api/v1` 为前缀。
 

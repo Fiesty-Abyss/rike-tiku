@@ -9,6 +9,14 @@
 - [V29 数据库参考](docs/DATABASE_SCHEMA_REFERENCE.md) · [V29 纯结构快照](database/schema_snapshot_v29.sql) · [SQL 示例](docs/SQL_EXAMPLES.md)
 - [论文初稿](docs/thesis/RIKE_THESIS_DRAFT.md) · [事实核对表](docs/thesis/RIKE_THESIS_FACT_CHECK.md) · [答辩提纲](docs/thesis/RIKE_DEFENSE_OUTLINE.md)
 
+## 当前 PR #33 收口事实（2026-08-16）
+
+- 学生端最终集中修复已推送到 `feat/final-product-completion`；PR #33 仍为 Draft / OPEN / 未合并，用户真人最终复验仍待完成。
+- 最终自动化：后端 212 tests、3 skipped；前端 68 个测试文件 / 219 tests；type-check、build、`npm audit --omit=dev` 通过，0 vulnerabilities。
+- 正式 `rike_tiku` 只读核验：Flyway V29、50 张业务表、6 个已发布专题单元、18 条单元题目关系、65 张已发布高频考点卡片，其中 60 张为结构化来源卡片。
+- 真实 DeepSeek variant/tutor、GLM Vision、xAI Vision、Web Search 本轮均为 `BLOCKED_EXTERNAL_PROVIDER`；Mock/Fake 不代表真实 PASS。
+- 论文交付：通用 [Word 事实稿](docs/thesis/deliverables/RIKE_论文事实稿_待套学校模板.docx) 与 [答辩 PPT](docs/thesis/deliverables/RIKE_答辩PPT_待套学校模板.pptx) 已生成，未发现学校模板，使用前必须套用并视觉复核。
+
 ## 1. 公共门户
 
 [![RIKE 公共门户首屏 Hero](docs/evidence/readme-preview/01-portal-hero.png)](docs/evidence/thesis-final/01-portal-desktop.png)
