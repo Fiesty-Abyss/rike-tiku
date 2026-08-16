@@ -4,15 +4,23 @@ import org.springframework.stereotype.Component;
 
 @Component
 public final class QuestionDisplayTextNormalizer {
-    private static final String DEMO = "【演示】";
-    private static final String TOPIC = "【专题演示】";
+    private static final String[] INTERNAL_PREFIXES = {"【演示】", "【专题演示】", "覆盖：", "变式："};
+
     public String normalize(String value){
         if(value==null)return "";
         String result=value;
-        boolean internal=false;
-        if(result.startsWith(TOPIC)){result=result.substring(TOPIC.length());internal=true;}
-        else if(result.startsWith(DEMO)){result=result.substring(DEMO.length());internal=true;}
-        if(internal&&(result.startsWith("覆盖：")||result.startsWith("变式：")))result=result.substring(3);
-        return result;
+        boolean removed;
+        do {
+            removed=false;
+            result=result.stripLeading();
+            for(String prefix:INTERNAL_PREFIXES){
+                if(result.startsWith(prefix)){
+                    result=result.substring(prefix.length());
+                    removed=true;
+                    break;
+                }
+            }
+        } while(removed);
+        return result.stripLeading();
     }
 }

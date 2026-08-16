@@ -20,4 +20,4 @@ export const fetchAiModels=()=>http.get('/admin/ai-models').then(r=>r.data as {r
 export const createAiModel=(body:SaveAiModelConfig)=>http.post('/admin/ai-models',body).then(r=>r.data as AiModelConfig)
 export const updateAiModel=(id:number,body:SaveAiModelConfig)=>http.put(`/admin/ai-models/${id}`,body).then(r=>r.data as AiModelConfig)
 export const clearAiModelKey=(id:number)=>http.delete(`/admin/ai-models/${id}/api-key`).then(r=>r.data as AiModelConfig)
-export const testAiModel=(id:number)=>http.post(`/admin/ai-models/${id}/test`).then(r=>r.data as AiConnectionResult)
+export const testAiModel=(id:number)=>http.post(`/admin/ai-models/${id}/test`,undefined,{ timeout: 60_000 }).then(r=>r.data as AiConnectionResult)

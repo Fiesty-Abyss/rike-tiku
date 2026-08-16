@@ -3,16 +3,16 @@ import { flushPromises, mount } from '@vue/test-utils'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import TopicLearningView from './TopicLearningView.vue'
 
-const { fetchTopics, fetchTopic, push } = vi.hoisted(() => ({ fetchTopics:vi.fn(),fetchTopic:vi.fn(),push:vi.fn() }))
+const { fetchTopicUnits, fetchTopic, push } = vi.hoisted(() => ({ fetchTopicUnits:vi.fn(),fetchTopic:vi.fn(),push:vi.fn() }))
 vi.mock('vue-router',()=>({useRoute:()=>({params:{id:'18'},query:{subjectCode:'BIOLOGY'}}),useRouter:()=>({push,replace:vi.fn()})}))
-vi.mock('../../api/student/topicLearning',()=>({fetchTopics,fetchTopic}))
+vi.mock('../../api/student/topicLearning',()=>({fetchTopicUnits,fetchTopic,fetchTopicUnit:vi.fn()}))
 vi.mock('element-plus',()=>({ElMessage:{error:vi.fn()}}))
 
 describe('Topic18 专题学习',()=>{
   beforeEach(()=>{
     vi.clearAllMocks()
     const item={id:18,subjectId:3,subjectCode:'BIOLOGY',subjectName:'生物',title:'遗传材料综合分析',difficulty:3,knowledgePoints:[{id:21,name:'遗传规律',path:'遗传与进化>遗传规律'}]}
-    fetchTopics.mockResolvedValue([item])
+    fetchTopicUnits.mockResolvedValue([{id:91,subjectId:3,subjectCode:'BIOLOGY',subjectName:'生物',title:'遗传单元',introduction:'按阶段阅读',difficulty:3,primaryKnowledgePoint:item.knowledgePoints[0],questionCount:3}])
     fetchTopic.mockResolvedValue({...item,material:String.raw`阅读材料，计算 \(\frac{3}{16}\)。`,standardAnalysis:String.raw`解题思路
 先读取材料条件。
 
@@ -33,7 +33,7 @@ describe('Topic18 专题学习',()=>{
       ElButton:{template:'<button @click="$emit(\'click\')"><slot /></button>'},Transition:false,
     }}})
     await flushPromises()
-    expect(fetchTopics).toHaveBeenCalledWith('BIOLOGY')
+    expect(fetchTopicUnits).toHaveBeenCalledWith('BIOLOGY')
     expect(fetchTopic).toHaveBeenCalledWith(18)
     expect(wrapper.text()).toContain('阅读材料')
     expect(wrapper.findAll('.katex').length).toBeGreaterThan(0)

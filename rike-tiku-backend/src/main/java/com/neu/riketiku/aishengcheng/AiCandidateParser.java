@@ -81,7 +81,8 @@ class AiCandidateParser {
 
     private void validateAnswer(String type,List<Option> options,JsonNode answer,String path){
         if("SUBJECTIVE".equals(type)){
-            if(!options.isEmpty()||!"SUBJECTIVE".equals(answer.path("type").asText()))throw invalid("ANSWER_INVALID",path,"主观专题题不提供客观选项且答案类型必须为 SUBJECTIVE");
+            exactFields(answer,Set.of("schemaVersion","type"),path);
+            if(!options.isEmpty()||answer.path("schemaVersion").asInt(-1)!=1||!"SUBJECTIVE".equals(answer.path("type").asText()))throw invalid("ANSWER_INVALID",path,"主观专题题答案必须为 schemaVersion 1 / SUBJECTIVE");
             return;
         }
         if("FILL_BLANK".equals(type)){

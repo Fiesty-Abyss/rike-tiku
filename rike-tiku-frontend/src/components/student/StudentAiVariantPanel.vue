@@ -19,11 +19,11 @@ const canAnswer = computed(() => variant.value?.questionType === 'SINGLE_CHOICE'
 const safeMessages:Record<string,string> = {
   AI_PROVIDER_DISABLED:'AI Provider 尚未启用，请联系管理员。', AI_AUTHENTICATION_ERROR:'AI Provider 认证失败，请联系管理员。',
   AI_RATE_LIMITED:'AI 请求过于频繁，请稍后再试。', AI_TIMEOUT:'AI 生成超时，请稍后重试。',
-  AI_CANDIDATE_EMPTY_CONTENT:'AI 返回内容为空，请稍后重试。',AI_CANDIDATE_FIELD_MISSING:'AI 返回的题目结构缺失，请换一种变化方式。',AI_CANDIDATE_OPTIONS_INVALID:'AI 返回的选项不完整。',AI_CANDIDATE_ANSWER_OPTION_MISMATCH:'AI 返回的答案与选项不一致。',AI_CANDIDATE_SIMILARITY_HIGH:'生成内容与母题过于相似，请换一种变化方式。', AI_PENDING_LIMIT_REACHED:'该母题待审核候选题已达上限。',
+  AI_CANDIDATE_EMPTY_CONTENT:'生成结果格式不完整，系统已尝试修复一次，请重新生成。',AI_CANDIDATE_FIELD_MISSING:'生成结果格式不完整，系统已尝试修复一次，请重新生成。',AI_CANDIDATE_QUESTION_TYPE_INVALID:'生成结果题型不一致，请重新选择变化方式。',AI_CANDIDATE_ANSWER_OPTION_MISMATCH:'生成结果答案与选项不一致，未写入题库。',AI_CANDIDATE_ANSWER_INVALID:'生成结果答案与选项不一致，未写入题库。',AI_CANDIDATE_CHANGED_DIMENSIONS_INSUFFICIENT:'生成结果创新度不足，请更换变化方式。',AI_CANDIDATE_SIMILARITY_HIGH:'生成结果创新度不足，请更换变化方式。', AI_PENDING_LIMIT_REACHED:'该母题待审核候选题已达上限。',
   AI_VARIANT_KNOWLEDGE_MISSING:'当前题缺少可用知识点，暂不能生成变式。', AI_VARIANT_GENERATION_FAILED:'AI 变式生成失败，未创建练习实例。',
 }
 function resetAnswer(){single.value='';multiple.value=[];blanks.value=['']}
-function warn(error:unknown){const api=error as ApiError;ElMessage.warning(safeMessages[api.code || ''] || api.message || 'AI 变式暂不可用，请稍后重试。')}
+function warn(error:unknown){const api=error as ApiError;const code=api.code||'';ElMessage.warning(safeMessages[code] || (code.startsWith('AI_CANDIDATE_REPAIR_FAILED_ANSWER')?'生成结果答案与选项不一致，未写入题库。':code.startsWith('AI_CANDIDATE_REPAIR_FAILED_')?'生成结果格式不完整，系统已尝试修复一次，请重新生成。':api.message) || 'AI 变式暂不可用，请稍后重试。')}
 async function generate(){loading.value=true;try{variant.value=await generateAiVariant(props.answerFactId,targetDifficulty.value,variationMode.value);resetAnswer()}catch(error){warn(error)}finally{loading.value=false}}
 async function answer(){if(!variant.value||!canAnswer.value)return;const value=variant.value.questionType==='SINGLE_CHOICE'?single.value:variant.value.questionType==='MULTIPLE_CHOICE'?multiple.value:blanks.value;try{variant.value=await answerAiVariant(variant.value.id,value)}catch(error){warn(error)}}
 async function replace(){try{if(variant.value&&variant.value.status!=='SUBMITTED_FOR_REVIEW')await discardAiVariant(variant.value.id);variant.value=undefined;await generate()}catch(error){warn(error)}}
@@ -42,7 +42,7 @@ async function leaveForNow(){if(!variant.value)return;try{await discardAiVariant
       <label>变化方式
         <select v-model="variationMode"><option value="SCENARIO_TRANSFER">情境迁移</option><option value="CONDITION_RECOMBINATION">条件重组</option><option value="REPRESENTATION_SWITCH">表达形式转换</option><option value="MULTI_STEP_EXTENSION">多步骤扩展</option><option value="DISTRACTOR_REDESIGN">干扰项重构</option><option value="COMBINED">综合变式</option></select>
       </label>
-      <el-button type="primary" :loading="loading" @click="generate">生成变式题</el-button>
+      <p v-if="loading" class="ai-waiting">正在生成，真实模型可能需要几十秒</p><el-button type="primary" :loading="loading" :disabled="loading" @click="generate">生成变式题</el-button>
     </div>
     <article v-else>
       <div class="variant-meta"><el-tag>难度 {{ variant.difficulty }}</el-tag><el-tag effect="plain">{{ variant.variationMode }}</el-tag><span>AI 候选 · 尚未成为正式 STANDARD</span></div>

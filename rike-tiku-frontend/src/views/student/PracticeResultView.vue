@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { ElMessage } from 'element-plus'
-import { fetchPracticeResult, type PracticeResult } from '../../api/student/practice'
+import { ElMessage, ElMessageBox } from 'element-plus'
+import { archiveWrongQuestion, fetchPracticeResult, type PracticeResult } from '../../api/student/practice'
 import type { ApiError } from '../../api/http'
 import QuestionContent from '../../components/question/QuestionContent.vue'
 import AnswerDisplay from '../../components/question/AnswerDisplay.vue'
@@ -18,6 +18,7 @@ const onlyWrong = ref(false)
 const currentQuestionId = ref<number | null>(null)
 const analysisExpanded = ref(true)
 const aiDocked = ref(false)
+const wrongRetryHandled = ref(false)
 const visibleQuestions = computed(() => result.value?.questions.filter(item => !onlyWrong.value || !item.correct) || [])
 const currentIndex = computed(() => Math.max(0, visibleQuestions.value.findIndex(item => item.question.practiceQuestionId === currentQuestionId.value)))
 const item = computed(() => visibleQuestions.value[currentIndex.value] || null)
@@ -50,11 +51,38 @@ watch(onlyWrong, () => {
   currentQuestionId.value = first?.question.practiceQuestionId || null
 })
 
+async function clearWrongRetryContext() {
+  const query = { ...route.query }
+  delete query.fromWrongBook
+  delete query.wrongQuestionId
+  await router.replace({ path:route.path, query })
+}
+
+async function handleWrongRetry() {
+  if (wrongRetryHandled.value || route.query?.fromWrongBook !== 'true') return
+  const wrongQuestionId = Number(route.query?.wrongQuestionId)
+  const retryItem = result.value?.questions.find(record => record.question.questionId === wrongQuestionId)
+  if (!retryItem) return
+  wrongRetryHandled.value = true
+  await clearWrongRetryContext()
+  if (!retryItem.correct) return
+  try {
+    await ElMessageBox.confirm('本次已经回答正确，是否从活跃错题本移出？', '错题复习完成', {
+      type:'success', center:true, confirmButtonText:'移出错题本', cancelButtonText:'继续保留',
+    })
+    await archiveWrongQuestion(wrongQuestionId)
+    ElMessage.success('已从活跃错题本移出，历史答题和分析仍然保留。')
+  } catch (error) {
+    if (error !== 'cancel' && error !== 'close') ElMessage.error((error as ApiError).message || '移出错题本失败。')
+  }
+}
+
 onMounted(async () => {
   try {
     result.value = await fetchPracticeResult(Number(route.params.id))
     const firstWrong = result.value.questions.find(question => !question.correct)
     currentQuestionId.value = (firstWrong || result.value.questions[0])?.question.practiceQuestionId || null
+    await handleWrongRetry()
   } catch (error) {
     const api = error as ApiError
     ElMessage.error(api.message || '练习结果加载失败。')

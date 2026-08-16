@@ -10,6 +10,7 @@ import com.neu.riketiku.ai.provider.AiModelProvider;
 import com.neu.riketiku.ai.provider.AiModelRequest;
 import com.neu.riketiku.ai.provider.AiModelResult;
 import com.neu.riketiku.ai.provider.AiTokenUsage;
+import com.neu.riketiku.aixuesheng.StudentAiService;
 import com.neu.riketiku.renzheng.RenZhengYeWuYiChang;
 import com.neu.riketiku.tiku.admin.AdminQuestionIntegrationTestSupport;
 import com.neu.riketiku.tiku.admin.QuestionAdminService;
@@ -32,7 +33,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Import(AiQuestionGenerationIntegrationTest.Config.class)
 class AiQuestionGenerationIntegrationTest extends AdminQuestionIntegrationTestSupport {
     @Autowired AiQuestionGenerationService service; @Autowired QueueAiProvider provider;
-    @Autowired JdbcTemplate jdbc; @Autowired QuestionAdminService questions;
+    @Autowired JdbcTemplate jdbc; @Autowired QuestionAdminService questions; @Autowired StudentAiService studentAi;
     @BeforeEach void reset(){provider.reset();}
 
     @Test @Transactional
@@ -111,6 +112,44 @@ class AiQuestionGenerationIntegrationTest extends AdminQuestionIntegrationTestSu
         assertThatThrownBy(() -> service.generateTopic(student,visualRequired,true,true))
                 .isInstanceOfSatisfying(RenZhengYeWuYiChang.class,error -> assertThat(error.getCode()).isEqualTo("AI_VISION_UNAVAILABLE"));
         assertThat(jdbc.queryForObject("SELECT zhuang_tai FROM ai_sheng_cheng_ren_wu WHERE mu_ti_mu_id=? AND bian_shi_fang_shi='SCENARIO_TRANSFER'",String.class,mother)).isEqualTo("FAILED");
+    }
+
+    @Test @Transactional
+    void studentTopicCandidateStaysPrivateUntilExplicitTeacherSubmission(){
+        long student=user("topic_private_student");
+        String suffix=UUID.randomUUID().toString().replace("-","").substring(0,10);
+        jdbc.update("INSERT INTO xue_sheng_dang_an(yong_hu_id,xue_hao,xing_ming,nian_ji) VALUES (?,?,?,?)",student,"TP"+suffix,"匿名专题学生","高二");
+        long point=point(); long mother=mother("学生专题候选母题");
+        jdbc.update("UPDATE ti_mu SET ti_mu_lei_xing='SUBJECTIVE',shi_yong_mo_shi='TOPIC_LEARNING',shi_fou_ke_zi_dong_pan_fen=0,zheng_que_da_an=CAST(? AS JSON) WHERE id=?",
+                "{\"schemaVersion\":1,\"type\":\"SUBJECTIVE\"}",mother);
+        provider.answer("""
+                {"schemaVersion":2,"candidates":[{"stem":"在新的实验材料中分析两个条件并写出完整推理过程","questionType":"SUBJECTIVE","difficulty":3,"options":[],"correctAnswer":{"schemaVersion":1,"type":"SUBJECTIVE"},"standardAnalysis":"先识别变量，再分别分析条件，最后综合结论。","variationMode":"COMBINED","variationSummary":"重组专题情境与推理条件","changedDimensions":["SCENARIO","REASONING_PATH"]}]}
+                """);
+        var generated=service.generateTopic(student,new AiQuestionGenerationDtos.Generate(mother,"SUBJECTIVE",List.of(point),3,"COMBINED",1),false,true);
+        long candidate=generated.candidates().getFirst().questionId();
+        assertThat(generated.candidates().getFirst().status()).isEqualTo("DRAFT");
+        var tutor=studentAi.createConversation(student,null,candidate,null,"TOPIC_QUESTION",null,"STANDARD",false);
+        assertThat(tutor.contextType()).isEqualTo("TOPIC_QUESTION");
+        assertThat(tutor.messages()).isEmpty();
+
+        long teacher=user("topic_private_teacher");
+        jdbc.update("INSERT INTO jiao_shi_dang_an(yong_hu_id,gong_hao,xing_ming,zhuang_tai) VALUES (?,?,?,'ACTIVE')",teacher,"TP"+suffix,"匿名教师");
+        long teacherProfile=jdbc.queryForObject("SELECT LAST_INSERT_ID()",Long.class);
+        jdbc.update("INSERT INTO ban_ji(ban_ji_bian_ma,ban_ji_ming_cheng,nian_ji,ru_xue_nian_fen) VALUES (?,?,?,2025)","TP"+suffix,"专题审核班","高二");
+        long classId=jdbc.queryForObject("SELECT LAST_INSERT_ID()",Long.class);
+        jdbc.update("INSERT INTO ren_ke_guan_xi(jiao_shi_id,ban_ji_id,ke_mu_id,shi_fou_zhu_ren_ke,zhuang_tai,kai_shi_shi_jian) VALUES (?,?,1,0,'ACTIVE',CURRENT_TIMESTAMP(3))",teacherProfile,classId);
+
+        assertThat(service.tasks(teacher,"TEACHER")).noneMatch(task -> task.id()==generated.id());
+        assertThatThrownBy(() -> service.task(generated.id(),teacher,"TEACHER"))
+                .isInstanceOfSatisfying(RenZhengYeWuYiChang.class,error -> assertThat(error.getCode()).isEqualTo("AI_STUDENT_CANDIDATE_PRIVATE"));
+        assertThatThrownBy(() -> service.review(teacher,"TEACHER",candidate,new AiQuestionGenerationDtos.Review(1,1,1,1,1,"APPROVED",3,"不应直审")))
+                .isInstanceOfSatisfying(RenZhengYeWuYiChang.class,error -> assertThat(error.getCode()).isEqualTo("AI_STUDENT_CANDIDATE_PRIVATE"));
+
+        var submitted=service.submitStudentTopicVariant(student,candidate);
+        assertThat(submitted.candidates().getFirst().status()).isEqualTo("PENDING");
+        assertThat(service.task(generated.id(),teacher,"TEACHER").candidates()).hasSize(1);
+        var approved=service.review(teacher,"TEACHER",candidate,new AiQuestionGenerationDtos.Review(1,1,1,1,1,"APPROVED",3,"人工审核通过"));
+        assertThat(approved.status()).isEqualTo("PUBLISHED");
     }
 
     @Test

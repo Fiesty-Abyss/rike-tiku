@@ -7,12 +7,14 @@ import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
 
 @RestController
 @RequestMapping("/api/v1/student/topic-learning")
@@ -55,5 +57,18 @@ public class TopicLearningController {
         return generation.generateTopic(user.id(),new AiQuestionGenerationDtos.Generate(id,"SUBJECTIVE",points,
                 request.targetDifficulty(),request.variationMode(),request.count()),
                 request.requireVisualContext(),request.keepPrimaryKnowledgePoint());
+    }
+
+    @PostMapping("/variants/{questionId}/submit-review")
+    public AiQuestionGenerationDtos.Task submitVariant(@PathVariable Long questionId,
+            @AuthenticationPrincipal RenZhengYongHu user){
+        return generation.submitStudentTopicVariant(user.id(),questionId);
+    }
+
+    @DeleteMapping("/variants/{questionId}")
+    public ResponseEntity<Void> discardVariant(@PathVariable Long questionId,
+            @AuthenticationPrincipal RenZhengYongHu user){
+        generation.discardStudentTopicVariant(user.id(),questionId);
+        return ResponseEntity.noContent().build();
     }
 }

@@ -75,7 +75,7 @@ public class AiQuestionGenerationService {
     public AiQuestionGenerationDtos.Task generateTopic(long actorId,AiQuestionGenerationDtos.Generate command,
                                                          boolean requireVisualContext,boolean keepPrimaryKnowledgePoint){
         return generate(actorId,"STUDENT",command,mother(command.motherQuestionId()),null,false,
-                requireVisualContext,"TOPIC|visual="+requireVisualContext+"|primary="+keepPrimaryKnowledgePoint);
+                requireVisualContext,"TOPIC|visual="+requireVisualContext+"|primary="+keepPrimaryKnowledgePoint,true);
     }
 
     public AiQuestionGenerationDtos.Task generateFromKnowledgeCard(long actorId,long cardId,String questionType,int difficulty,String variationMode,int count,TransactionalCandidateAction action){
@@ -104,6 +104,12 @@ public class AiQuestionGenerationService {
     private AiQuestionGenerationDtos.Task generate(long actorId,String role,AiQuestionGenerationDtos.Generate command,
             AiQuestionGenerationPromptFactory.Mother mother,TransactionalCandidateAction action,boolean alreadyAuthorized,
             Boolean requireVisualContext,String requestDiscriminator){
+        return generate(actorId,role,command,mother,action,alreadyAuthorized,requireVisualContext,requestDiscriminator,false);
+    }
+
+    private AiQuestionGenerationDtos.Task generate(long actorId,String role,AiQuestionGenerationDtos.Generate command,
+            AiQuestionGenerationPromptFactory.Mother mother,TransactionalCandidateAction action,boolean alreadyAuthorized,
+            Boolean requireVisualContext,String requestDiscriminator,boolean studentTopicPreview){
         String actorRole=role.toUpperCase(Locale.ROOT); validateCommand(command);
         if("SUBJECTIVE".equals(command.questionType())&&!"TOPIC_LEARNING".equals(mother.usageMode()))fail("AI_TOPIC_MOTHER_INVALID","主观专题变式只能绑定已发布专题母题",HttpStatus.BAD_REQUEST);
         if(!alreadyAuthorized){if("STUDENT".equals(actorRole)&&"SUBJECTIVE".equals(command.questionType()))authorizeTopicStudent(actorId,mother.id());else authorize(actorId,actorRole,mother.subjectId());}
@@ -136,7 +142,7 @@ public class AiQuestionGenerationService {
             List<AiCandidateParser.Candidate> candidates;
             try{candidates=parser.parse(result.content(),command.count(),command.questionType(),command.targetDifficulty(),command.variationMode());}
             catch(AiCandidateParser.InvalidCandidateException first){
-                AiModelResult repaired=provider.generate(prompts.repair(result.content(),first,maxTokens));
+                 AiModelResult repaired=provider.generate(prompts.repair(result.content(),first,command.count(),command.questionType(),command.targetDifficulty(),command.variationMode(),maxTokens));
                 try{candidates=parser.parse(repaired.content(),command.count(),command.questionType(),command.targetDifficulty(),command.variationMode());result=repaired;}
                 catch(AiCandidateParser.InvalidCandidateException second){throw new AiCandidateParser.InvalidCandidateException("REPAIR_FAILED_"+second.code(),second.field(),second.getMessage());}
             }
@@ -144,7 +150,7 @@ public class AiQuestionGenerationService {
             long latency=elapsed(started);
             AiModelResult finalResult=result;
             transactions.executeWithoutResult(status->{
-                List<Long> questionIds=persist(taskId,actorId,command.knowledgePointIds(),prepared,vision.used());
+                 List<Long> questionIds=persist(taskId,actorId,command.knowledgePointIds(),prepared,vision.used(),studentTopicPreview);
                 if(action!=null)action.persist(taskId,questionIds);
                 jdbc.update("""
                         UPDATE ai_sheng_cheng_ren_wu SET provider_dai_ma=?,model_dai_ma=?,zhuang_tai='SUCCESS',
@@ -163,11 +169,11 @@ public class AiQuestionGenerationService {
     @Transactional(readOnly=true)
     public List<AiQuestionGenerationDtos.Task> tasks(long actorId,String role){
         String normalized=role.toUpperCase(Locale.ROOT);
-        List<Long> ids="ADMIN".equals(normalized)?jdbc.query("SELECT id FROM ai_sheng_cheng_ren_wu ORDER BY id DESC",(rs,row)->rs.getLong(1))
+        List<Long> ids="ADMIN".equals(normalized)?jdbc.query("SELECT DISTINCT g.id FROM ai_sheng_cheng_ren_wu g LEFT JOIN ai_hou_xuan_ti_zhi_liang_ping_jia v ON v.ai_sheng_cheng_ren_wu_id=g.id LEFT JOIN ti_mu q ON q.id=v.ti_mu_id WHERE g.chuang_jian_ren_jiao_se<>'STUDENT' OR q.zhuang_tai='PENDING' ORDER BY g.id DESC",(rs,row)->rs.getLong(1))
                 :jdbc.query("""
                     SELECT g.id FROM ai_sheng_cheng_ren_wu g JOIN ti_mu q ON q.id=g.mu_ti_mu_id
                     JOIN jiao_shi_dang_an j ON j.yong_hu_id=? JOIN ren_ke_guan_xi r ON r.jiao_shi_id=j.id AND r.ke_mu_id=q.ke_mu_id
-                    WHERE r.zhuang_tai='ACTIVE' ORDER BY g.id DESC
+                    WHERE r.zhuang_tai='ACTIVE' AND (g.chuang_jian_ren_jiao_se<>'STUDENT' OR q.zhuang_tai='PENDING') ORDER BY g.id DESC
                     """,(rs,row)->rs.getLong(1),actorId);
         return ids.stream().map(id->task(id,actorId,normalized)).toList();
     }
@@ -191,6 +197,10 @@ public class AiQuestionGenerationService {
                 rs.getObject(18,Long.class),rs.getObject(19,LocalDateTime.class),rs.getObject(20,LocalDateTime.class),rs.getLong(21)),id)
                 .stream().findFirst().orElseThrow(()->failEx("AI_GENERATION_TASK_NOT_FOUND","生成任务不存在",HttpStatus.NOT_FOUND));
         if(!alreadyAuthorized)authorize(actorId,role.toUpperCase(Locale.ROOT),row.subjectId());
+        if(!"STUDENT".equals(role.toUpperCase(Locale.ROOT)) && "STUDENT".equals(row.creatorRole())
+                && count("SELECT COUNT(*) FROM ai_hou_xuan_ti_zhi_liang_ping_jia v JOIN ti_mu q ON q.id=v.ti_mu_id WHERE v.ai_sheng_cheng_ren_wu_id=? AND q.zhuang_tai='DRAFT' AND q.yi_shan_chu=0",id)>0){
+            throw failEx("AI_STUDENT_CANDIDATE_PRIVATE","学生候选尚未提交任课老师审核",HttpStatus.NOT_FOUND);
+        }
         List<AiQuestionGenerationDtos.Candidate> candidates=candidates(id);
         return new AiQuestionGenerationDtos.Task(row.id(),row.motherId(),row.creatorId(),row.creatorRole(),row.type(),row.points(),
                 row.difficulty(),row.mode(),row.count(),row.hash(),row.provider(),row.model(),row.promptVersion(),row.status(),
@@ -200,6 +210,8 @@ public class AiQuestionGenerationService {
     @Transactional
     public AiQuestionGenerationDtos.Candidate review(long actorId,String role,long questionId,AiQuestionGenerationDtos.Review request){
         CandidateAuth auth=candidateAuth(questionId); authorize(actorId,role.toUpperCase(Locale.ROOT),auth.subjectId());
+        if("STUDENT".equals(auth.creatorRole()) && "DRAFT".equals(auth.status()))
+            throw failEx("AI_STUDENT_CANDIDATE_PRIVATE","学生候选尚未提交任课老师审核",HttpStatus.NOT_FOUND);
         String decision=request.reviewResult().trim().toUpperCase(Locale.ROOT);
         if(!Set.of("APPROVED","REJECTED").contains(decision))fail("AI_REVIEW_RESULT_INVALID","审核结果不受支持",HttpStatus.BAD_REQUEST);
         if("REJECTED".equals(decision)&&(request.reviewComment()==null||request.reviewComment().isBlank()))fail("REVIEW_OPINION_REQUIRED","驳回必须填写审核意见",HttpStatus.BAD_REQUEST);
@@ -225,6 +237,19 @@ public class AiQuestionGenerationService {
                 count("SELECT COUNT(*) FROM ai_hou_xuan_ti_zhi_liang_ping_jia WHERE shen_he_jie_guo='APPROVED'"),
                 count("SELECT COUNT(*) FROM ai_hou_xuan_ti_zhi_liang_ping_jia WHERE shen_he_jie_guo='REJECTED'"),
                 rs.getObject(6,Double.class),jdbc.queryForObject("SELECT AVG(shen_he_hao_shi_fen_zhong) FROM ai_hou_xuan_ti_zhi_liang_ping_jia",Double.class)));
+    }
+
+    @Transactional
+    public AiQuestionGenerationDtos.Task submitStudentTopicVariant(long actorId,long questionId){
+        long taskId=studentTopicTask(actorId,questionId,"DRAFT");
+        questions.transition(questionId,"SUBMITTED","DRAFT","PENDING","学生提交任课老师审核",actorId);
+        return task(taskId,actorId,"STUDENT",true);
+    }
+
+    @Transactional
+    public void discardStudentTopicVariant(long actorId,long questionId){
+        studentTopicTask(actorId,questionId,"DRAFT");
+        jdbc.update("UPDATE ti_mu SET yi_shan_chu=1 WHERE id=?",questionId);
     }
 
     @Transactional(readOnly=true)
@@ -269,7 +294,7 @@ public class AiQuestionGenerationService {
         return List.copyOf(values);
     }
 
-    private List<Long> persist(long taskId,long actorId,List<Long> knowledgePointIds,List<Prepared> prepared,boolean visionUsed){
+    private List<Long> persist(long taskId,long actorId,List<Long> knowledgePointIds,List<Prepared> prepared,boolean visionUsed,boolean studentTopicPreview){
         List<Long> ids=new ArrayList<>();
         for(Prepared value:prepared){
             AiCandidateParser.Candidate c=value.candidate();
@@ -289,7 +314,9 @@ public class AiQuestionGenerationService {
                         candidate.zhuan_ti_lei_xing=mother.zhuan_ti_lei_xing
                     WHERE candidate.id=?
                     """,jdbc.queryForObject("SELECT mu_ti_mu_id FROM ai_sheng_cheng_ren_wu WHERE id=?",Long.class,taskId),questionId);
-            questions.transition(questionId,"SUBMITTED","DRAFT","PENDING","AI 候选题进入人工审核",actorId);
+            if(!studentTopicPreview){
+                questions.transition(questionId,"SUBMITTED","DRAFT","PENDING","AI 候选题进入人工审核",actorId);
+            }
             jdbc.update("""
                     INSERT INTO ai_hou_xuan_ti_zhi_liang_ping_jia
                       (ai_sheng_cheng_ren_wu_id,ti_mu_id,bian_shi_zhai_yao,bian_shi_fang_shi,bian_hua_wei_du,
@@ -357,8 +384,18 @@ public class AiQuestionGenerationService {
                 ON r.id=q.ren_ke_guan_xi_id AND r.ban_ji_id=bx.ban_ji_id AND r.zhuang_tai='ACTIVE'
                 WHERE bx.xue_sheng_id=xs.id AND bx.shi_fou_zhu_ban_ji=1 AND bx.zhuang_tai='ACTIVE' AND bx.tui_chu_shi_jian IS NULL))
             """,actorId,questionId)!=1)fail("AI_GENERATION_FORBIDDEN","无权生成该专题题的候选变式",HttpStatus.FORBIDDEN);}
-    private CandidateAuth candidateAuth(long id){return jdbc.query("SELECT q.ke_mu_id,v.ai_sheng_cheng_ren_wu_id FROM ai_hou_xuan_ti_zhi_liang_ping_jia v JOIN ti_mu q ON q.id=v.ti_mu_id WHERE q.id=?",(rs,row)->new CandidateAuth(rs.getLong(1),rs.getLong(2)),id).stream().findFirst().orElseThrow(()->failEx("AI_CANDIDATE_NOT_FOUND","AI 候选题不存在",HttpStatus.NOT_FOUND));}
-    private List<AiQuestionGenerationDtos.Candidate> candidates(long taskId){return jdbc.query("SELECT ti_mu_id FROM ai_hou_xuan_ti_zhi_liang_ping_jia WHERE ai_sheng_cheng_ren_wu_id=? ORDER BY id",(rs,row)->candidate(rs.getLong(1)),taskId);}
+    private long studentTopicTask(long actorId,long questionId,String expectedStatus){
+        return jdbc.query("""
+                SELECT g.id FROM ai_hou_xuan_ti_zhi_liang_ping_jia v
+                JOIN ai_sheng_cheng_ren_wu g ON g.id=v.ai_sheng_cheng_ren_wu_id
+                JOIN ti_mu q ON q.id=v.ti_mu_id
+                WHERE q.id=? AND q.zhuang_tai=? AND q.yi_shan_chu=0 AND q.ti_mu_lei_xing='SUBJECTIVE'
+                  AND q.shi_yong_mo_shi='TOPIC_LEARNING' AND g.chuang_jian_ren_id=? AND g.chuang_jian_ren_jiao_se='STUDENT'
+                """,(rs,row)->rs.getLong(1),questionId,expectedStatus,actorId).stream().findFirst()
+                .orElseThrow(()->failEx("AI_TOPIC_CANDIDATE_NOT_FOUND","专题候选不存在或不属于当前学生",HttpStatus.NOT_FOUND));
+    }
+    private CandidateAuth candidateAuth(long id){return jdbc.query("SELECT q.ke_mu_id,v.ai_sheng_cheng_ren_wu_id,q.zhuang_tai,g.chuang_jian_ren_jiao_se FROM ai_hou_xuan_ti_zhi_liang_ping_jia v JOIN ti_mu q ON q.id=v.ti_mu_id JOIN ai_sheng_cheng_ren_wu g ON g.id=v.ai_sheng_cheng_ren_wu_id WHERE q.id=?",(rs,row)->new CandidateAuth(rs.getLong(1),rs.getLong(2),rs.getString(3),rs.getString(4)),id).stream().findFirst().orElseThrow(()->failEx("AI_CANDIDATE_NOT_FOUND","AI 候选题不存在",HttpStatus.NOT_FOUND));}
+    private List<AiQuestionGenerationDtos.Candidate> candidates(long taskId){return jdbc.query("SELECT v.ti_mu_id FROM ai_hou_xuan_ti_zhi_liang_ping_jia v JOIN ti_mu q ON q.id=v.ti_mu_id WHERE v.ai_sheng_cheng_ren_wu_id=? AND q.yi_shan_chu=0 ORDER BY v.id",(rs,row)->candidate(rs.getLong(1)),taskId);}
     private AiQuestionGenerationDtos.Candidate candidate(long id){
         CandidateBase b=jdbc.query("""
                 SELECT q.id,v.ai_sheng_cheng_ren_wu_id,q.ti_gan,q.ti_mu_lei_xing,q.nan_du,q.zhuang_tai,
@@ -388,7 +425,7 @@ public class AiQuestionGenerationService {
     @FunctionalInterface public interface TransactionalCandidateAction{void persist(long taskId,List<Long> questionIds);}
     private record Prepared(AiCandidateParser.Candidate candidate,String hash,boolean suspected,AiCandidateNoveltyService.Result novelty){ }
     private record MotherBase(long id,long subjectId,String subjectCode,String type,String usageMode,String stem,String answer,String analysis){ }
-    private record CandidateAuth(long subjectId,long taskId){ }
+    private record CandidateAuth(long subjectId,long taskId,String status,String creatorRole){ }
     private record RetryableTask(long id,String status,int generated,int candidates){ }
     private record TaskRow(long id,long motherId,long creatorId,String creatorRole,String type,List<Long> points,int difficulty,String mode,int count,String hash,String provider,String model,String promptVersion,String status,int generated,boolean vision,String failure,Long latency,LocalDateTime createdAt,LocalDateTime finishedAt,long subjectId){ }
     private record CandidateBase(long id,long taskId,String stem,String type,int difficulty,String status,String summary,String warning,boolean vision,String provider,String model,String answer,String analysis,AiQuestionGenerationDtos.Quality quality){ }
