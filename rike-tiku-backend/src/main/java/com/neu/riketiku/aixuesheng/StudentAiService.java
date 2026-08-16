@@ -252,16 +252,22 @@ public class StudentAiService {
                   a.jie_xi_nei_rong,COALESCE((SELECT JSON_ARRAYAGG(z.wan_zheng_lu_jing) FROM ti_mu_zhi_shi_dian qz
                     JOIN zhi_shi_dian z ON z.id=qz.zhi_shi_dian_id WHERE qz.ti_mu_id=q.id AND qz.yi_shan_chu=0),JSON_ARRAY()),0
                 FROM ti_mu q JOIN ke_mu k ON k.id=q.ke_mu_id
-                JOIN ti_mu_jie_xi a ON a.ti_mu_id=q.id AND a.jie_xi_lei_xing='STANDARD' AND a.zhuang_tai='PUBLISHED' AND a.yi_shan_chu=0
+                LEFT JOIN ti_mu_jie_xi a ON a.ti_mu_id=q.id AND a.jie_xi_lei_xing='STANDARD' AND a.yi_shan_chu=0
                 JOIN xue_sheng_dang_an xs ON xs.yong_hu_id=? AND xs.zhuang_tai='ACTIVE' AND xs.yi_shan_chu=0
                 WHERE q.id=? AND q.ti_mu_lei_xing='SUBJECTIVE' AND q.shi_yong_mo_shi='TOPIC_LEARNING'
-                  AND q.zhuang_tai='PUBLISHED' AND q.yi_shan_chu=0
-                  AND (q.ke_jian_fan_wei='GLOBAL' OR EXISTS (SELECT 1 FROM ban_ji_xue_sheng bx JOIN ren_ke_guan_xi r
-                    ON r.id=q.ren_ke_guan_xi_id AND r.ban_ji_id=bx.ban_ji_id AND r.ke_mu_id=q.ke_mu_id
-                    WHERE bx.xue_sheng_id=xs.id AND bx.shi_fou_zhu_ban_ji=1 AND bx.zhuang_tai='ACTIVE'
-                      AND bx.tui_chu_shi_jian IS NULL AND r.zhuang_tai='ACTIVE'))
+                  AND q.yi_shan_chu=0
+                  AND (
+                    (q.zhuang_tai='PUBLISHED' AND q.ke_jian_fan_wei='GLOBAL')
+                    OR (q.zhuang_tai='PUBLISHED' AND EXISTS (SELECT 1 FROM ban_ji_xue_sheng bx JOIN ren_ke_guan_xi r
+                      ON r.id=q.ren_ke_guan_xi_id AND r.ban_ji_id=bx.ban_ji_id AND r.ke_mu_id=q.ke_mu_id
+                      WHERE bx.xue_sheng_id=xs.id AND bx.shi_fou_zhu_ban_ji=1 AND bx.zhuang_tai='ACTIVE'
+                        AND bx.tui_chu_shi_jian IS NULL AND r.zhuang_tai='ACTIVE'))
+                    OR (q.zhuang_tai='DRAFT' AND EXISTS (SELECT 1 FROM ai_hou_xuan_ti_zhi_liang_ping_jia v
+                      JOIN ai_sheng_cheng_ren_wu g ON g.id=v.ai_sheng_cheng_ren_wu_id
+                      WHERE v.ti_mu_id=q.id AND g.chuang_jian_ren_id=? AND g.chuang_jian_ren_jiao_se='STUDENT'))
+                  )
                 """,(rs,n)->new StudentAiFact(null,rs.getLong(2),null,rs.getLong(4),rs.getString(5),rs.getString(6),
-                textNormalizer.normalize(rs.getString(7)),null,null,null,rs.getString(11),rs.getString(12),false),userId,questionId)
+                 textNormalizer.normalize(rs.getString(7)),null,null,null,rs.getString(11),rs.getString(12),false),userId,questionId,userId)
                 .stream().findFirst().orElseThrow(this::notFound);
     }
 

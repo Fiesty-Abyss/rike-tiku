@@ -1,0 +1,150 @@
+{
+  "generatedAt": "2026-08-16T04:19:49.035Z",
+  "database": "rike_tiku",
+  "providerDisclosure": "No current rotated Provider credentials were present; no Provider-dependent request was made.",
+  "summary": {
+    "assertions": 19,
+    "assertionFailures": 0,
+    "routes": 4,
+    "consoleErrors": 0,
+    "pageErrors": 0,
+    "failedRequests": 0,
+    "overflows": []
+  },
+  "assertions": [
+    {
+      "name": "formal-initial-password-change",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "formal-student-login",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "backend-health",
+      "pass": true,
+      "detail": "status=200"
+    },
+    {
+      "name": "wrong-question-api-shape",
+      "pass": true,
+      "detail": "list is not an array"
+    },
+    {
+      "name": "formal-topic-unit-count",
+      "pass": true,
+      "detail": "count=6"
+    },
+    {
+      "name": "formal-topic-unit-question-count",
+      "pass": true,
+      "detail": "count=3"
+    },
+    {
+      "name": "formal-knowledge-card-count",
+      "pass": true,
+      "detail": "count=32"
+    },
+    {
+      "name": "formal-knowledge-card-structured-types",
+      "pass": true,
+      "detail": "types=POINT,FORMULA,SECONDARY_CONCLUSION,TABLE,CHEMICAL_EQUATION,INSTRUMENT"
+    },
+    {
+      "name": "page:/student/wrong-questions",
+      "pass": true,
+      "detail": "status=200, visible=true"
+    },
+    {
+      "name": "wrong-book-no-date-filter",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "wrong-book-no-direct-archive-action",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "page:/student/topics",
+      "pass": true,
+      "detail": "status=200, visible=true"
+    },
+    {
+      "name": "topic-page-unit-only-index",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "page:/student/topics/units/1",
+      "pass": true,
+      "detail": "status=200, visible=true"
+    },
+    {
+      "name": "topic-page-stage-navigation",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "page:/student/knowledge-cards",
+      "pass": true,
+      "detail": "status=200, visible=true"
+    },
+    {
+      "name": "knowledge-card-human-readable",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "wrong-question-retry-api",
+      "pass": true,
+      "detail": "formal account has no active wrong question; skipped non-destructive retry"
+    },
+    {
+      "name": "formal-account-password-restored",
+      "pass": true,
+      "detail": "status=200"
+    }
+  ],
+  "records": [
+    {
+      "route": "/student/wrong-questions",
+      "status": 200,
+      "finalPath": "/student/wrong-questions",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedRequests": [],
+      "overflow": false
+    },
+    {
+      "route": "/student/topics",
+      "status": 200,
+      "finalPath": "/student/topics",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedRequests": [],
+      "overflow": false
+    },
+    {
+      "route": "/student/topics/units/1",
+      "status": 200,
+      "finalPath": "/student/topics/units/1",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedRequests": [],
+      "overflow": false
+    },
+    {
+      "route": "/student/knowledge-cards",
+      "status": 200,
+      "finalPath": "/student/knowledge-cards",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedRequests": [],
+      "overflow": false
+    }
+  ],
+  "formalAccountRestored": true
+}

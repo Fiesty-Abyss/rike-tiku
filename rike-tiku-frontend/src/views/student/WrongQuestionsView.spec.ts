@@ -4,9 +4,9 @@ import { flushPromises, mount } from '@vue/test-utils'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import WrongQuestionsView from './WrongQuestionsView.vue'
 
-const { fetchWrongQuestions, fetchWrongQuestion, fetchPracticeOptions } = vi.hoisted(() => ({ fetchWrongQuestions: vi.fn(), fetchWrongQuestion:vi.fn(), fetchPracticeOptions:vi.fn() }))
-vi.mock('vue-router', () => ({ useRoute: () => ({ query: { subjectCode:'BIOLOGY' } }), useRouter: () => ({ push:vi.fn() }) }))
-vi.mock('../../api/student/practice', () => ({ fetchWrongQuestions, fetchWrongQuestion, fetchPracticeOptions, archiveWrongQuestion:vi.fn(), retryWrongQuestion:vi.fn() }))
+const { fetchWrongQuestions, fetchWrongQuestion, fetchPracticeOptions, retryWrongQuestion, push } = vi.hoisted(() => ({ fetchWrongQuestions: vi.fn(), fetchWrongQuestion:vi.fn(), fetchPracticeOptions:vi.fn(), retryWrongQuestion:vi.fn(), push:vi.fn() }))
+vi.mock('vue-router', () => ({ useRoute: () => ({ query: { subjectCode:'BIOLOGY' } }), useRouter: () => ({ push }) }))
+vi.mock('../../api/student/practice', () => ({ fetchWrongQuestions, fetchWrongQuestion, fetchPracticeOptions, retryWrongQuestion }))
 vi.mock('element-plus', () => ({ ElMessage:{error:vi.fn(),success:vi.fn()}, ElMessageBox:{confirm:vi.fn()} }))
 
 const subjects = [
@@ -84,5 +84,21 @@ describe('错题本真实学科与知识点筛选', () => {
     expect(fetchWrongQuestion).toHaveBeenCalledWith(3)
     expect(wrapper.get('[data-testid="wrong-ai-fact"]').text()).toBe('501 / true')
     expect(wrapper.text()).toContain('STANDARD 解析')
+  })
+
+  it('学生端不展示日期筛选、最近错误列或直接移出按钮，再做一次携带错题上下文', async () => {
+    retryWrongQuestion.mockResolvedValue({ id:77 })
+    const wrapper = mount(WrongQuestionsView,{global:{directives:{loading:()=>undefined},stubs:{...commonStubs,
+      ElTable:{props:['data'],template:'<div><slot /></div>'},
+      ElTableColumn:{template:'<div><slot :row="row" /></div>',setup:()=>({row})},
+    }}})
+    await flushPromises()
+    expect(wrapper.findComponent({name:'ElDatePicker'}).exists()).toBe(false)
+    expect(wrapper.text()).not.toContain('最近错误')
+    expect(wrapper.findAll('button').some((button) => button.text().trim() === '移出')).toBe(false)
+    await wrapper.findAll('button').find(button=>button.text().includes('再做一次'))!.trigger('click')
+    await flushPromises()
+    expect(retryWrongQuestion).toHaveBeenCalledWith(3)
+    expect(push).toHaveBeenCalledWith({path:'/student/practice/77',query:{fromWrongBook:'true',wrongQuestionId:'3'}})
   })
 })
