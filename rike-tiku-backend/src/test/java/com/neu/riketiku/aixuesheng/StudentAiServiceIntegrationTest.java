@@ -186,13 +186,16 @@ class StudentAiServiceIntegrationTest extends AdminQuestionIntegrationTestSuppor
 
         StudentPracticeDtos.Result secondCorrect = submitSingle(owner, "A");
         long secondCorrectFactId = secondCorrect.questions().getFirst().answerFactId();
-        var mastered = practiceService.wrongQuestion(owner, questionId);
-        assertThat(mastered.wrongQuestion().status()).isEqualTo("MASTERED");
-        assertThat(mastered.latestStudentAnswer().asText()).isEqualTo("A");
-        assertThat(mastered.aiAnalysisAnswerFactId()).isEqualTo(wrongFactId).isNotEqualTo(secondCorrectFactId);
+        var reviewingAfterSecondCorrect = practiceService.wrongQuestion(owner, questionId);
+        assertThat(reviewingAfterSecondCorrect.wrongQuestion().status()).isEqualTo("REVIEWING");
+        assertThat(reviewingAfterSecondCorrect.latestStudentAnswer().asText()).isEqualTo("A");
+        assertThat(reviewingAfterSecondCorrect.aiAnalysisAnswerFactId()).isEqualTo(wrongFactId).isNotEqualTo(secondCorrectFactId);
         assertThat(jdbc.queryForObject("SELECT zui_jin_da_ti_id FROM cuo_ti_ji_lu WHERE xue_sheng_id=? AND ti_mu_id=?",
                 Long.class, studentId(owner), questionId)).isEqualTo(secondCorrectFactId);
-        assertThat(service.generateAnalysis(owner, mastered.aiAnalysisAnswerFactId()).cached()).isTrue();
+        assertThat(service.generateAnalysis(owner, reviewingAfterSecondCorrect.aiAnalysisAnswerFactId()).cached()).isTrue();
+        practiceService.archiveWrongQuestion(owner, questionId);
+        var mastered = practiceService.wrongQuestion(owner, questionId);
+        assertThat(mastered.wrongQuestion().status()).isEqualTo("MASTERED");
         assertThatThrownBy(() -> practiceService.wrongQuestion(other, questionId))
                 .isInstanceOf(RenZhengYeWuYiChang.class);
         assertThatThrownBy(() -> service.analysis(other, wrongFactId))
