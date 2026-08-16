@@ -1,6 +1,6 @@
 # 功能—截图—代码—表—技术精确索引
 
-用于论文、答辩和代码审查。路径均为仓库相对路径；“—”表示该纯前端入口没有业务 Controller/Service，不是通配符省略。截图文件均位于 `docs/evidence/thesis-final/`。
+用于论文、答辩和代码审查。路径均为仓库相对路径；“—”表示该纯前端入口没有业务 Controller/Service，不是通配符省略。历史论文截图位于 `docs/evidence/thesis-final/`；本轮正式学生证据位于 `docs/evidence/pr33-formal-student/`，明确标注为 machine-controlled。
 
 | 功能 | 截图 | 前端路由 | Vue 页面 / 组件 | TS API | Controller | Service | 测试 | 表 | Flyway | 技术 |
 |---|---|---|---|---|---|---|---|---|---|---|
@@ -42,3 +42,12 @@
 | 知识卡片 / 卡片练习 | `30-knowledge-cards.png`、`33-teacher-knowledge-cards.png` | `/student/knowledge-cards`、`/teacher/knowledge-cards` | `rike-tiku-frontend/src/views/student/StudentKnowledgeCardsView.vue`；`rike-tiku-frontend/src/views/teacher/TeacherKnowledgeCardsView.vue` | `rike-tiku-frontend/src/api/student/knowledgeCards.ts`；`rike-tiku-frontend/src/api/teacher/knowledgeCards.ts` | `rike-tiku-backend/src/main/java/com/neu/riketiku/zhishikapian/KnowledgeCardStudentController.java`；`rike-tiku-backend/src/main/java/com/neu/riketiku/zhishikapian/KnowledgeCardPracticeController.java` | `rike-tiku-backend/src/main/java/com/neu/riketiku/zhishikapian/KnowledgeCardService.java`；`rike-tiku-backend/src/main/java/com/neu/riketiku/zhishikapian/KnowledgeCardPracticeService.java` | `rike-tiku-backend/src/test/java/com/neu/riketiku/zhishikapian/KnowledgeCardIntegrationTest.java`；`rike-tiku-backend/src/test/java/com/neu/riketiku/zhishikapian/KnowledgeCardPracticeIntegrationTest.java` | `gao_pin_kao_dian`、`gao_pin_kao_dian_shen_he_ji_lu`、`xue_sheng_zhi_shi_ka_pian_zhuang_tai`、`zhi_shi_ka_pian_lian_xi_shi_li` | V21、V28、V29 | KaTeX、人工审核、统一 Candidate Parser、新颖度、确定性判分 |
 
 完整 01–42 插图的视口、来源与验收属性见 [最终截图说明](evidence/thesis-final/README.md)。数据库字段与约束见 [V29 结构参考](DATABASE_SCHEMA_REFERENCE.md)。
+
+## 本轮正式学生证据索引
+
+| 证据 | 正式路由/数据 | 覆盖内容 | 结果边界 |
+|---|---|---|---|
+| `pr33-formal-student/student-wrong-questions.png` | `/student/wrong-questions` / `rike_tiku` | 无日期筛选、无列表直接移出、筛选布局 | 机器浏览器；无活跃错题时 retry 未执行 |
+| `pr33-formal-student/student-topic-units.png` | `/student/topics` / `rike_tiku` | 单元一级入口，6 个可访问单元 | 机器浏览器；不等同真人复验 |
+| `pr33-formal-student/student-topic-unit-detail.png` | `/student/topics/units/:id` / `rike_tiku` | 3 道子题、基础理解/情境迁移/综合提升阶段导航 | Provider 未配置，未生成真实 AI 变式 |
+| `pr33-formal-student/student-high-frequency-points.png` | `/student/knowledge-cards` / `rike_tiku` | 物理、化学、生物分类与人类可读卡片字段 | 无伪造频次；不等同学习效果实验 |

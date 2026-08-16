@@ -1,16 +1,16 @@
 # 开发状态
 
-更新时间：2026-08-14
+更新时间：2026-08-16
 
 ## 当前状态
 
-> PR #33 最终增量（2026-08-14）：PR #32 已以 ordinary merge 合入，merge commit `359fe61e7622b7f623afa212d37c24145273d47b`。当前唯一最终分支为 `feat/final-product-completion`，Flyway 已扩展至 V29、50 张业务表；在原有 10 轮答疑、受控搜索、结构化学生变式、密码恢复和组卷基础上，完成错题再做/归档、专题单元、GLM/xAI 显式视觉 Provider、试卷发布/提交/画像、知识卡片审核与生成练习。Demo V1→V29、50 表、378 道 PUBLISHED 题已验证；最终人工验收仍为 `FINAL_USER_REVIEW_PENDING`。
+> PR #33 学生端最终集中修复（2026-08-16）：当前唯一交付分支为 `feat/final-product-completion`，最新代码/测试批次提交 `469fe04`、`6ee3d15` 已普通提交，PR #33 仍为 Draft / OPEN / 未合并。Flyway 为 V1–V29、50 张业务表；本轮补齐题干前缀规范化、AI 专用超时、答案安全渲染、错题再做确认、专题单元与学生候选私有边界、高频考点结构化内容。正式 `rike_tiku` 当前为 V29/50，6 个已发布专题单元、18 个单元题目、65 张已发布卡片，其中 60 张为本轮结构化来源卡片；人工验收仍为 `FINAL_USER_REVIEW_PENDING`。
 
-最终门禁：后端 210 tests（0 failures、0 errors、3 skipped）和 package 通过；前端 67 files / 214 tests、type-check、build、audit 0 vulnerabilities 通过；匿名 Demo 的两组机器浏览器合计 31 routes，本轮 14 routes / 20 assertions，0 console/page/unexpected-request error、0 overflow、0 missing/assertion failure。09/10 变式截图明确是确定性 UI 夹具，不是 Provider PASS。真实 Provider 因没有可安全使用的轮换后凭据而分别记为 `BLOCKED_EXTERNAL_PROVIDER`。
+最终门禁：后端全量 212 tests（0 failures、0 errors、3 skipped），`mvn clean test` 和 package 通过；前端全量 68 files / 219 tests、type-check、build、`npm audit --omit=dev` 通过，audit 为 0 vulnerabilities。本轮点名的 7 组后端专项共 39 tests、学生前端专项 9 files / 30 tests 均通过；正式库独立浏览器 19 assertions / 4 routes，0 console/page/failed-request error、0 overflow。09/10 变式截图明确是确定性 UI 夹具，不是 Provider PASS。真实 Provider 因没有可安全使用的轮换后凭据而分别记为 `BLOCKED_EXTERNAL_PROVIDER`。
 
-正式 `rike_tiku` 的迁移前真实版本为 V24/41 表。仓库外备份为 1,326,218 bytes，SHA-256 `039C9E885007EB79ED317E1A1E5C5A6DCEB7EC2746C0777957E41E60FE65E622`。首次迁移揭示 V25 与历史 `NUMERIC_CONDITION` 的约束兼容缺陷；从已校验备份恢复到 V24 后，由版本门禁 Flyway callback 将该旧枚举语义映射为 `CONDITION_RECOMBINATION`，随后 V25–V29 正常迁移。最终为 V29/50 表、0 failed migration；9 用户、389 题、378 PUBLISHED 不变，0 Demo 用户、0 测试卡片实例，未执行 seed 或 repair。
+正式 `rike_tiku` 的迁移前真实版本为 V24/41 表。仓库外备份为 1,326,218 bytes，SHA-256 `039C9E885007EB79ED317E1A1E5C5A6DCEB7EC2746C0777957E41E60FE65E622`。首次迁移揭示 V25 与历史 `NUMERIC_CONDITION` 的约束兼容缺陷；从已校验备份恢复到 V24 后，由版本门禁 Flyway callback 将该旧枚举语义映射为 `CONDITION_RECOMBINATION`，随后 V25–V29 正常迁移。当前为 V29/50 表、0 failed migration；9 用户、389 题、378 PUBLISHED 保持，另有 65 张已发布高频考点卡片和 6 个已发布专题单元；本轮通过受控内容脚本写入学生展示内容，没有 reset/seed/迁移。
 
-PR #31 已由用户明确决定 ordinary merge，merge commit 为 `c79b7a6f93e32509989282995419bbaf64666182`。当前阶段为 PR #32 `chore/final-local-production-thesis-package`：本机正式库已备份并由 V11 正规迁移至 V14，论文资料包与最终维护环境已完成机器门禁，等待独立审查，不新增核心业务功能。
+历史记录：PR #31 已由用户明确决定 ordinary merge，merge commit 为 `c79b7a6f93e32509989282995419bbaf64666182`；此前 PR #32 `chore/final-local-production-thesis-package` 曾记录正式库由 V11 正规迁移至 V14。本段不代表当前版本，当前版本以本节首段的 PR #33、V29/50 和最终门禁记录为准。
 
 | 范围 | 状态 |
 | --- | --- |
@@ -20,17 +20,27 @@ PR #31 已由用户明确决定 ordinary merge，merge commit 为 `c79b7a6f93e32
 | 管理员 AI 模型配置 | `DONE_VERIFIED` |
 | 候选题生成、PENDING 审核与质量评价 | `DONE_VERIFIED` |
 | Vision 实现 | `DONE_VERIFIED` |
-| 真实 DeepSeek | `PASS` |
-| 真实 GLM | `REAL_GLM_VISION_NOT_REVERIFIED_AFTER_WRAPPER_FIX` |
-| 最终机器集成 | `AUTO_FINAL_VERIFICATION_PASS` |
+| 真实 DeepSeek variant / tutor | `BLOCKED_EXTERNAL_PROVIDER`（本轮 Key ABSENT，未调用） |
+| 真实 GLM Vision | `BLOCKED_EXTERNAL_PROVIDER`（本轮 Key ABSENT，未调用） |
+| 真实 xAI Vision / Web Search | `BLOCKED_EXTERNAL_PROVIDER`（本轮未调用） |
+| 最终机器集成 | `DONE_VERIFIED` |
 | 最终用户人工验收 | `FINAL_MANUAL_ACCEPTANCE_PENDING` |
 
 - 架构保持前后端分离的模块化单体，不使用微服务。
-- Flyway 为 V1–V14，共 35 张业务表；V1–V14 均为已执行迁移，不得修改。
+- Flyway 为 V1–V29，共 50 张业务表；V1–V29 均为已执行迁移，不得修改。
 - 正式答案与 STANDARD 标准解析是权威事实，AI 不能覆盖。
 - DeepSeek 负责文本推理，GLM-4.6V-Flash 只提供受控 `UNTRUSTED_VISION_CONTEXT`。
 - 学生端统一显示“RIKE 理科学习助手”，不显示 Provider、模型代码、API 地址、Key 或 Token。
+- 学生端错题筛选、再做确认、专题单元、高频考点与 AI 候选私有边界已在本轮集中修复；正式浏览器证据位于 `docs/evidence/pr33-formal-student/`。
 - PR #31 已完成全量自动化、Demo、真实 DeepSeek、权限与降级、机器浏览器和文档统一。用户人工验收尚未执行，不能写为最终封板 PASS。
+
+## PR #33 本轮学生端收口
+
+- 代码与测试提交 `469fe04` 已推送到 `feat/final-product-completion`；未创建 PR #34，未 force push、rebase、squash 或合并 PR #33。
+- 正式库使用 `scripts/ensure-formal-student-content.ps1` 幂等写入结构化高频考点，并编排 6 个三题专题单元；第二次执行 `CARDS_INSERTED=0`，证明没有重复插入。
+- 正式学生 machine-controlled 浏览器使用 18080/18081 和独立临时 Chromium profile，19 assertions 全部通过；这不是用户真人复验。Provider 因 Key ABSENT 未执行真实业务窗口。
+- 最终集中回归已完成：后端 212 tests / 3 skipped，前端 68 files / 219 tests，type-check、build、npm audit 通过；仅保留构建的大 chunk warning 和无 Provider Key 的条件跳过。
+- 正式只读校验为 Flyway V29、50 张业务表、6 个已发布专题单元、18 条单元题目关系、65 张已发布卡片；数据库中没有残留 `rike_tiku_` 临时测试 schema。
 
 ## PR #32 本地正式化与资料包
 
@@ -116,6 +126,6 @@ AI 主链已经覆盖统一 Provider、Fake/Stub、DeepSeek、脱敏调用日志
 
 ## 当前下一步
 
-核心业务停止扩张。当前只完成 PR #32 的本机运行维护、匿名论文证据、结构/导入模板和写作资料；用户本人最终人工验收仍为 `FINAL_MANUAL_ACCEPTANCE_PENDING`，不得写成 PASS。
+核心业务停止扩张。当前已完成 PR #33 学生端集中修复、正式内容补齐、机器证据和论文事实更新；最终集中全量回归、Word/PPT 视觉检查和 GPT 独立审查仍待完成。用户本人最终人工验收仍为 `FINAL_MANUAL_ACCEPTANCE_PENDING`，不得写成 PASS。
 
-用户仍需按 [最终人工验收清单](FINAL_MANUAL_ACCEPTANCE_CHECKLIST.md) 完成一次真实 CAPTCHA 验收。用户确认前保持 `FINAL_MANUAL_ACCEPTANCE_PENDING`；PR #31 已按用户明确决定合并，PR #32 不会把该人工状态伪造为 PASS。
+用户仍需按 [最终人工验收清单](FINAL_MANUAL_ACCEPTANCE_CHECKLIST.md) 完成一次真实 CAPTCHA 验收。用户确认前保持 `FINAL_MANUAL_ACCEPTANCE_PENDING`；PR #33 不得自行合并，不能把机器浏览器或历史 Provider 结果伪造为真人/本轮 PASS。
