@@ -33,6 +33,12 @@ describe('ScientificText', () => {
     expect(wrapper.findAll('.katex-mathml')).toHaveLength(4)
   })
 
+  it('repairs delimiters that were escaped twice by a legacy JSON writer', () => {
+    const wrapper = mount(ScientificText, { props: { content: String.raw`\\(qvB=qE，v=\\frac{E}{B}\\)` } })
+    expect(wrapper.find('.katex').exists()).toBe(true)
+    expect(wrapper.find('[data-render-status="fallback"]').exists()).toBe(false)
+  })
+
   it('falls back to visible source for an invalid expression', () => {
     const wrapper = mount(ScientificText, { props: { content: String.raw`\(\frac{1}\)` } })
     expect(wrapper.find('[data-render-status="fallback"]').text()).toBe(String.raw`\frac{1}`)
