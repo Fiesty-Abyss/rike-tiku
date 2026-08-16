@@ -8,9 +8,9 @@
 
 系统采用 Vue 3 与 Spring Boot 4.1 前后端分离，后端保持模块化单体。MySQL 8.4 保存业务事实，Flyway V1–V29 管理 50 张业务表。自动化使用随机临时库，匿名演示使用 `rike_tiku_demo`，正式库不作为测试源。
 
-本轮正式库内容核验为 6 个已发布专题单元、每单元 3 道题，共 18 条单元关系；高频考点卡片共 65 张，其中 60 张来自结构化内容源。学生 AI 候选先保存为本人可见 DRAFT，提交后才进入 PENDING 审核。正式 Provider 未因缺少轮换 Key 而执行，答辩时应明确说明这一边界。
+本轮正式库内容核验为 15 个已发布专题单元、每单元 3 道题，共 45 条单元关系，学科覆盖物理 6 / 化学 5 / 生物 4；高频考点卡片共 65 张，其中 60 张来自结构化内容源。科学内容统一使用显式数学分隔符并经过 0-error 审计。学生 AI 候选先保存为本人可见 DRAFT，提交后才进入 PENDING 审核。正式 Provider 未因缺少轮换 Key 而执行，答辩时应明确说明这一边界。
 
-最终回归为后端 212 tests、0 failures、0 errors、3 skipped，前端 68 个测试文件/219 tests 全部通过；`type-check`、`build` 和 `npm audit --omit=dev` 均通过。这里的 skipped 只对应没有安全 Provider 凭据或平台条件的测试，不应表述为真实 Provider PASS。
+最终回归为后端 215 tests、0 failures、0 errors、3 skipped，前端 68 个测试文件/220 tests 全部通过；`type-check`、`build` 和 `npm audit --omit=dev` 均通过。正式浏览器本轮因本机缺少轮换正式学生凭据记为 `BLOCKED_LOCAL_CREDENTIAL`，Demo 路由巡检不替代正式库或真人验收。这里的 skipped 只对应没有安全 Provider 凭据或平台条件的测试，不应表述为真实 Provider PASS。
 
 ## 3. 演示顺序
 

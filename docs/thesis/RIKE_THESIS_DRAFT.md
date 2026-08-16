@@ -8,7 +8,7 @@
 
 后端使用 Java 25、Spring Boot 4.1、Spring Security、MyBatis-Plus、Flyway 和 MySQL 8.4，前端使用 Vue 3、TypeScript、Element Plus、GSAP 与 KaTeX。数据库由 Flyway V1–V29 管理，共 50 张业务表。正式判分遵循确定性规则，STANDARD 解析作为业务事实保存，AI 不能覆盖。DeepSeek 负责文本辅助，GLM 和 xAI 由管理员显式选择后用于视觉 Provider，智谱 Web Search 提供结构化网络来源。学生变式题经过 Schema V2、字段级解析、新颖度检查和确定性判分后，先保存为本人可见的 DRAFT；学生提交后才进入教师审核的 PENDING 状态，审核通过后才能进入已发布题库。
 
-自动化测试使用随机临时 MySQL schema，匿名演示库从空库执行 Flyway V1–V29，得到 29 个成功迁移和 50 张业务表。上一轮基线为后端 210 项测试、前端 67 个测试文件/214 项测试；本轮重跑的后端专项有 39 项，学生前端专项有 30 项，均已通过。正式学生机器浏览器覆盖 4 条路线、19 项断言。由于没有轮换后的安全凭据，真实 Provider 统一记录为 `BLOCKED_EXTERNAL_PROVIDER`。这些数字只说明工程验证范围，不代表真实学生群体的教学效果。
+自动化测试使用随机临时 MySQL schema，匿名演示库从空库执行 Flyway V1–V29，得到 29 个成功迁移和 50 张业务表。本轮最终后端全量为 215 项测试，前端为 68 个测试文件/220 项测试；科学内容审计覆盖 600 个字符串和 105 条正式库行，0 errors。Demo 学生机器浏览器覆盖 4 条路线且无 console/page/request error；正式浏览器因本机没有可用的轮换正式学生凭据记为 `BLOCKED_LOCAL_CREDENTIAL`。由于没有轮换后的安全 Provider 凭据，真实 Provider 统一记录为 `BLOCKED_EXTERNAL_PROVIDER`。这些数字只说明工程验证范围，不代表真实学生群体的教学效果。
 
 关键词：高中理科；在线题库；Spring Boot；大语言模型；人工审核；确定性判分
 
@@ -140,7 +140,7 @@ API Key 只保存在本地模型配置表或环境变量中，管理 API 只返�
 
 ### 8.2 本轮已执行结果
 
-后端最终全量为 212 项测试，0 failures、0 errors，3 项依赖真实 Provider 或平台条件的 conditional skips；本轮点名专项重跑 39 项，0 failures/errors。前端全量为 68 个测试文件、219 项测试，`vue-tsc --noEmit`、Vite build 和 `npm audit --omit=dev` 通过，audit 为 0 vulnerabilities；build 保留一个主 chunk 超过 500 kB 的警告。正式学生机器浏览器覆盖 4 条路线和 19 项断言，0 console/page/failed-request error、0 overflow。所有 Provider-dependent 结论均按 `BLOCKED_EXTERNAL_PROVIDER` 记录，不把 Mock/Fake 写成真实调用。
+后端最终全量为 215 项测试，0 failures、0 errors，3 项依赖真实 Provider 或平台条件的 conditional skips；新颖度单测 3/3、候选生成集成 7/7、学生变式集成 4/4 均通过。前端全量为 68 个测试文件、220 项测试，`vue-tsc --noEmit`、Vite build 和 `npm audit --omit=dev` 通过，audit 为 0 vulnerabilities；build 保留一个主 chunk 超过 500 kB 的警告。Demo 学生浏览器覆盖 4 条路线，0 console/page/failed-request error、0 overflow；正式浏览器当前为 `BLOCKED_LOCAL_CREDENTIAL`。所有 Provider-dependent 结论均按 `BLOCKED_EXTERNAL_PROVIDER` 记录，不把 Mock/Fake 写成真实调用。
 
 `rike_tiku_demo` 从空库 reset 后完整执行 V1–V29，得到 50 张业务表；seed/validate 核验 14 个匿名账号、3 个班级、4 位教师、9 名学生、9 条任课关系、66 张已审核知识卡片和 378 道题。该环境用于机器浏览器和论文截图，不包含正式人员数据或真实 Provider 凭据。
 

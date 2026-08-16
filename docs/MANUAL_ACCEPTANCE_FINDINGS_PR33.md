@@ -21,7 +21,7 @@
 | MA33-12 | 本地临时目录与备份风险 | 恢复包和正式库备份均在仓库外；公开资料秘密/绝对路径扫描；不提交数据库备份 | SHA-256、非空检查、Git ignore/secret scan | 不产生产品提交 | FINAL_USER_REVIEW_PENDING |
 | MA33-13 | 内存占用和重复进程缺证据 | 分阶段 PID/端口记录和 10 分钟三角色路由采样；只停止 RIKE PID | Java 278.7→295.2 MB，Vite 86.9→89.6 MB，非单调泄漏；停止后 18080/18081 释放 | 最终证据提交 | FINAL_USER_REVIEW_PENDING |
 
-附加九项闭环：错题筛选/再做/软归档、非模态当前题答疑、专题单元和附件、GLM/xAI、试卷发布/学生提交/画像、AI 试卷质量建议、append-only 日志分页/CSV 导出、知识卡片库、知识卡片生成练习均纳入 V29/50 表与 210 项后端全量门禁。真实 Provider 结果仍必须逐项独立记录，不能由 Mock 推导。
+附加九项闭环：错题筛选/再做/软归档、非模态当前题答疑、专题单元和附件、GLM/xAI、试卷发布/学生提交/画像、AI 试卷质量建议、append-only 日志分页/CSV 导出、知识卡片库、知识卡片生成练习均纳入 V29/50 表与最终 215 项后端全量门禁。真实 Provider 结果仍必须逐项独立记录，不能由 Mock 推导。
 
 ## 本轮学生端最终集中修复（2026-08-16）
 
@@ -36,5 +36,9 @@
 | MA33-18 | 专题页应以专题单元为一级入口，每单元 2–3 道主观题；候选变式需先私有预览，再提交审核 | HIGH | 旧页面按单题展示；学生候选沿用了教师审核队列语义，DRAFT 可被教师查询/直达审核 | `TopicLearningView.vue`、`TopicLearningController.java`、`AiQuestionGenerationService.java`、`StudentAiService.java`、`AiQuestionGenerationIntegrationTest.java` | `AiQuestionGenerationIntegrationTest` 7 项验证 DRAFT 私有、显式提交后 PENDING、教师审核；`TopicLearningIntegrationTest` 2 项；前端专题专项 | `student-topic-units.png`、`student-topic-unit-detail.png`；正式 API 6 单元且首单元 3 题；Provider 未配置，未执行真实变式生成 | `469fe04` | FINAL_USER_REVIEW_PENDING |
 | MA33-19 | “知识卡片”入口和内容应改成物化生高频考点，按学科与二级结论阅读，不伪造统计次数 | MEDIUM | 原卡片内容稀疏且展示名称、类型标签和学科内容不足，正式库没有可审计的结构化卡片来源 | `StudentHomeView.vue`、`StudentKnowledgeCardsView.vue`、`StudentKnowledgeCardsView.spec.ts`、`docs/content/*`、`scripts/ensure-formal-student-content.ps1` | 前端高频考点专项；正式库受控脚本幂等执行（第二次 `CARDS_INSERTED=0`） | `student-high-frequency-points.png`；正式库 65 张已发布卡片，其中本轮结构化来源卡片 60 张，物理/化学/生物均可读 | `469fe04` | FINAL_USER_REVIEW_PENDING |
 | MA33-20 | GLM Vision 最终验证必须使用真实单图和安全状态，不能用 Mock 代替 | HIGH | 当前进程环境没有可安全使用的轮换 GLM Key；历史窗口不能覆盖本轮 Parser/业务链变化 | 无产品代码变更；Provider 结果写入 `docs/AI_FINAL_EXPERIMENT_RESULTS.md` | GLM 合同测试可通过；本轮真实 GLM smoke `NOT_RUN`，不能写 REAL_PASS | 未产生真实 Provider 浏览器证据；Key 状态仅记录 PRESENT/ABSENT，不输出值 | `71e8539` | FINAL_USER_REVIEW_PENDING |
+| MA33-21 | 正式库高频考点和专题内容显示 `\\(`、`\\frac`、`\\ce` 等原始 TeX/化学式，截图中公式不可读 | HIGH | 内容源曾把 LaTeX 放在普通文本字段，未统一使用显式 `\\(...\\)` / `\\[...\\]`；渲染器只对显式数学片段调用 KaTeX，缺少数据库级科学内容审计 | `scientificText.ts`、`ScientificText.spec.ts`、v2 内容源、科学内容构建/审计/同步脚本、正式内容门禁 | 科学内容静态审计 600 strings/105 database rows/0 errors；前端 5 files/12 tests；公式与 mhchem 专项通过 | Demo 独立 profile 4 路由无 raw markup/fallback；正式浏览器本轮因本机缺少轮换正式账号密码记为 `BLOCKED_LOCAL_CREDENTIAL` | `54fc43f` | FINAL_USER_REVIEW_PENDING |
+| MA33-22 | 第三轮变式新颖度规则过于二元，无法解释 WARN，也没有按变化方式约束变化维度 | HIGH | 旧逻辑只按相似度做通过/拒绝，缺少 ACCEPT/WARN/REJECT 分层、模式维度门槛、难度复杂度门槛和有限修复预算 | 新颖度服务、候选生成服务/Prompt/DTO、学生变式服务/DTO、教师与学生候选前端及测试 | 新颖度单测 3/3；候选生成集成 7/7；学生变式集成 4/4；WARN 仅允许预览/DRAFT/PENDING，REJECT 阻断发布 | Provider 当前为 `BLOCKED_EXTERNAL_PROVIDER`，未把 Mock 写成真实生成验收 | `54fc43f` | FINAL_USER_REVIEW_PENDING |
+| MA33-23 | 正式专题内容只有 6 个单元/18 条关系，学生端学科覆盖不足 | MEDIUM | 正式库原有受控内容源只编排了每科 2 个单元；本轮新增 v2 内容源并用正式库 guard + 事务幂等同步扩充 | v2 专题内容源、内容构建/同步脚本、正式内容门禁、正式浏览器断言 | 正式库 V29/50：15 个已发布单元、45 条关系，物理 6/化学 5/生物 4；第二次同步 0 insert/0 create；无迁移 | Demo 仍保留匿名旧基线 3 个单元；正式浏览器本轮为 `BLOCKED_LOCAL_CREDENTIAL`，不把 Demo 旧内容当正式内容 | `54fc43f` | FINAL_USER_REVIEW_PENDING |
+| MA33-24 | 错题本全部学科筛选触发 Element Plus `value=undefined` 运行时 warning | LOW | “全部学科”使用了未定义的 option value；placeholder 与 clearable 已足以表达未筛选状态 | `WrongQuestionsView.vue` | 错题本专项通过；Demo 最终复验 0 console warning、0 console/page/request error | `pr33-demo-scientific/browser-results-demo-final-wrong-book.json` | `54fc43f` | FINAL_USER_REVIEW_PENDING |
 
-本轮正式库机器验收摘要：`rike_tiku` V29/50，6 个已发布专题单元、18 个单元题目、65 张已发布卡片（其中 60 张结构化来源卡片）；正式浏览器 19 项断言、4 个页面、0 console error、0 page error、0 failed request、0 horizontal overflow。上述数字均不表示真人验收，也不表示 Provider PASS。
+本轮正式库机器/数据验收摘要：`rike_tiku` V29/50，15 个已发布专题单元、45 条单元题目关系、65 张已发布卡片；学科分布为物理 6、化学 5、生物 4。科学内容审计为 600 个字符串/105 条正式库行、0 errors。Demo 浏览器 4 条路线均为 200，0 console/page/failed-request error、0 overflow；正式库浏览器因当前环境没有可用的轮换正式学生凭据，状态为 `BLOCKED_LOCAL_CREDENTIAL`。上述数字均不表示真人验收，也不表示 Provider PASS。

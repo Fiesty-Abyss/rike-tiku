@@ -60,7 +60,7 @@ V12 Demo 日志只有 provider、model、purpose、业务关联、success/error�
 
 ## PR #33 最终集中回归（2026-08-16）
 
-- 后端：`mvn clean test` 为 212 tests、0 failures、0 errors、3 skipped；随机临时库按 V1–V29 完整迁移。
-- 前端：68 个测试文件、219 tests 全部通过；`type-check`、`build` 和 `npm audit --omit=dev` 通过，0 vulnerabilities。build 的大 chunk 只是已知 warning。
-- 正式库：只读回查为 V29、50 张业务表；6 个已发布专题单元、18 条单元题目关系、65 张已发布高频考点卡片，其中 60 张结构化来源卡片。
-- 本轮没有新增真实 Provider 请求，五个业务窗口继续为 `BLOCKED_EXTERNAL_PROVIDER`；机器回归与匿名/夹具证据不替代真人验收。
+- 后端：`mvn clean test` 为 215 tests、0 failures、0 errors、3 skipped；随机临时库按 V1–V29 完整迁移。
+- 前端：68 个测试文件、220 tests 全部通过；`type-check`、`build` 和 `npm audit --omit=dev` 通过，0 vulnerabilities。build 的大 chunk 只是已知 warning。
+- 正式库：只读回查为 V29、50 张业务表；15 个已发布专题单元、45 条单元题目关系、65 张已发布高频考点卡片。科学内容审计为 600 个字符串、105 条正式库行、0 errors。
+- 本轮没有新增真实 Provider 请求，五个业务窗口继续为 `BLOCKED_EXTERNAL_PROVIDER`；机器回归、Demo 和夹具证据不替代真人验收。正式浏览器因本机无轮换正式学生凭据记为 `BLOCKED_LOCAL_CREDENTIAL`。

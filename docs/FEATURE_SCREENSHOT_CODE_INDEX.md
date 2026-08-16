@@ -48,6 +48,8 @@
 | 证据 | 正式路由/数据 | 覆盖内容 | 结果边界 |
 |---|---|---|---|
 | `pr33-formal-student/student-wrong-questions.png` | `/student/wrong-questions` / `rike_tiku` | 无日期筛选、无列表直接移出、筛选布局 | 机器浏览器；无活跃错题时 retry 未执行 |
-| `pr33-formal-student/student-topic-units.png` | `/student/topics` / `rike_tiku` | 单元一级入口，6 个可访问单元 | 机器浏览器；不等同真人复验 |
-| `pr33-formal-student/student-topic-unit-detail.png` | `/student/topics/units/:id` / `rike_tiku` | 3 道子题、基础理解/情境迁移/综合提升阶段导航 | Provider 未配置，未生成真实 AI 变式 |
+| `pr33-formal-student/student-topic-units.png` | `/student/topics` / `rike_tiku` | 单元一级入口；正式数据现为 15 个单元，物理 6 / 化学 5 / 生物 4 | 历史正式浏览器截图；本轮正式账号为 `BLOCKED_LOCAL_CREDENTIAL`，不等同真人复验 |
+| `pr33-formal-student/student-topic-unit-detail.png` | `/student/topics/units/:id` / `rike_tiku` | 单元 3 道子题、基础理解/情境迁移/综合提升阶段导航；正式数据共 45 条关系 | 历史正式浏览器截图；Provider 未配置，未生成真实 AI 变式 |
 | `pr33-formal-student/student-high-frequency-points.png` | `/student/knowledge-cards` / `rike_tiku` | 物理、化学、生物分类与人类可读卡片字段 | 无伪造频次；不等同学习效果实验 |
+
+本轮 Demo 机器证据位于 `docs/evidence/pr33-demo-scientific/`：4 条学生路由、0 console/page/failed-request error、0 overflow；Demo 只用于路由与渲染稳定性巡检，不替代正式库内容或真人验收。

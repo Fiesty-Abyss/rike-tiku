@@ -35,7 +35,7 @@
 - PR #32 已 ordinary merge，merge commit 为 `359fe61e7622b7f623afa212d37c24145273d47b`；PR #33 是唯一最终交付 PR，保持 Draft、未合并。
 - Flyway V1–V29，50 张业务表；V1–V25 已发布迁移未修改。
 - V20—V29 覆盖私有题、知识卡片、消息撤回、专题 AI/单元、变式新颖度、GLM/xAI、试卷发布/提交/画像和卡片练习。
-- `rike_tiku_demo` 保持 378 道 PUBLISHED 题基线与既有匿名截图资料；本轮正式 `rike_tiku` 另核验 6 个已发布专题单元、18 个单元题目和 65 张已发布高频考点卡片（其中 60 张为结构化来源卡片）。正式学生机器浏览器 4 条路线、19 项断言为 0 console/page/failed-request error、0 overflow。
-- 最终集中回归已完成：后端 `mvn clean test` 为 212 tests、3 skipped；前端 68 个测试文件 / 219 tests；type-check、build、`npm audit --omit=dev` 通过，0 vulnerabilities。Word/PPT 通用交付物位于 [deliverables](thesis/deliverables/)，均标注待套学校模板。
+- `rike_tiku_demo` 保持 378 道 PUBLISHED 题基线与既有匿名截图资料；本轮正式 `rike_tiku` 另核验 15 个已发布专题单元、45 条单元题目关系和 65 张已发布高频考点卡片，学科覆盖物理 6 / 化学 5 / 生物 4。Demo 学生浏览器 4 条路线为 0 console/page/failed-request error、0 overflow；正式浏览器当前受 `BLOCKED_LOCAL_CREDENTIAL` 限制。
+- 最终集中回归已完成：后端 `mvn clean test` 为 215 tests、3 skipped；前端 68 个测试文件 / 220 tests；type-check、build、`npm audit --omit=dev` 通过，0 vulnerabilities。Word/PPT 通用交付物位于 [deliverables](thesis/deliverables/)，本轮未重新生成，仍标注待套学校模板。
 - 学生候选变式在生成后保持本人可见的 DRAFT；只有显式提交后才进入 PENDING 教师审核。Provider 未配置时不得把候选预览写成真实 AI PASS。
 - 论文事实稿、核验表和答辩提纲位于 [thesis](thesis/)；人工阶段仍为 `FINAL_MANUAL_ACCEPTANCE_PENDING`。
