@@ -4,6 +4,8 @@ import { ElMessage } from 'element-plus'
 import type { ApiError } from '../../api/http'
 import AiScientificContent from './AiScientificContent.vue'
 import StudentAiVariantPanel from './StudentAiVariantPanel.vue'
+import AnswerDisplay from '../question/AnswerDisplay.vue'
+import type { QuestionType } from '../../api/student/practice'
 import {
   createAiConversation, createKnowledgeCardAiConversation, createTopicAiConversation, fetchAiAnalysis, fetchAiCapabilities, fetchAiModelOptions, generateAiAnalysis, sendAiMessage,
   type AiAnalysis, type AiConversation, type AiModelOption,
@@ -32,6 +34,8 @@ const webSearch = ref(false)
 const webSearchAvailable = ref(false)
 
 const safeError = (error:unknown, fallback:string) => (error as ApiError).message || fallback
+const questionTypeLabel = (value:string) => ({ SINGLE_CHOICE:'单选题', MULTIPLE_CHOICE:'多选题', FILL_BLANK:'填空题', SUBJECTIVE:'主观题' } as Record<string,string>)[value] || value
+const asQuestionType = (value:string) => value as QuestionType
 const errorTypeLabel = (value?:string) => ({
   CONCEPT_ERROR:'概念理解', CALCULATION_ERROR:'计算过程', READING_ERROR:'审题阅读', REASONING_ERROR:'推理过程',
   MEMORY_ERROR:'记忆遗漏', CARELESS_ERROR:'粗心疏漏', ANSWER_FORMAT_ERROR:'作答格式', UNKNOWN:'暂未归类',
@@ -69,7 +73,6 @@ async function openTutor() {
   catch (error) { ElMessage.warning(safeError(error, '当前题目答疑暂不可用。')) }
   finally { chatLoading.value = false }
 }
-function answerText(value:unknown){if(value==null)return '未提供';if(typeof value==='string')return value;try{return JSON.stringify(value)}catch{return '结构化答案'}}
 const optionText=computed(()=>props.questionContext?.options?.map(item=>`${item.label}. ${item.content}`).join('　')||'无选项')
 
 async function startConversation() {
@@ -130,7 +133,7 @@ onMounted(() => void loadAnalysis())
       <div class="student-ai-chat" v-loading="chatLoading">
         <section v-if="questionContext" class="student-ai-question-context" :class="{compact:compactQuestion}">
           <div class="context-title"><strong>当前题目摘要</strong><el-button link @click="compactQuestion=!compactQuestion">{{ compactQuestion?'恢复':'缩小' }}</el-button></div>
-          <el-collapse-transition><div v-show="!compactQuestion" class="context-body"><p><b>题型：</b>{{ questionContext.questionType }}</p><p><b>题干：</b>{{ questionContext.stem }}</p><p><b>选项：</b>{{ optionText }}</p><p><b>学生答案：</b>{{ answerText(questionContext.studentAnswer) }}</p><p v-if="questionContext.submitted"><b>正确答案：</b>{{ answerText(questionContext.correctAnswer) }}</p></div></el-collapse-transition>
+          <el-collapse-transition><div v-show="!compactQuestion" class="context-body"><p><b>题型：</b>{{ questionTypeLabel(questionContext.questionType) }}</p><p><b>题干：</b>{{ questionContext.stem }}</p><p v-if="questionContext.options?.length"><b>选项：</b>{{ optionText }}</p><div class="context-answer"><b>学生答案：</b><AnswerDisplay :question-type="asQuestionType(questionContext.questionType)" :value="questionContext.studentAnswer" :options="questionContext.options" /></div><div v-if="questionContext.submitted" class="context-answer"><b>正确答案：</b><AnswerDisplay :question-type="asQuestionType(questionContext.questionType)" :value="questionContext.correctAnswer" :options="questionContext.options" /></div></div></el-collapse-transition>
           <button type="button" class="mobile-context-toggle" :aria-expanded="mobileQuestionExpanded" @click="mobileQuestionExpanded=!mobileQuestionExpanded">查看当前题目与选项</button><div v-show="mobileQuestionExpanded" class="mobile-context-body"><p>{{ questionContext.stem }}</p><p>{{ optionText }}</p></div>
         </section>
         <p class="student-ai-chat-note"><strong>已绑定{{ cardMode ? '当前知识卡片' : topicMode ? '当前专题' : '当前题目' }}</strong><br>仅围绕当前学习上下文，最多 10 轮；已审核事实、STANDARD 答案与解析不会被 AI 修改。</p>
@@ -138,7 +141,7 @@ onMounted(() => void loadAnalysis())
           <label>回答模型<select v-model="selectedModelId"><option v-for="item in modelOptions" :key="item.id" :value="item.id" :disabled="!item.available">{{ item.displayName }}{{ item.available ? '' : '（管理员尚未启用）' }}</option></select></label>
           <fieldset><legend>回答方式</legend><label><input v-model="thinkingMode" type="radio" value="STANDARD">标准回答</label><label><input v-model="thinkingMode" type="radio" value="DEEP">深度思考</label></fieldset>
           <label><input v-model="webSearch" type="checkbox" :disabled="!webSearchAvailable"> 联网搜索</label><small>{{ webSearchAvailable ? '开启后本轮可能更慢，并产生一次额外搜索调用。' : '管理员尚未配置联网搜索。' }}</small>
-          <el-button type="primary" :disabled="!selectedModelId" @click="startConversation">开始答疑</el-button>
+          <p v-if="chatLoading" class="student-ai-loading-hint">正在生成，真实模型可能需要几十秒</p><el-button type="primary" :loading="chatLoading" :disabled="chatLoading || !selectedModelId" @click="startConversation">开始答疑</el-button>
         </div>
         <div ref="messageList" class="student-ai-messages" aria-live="polite">
           <div v-if="!conversation?.messages.length" class="student-ai-empty">可以问：为什么这一步要这样推导？</div>
@@ -164,5 +167,6 @@ onMounted(() => void loadAnalysis())
 .student-ai-controls{display:grid;gap:10px;margin-bottom:12px;padding:12px;border:1px solid var(--el-border-color-lighter);border-radius:12px}.student-ai-controls label{display:flex;gap:8px;align-items:center}.student-ai-controls select{min-width:190px;padding:6px}.student-ai-controls fieldset{display:flex;gap:16px;border:0;padding:0;margin:0}.student-ai-controls small,.student-ai-sources small{color:var(--el-text-color-secondary)}.student-ai-sources{margin:7px 0;padding:9px 12px 9px 28px;border-left:3px solid var(--el-color-primary-light-5);background:var(--el-fill-color-lighter);text-align:left}.student-ai-sources li+li{margin-top:5px}.student-ai-sources a{display:block;color:var(--el-color-primary);overflow-wrap:anywhere}
 @media(max-width:640px){.student-ai-heading{flex-direction:column}.student-ai-columns{grid-template-columns:1fr}.student-ai-heading .el-button{width:100%}}
 .student-ai-question-context{position:sticky;top:0;z-index:2;margin:0 0 12px;padding:12px;border:1px solid var(--el-border-color);border-radius:14px;background:var(--el-bg-color);box-shadow:0 6px 20px rgba(22,61,83,.08)}.context-title{display:flex;justify-content:space-between;align-items:center}.context-body{max-height:210px;overflow:auto}.context-body p,.mobile-context-body p{margin:7px 0;line-height:1.55}.mobile-context-toggle,.mobile-context-body{display:none}
+.context-answer{margin:8px 0;overflow-wrap:anywhere}.context-answer :deep(.answer-display){margin-top:4px;max-width:100%;overflow-wrap:anywhere}
 @media(max-width:640px){.context-body{display:none!important}.mobile-context-toggle{display:block;width:100%;padding:9px;border:0;border-radius:10px;background:var(--el-fill-color-light);color:var(--el-color-primary);font-weight:650}.mobile-context-body{display:block;max-height:180px;overflow:auto}}
 </style>

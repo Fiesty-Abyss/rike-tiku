@@ -27,6 +27,12 @@ describe('ScientificText', () => {
     expect(wrapper.html()).toContain('msupsub')
   })
 
+  it('renders mhchem formulas without changing ordinary physics formulas', () => {
+    const wrapper = mount(ScientificText, { props: { content: String.raw`\(\ce{H2SO4}\) \(\ce{Fe^{3+}}\) \(\ce{2H2 + O2 -> 2H2O}\) \(v=\frac{s}{t}\)` } })
+    expect(wrapper.findAll('.katex')).toHaveLength(4)
+    expect(wrapper.findAll('.katex-mathml')).toHaveLength(4)
+  })
+
   it('falls back to visible source for an invalid expression', () => {
     const wrapper = mount(ScientificText, { props: { content: String.raw`\(\frac{1}\)` } })
     expect(wrapper.find('[data-render-status="fallback"]').text()).toBe(String.raw`\frac{1}`)

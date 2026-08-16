@@ -120,7 +120,7 @@ class StudentPracticeIntegrationTest extends AdminQuestionIntegrationTestSupport
 
     @Test
     @Transactional
-    void accumulatesWrongQuestionAndMarksMasteredAfterTwoCorrectAttempts() {
+    void accumulatesWrongQuestionAndKeepsReviewingAfterTwoCorrectAttempts() {
         long userId = student("wrong");
         long questionId = question("SINGLE_CHOICE", "PUBLISHED", 1, "A");
         long point = uniqueKnowledgePoint();
@@ -132,7 +132,7 @@ class StudentPracticeIntegrationTest extends AdminQuestionIntegrationTestSupport
 
         assertThat(jdbc.queryForObject("SELECT cuo_wu_ci_shu FROM cuo_ti_ji_lu WHERE xue_sheng_id=(SELECT id FROM xue_sheng_dang_an WHERE yong_hu_id=?) AND ti_mu_id=?", Integer.class, userId, questionId)).isEqualTo(1);
         assertThat(jdbc.queryForObject("SELECT lian_xu_zheng_que_ci_shu FROM cuo_ti_ji_lu WHERE ti_mu_id=?", Integer.class, questionId)).isEqualTo(2);
-        assertThat(jdbc.queryForObject("SELECT zhuang_tai FROM cuo_ti_ji_lu WHERE ti_mu_id=?", String.class, questionId)).isEqualTo("MASTERED");
+        assertThat(jdbc.queryForObject("SELECT zhuang_tai FROM cuo_ti_ji_lu WHERE ti_mu_id=?", String.class, questionId)).isEqualTo("REVIEWING");
     }
 
     @Test

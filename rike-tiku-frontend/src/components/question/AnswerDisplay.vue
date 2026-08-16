@@ -90,3 +90,7 @@ function text(value: unknown) {
     <span v-if="questionType === 'FILL_BLANK' && !blankAnswers.length" class="answer-display__empty">未作答</span>
   </div>
 </template>
+
+<style scoped>
+.answer-display{max-width:100%;overflow-wrap:anywhere}.answer-display__choices,.answer-display__blanks{margin:4px 0;padding-left:24px}.answer-display__content{overflow-wrap:anywhere}.answer-display__fallback{display:inline-block;min-width:1em}.answer-display__subjective{color:var(--el-text-color-secondary)}
+</style>

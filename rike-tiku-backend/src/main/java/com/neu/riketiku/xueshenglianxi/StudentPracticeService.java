@@ -626,7 +626,7 @@ public class StudentPracticeService {
         }
         jdbc.update("""
                 UPDATE cuo_ti_ji_lu
-                SET zhuang_tai=CASE WHEN lian_xu_zheng_que_ci_shu+1>=2 THEN 'MASTERED' ELSE 'REVIEWING' END,
+                SET zhuang_tai=CASE WHEN zhuang_tai='MASTERED' THEN 'MASTERED' ELSE 'REVIEWING' END,
                     lian_xu_zheng_que_ci_shu=lian_xu_zheng_que_ci_shu+1,
                     zui_jin_da_ti_id=?
                 WHERE xue_sheng_id=? AND ti_mu_id=?
