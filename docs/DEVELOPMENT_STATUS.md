@@ -4,11 +4,11 @@
 
 ## 当前状态
 
-> PR #33 学生端最终集中修复（2026-08-16）：当前唯一交付分支为 `feat/final-product-completion`，最新代码/测试批次提交 `469fe04`、`6ee3d15` 已普通提交，PR #33 仍为 Draft / OPEN / 未合并。Flyway 为 V1–V29、50 张业务表；本轮补齐题干前缀规范化、AI 专用超时、答案安全渲染、错题再做确认、专题单元与学生候选私有边界、高频考点结构化内容。正式 `rike_tiku` 当前为 V29/50，6 个已发布专题单元、18 个单元题目、65 张已发布卡片，其中 60 张为本轮结构化来源卡片；人工验收仍为 `FINAL_USER_REVIEW_PENDING`。
+> PR #33 学生端第三轮最终集中修复（2026-08-16）：当前唯一交付分支为 `feat/final-product-completion`，本轮收口提交 `54fc43f` 已普通提交，PR #33 仍为 Draft / OPEN / 未合并。Flyway 为 V1–V29、50 张业务表；本轮补齐显式科学公式/化学式渲染、新颖度分层与专题内容扩充，并收掉错题筛选的运行时 warning。正式 `rike_tiku` 当前为 V29/50，15 个已发布专题单元、45 条单元题目关系、65 张已发布卡片；人工验收仍为 `FINAL_USER_REVIEW_PENDING`。
 
-最终门禁：后端全量 212 tests（0 failures、0 errors、3 skipped），`mvn clean test` 和 package 通过；前端全量 68 files / 219 tests、type-check、build、`npm audit --omit=dev` 通过，audit 为 0 vulnerabilities。本轮点名的 7 组后端专项共 39 tests、学生前端专项 9 files / 30 tests 均通过；正式库独立浏览器 19 assertions / 4 routes，0 console/page/failed-request error、0 overflow。09/10 变式截图明确是确定性 UI 夹具，不是 Provider PASS。真实 Provider 因没有可安全使用的轮换后凭据而分别记为 `BLOCKED_EXTERNAL_PROVIDER`。
+最终门禁：后端全量 215 tests（0 failures、0 errors、3 skipped），`mvn clean test` 和 package 通过；前端全量 68 files / 220 tests、type-check、build、`npm audit --omit=dev` 通过，audit 为 0 vulnerabilities。本轮新颖度单测 3/3、候选生成集成 7/7、学生变式集成 4/4、学生前端专项 5 files / 12 tests 均通过；科学内容审计 600 strings / 105 database rows / 0 errors。Demo 浏览器 4 routes 无 console/page/failed-request error、无 overflow；正式浏览器因本机无轮换正式学生凭据为 `BLOCKED_LOCAL_CREDENTIAL`。09/10 变式截图明确是确定性 UI 夹具，不是 Provider PASS。真实 Provider 因没有可安全使用的轮换后凭据而分别记为 `BLOCKED_EXTERNAL_PROVIDER`。
 
-正式 `rike_tiku` 的迁移前真实版本为 V24/41 表。仓库外备份为 1,326,218 bytes，SHA-256 `039C9E885007EB79ED317E1A1E5C5A6DCEB7EC2746C0777957E41E60FE65E622`。首次迁移揭示 V25 与历史 `NUMERIC_CONDITION` 的约束兼容缺陷；从已校验备份恢复到 V24 后，由版本门禁 Flyway callback 将该旧枚举语义映射为 `CONDITION_RECOMBINATION`，随后 V25–V29 正常迁移。当前为 V29/50 表、0 failed migration；9 用户、389 题、378 PUBLISHED 保持，另有 65 张已发布高频考点卡片和 6 个已发布专题单元；本轮通过受控内容脚本写入学生展示内容，没有 reset/seed/迁移。
+正式 `rike_tiku` 的迁移前真实版本为 V24/41 表。仓库外备份为 1,326,218 bytes，SHA-256 `039C9E885007EB79ED317E1A1E5C5A6DCEB7EC2746C0777957E41E60FE65E622`。首次迁移揭示 V25 与历史 `NUMERIC_CONDITION` 的约束兼容缺陷；从已校验备份恢复到 V24 后，由版本门禁 Flyway callback 将该旧枚举语义映射为 `CONDITION_RECOMBINATION`，随后 V25–V29 正常迁移。当前为 V29/50 表、0 failed migration；9 用户、389 题、378 PUBLISHED 保持，另有 65 张已发布高频考点卡片和 15 个已发布专题单元、45 条单元题目关系；本轮通过受控内容脚本写入学生展示内容，没有 reset/seed/迁移。
 
 历史记录：PR #31 已由用户明确决定 ordinary merge，merge commit 为 `c79b7a6f93e32509989282995419bbaf64666182`；此前 PR #32 `chore/final-local-production-thesis-package` 曾记录正式库由 V11 正规迁移至 V14。本段不代表当前版本，当前版本以本节首段的 PR #33、V29/50 和最终门禁记录为准。
 
@@ -37,10 +37,10 @@
 ## PR #33 本轮学生端收口
 
 - 代码与测试提交 `469fe04` 已推送到 `feat/final-product-completion`；未创建 PR #34，未 force push、rebase、squash 或合并 PR #33。
-- 正式库使用 `scripts/ensure-formal-student-content.ps1` 幂等写入结构化高频考点，并编排 6 个三题专题单元；第二次执行 `CARDS_INSERTED=0`，证明没有重复插入。
-- 正式学生 machine-controlled 浏览器使用 18080/18081 和独立临时 Chromium profile，19 assertions 全部通过；这不是用户真人复验。Provider 因 Key ABSENT 未执行真实业务窗口。
-- 最终集中回归已完成：后端 212 tests / 3 skipped，前端 68 files / 219 tests，type-check、build、npm audit 通过；仅保留构建的大 chunk warning 和无 Provider Key 的条件跳过。
-- 正式只读校验为 Flyway V29、50 张业务表、6 个已发布专题单元、18 条单元题目关系、65 张已发布卡片；数据库中没有残留 `rike_tiku_` 临时测试 schema。
+- 正式库使用 v2 科学内容源和 guard + 事务幂等脚本写入结构化高频考点，并扩充为 15 个三题专题单元；第二次执行 `CARDS_INSERTED=0`、`UNITS_CREATED=0`、`QUESTIONS_CREATED=0`，证明没有重复插入。
+- 正式浏览器本轮在 8080/8081 接口登录时被本机正式学生账号返回 `INVALID_CREDENTIALS`，状态记为 `BLOCKED_LOCAL_CREDENTIAL`；Demo 18080/18081 独立 Chromium profile 4 routes 全部通过，证据只代表 Demo 机器巡检。
+- 最终集中回归已完成：后端 215 tests / 3 skipped，前端 68 files / 220 tests，type-check、build、npm audit 通过；仅保留构建的大 chunk warning 和无 Provider Key 的条件跳过。
+- 正式只读校验为 Flyway V29、50 张业务表、15 个已发布专题单元、45 条单元题目关系、65 张已发布卡片；数据库中没有残留 `rike_tiku_` 临时测试 schema。
 
 ## PR #32 本地正式化与资料包
 
@@ -126,6 +126,6 @@ AI 主链已经覆盖统一 Provider、Fake/Stub、DeepSeek、脱敏调用日志
 
 ## 当前下一步
 
-核心业务停止扩张。当前已完成 PR #33 学生端集中修复、正式内容补齐、机器证据和论文事实更新；最终集中全量回归、Word/PPT 视觉检查和 GPT 独立审查仍待完成。用户本人最终人工验收仍为 `FINAL_MANUAL_ACCEPTANCE_PENDING`，不得写成 PASS。
+核心业务停止扩张。当前已完成 PR #33 学生端第三轮修复、正式内容补齐、机器证据、集中全量回归和论文事实更新；Word/PPT 本轮未重新生成，学校模板视觉检查与 GPT 独立审查仍待完成。用户本人最终人工验收仍为 `FINAL_MANUAL_ACCEPTANCE_PENDING`，不得写成 PASS。
 
 用户仍需按 [最终人工验收清单](FINAL_MANUAL_ACCEPTANCE_CHECKLIST.md) 完成一次真实 CAPTCHA 验收。用户确认前保持 `FINAL_MANUAL_ACCEPTANCE_PENDING`；PR #33 不得自行合并，不能把机器浏览器或历史 Provider 结果伪造为真人/本轮 PASS。
