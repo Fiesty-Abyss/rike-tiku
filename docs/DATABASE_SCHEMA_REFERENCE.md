@@ -10,6 +10,8 @@
 
 - 本参考完整列出 50 张业务表；每张表给出 MySQL 类型、NULL、默认值、主键/外键/UNIQUE/CHECK、精确索引与生命周期。
 
+- 本轮没有新增 V30；学生高频考点内容与专题单元是 V21/V26 已有表中的受控内容写入，不改变 V29 schema snapshot。正式库核验结果为 6 个 `PUBLISHED` 专题单元、18 条单元题目关系、65 张 `PUBLISHED` 卡片，其中 60 张来自结构化内容源。
+
 ## Authentication
 
 ### `jiao_se`
