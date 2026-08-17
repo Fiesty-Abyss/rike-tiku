@@ -1,5 +1,7 @@
 # Product — RIKE 理科学习辅助系统
 
+> 当前可引用产品事实、已验证边界与已知限制见 [docs/FINAL_PROJECT_FACTS.md](docs/FINAL_PROJECT_FACTS.md)；逐图论文/PPT 资料见 [docs/FINAL_SCREENSHOT_EVIDENCE_CATALOG.md](docs/FINAL_SCREENSHOT_EVIDENCE_CATALOG.md)。PR #34 在用户完成打印复验前保持 Draft。
+
 ## Product truth
 
 - 面向高中物理、化学、生物的在线题库实训与学习辅助系统。

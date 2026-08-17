@@ -1,5 +1,7 @@
 # 功能、代码、数据库与技术映射
 
+> 当前产品事实见 [FINAL_PROJECT_FACTS.md](FINAL_PROJECT_FACTS.md)，逐图证据见 [FINAL_SCREENSHOT_EVIDENCE_CATALOG.md](FINAL_SCREENSHOT_EVIDENCE_CATALOG.md)。本映射同步 V30：统一 `ti_mu` 专题大题、手动组卷主观题、发布附件快照、`SUBJECTIVE_PENDING`、中文题型与原生打印。
+
 > PR #33 的最终路由、截图、前端 API、Controller、Service、表和 Flyway 逐项索引见 [FEATURE_SCREENSHOT_CODE_INDEX](FEATURE_SCREENSHOT_CODE_INDEX.md)。当前数据库基线为 Flyway V30、50 张业务表；V30 只扩展发布附件快照和主观题待处理状态，不新增表。
 
 路径均核对当前代码。前端路由集中于 `src/router/index.ts`；后端 API 统一以 `/api/v1` 为前缀。
