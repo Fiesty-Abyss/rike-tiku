@@ -237,7 +237,8 @@ public class QuestionAdminService {
         }, id);
         List<QuestionDtos.Review> reviews = jdbc.query("SELECT id,shen_he_dong_zuo,yuan_zhuang_tai,mu_biao_zhuang_tai,shen_he_ren_id,shen_he_yi_jian,chuang_jian_shi_jian FROM ti_mu_shen_he_ji_lu WHERE ti_mu_id=? ORDER BY id", (rs, row) -> new QuestionDtos.Review(rs.getLong(1), rs.getString(2), rs.getString(3), rs.getString(4), (Long) rs.getObject(5), rs.getString(6), rs.getObject(7, LocalDateTime.class)), id);
         String stem = jdbc.queryForObject("SELECT ti_gan FROM ti_mu WHERE id=?", String.class, id);
-        return new QuestionDtos.Detail(item, stem, answer, options, analysis, points, sources, attachments, reviews, allowedActions(item.status()));
+        String provider = jdbc.query("SELECT COALESCE(xs.xing_ming,j.xing_ming,u.yong_hu_ming) FROM ti_mu q JOIN yong_hu u ON u.id=q.chuang_jian_ren_id LEFT JOIN xue_sheng_dang_an xs ON xs.yong_hu_id=u.id AND xs.yi_shan_chu=0 LEFT JOIN jiao_shi_dang_an j ON j.yong_hu_id=u.id AND j.yi_shan_chu=0 WHERE q.id=?", (rs,row) -> rs.getString(1), id).stream().findFirst().orElse("历史数据，未记录具体提供者");
+        return new QuestionDtos.Detail(item, stem, answer, options, analysis, points, provider, sources, attachments, reviews, allowedActions(item.status()));
     }
     private List<String> allowedActions(String status) {
         return switch (status) { case "DRAFT" -> List.of("SUBMIT"); case "PENDING" -> List.of("APPROVE", "RETURN"); case "PUBLISHED" -> List.of("DISABLE"); case "DISABLED" -> List.of("REPUBLISH"); default -> List.of(); };
