@@ -234,10 +234,11 @@ onBeforeUnmount(() => {
             <p>练习保留条件、单位、推导和知识点，让物理过程可以被测量、回看和再次验证。</p>
             <div class="physics-material aero-glass">
               <span class="physics-material-solid" aria-hidden="true"></span>
-              <div class="physics-readout physics-readout--wave"><b>WAVE</b><span>干涉与传播</span></div>
-              <div class="physics-readout physics-readout--field"><b>FIELD</b><span>方向与作用</span></div>
-              <div class="physics-readout physics-readout--light"><b>OPTICS</b><span>折射与测量</span></div>
+              <div class="physics-readout physics-readout--wave"><b>WAVE</b><span>波与光学</span></div>
+              <div class="physics-readout physics-readout--field"><b>FIELD</b><span>电磁与场</span></div>
+              <div class="physics-readout physics-readout--light"><b>MOTION</b><span>力与运动</span></div>
             </div>
+            <ul class="physics-topic-index" aria-label="物理学习主题"><li>力与运动</li><li>电磁与场</li><li>波与光学</li></ul>
           </div>
         </div>
       </section>
@@ -284,7 +285,7 @@ onBeforeUnmount(() => {
             <li class="portal-loop-step"><b>05</b><h3>再练习</h3><p>回到同一知识点验证掌握。</p></li>
           </ol>
         </div>
-        <dl class="portal-facts" aria-label="演示内容规模" data-aqua-reveal>
+        <dl class="portal-facts" aria-label="平台内容规模" data-aqua-reveal>
           <div><dt>学科</dt><dd>3</dd></div>
           <div><dt>自动练习题</dt><dd>360</dd></div>
           <div><dt>专题综合题</dt><dd>18</dd></div>
@@ -303,7 +304,7 @@ onBeforeUnmount(() => {
     </main>
 
     <footer class="portal-footer">
-      <strong>RIKE</strong><p>练习、判分、错题、标准解析与再练习。</p><span>本科毕业设计 · 非 AI 基础能力</span>
+      <strong>RIKE</strong><p>理科学习辅助系统</p>
     </footer>
   </div>
 </template>

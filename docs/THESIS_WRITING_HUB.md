@@ -11,16 +11,17 @@
 | 5. 系统架构 | [总体设计](../DESIGN.md)、[论文实现事实](THESIS_IMPLEMENTATION_FACTS.md) | 前后端分离模块化单体 |
 | 6. AI 架构 | [AI 交接](AI_HANDOFF.md)、[AI Provider 配置](AI_PROVIDER_CONFIGURATION.md) | DeepSeek 文本推理、GLM 视觉上下文、STANDARD 权威 |
 | 7. 技术栈 | [项目首页](../README.md) | Java 25、Spring Boot 4.1、Vue 3、MySQL 8.4 |
-| 8. 数据库设计 | [数据库结构参考](DATABASE_SCHEMA_REFERENCE.md)、[V14 快照](../database/schema_snapshot_v14.sql) | 35 表、约束与生命周期 |
+| 8. 数据库设计 | [数据库结构参考](DATABASE_SCHEMA_REFERENCE.md)、[V29 快照](../database/schema_snapshot_v29.sql) | 50 表、约束与生命周期 |
 | 9. API | [文档索引](README.md) 的 Admin / Teacher / Student / AI 区 | 接口、授权与降级行为 |
 | 10. Excel 导入 | [Excel 导入指南](EXCEL_IMPORT_GUIDE.md) | 学生与题目 preview/confirm |
 | 11. 功能代码映射 | [功能代码技术映射](FEATURE_CODE_TECH_MAP.md) | 路由、组件、Controller、Service、表、测试 |
 | 12. 测试 | [开发状态](DEVELOPMENT_STATUS.md)、[PR31 证据](evidence/pr31-final/README.md) | 全量自动化与机器浏览器事实 |
 | 13. 实验结果 | [AI 最终实验结果](AI_FINAL_EXPERIMENT_RESULTS.md) | 真实延迟、Token、Parser、Provider 限制 |
-| 14. 截图 | [论文插图索引](THESIS_FIGURE_INDEX.md) | 论文可用的匿名截图 |
+| 14. 截图 | [PR #33 最终截图](evidence/thesis-final/README.md) | 论文可用的 01—42 匿名截图与图表 |
 | 15. 开发过程 | [开发时间线](DEVELOPMENT_TIMELINE.md) | PR、迁移、问题与解决方案 |
 | 16. 中期检查 | [中期进展材料草稿](MIDTERM_PROGRESS_SUMMARY.md) | 学校中期检查材料底稿 |
-| 17. 参考文献 | [文献与官方资料](THESIS_REFERENCES.md)、[BibTeX](references/references.bib) | 相关工作、政策与技术引用 |
+| 17. 正式参考文献 | [22条正式白名单](THESIS_REFERENCES.md)、[正式 BibTeX](references/references.bib) | 开题报告和毕业论文正文唯一允许引用的文献 |
+| 17a. 扩展研究资料 | [research-only 警示与索引](references/research-only/README.md)、[研究资料 BibTeX](references/research-only/research_materials.bib) | 仅供工程调研，不得进入老师审查版本 |
 | 18. 创新点 | [答辩事实与问答](DEFENSE_FACTS_AND_QA.md) | 受控 AI、视觉桥接、人工审核与降级 |
 | 19. 局限 | [AI 实验结果](AI_FINAL_EXPERIMENT_RESULTS.md)、[人体工学复查](HUMAN_FACTORS_REVIEW.md) | 外部限流、单机部署、人工验收待完成 |
 | 20. 答辩问答 | [答辩事实与问答](DEFENSE_FACTS_AND_QA.md) | 真实实现口径 |
@@ -31,8 +32,10 @@
 
 ## 当前事实
 
-- PR #31 已 ordinary merge，merge commit 为 `c79b7a6f93e32509989282995419bbaf64666182`。
-- Flyway V1–V14，35 张业务表，无 V15。
-- 机器阶段为 `AUTO_FINAL_VERIFICATION_PASS`；人工阶段仍为 `FINAL_MANUAL_ACCEPTANCE_PENDING`。
-- 本地正式 `rike_tiku` 已备份并从 V11 正规迁移至 V14；真实人员数据只保存在用户本机，不进入仓库。
-- 核心功能不再扩张，后续仅进行本地维护、论文写作与用户人工验收。
+- PR #32 已 ordinary merge，merge commit 为 `359fe61e7622b7f623afa212d37c24145273d47b`；PR #33 是唯一最终交付 PR，保持 Draft、未合并。
+- Flyway V1–V29，50 张业务表；V1–V25 已发布迁移未修改。
+- V20—V29 覆盖私有题、知识卡片、消息撤回、专题 AI/单元、变式新颖度、GLM/xAI、试卷发布/提交/画像和卡片练习。
+- `rike_tiku_demo` 保持 378 道 PUBLISHED 题基线与既有匿名截图资料；本轮正式 `rike_tiku` 另核验 15 个已发布专题单元、45 条单元题目关系和 65 张已发布高频考点卡片，学科覆盖物理 6 / 化学 5 / 生物 4。Demo 学生浏览器 4 条路线为 0 console/page/failed-request error、0 overflow；正式浏览器当前受 `BLOCKED_LOCAL_CREDENTIAL` 限制。
+- 最终集中回归已完成：后端 `mvn clean test` 为 215 tests、3 skipped；前端 68 个测试文件 / 220 tests；type-check、build、`npm audit --omit=dev` 通过，0 vulnerabilities。Word/PPT 通用交付物位于 [deliverables](thesis/deliverables/)，本轮未重新生成，仍标注待套学校模板。
+- 学生候选变式在生成后保持本人可见的 DRAFT；只有显式提交后才进入 PENDING 教师审核。Provider 未配置时不得把候选预览写成真实 AI PASS。
+- 论文事实稿、核验表和答辩提纲位于 [thesis](thesis/)；人工阶段仍为 `FINAL_MANUAL_ACCEPTANCE_PENDING`。

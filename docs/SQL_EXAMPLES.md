@@ -1,5 +1,27 @@
 # 常用只读 SQL 示例
 
+> 当前结构为 Flyway V29、50 张业务表。以下示例只用于本地核验，不包含账号、姓名、Key 或密码。
+
+```sql
+SELECT version, description, success
+FROM flyway_schema_history
+ORDER BY installed_rank DESC
+LIMIT 5;
+
+SELECT COUNT(*) AS business_table_count
+FROM information_schema.tables
+WHERE table_schema = DATABASE()
+  AND table_name <> 'flyway_schema_history';
+
+SELECT zhuang_tai, COUNT(*)
+FROM mi_ma_chong_zhi_shen_qing
+GROUP BY zhuang_tai;
+
+SELECT shi_juan_id, COUNT(*) AS question_count, SUM(fen_zhi) AS total_score
+FROM shi_juan_ti_mu
+GROUP BY shi_juan_id;
+```
+
 以下查询均为脱敏只读示例。不要用 SQL 绕过应用审核、权限或状态机；AI 配置查询刻意不选择 `api_mi_yao`。
 
 ```sql
@@ -88,4 +110,35 @@ SELECT q.id, q.zhuang_tai, s.lai_yuan_lei_xing, q.fu_ti_mu_id,
 FROM ti_mu q
 LEFT JOIN ti_mu_lai_yuan s ON s.ti_mu_id = q.id AND s.nei_rong_lei_xing = 'QUESTION'
 WHERE q.id = ?;
+
+-- 学生结构化变式实例与对应 PENDING 候选题；不把机器生成等同于已发布
+SELECT v.id AS variant_instance_id, v.zhuang_tai AS variant_status,
+       v.ti_mu_id, q.zhuang_tai AS candidate_status,
+       r.shen_he_dong_zuo, r.mu_biao_zhuang_tai, r.chuang_jian_shi_jian
+FROM ai_xue_sheng_bian_shi_shi_li v
+LEFT JOIN ti_mu q ON q.id = v.ti_mu_id
+LEFT JOIN ti_mu_shen_he_ji_lu r ON r.ti_mu_id = q.id
+WHERE v.xue_sheng_id = ?
+ORDER BY v.id DESC, r.id;
+
+-- 密码恢复 PENDING 队列；不读取或显示密码摘要
+SELECT id, yong_hu_id, zhuang_tai, shen_qing_shi_jian,
+       chu_li_ren_id, chu_li_shi_jian
+FROM mi_ma_chong_zhi_shen_qing
+WHERE zhuang_tai = 'PENDING'
+ORDER BY shen_qing_shi_jian;
+
+-- 教师任课范围内的试卷及冻结题目顺序/分值
+SELECT p.id AS paper_id, p.shi_juan_ming_cheng, p.zu_juan_mo_shi,
+       p.zhuang_tai, i.ti_mu_shun_xu, i.fen_zhi, q.id AS question_id,
+       q.ti_mu_lei_xing, q.zhuang_tai AS question_status
+FROM shi_juan p
+JOIN jiao_shi_dang_an t ON t.id = p.chuang_jian_jiao_shi_id
+JOIN ren_ke_guan_xi a ON a.jiao_shi_id = t.id
+                        AND a.ke_mu_id = p.ke_mu_id
+                        AND a.zhuang_tai = 'ACTIVE'
+JOIN shi_juan_ti_mu i ON i.shi_juan_id = p.id
+JOIN ti_mu q ON q.id = i.ti_mu_id
+WHERE t.yong_hu_id = ? AND p.id = ?
+ORDER BY i.ti_mu_shun_xu;
 ```

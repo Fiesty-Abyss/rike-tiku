@@ -1,0 +1,4096 @@
+{
+  "startedAt": "2026-08-14T04:16:07.651Z",
+  "finishedAt": "2026-08-14T04:28:47.640Z",
+  "durationMinutes": 10,
+  "samples": [
+    {
+      "minute": 0,
+      "at": "2026-08-14T04:16:07.651Z",
+      "processes": [
+        {
+          "pid": 4180,
+          "name": "chrome",
+          "workingSetMB": 39.2,
+          "privateMB": 46.3,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 5348,
+          "name": "chrome",
+          "workingSetMB": 8.1,
+          "privateMB": 2.3,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 6188,
+          "name": "chrome",
+          "workingSetMB": 41.4,
+          "privateMB": 45.2,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 6924,
+          "name": "chrome",
+          "workingSetMB": 183.9,
+          "privateMB": 124.3,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 12768,
+          "name": "chrome",
+          "workingSetMB": 108.7,
+          "privateMB": 73.8,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 12968,
+          "name": "chrome",
+          "workingSetMB": 131.2,
+          "privateMB": 72.7,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 17264,
+          "name": "chrome",
+          "workingSetMB": 80.4,
+          "privateMB": 68.5,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 17912,
+          "name": "chrome",
+          "workingSetMB": 428.6,
+          "privateMB": 350.3,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 21192,
+          "name": "chrome",
+          "workingSetMB": 69.5,
+          "privateMB": 35.3,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 21780,
+          "name": "chrome",
+          "workingSetMB": 22.7,
+          "privateMB": 14.5,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 21972,
+          "name": "chrome",
+          "workingSetMB": 406.5,
+          "privateMB": 585.7,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 22904,
+          "name": "chrome",
+          "workingSetMB": 8.9,
+          "privateMB": 6.8,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 22956,
+          "name": "chrome",
+          "workingSetMB": 46.8,
+          "privateMB": 24.6,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 23344,
+          "name": "chrome",
+          "workingSetMB": 25.3,
+          "privateMB": 15.1,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 23452,
+          "name": "chrome",
+          "workingSetMB": 51.9,
+          "privateMB": 28,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 23568,
+          "name": "chrome",
+          "workingSetMB": 218,
+          "privateMB": 126,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 23760,
+          "name": "chrome",
+          "workingSetMB": 22.1,
+          "privateMB": 13.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 24004,
+          "name": "chrome",
+          "workingSetMB": 89.4,
+          "privateMB": 45.5,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 24488,
+          "name": "chrome",
+          "workingSetMB": 36.2,
+          "privateMB": 13,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 25436,
+          "name": "chrome",
+          "workingSetMB": 16.7,
+          "privateMB": 8.8,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 25520,
+          "name": "chrome",
+          "workingSetMB": 29.1,
+          "privateMB": 19.9,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 25572,
+          "name": "chrome",
+          "workingSetMB": 127.9,
+          "privateMB": 72.7,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 25772,
+          "name": "chrome",
+          "workingSetMB": 89.8,
+          "privateMB": 46.2,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 27412,
+          "name": "chrome",
+          "workingSetMB": 110.9,
+          "privateMB": 74.8,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 28032,
+          "name": "chrome",
+          "workingSetMB": 123.6,
+          "privateMB": 69.1,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 28524,
+          "name": "chrome",
+          "workingSetMB": 110.5,
+          "privateMB": 74.5,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 29448,
+          "name": "chrome",
+          "workingSetMB": 88.7,
+          "privateMB": 45.7,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 30288,
+          "name": "chrome",
+          "workingSetMB": 21.5,
+          "privateMB": 14.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 30888,
+          "name": "chrome",
+          "workingSetMB": 183.2,
+          "privateMB": 109.6,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 32592,
+          "name": "chrome",
+          "workingSetMB": 358.4,
+          "privateMB": 278.2,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 32980,
+          "name": "chrome",
+          "workingSetMB": 90.6,
+          "privateMB": 41.2,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 33356,
+          "name": "chrome",
+          "workingSetMB": 9.6,
+          "privateMB": 2.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 35628,
+          "name": "chrome",
+          "workingSetMB": 40.3,
+          "privateMB": 17.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 36400,
+          "name": "chrome",
+          "workingSetMB": 32,
+          "privateMB": 15.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 37844,
+          "name": "chrome",
+          "workingSetMB": 20.7,
+          "privateMB": 9.5,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 41300,
+          "name": "chrome",
+          "workingSetMB": 682.2,
+          "privateMB": 710.5,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 42332,
+          "name": "chrome",
+          "workingSetMB": 104.1,
+          "privateMB": 51.8,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 42788,
+          "name": "chrome",
+          "workingSetMB": 139.6,
+          "privateMB": 63.8,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 43444,
+          "name": "chrome",
+          "workingSetMB": 96.5,
+          "privateMB": 48.9,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 47524,
+          "name": "chrome",
+          "workingSetMB": 33.6,
+          "privateMB": 18,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 48020,
+          "name": "chrome",
+          "workingSetMB": 40.6,
+          "privateMB": 20,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 34428,
+          "name": "java",
+          "workingSetMB": 318.9,
+          "privateMB": 680.9,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 37412,
+          "name": "java",
+          "workingSetMB": 278.7,
+          "privateMB": 351,
+          "rikeBackend": true,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 33988,
+          "name": "node",
+          "workingSetMB": 86.9,
+          "privateMB": 123.1,
+          "rikeBackend": false,
+          "rikeFrontend": true
+        },
+        {
+          "pid": 36704,
+          "name": "node",
+          "workingSetMB": 46.9,
+          "privateMB": 58.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 40480,
+          "name": "node",
+          "workingSetMB": 118.6,
+          "privateMB": 132.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        }
+      ]
+    },
+    {
+      "minute": 1,
+      "at": "2026-08-14T04:17:13.135Z",
+      "processes": [
+        {
+          "pid": 4180,
+          "name": "chrome",
+          "workingSetMB": 39.2,
+          "privateMB": 46.3,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 5348,
+          "name": "chrome",
+          "workingSetMB": 8.1,
+          "privateMB": 2.3,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 6188,
+          "name": "chrome",
+          "workingSetMB": 41.5,
+          "privateMB": 45.2,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 6924,
+          "name": "chrome",
+          "workingSetMB": 184,
+          "privateMB": 124.3,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 12768,
+          "name": "chrome",
+          "workingSetMB": 108.8,
+          "privateMB": 73.8,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 12968,
+          "name": "chrome",
+          "workingSetMB": 131.2,
+          "privateMB": 72.7,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 17264,
+          "name": "chrome",
+          "workingSetMB": 80.4,
+          "privateMB": 68.5,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 17912,
+          "name": "chrome",
+          "workingSetMB": 428.7,
+          "privateMB": 350.3,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 21192,
+          "name": "chrome",
+          "workingSetMB": 69.5,
+          "privateMB": 35.3,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 21780,
+          "name": "chrome",
+          "workingSetMB": 22.7,
+          "privateMB": 14.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 21972,
+          "name": "chrome",
+          "workingSetMB": 406.5,
+          "privateMB": 585.7,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 22904,
+          "name": "chrome",
+          "workingSetMB": 8.9,
+          "privateMB": 6.8,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 22956,
+          "name": "chrome",
+          "workingSetMB": 46.8,
+          "privateMB": 24.6,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 23344,
+          "name": "chrome",
+          "workingSetMB": 25.3,
+          "privateMB": 15.1,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 23452,
+          "name": "chrome",
+          "workingSetMB": 51.9,
+          "privateMB": 28.1,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 23568,
+          "name": "chrome",
+          "workingSetMB": 218.1,
+          "privateMB": 126.1,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 23760,
+          "name": "chrome",
+          "workingSetMB": 22.1,
+          "privateMB": 13.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 24004,
+          "name": "chrome",
+          "workingSetMB": 85.1,
+          "privateMB": 39.5,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 24488,
+          "name": "chrome",
+          "workingSetMB": 36.2,
+          "privateMB": 13.1,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 25436,
+          "name": "chrome",
+          "workingSetMB": 16.7,
+          "privateMB": 8.8,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 25520,
+          "name": "chrome",
+          "workingSetMB": 28.5,
+          "privateMB": 19,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 25572,
+          "name": "chrome",
+          "workingSetMB": 127.9,
+          "privateMB": 72.8,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 25772,
+          "name": "chrome",
+          "workingSetMB": 85,
+          "privateMB": 39.5,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 27412,
+          "name": "chrome",
+          "workingSetMB": 110.9,
+          "privateMB": 74.8,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 28032,
+          "name": "chrome",
+          "workingSetMB": 123.6,
+          "privateMB": 69.1,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 28524,
+          "name": "chrome",
+          "workingSetMB": 110.5,
+          "privateMB": 74.5,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 29448,
+          "name": "chrome",
+          "workingSetMB": 84.3,
+          "privateMB": 39.3,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 30288,
+          "name": "chrome",
+          "workingSetMB": 21.7,
+          "privateMB": 14.7,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 30888,
+          "name": "chrome",
+          "workingSetMB": 183.8,
+          "privateMB": 110.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 32592,
+          "name": "chrome",
+          "workingSetMB": 358.4,
+          "privateMB": 278.2,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 32744,
+          "name": "chrome",
+          "workingSetMB": 40.2,
+          "privateMB": 19.6,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 32980,
+          "name": "chrome",
+          "workingSetMB": 102,
+          "privateMB": 49.6,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 33356,
+          "name": "chrome",
+          "workingSetMB": 9.6,
+          "privateMB": 2.3,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 35628,
+          "name": "chrome",
+          "workingSetMB": 40.3,
+          "privateMB": 16.7,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 36400,
+          "name": "chrome",
+          "workingSetMB": 32,
+          "privateMB": 15.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 37844,
+          "name": "chrome",
+          "workingSetMB": 20.6,
+          "privateMB": 9.3,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 41300,
+          "name": "chrome",
+          "workingSetMB": 765.4,
+          "privateMB": 817.8,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 42332,
+          "name": "chrome",
+          "workingSetMB": 117.9,
+          "privateMB": 61.9,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 42788,
+          "name": "chrome",
+          "workingSetMB": 139.6,
+          "privateMB": 62,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 43444,
+          "name": "chrome",
+          "workingSetMB": 128.7,
+          "privateMB": 70.7,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 46332,
+          "name": "chrome",
+          "workingSetMB": 30.9,
+          "privateMB": 15.3,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 34428,
+          "name": "java",
+          "workingSetMB": 318.9,
+          "privateMB": 680.9,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 37412,
+          "name": "java",
+          "workingSetMB": 281.4,
+          "privateMB": 353.3,
+          "rikeBackend": true,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 33988,
+          "name": "node",
+          "workingSetMB": 85.3,
+          "privateMB": 121.6,
+          "rikeBackend": false,
+          "rikeFrontend": true
+        },
+        {
+          "pid": 36704,
+          "name": "node",
+          "workingSetMB": 46.9,
+          "privateMB": 58.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 40480,
+          "name": "node",
+          "workingSetMB": 90.1,
+          "privateMB": 100.8,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        }
+      ]
+    },
+    {
+      "minute": 2,
+      "at": "2026-08-14T04:18:18.803Z",
+      "processes": [
+        {
+          "pid": 4180,
+          "name": "chrome",
+          "workingSetMB": 39.5,
+          "privateMB": 46.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 5348,
+          "name": "chrome",
+          "workingSetMB": 8.1,
+          "privateMB": 2.3,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 6188,
+          "name": "chrome",
+          "workingSetMB": 41.5,
+          "privateMB": 45.2,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 6924,
+          "name": "chrome",
+          "workingSetMB": 184,
+          "privateMB": 124.3,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 12768,
+          "name": "chrome",
+          "workingSetMB": 108.9,
+          "privateMB": 74.1,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 12968,
+          "name": "chrome",
+          "workingSetMB": 131.2,
+          "privateMB": 72.7,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 17264,
+          "name": "chrome",
+          "workingSetMB": 80.4,
+          "privateMB": 68.5,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 17912,
+          "name": "chrome",
+          "workingSetMB": 428.7,
+          "privateMB": 350.3,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 21192,
+          "name": "chrome",
+          "workingSetMB": 69.5,
+          "privateMB": 35.3,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 21780,
+          "name": "chrome",
+          "workingSetMB": 22.7,
+          "privateMB": 14.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 21972,
+          "name": "chrome",
+          "workingSetMB": 406.5,
+          "privateMB": 585.7,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 22904,
+          "name": "chrome",
+          "workingSetMB": 8.9,
+          "privateMB": 6.8,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 22956,
+          "name": "chrome",
+          "workingSetMB": 46.8,
+          "privateMB": 24.6,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 23344,
+          "name": "chrome",
+          "workingSetMB": 25.3,
+          "privateMB": 15.1,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 23452,
+          "name": "chrome",
+          "workingSetMB": 51.9,
+          "privateMB": 28.1,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 23568,
+          "name": "chrome",
+          "workingSetMB": 218,
+          "privateMB": 126,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 23760,
+          "name": "chrome",
+          "workingSetMB": 22.1,
+          "privateMB": 13.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 24004,
+          "name": "chrome",
+          "workingSetMB": 83.8,
+          "privateMB": 38,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 24488,
+          "name": "chrome",
+          "workingSetMB": 36.2,
+          "privateMB": 13,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 25436,
+          "name": "chrome",
+          "workingSetMB": 16.7,
+          "privateMB": 8.8,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 25520,
+          "name": "chrome",
+          "workingSetMB": 28.5,
+          "privateMB": 19,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 25572,
+          "name": "chrome",
+          "workingSetMB": 128.2,
+          "privateMB": 72.7,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 25772,
+          "name": "chrome",
+          "workingSetMB": 84.6,
+          "privateMB": 38.3,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 27412,
+          "name": "chrome",
+          "workingSetMB": 111,
+          "privateMB": 74.8,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 28032,
+          "name": "chrome",
+          "workingSetMB": 123.6,
+          "privateMB": 69.1,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 28524,
+          "name": "chrome",
+          "workingSetMB": 110.6,
+          "privateMB": 74.8,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 29448,
+          "name": "chrome",
+          "workingSetMB": 83.1,
+          "privateMB": 37.9,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 30288,
+          "name": "chrome",
+          "workingSetMB": 21.7,
+          "privateMB": 14.7,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 30888,
+          "name": "chrome",
+          "workingSetMB": 183.8,
+          "privateMB": 110.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 32592,
+          "name": "chrome",
+          "workingSetMB": 358.4,
+          "privateMB": 278.2,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 32980,
+          "name": "chrome",
+          "workingSetMB": 111.3,
+          "privateMB": 58.3,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 33356,
+          "name": "chrome",
+          "workingSetMB": 9.6,
+          "privateMB": 2.3,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 35628,
+          "name": "chrome",
+          "workingSetMB": 40.3,
+          "privateMB": 16.6,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 36400,
+          "name": "chrome",
+          "workingSetMB": 32,
+          "privateMB": 15.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 37844,
+          "name": "chrome",
+          "workingSetMB": 20.6,
+          "privateMB": 9.2,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 40124,
+          "name": "chrome",
+          "workingSetMB": 30.9,
+          "privateMB": 15.3,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 40508,
+          "name": "chrome",
+          "workingSetMB": 40.3,
+          "privateMB": 19.6,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 41300,
+          "name": "chrome",
+          "workingSetMB": 505.9,
+          "privateMB": 532,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 42332,
+          "name": "chrome",
+          "workingSetMB": 130.5,
+          "privateMB": 73.5,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 42788,
+          "name": "chrome",
+          "workingSetMB": 139.9,
+          "privateMB": 62.1,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 43444,
+          "name": "chrome",
+          "workingSetMB": 135.5,
+          "privateMB": 78.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 34428,
+          "name": "java",
+          "workingSetMB": 318.9,
+          "privateMB": 680.9,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 37412,
+          "name": "java",
+          "workingSetMB": 281.1,
+          "privateMB": 353.5,
+          "rikeBackend": true,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 41312,
+          "name": "java",
+          "workingSetMB": 647.3,
+          "privateMB": 716.1,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 43472,
+          "name": "java",
+          "workingSetMB": 191.6,
+          "privateMB": 274.2,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 33988,
+          "name": "node",
+          "workingSetMB": 85.5,
+          "privateMB": 124.9,
+          "rikeBackend": false,
+          "rikeFrontend": true
+        },
+        {
+          "pid": 36704,
+          "name": "node",
+          "workingSetMB": 46.9,
+          "privateMB": 58.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 40480,
+          "name": "node",
+          "workingSetMB": 91.6,
+          "privateMB": 101.7,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        }
+      ]
+    },
+    {
+      "minute": 3,
+      "at": "2026-08-14T04:19:25.245Z",
+      "processes": [
+        {
+          "pid": 4180,
+          "name": "chrome",
+          "workingSetMB": 39.5,
+          "privateMB": 46.5,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 5348,
+          "name": "chrome",
+          "workingSetMB": 8.1,
+          "privateMB": 2.3,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 6188,
+          "name": "chrome",
+          "workingSetMB": 41.5,
+          "privateMB": 45.2,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 6924,
+          "name": "chrome",
+          "workingSetMB": 184,
+          "privateMB": 124.3,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 12768,
+          "name": "chrome",
+          "workingSetMB": 109,
+          "privateMB": 74.1,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 12968,
+          "name": "chrome",
+          "workingSetMB": 131.3,
+          "privateMB": 72.7,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 17264,
+          "name": "chrome",
+          "workingSetMB": 80.4,
+          "privateMB": 68.5,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 17912,
+          "name": "chrome",
+          "workingSetMB": 429.1,
+          "privateMB": 350.6,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 21192,
+          "name": "chrome",
+          "workingSetMB": 69.5,
+          "privateMB": 35.3,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 21780,
+          "name": "chrome",
+          "workingSetMB": 22.7,
+          "privateMB": 14.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 21972,
+          "name": "chrome",
+          "workingSetMB": 402.8,
+          "privateMB": 585.7,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 22904,
+          "name": "chrome",
+          "workingSetMB": 8.9,
+          "privateMB": 6.8,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 22956,
+          "name": "chrome",
+          "workingSetMB": 46.8,
+          "privateMB": 24.6,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 23344,
+          "name": "chrome",
+          "workingSetMB": 25.3,
+          "privateMB": 15.1,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 23452,
+          "name": "chrome",
+          "workingSetMB": 51.7,
+          "privateMB": 27.9,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 23568,
+          "name": "chrome",
+          "workingSetMB": 218,
+          "privateMB": 126,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 23760,
+          "name": "chrome",
+          "workingSetMB": 22.1,
+          "privateMB": 13.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 24004,
+          "name": "chrome",
+          "workingSetMB": 84.6,
+          "privateMB": 38.2,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 24488,
+          "name": "chrome",
+          "workingSetMB": 36.2,
+          "privateMB": 13.1,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 24956,
+          "name": "chrome",
+          "workingSetMB": 33.4,
+          "privateMB": 17.7,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 25436,
+          "name": "chrome",
+          "workingSetMB": 16.7,
+          "privateMB": 8.8,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 25520,
+          "name": "chrome",
+          "workingSetMB": 28.3,
+          "privateMB": 18.7,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 25572,
+          "name": "chrome",
+          "workingSetMB": 128.2,
+          "privateMB": 72.7,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 25772,
+          "name": "chrome",
+          "workingSetMB": 84.6,
+          "privateMB": 38.3,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 27412,
+          "name": "chrome",
+          "workingSetMB": 111.1,
+          "privateMB": 74.8,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 28032,
+          "name": "chrome",
+          "workingSetMB": 123.7,
+          "privateMB": 69.1,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 28524,
+          "name": "chrome",
+          "workingSetMB": 110.7,
+          "privateMB": 74.8,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 29448,
+          "name": "chrome",
+          "workingSetMB": 83.9,
+          "privateMB": 38.1,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 30288,
+          "name": "chrome",
+          "workingSetMB": 21.6,
+          "privateMB": 14.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 30888,
+          "name": "chrome",
+          "workingSetMB": 183.8,
+          "privateMB": 110.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 32592,
+          "name": "chrome",
+          "workingSetMB": 358.4,
+          "privateMB": 278.2,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 32980,
+          "name": "chrome",
+          "workingSetMB": 100.9,
+          "privateMB": 46.2,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 33356,
+          "name": "chrome",
+          "workingSetMB": 9.6,
+          "privateMB": 2.3,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 35628,
+          "name": "chrome",
+          "workingSetMB": 40.4,
+          "privateMB": 16.7,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 36400,
+          "name": "chrome",
+          "workingSetMB": 32,
+          "privateMB": 15.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 37844,
+          "name": "chrome",
+          "workingSetMB": 20.6,
+          "privateMB": 9.2,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 37904,
+          "name": "chrome",
+          "workingSetMB": 41.2,
+          "privateMB": 20,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 41300,
+          "name": "chrome",
+          "workingSetMB": 484.4,
+          "privateMB": 490.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 42332,
+          "name": "chrome",
+          "workingSetMB": 113.5,
+          "privateMB": 56.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 42788,
+          "name": "chrome",
+          "workingSetMB": 140.1,
+          "privateMB": 62.1,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 43444,
+          "name": "chrome",
+          "workingSetMB": 114.2,
+          "privateMB": 55.7,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 34428,
+          "name": "java",
+          "workingSetMB": 318.9,
+          "privateMB": 681,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 37412,
+          "name": "java",
+          "workingSetMB": 282.4,
+          "privateMB": 354.2,
+          "rikeBackend": true,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 33988,
+          "name": "node",
+          "workingSetMB": 86.9,
+          "privateMB": 125.2,
+          "rikeBackend": false,
+          "rikeFrontend": true
+        },
+        {
+          "pid": 36704,
+          "name": "node",
+          "workingSetMB": 46.9,
+          "privateMB": 58.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 40480,
+          "name": "node",
+          "workingSetMB": 92.9,
+          "privateMB": 102.6,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        }
+      ]
+    },
+    {
+      "minute": 4,
+      "at": "2026-08-14T04:21:13.498Z",
+      "processes": [
+        {
+          "pid": 4180,
+          "name": "chrome",
+          "workingSetMB": 39.4,
+          "privateMB": 46.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 5348,
+          "name": "chrome",
+          "workingSetMB": 8.1,
+          "privateMB": 2.3,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 6188,
+          "name": "chrome",
+          "workingSetMB": 41.4,
+          "privateMB": 45.2,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 6924,
+          "name": "chrome",
+          "workingSetMB": 181.7,
+          "privateMB": 124.3,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 12768,
+          "name": "chrome",
+          "workingSetMB": 105.6,
+          "privateMB": 74.1,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 12968,
+          "name": "chrome",
+          "workingSetMB": 130.2,
+          "privateMB": 72.7,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 17264,
+          "name": "chrome",
+          "workingSetMB": 80.4,
+          "privateMB": 68.5,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 17912,
+          "name": "chrome",
+          "workingSetMB": 428.4,
+          "privateMB": 350.8,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 21192,
+          "name": "chrome",
+          "workingSetMB": 68.8,
+          "privateMB": 35.3,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 21780,
+          "name": "chrome",
+          "workingSetMB": 19.4,
+          "privateMB": 14.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 21972,
+          "name": "chrome",
+          "workingSetMB": 398.9,
+          "privateMB": 585.7,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 22904,
+          "name": "chrome",
+          "workingSetMB": 8.9,
+          "privateMB": 6.8,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 22956,
+          "name": "chrome",
+          "workingSetMB": 46.8,
+          "privateMB": 24.6,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 23344,
+          "name": "chrome",
+          "workingSetMB": 25.3,
+          "privateMB": 15.1,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 23452,
+          "name": "chrome",
+          "workingSetMB": 51.5,
+          "privateMB": 27.8,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 23568,
+          "name": "chrome",
+          "workingSetMB": 215.5,
+          "privateMB": 126,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 23760,
+          "name": "chrome",
+          "workingSetMB": 21.7,
+          "privateMB": 13.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 24004,
+          "name": "chrome",
+          "workingSetMB": 84.7,
+          "privateMB": 38.3,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 24488,
+          "name": "chrome",
+          "workingSetMB": 36.1,
+          "privateMB": 13,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 25436,
+          "name": "chrome",
+          "workingSetMB": 16.7,
+          "privateMB": 8.8,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 25520,
+          "name": "chrome",
+          "workingSetMB": 28.6,
+          "privateMB": 19.1,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 25572,
+          "name": "chrome",
+          "workingSetMB": 127.6,
+          "privateMB": 72.7,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 25772,
+          "name": "chrome",
+          "workingSetMB": 84.7,
+          "privateMB": 38.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 27412,
+          "name": "chrome",
+          "workingSetMB": 110.6,
+          "privateMB": 74.8,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 28032,
+          "name": "chrome",
+          "workingSetMB": 108.6,
+          "privateMB": 69.1,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 28524,
+          "name": "chrome",
+          "workingSetMB": 106.3,
+          "privateMB": 74.8,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 29448,
+          "name": "chrome",
+          "workingSetMB": 84.1,
+          "privateMB": 38.2,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 30288,
+          "name": "chrome",
+          "workingSetMB": 21.6,
+          "privateMB": 14.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 30888,
+          "name": "chrome",
+          "workingSetMB": 177.2,
+          "privateMB": 111.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 32592,
+          "name": "chrome",
+          "workingSetMB": 313.5,
+          "privateMB": 278.2,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 32980,
+          "name": "chrome",
+          "workingSetMB": 109.4,
+          "privateMB": 54.9,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 33356,
+          "name": "chrome",
+          "workingSetMB": 9.6,
+          "privateMB": 2.3,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 35628,
+          "name": "chrome",
+          "workingSetMB": 40.7,
+          "privateMB": 17,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 36400,
+          "name": "chrome",
+          "workingSetMB": 29.1,
+          "privateMB": 15.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 37844,
+          "name": "chrome",
+          "workingSetMB": 20.7,
+          "privateMB": 9.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 41300,
+          "name": "chrome",
+          "workingSetMB": 752.8,
+          "privateMB": 813.5,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 42332,
+          "name": "chrome",
+          "workingSetMB": 126.7,
+          "privateMB": 69.6,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 42560,
+          "name": "chrome",
+          "workingSetMB": 40.6,
+          "privateMB": 20,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 42788,
+          "name": "chrome",
+          "workingSetMB": 141.4,
+          "privateMB": 63.1,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 43444,
+          "name": "chrome",
+          "workingSetMB": 133.1,
+          "privateMB": 75.2,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 44736,
+          "name": "chrome",
+          "workingSetMB": 30.9,
+          "privateMB": 15.3,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 34428,
+          "name": "java",
+          "workingSetMB": 318.9,
+          "privateMB": 680.9,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 37412,
+          "name": "java",
+          "workingSetMB": 287,
+          "privateMB": 548.8,
+          "rikeBackend": true,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 33988,
+          "name": "node",
+          "workingSetMB": 87.2,
+          "privateMB": 125.2,
+          "rikeBackend": false,
+          "rikeFrontend": true
+        },
+        {
+          "pid": 36704,
+          "name": "node",
+          "workingSetMB": 46.9,
+          "privateMB": 58.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 40480,
+          "name": "node",
+          "workingSetMB": 96.9,
+          "privateMB": 104.1,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        }
+      ]
+    },
+    {
+      "minute": 5,
+      "at": "2026-08-14T04:22:18.578Z",
+      "processes": [
+        {
+          "pid": 4180,
+          "name": "chrome",
+          "workingSetMB": 39.4,
+          "privateMB": 46.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 5348,
+          "name": "chrome",
+          "workingSetMB": 8.1,
+          "privateMB": 2.3,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 6188,
+          "name": "chrome",
+          "workingSetMB": 41.4,
+          "privateMB": 45.2,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 6924,
+          "name": "chrome",
+          "workingSetMB": 181.7,
+          "privateMB": 124.3,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 12768,
+          "name": "chrome",
+          "workingSetMB": 105.6,
+          "privateMB": 74.1,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 12968,
+          "name": "chrome",
+          "workingSetMB": 130.2,
+          "privateMB": 72.7,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 17264,
+          "name": "chrome",
+          "workingSetMB": 80.4,
+          "privateMB": 68.5,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 17912,
+          "name": "chrome",
+          "workingSetMB": 428.5,
+          "privateMB": 350.9,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 21192,
+          "name": "chrome",
+          "workingSetMB": 68.8,
+          "privateMB": 35.3,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 21780,
+          "name": "chrome",
+          "workingSetMB": 19.5,
+          "privateMB": 14.5,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 21972,
+          "name": "chrome",
+          "workingSetMB": 398.9,
+          "privateMB": 585.7,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 22904,
+          "name": "chrome",
+          "workingSetMB": 8.9,
+          "privateMB": 6.8,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 22956,
+          "name": "chrome",
+          "workingSetMB": 46.8,
+          "privateMB": 24.6,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 23344,
+          "name": "chrome",
+          "workingSetMB": 25.3,
+          "privateMB": 15.1,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 23452,
+          "name": "chrome",
+          "workingSetMB": 51.5,
+          "privateMB": 27.8,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 23568,
+          "name": "chrome",
+          "workingSetMB": 215.6,
+          "privateMB": 126,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 23760,
+          "name": "chrome",
+          "workingSetMB": 21.7,
+          "privateMB": 13.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 24004,
+          "name": "chrome",
+          "workingSetMB": 85,
+          "privateMB": 38.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 24488,
+          "name": "chrome",
+          "workingSetMB": 36.1,
+          "privateMB": 13,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 25436,
+          "name": "chrome",
+          "workingSetMB": 16.7,
+          "privateMB": 8.8,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 25520,
+          "name": "chrome",
+          "workingSetMB": 28.5,
+          "privateMB": 19,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 25572,
+          "name": "chrome",
+          "workingSetMB": 127.6,
+          "privateMB": 72.7,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 25772,
+          "name": "chrome",
+          "workingSetMB": 85,
+          "privateMB": 38.5,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 27324,
+          "name": "chrome",
+          "workingSetMB": 40.3,
+          "privateMB": 19.6,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 27412,
+          "name": "chrome",
+          "workingSetMB": 110.6,
+          "privateMB": 74.8,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 28032,
+          "name": "chrome",
+          "workingSetMB": 108.6,
+          "privateMB": 69.1,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 28524,
+          "name": "chrome",
+          "workingSetMB": 106.4,
+          "privateMB": 74.8,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 29448,
+          "name": "chrome",
+          "workingSetMB": 84.4,
+          "privateMB": 38.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 30288,
+          "name": "chrome",
+          "workingSetMB": 21.6,
+          "privateMB": 14.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 30888,
+          "name": "chrome",
+          "workingSetMB": 177.1,
+          "privateMB": 111.2,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 32592,
+          "name": "chrome",
+          "workingSetMB": 313.5,
+          "privateMB": 278.2,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 32980,
+          "name": "chrome",
+          "workingSetMB": 113.1,
+          "privateMB": 59.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 33356,
+          "name": "chrome",
+          "workingSetMB": 9.6,
+          "privateMB": 2.3,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 35628,
+          "name": "chrome",
+          "workingSetMB": 40.5,
+          "privateMB": 16.8,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 36400,
+          "name": "chrome",
+          "workingSetMB": 29.1,
+          "privateMB": 15.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 37360,
+          "name": "chrome",
+          "workingSetMB": 30.9,
+          "privateMB": 15.3,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 37844,
+          "name": "chrome",
+          "workingSetMB": 20.7,
+          "privateMB": 9.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 41300,
+          "name": "chrome",
+          "workingSetMB": 541.1,
+          "privateMB": 602.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 42332,
+          "name": "chrome",
+          "workingSetMB": 131.8,
+          "privateMB": 75.1,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 42788,
+          "name": "chrome",
+          "workingSetMB": 140.6,
+          "privateMB": 62.3,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 43444,
+          "name": "chrome",
+          "workingSetMB": 138.2,
+          "privateMB": 80.8,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 34428,
+          "name": "java",
+          "workingSetMB": 318.9,
+          "privateMB": 680.9,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 37412,
+          "name": "java",
+          "workingSetMB": 287,
+          "privateMB": 548.5,
+          "rikeBackend": true,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 33988,
+          "name": "node",
+          "workingSetMB": 87.6,
+          "privateMB": 125.7,
+          "rikeBackend": false,
+          "rikeFrontend": true
+        },
+        {
+          "pid": 36704,
+          "name": "node",
+          "workingSetMB": 46.9,
+          "privateMB": 58.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 40480,
+          "name": "node",
+          "workingSetMB": 98.3,
+          "privateMB": 104.9,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        }
+      ]
+    },
+    {
+      "minute": 6,
+      "at": "2026-08-14T04:23:23.642Z",
+      "processes": [
+        {
+          "pid": 4180,
+          "name": "chrome",
+          "workingSetMB": 39.8,
+          "privateMB": 46.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 5348,
+          "name": "chrome",
+          "workingSetMB": 8.1,
+          "privateMB": 2.3,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 6188,
+          "name": "chrome",
+          "workingSetMB": 41.7,
+          "privateMB": 45.2,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 6924,
+          "name": "chrome",
+          "workingSetMB": 181.8,
+          "privateMB": 124.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 12768,
+          "name": "chrome",
+          "workingSetMB": 106,
+          "privateMB": 74.1,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 12968,
+          "name": "chrome",
+          "workingSetMB": 130.2,
+          "privateMB": 72.7,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 17264,
+          "name": "chrome",
+          "workingSetMB": 80.7,
+          "privateMB": 68.5,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 17912,
+          "name": "chrome",
+          "workingSetMB": 428.6,
+          "privateMB": 351.1,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 21192,
+          "name": "chrome",
+          "workingSetMB": 69,
+          "privateMB": 35.3,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 21780,
+          "name": "chrome",
+          "workingSetMB": 19.5,
+          "privateMB": 14.5,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 21972,
+          "name": "chrome",
+          "workingSetMB": 450.9,
+          "privateMB": 612.7,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 22904,
+          "name": "chrome",
+          "workingSetMB": 8.9,
+          "privateMB": 6.8,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 22956,
+          "name": "chrome",
+          "workingSetMB": 47,
+          "privateMB": 24.6,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 23344,
+          "name": "chrome",
+          "workingSetMB": 25.3,
+          "privateMB": 15.1,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 23452,
+          "name": "chrome",
+          "workingSetMB": 51.6,
+          "privateMB": 27.8,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 23568,
+          "name": "chrome",
+          "workingSetMB": 216.2,
+          "privateMB": 126.5,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 23760,
+          "name": "chrome",
+          "workingSetMB": 21.7,
+          "privateMB": 13.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 24004,
+          "name": "chrome",
+          "workingSetMB": 85.1,
+          "privateMB": 38.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 24488,
+          "name": "chrome",
+          "workingSetMB": 36.2,
+          "privateMB": 13,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 25436,
+          "name": "chrome",
+          "workingSetMB": 16.8,
+          "privateMB": 8.8,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 25520,
+          "name": "chrome",
+          "workingSetMB": 28.5,
+          "privateMB": 19,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 25572,
+          "name": "chrome",
+          "workingSetMB": 127.8,
+          "privateMB": 72.6,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 25772,
+          "name": "chrome",
+          "workingSetMB": 85,
+          "privateMB": 38.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 27412,
+          "name": "chrome",
+          "workingSetMB": 111,
+          "privateMB": 74.8,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 28032,
+          "name": "chrome",
+          "workingSetMB": 109,
+          "privateMB": 69.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 28524,
+          "name": "chrome",
+          "workingSetMB": 106.4,
+          "privateMB": 74.8,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 29448,
+          "name": "chrome",
+          "workingSetMB": 84.4,
+          "privateMB": 38.3,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 30288,
+          "name": "chrome",
+          "workingSetMB": 21.7,
+          "privateMB": 14.7,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 30888,
+          "name": "chrome",
+          "workingSetMB": 177.2,
+          "privateMB": 110.3,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 32592,
+          "name": "chrome",
+          "workingSetMB": 313.5,
+          "privateMB": 278.2,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 32980,
+          "name": "chrome",
+          "workingSetMB": 111.9,
+          "privateMB": 57.5,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 33356,
+          "name": "chrome",
+          "workingSetMB": 9.6,
+          "privateMB": 2.3,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 35060,
+          "name": "chrome",
+          "workingSetMB": 33.4,
+          "privateMB": 17.7,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 35628,
+          "name": "chrome",
+          "workingSetMB": 40.5,
+          "privateMB": 16.8,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 36400,
+          "name": "chrome",
+          "workingSetMB": 29.1,
+          "privateMB": 15.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 37844,
+          "name": "chrome",
+          "workingSetMB": 20.6,
+          "privateMB": 9.3,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 41300,
+          "name": "chrome",
+          "workingSetMB": 495.9,
+          "privateMB": 501.7,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 42332,
+          "name": "chrome",
+          "workingSetMB": 134.1,
+          "privateMB": 77.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 42788,
+          "name": "chrome",
+          "workingSetMB": 140.7,
+          "privateMB": 62.3,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 42932,
+          "name": "chrome",
+          "workingSetMB": 51.3,
+          "privateMB": 24.3,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 43444,
+          "name": "chrome",
+          "workingSetMB": 130,
+          "privateMB": 71,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 34428,
+          "name": "java",
+          "workingSetMB": 318.9,
+          "privateMB": 680.9,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 37412,
+          "name": "java",
+          "workingSetMB": 287.2,
+          "privateMB": 548.5,
+          "rikeBackend": true,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 33988,
+          "name": "node",
+          "workingSetMB": 87.6,
+          "privateMB": 125.8,
+          "rikeBackend": false,
+          "rikeFrontend": true
+        },
+        {
+          "pid": 36704,
+          "name": "node",
+          "workingSetMB": 46.9,
+          "privateMB": 58.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 40480,
+          "name": "node",
+          "workingSetMB": 99.3,
+          "privateMB": 106.9,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        }
+      ]
+    },
+    {
+      "minute": 7,
+      "at": "2026-08-14T04:24:37.768Z",
+      "processes": [
+        {
+          "pid": 4180,
+          "name": "chrome",
+          "workingSetMB": 39.7,
+          "privateMB": 46.3,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 5348,
+          "name": "chrome",
+          "workingSetMB": 8.1,
+          "privateMB": 2.3,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 6188,
+          "name": "chrome",
+          "workingSetMB": 41.7,
+          "privateMB": 45.2,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 6924,
+          "name": "chrome",
+          "workingSetMB": 181.8,
+          "privateMB": 124.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 12768,
+          "name": "chrome",
+          "workingSetMB": 106,
+          "privateMB": 74.1,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 12968,
+          "name": "chrome",
+          "workingSetMB": 130.3,
+          "privateMB": 72.7,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 17264,
+          "name": "chrome",
+          "workingSetMB": 80.7,
+          "privateMB": 68.5,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 17912,
+          "name": "chrome",
+          "workingSetMB": 428.7,
+          "privateMB": 351.1,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 21192,
+          "name": "chrome",
+          "workingSetMB": 69.1,
+          "privateMB": 35.2,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 21780,
+          "name": "chrome",
+          "workingSetMB": 19.5,
+          "privateMB": 14.5,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 21972,
+          "name": "chrome",
+          "workingSetMB": 508.2,
+          "privateMB": 683.7,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 22904,
+          "name": "chrome",
+          "workingSetMB": 8.9,
+          "privateMB": 6.8,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 22956,
+          "name": "chrome",
+          "workingSetMB": 47,
+          "privateMB": 24.6,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 23344,
+          "name": "chrome",
+          "workingSetMB": 25.3,
+          "privateMB": 15.1,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 23452,
+          "name": "chrome",
+          "workingSetMB": 51.9,
+          "privateMB": 28.1,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 23568,
+          "name": "chrome",
+          "workingSetMB": 216.8,
+          "privateMB": 126.3,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 23760,
+          "name": "chrome",
+          "workingSetMB": 21.7,
+          "privateMB": 13.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 24004,
+          "name": "chrome",
+          "workingSetMB": 85.1,
+          "privateMB": 38.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 24488,
+          "name": "chrome",
+          "workingSetMB": 36.2,
+          "privateMB": 13,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 25436,
+          "name": "chrome",
+          "workingSetMB": 16.8,
+          "privateMB": 8.8,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 25520,
+          "name": "chrome",
+          "workingSetMB": 28.5,
+          "privateMB": 19,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 25572,
+          "name": "chrome",
+          "workingSetMB": 127.8,
+          "privateMB": 72.6,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 25772,
+          "name": "chrome",
+          "workingSetMB": 85.1,
+          "privateMB": 38.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 27412,
+          "name": "chrome",
+          "workingSetMB": 111,
+          "privateMB": 74.8,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 28032,
+          "name": "chrome",
+          "workingSetMB": 109,
+          "privateMB": 69.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 28524,
+          "name": "chrome",
+          "workingSetMB": 106.5,
+          "privateMB": 74.8,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 29448,
+          "name": "chrome",
+          "workingSetMB": 84.4,
+          "privateMB": 38.3,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 30288,
+          "name": "chrome",
+          "workingSetMB": 21.9,
+          "privateMB": 14.7,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 30568,
+          "name": "chrome",
+          "workingSetMB": 43.1,
+          "privateMB": 22.5,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 30888,
+          "name": "chrome",
+          "workingSetMB": 194.6,
+          "privateMB": 126.5,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 32592,
+          "name": "chrome",
+          "workingSetMB": 393.2,
+          "privateMB": 356.9,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 32980,
+          "name": "chrome",
+          "workingSetMB": 101.3,
+          "privateMB": 46.6,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 33356,
+          "name": "chrome",
+          "workingSetMB": 9.6,
+          "privateMB": 2.3,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 35628,
+          "name": "chrome",
+          "workingSetMB": 40.5,
+          "privateMB": 16.7,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 36400,
+          "name": "chrome",
+          "workingSetMB": 29.1,
+          "privateMB": 15.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 37124,
+          "name": "chrome",
+          "workingSetMB": 30.7,
+          "privateMB": 14.9,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 37844,
+          "name": "chrome",
+          "workingSetMB": 20.7,
+          "privateMB": 9.3,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 40604,
+          "name": "chrome",
+          "workingSetMB": 54.4,
+          "privateMB": 27.7,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 41300,
+          "name": "chrome",
+          "workingSetMB": 487.3,
+          "privateMB": 486.6,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 42332,
+          "name": "chrome",
+          "workingSetMB": 112.4,
+          "privateMB": 54.6,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 42788,
+          "name": "chrome",
+          "workingSetMB": 140.8,
+          "privateMB": 62.3,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 43444,
+          "name": "chrome",
+          "workingSetMB": 121.8,
+          "privateMB": 62.5,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 34428,
+          "name": "java",
+          "workingSetMB": 318.9,
+          "privateMB": 680.9,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 37412,
+          "name": "java",
+          "workingSetMB": 287.2,
+          "privateMB": 548.4,
+          "rikeBackend": true,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 33988,
+          "name": "node",
+          "workingSetMB": 87.8,
+          "privateMB": 125.8,
+          "rikeBackend": false,
+          "rikeFrontend": true
+        },
+        {
+          "pid": 36704,
+          "name": "node",
+          "workingSetMB": 46.9,
+          "privateMB": 58.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 40480,
+          "name": "node",
+          "workingSetMB": 99.6,
+          "privateMB": 105.8,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        }
+      ]
+    },
+    {
+      "minute": 8,
+      "at": "2026-08-14T04:26:30.241Z",
+      "processes": [
+        {
+          "pid": 4180,
+          "name": "chrome",
+          "workingSetMB": 39.7,
+          "privateMB": 46.3,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 5348,
+          "name": "chrome",
+          "workingSetMB": 8.1,
+          "privateMB": 2.3,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 6188,
+          "name": "chrome",
+          "workingSetMB": 41.8,
+          "privateMB": 45.2,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 6924,
+          "name": "chrome",
+          "workingSetMB": 181.9,
+          "privateMB": 124.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 12768,
+          "name": "chrome",
+          "workingSetMB": 106.1,
+          "privateMB": 74.1,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 12968,
+          "name": "chrome",
+          "workingSetMB": 137,
+          "privateMB": 73.6,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 17264,
+          "name": "chrome",
+          "workingSetMB": 80.7,
+          "privateMB": 68.5,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 17912,
+          "name": "chrome",
+          "workingSetMB": 428.8,
+          "privateMB": 351.1,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 21192,
+          "name": "chrome",
+          "workingSetMB": 69.3,
+          "privateMB": 35.6,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 21780,
+          "name": "chrome",
+          "workingSetMB": 19.5,
+          "privateMB": 14.5,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 21972,
+          "name": "chrome",
+          "workingSetMB": 414.2,
+          "privateMB": 568.8,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 22904,
+          "name": "chrome",
+          "workingSetMB": 8.9,
+          "privateMB": 6.8,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 22956,
+          "name": "chrome",
+          "workingSetMB": 47,
+          "privateMB": 24.6,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 23344,
+          "name": "chrome",
+          "workingSetMB": 25.3,
+          "privateMB": 15.1,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 23452,
+          "name": "chrome",
+          "workingSetMB": 51.9,
+          "privateMB": 28.1,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 23568,
+          "name": "chrome",
+          "workingSetMB": 215.9,
+          "privateMB": 125.9,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 23760,
+          "name": "chrome",
+          "workingSetMB": 21.7,
+          "privateMB": 13.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 24004,
+          "name": "chrome",
+          "workingSetMB": 85.2,
+          "privateMB": 38.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 24488,
+          "name": "chrome",
+          "workingSetMB": 36.2,
+          "privateMB": 13,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 25436,
+          "name": "chrome",
+          "workingSetMB": 16.8,
+          "privateMB": 8.8,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 25520,
+          "name": "chrome",
+          "workingSetMB": 28.6,
+          "privateMB": 19.1,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 25572,
+          "name": "chrome",
+          "workingSetMB": 127.8,
+          "privateMB": 72.6,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 25772,
+          "name": "chrome",
+          "workingSetMB": 85.2,
+          "privateMB": 38.5,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 27412,
+          "name": "chrome",
+          "workingSetMB": 111.1,
+          "privateMB": 74.8,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 28032,
+          "name": "chrome",
+          "workingSetMB": 109.1,
+          "privateMB": 69.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 28524,
+          "name": "chrome",
+          "workingSetMB": 120.1,
+          "privateMB": 74.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 29448,
+          "name": "chrome",
+          "workingSetMB": 84.5,
+          "privateMB": 38.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 30288,
+          "name": "chrome",
+          "workingSetMB": 21.9,
+          "privateMB": 14.7,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 30568,
+          "name": "chrome",
+          "workingSetMB": 43.1,
+          "privateMB": 22.5,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 30888,
+          "name": "chrome",
+          "workingSetMB": 195.4,
+          "privateMB": 127.5,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 32592,
+          "name": "chrome",
+          "workingSetMB": 324.7,
+          "privateMB": 289.3,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 32980,
+          "name": "chrome",
+          "workingSetMB": 113.6,
+          "privateMB": 59.3,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 33356,
+          "name": "chrome",
+          "workingSetMB": 9.6,
+          "privateMB": 2.3,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 35628,
+          "name": "chrome",
+          "workingSetMB": 40.9,
+          "privateMB": 17.1,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 36400,
+          "name": "chrome",
+          "workingSetMB": 29.1,
+          "privateMB": 15.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 37844,
+          "name": "chrome",
+          "workingSetMB": 20.7,
+          "privateMB": 9.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 38956,
+          "name": "chrome",
+          "workingSetMB": 30.9,
+          "privateMB": 15.3,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 41300,
+          "name": "chrome",
+          "workingSetMB": 574.7,
+          "privateMB": 584.8,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 42332,
+          "name": "chrome",
+          "workingSetMB": 131.8,
+          "privateMB": 75.3,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 42788,
+          "name": "chrome",
+          "workingSetMB": 141.7,
+          "privateMB": 63.2,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 43444,
+          "name": "chrome",
+          "workingSetMB": 137.5,
+          "privateMB": 79.6,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 34428,
+          "name": "java",
+          "workingSetMB": 318.9,
+          "privateMB": 680.9,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 37412,
+          "name": "java",
+          "workingSetMB": 287.5,
+          "privateMB": 548.7,
+          "rikeBackend": true,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 33988,
+          "name": "node",
+          "workingSetMB": 88.8,
+          "privateMB": 128,
+          "rikeBackend": false,
+          "rikeFrontend": true
+        },
+        {
+          "pid": 36704,
+          "name": "node",
+          "workingSetMB": 46.9,
+          "privateMB": 58.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 40480,
+          "name": "node",
+          "workingSetMB": 100.2,
+          "privateMB": 108,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        }
+      ]
+    },
+    {
+      "minute": 9,
+      "at": "2026-08-14T04:27:35.564Z",
+      "processes": [
+        {
+          "pid": 4180,
+          "name": "chrome",
+          "workingSetMB": 39.7,
+          "privateMB": 46.3,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 5348,
+          "name": "chrome",
+          "workingSetMB": 8.1,
+          "privateMB": 2.3,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 6188,
+          "name": "chrome",
+          "workingSetMB": 41.9,
+          "privateMB": 45.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 6924,
+          "name": "chrome",
+          "workingSetMB": 181.9,
+          "privateMB": 124.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 12968,
+          "name": "chrome",
+          "workingSetMB": 134.1,
+          "privateMB": 73.6,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 17264,
+          "name": "chrome",
+          "workingSetMB": 80.7,
+          "privateMB": 68.5,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 17912,
+          "name": "chrome",
+          "workingSetMB": 1389.2,
+          "privateMB": 1262.3,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 21192,
+          "name": "chrome",
+          "workingSetMB": 69.6,
+          "privateMB": 35.8,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 21780,
+          "name": "chrome",
+          "workingSetMB": 19.5,
+          "privateMB": 14.5,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 21972,
+          "name": "chrome",
+          "workingSetMB": 609.6,
+          "privateMB": 746.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 22904,
+          "name": "chrome",
+          "workingSetMB": 8.9,
+          "privateMB": 6.8,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 22956,
+          "name": "chrome",
+          "workingSetMB": 47,
+          "privateMB": 24.6,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 23344,
+          "name": "chrome",
+          "workingSetMB": 25.3,
+          "privateMB": 15.1,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 23452,
+          "name": "chrome",
+          "workingSetMB": 58.9,
+          "privateMB": 35,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 23568,
+          "name": "chrome",
+          "workingSetMB": 217.7,
+          "privateMB": 126.8,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 23760,
+          "name": "chrome",
+          "workingSetMB": 21.7,
+          "privateMB": 13.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 24004,
+          "name": "chrome",
+          "workingSetMB": 84.1,
+          "privateMB": 38.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 24488,
+          "name": "chrome",
+          "workingSetMB": 36.3,
+          "privateMB": 13.1,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 25436,
+          "name": "chrome",
+          "workingSetMB": 16.9,
+          "privateMB": 9,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 25520,
+          "name": "chrome",
+          "workingSetMB": 28.6,
+          "privateMB": 19,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 25572,
+          "name": "chrome",
+          "workingSetMB": 129.7,
+          "privateMB": 74.5,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 25772,
+          "name": "chrome",
+          "workingSetMB": 84.2,
+          "privateMB": 38.5,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 28032,
+          "name": "chrome",
+          "workingSetMB": 109.1,
+          "privateMB": 69.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 28524,
+          "name": "chrome",
+          "workingSetMB": 120.2,
+          "privateMB": 74.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 29448,
+          "name": "chrome",
+          "workingSetMB": 83.3,
+          "privateMB": 38.3,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 30288,
+          "name": "chrome",
+          "workingSetMB": 22.3,
+          "privateMB": 15.2,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 30568,
+          "name": "chrome",
+          "workingSetMB": 44.5,
+          "privateMB": 22.9,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 30888,
+          "name": "chrome",
+          "workingSetMB": 182.4,
+          "privateMB": 114,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 32592,
+          "name": "chrome",
+          "workingSetMB": 357.4,
+          "privateMB": 320.8,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 32980,
+          "name": "chrome",
+          "workingSetMB": 109.2,
+          "privateMB": 58.6,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 33356,
+          "name": "chrome",
+          "workingSetMB": 9.6,
+          "privateMB": 2.3,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 35628,
+          "name": "chrome",
+          "workingSetMB": 40.6,
+          "privateMB": 16.7,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 36400,
+          "name": "chrome",
+          "workingSetMB": 29.1,
+          "privateMB": 15.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 37844,
+          "name": "chrome",
+          "workingSetMB": 20.7,
+          "privateMB": 9.3,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 41300,
+          "name": "chrome",
+          "workingSetMB": 564.2,
+          "privateMB": 556.3,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 42332,
+          "name": "chrome",
+          "workingSetMB": 130.3,
+          "privateMB": 77.2,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 42788,
+          "name": "chrome",
+          "workingSetMB": 140.9,
+          "privateMB": 62.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 43444,
+          "name": "chrome",
+          "workingSetMB": 124.6,
+          "privateMB": 69.7,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 44708,
+          "name": "chrome",
+          "workingSetMB": 30.9,
+          "privateMB": 15.3,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 34428,
+          "name": "java",
+          "workingSetMB": 318.9,
+          "privateMB": 680.9,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 37412,
+          "name": "java",
+          "workingSetMB": 287,
+          "privateMB": 548.7,
+          "rikeBackend": true,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 33988,
+          "name": "node",
+          "workingSetMB": 89,
+          "privateMB": 127.1,
+          "rikeBackend": false,
+          "rikeFrontend": true
+        },
+        {
+          "pid": 36704,
+          "name": "node",
+          "workingSetMB": 46.9,
+          "privateMB": 58.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 40480,
+          "name": "node",
+          "workingSetMB": 99.9,
+          "privateMB": 108,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        }
+      ]
+    },
+    {
+      "minute": 10,
+      "at": "2026-08-14T04:28:44.346Z",
+      "processes": [
+        {
+          "pid": 4180,
+          "name": "chrome",
+          "workingSetMB": 39.7,
+          "privateMB": 46.3,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 5348,
+          "name": "chrome",
+          "workingSetMB": 8.1,
+          "privateMB": 2.3,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 6188,
+          "name": "chrome",
+          "workingSetMB": 41.8,
+          "privateMB": 45.2,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 6924,
+          "name": "chrome",
+          "workingSetMB": 181.9,
+          "privateMB": 124.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 17264,
+          "name": "chrome",
+          "workingSetMB": 80.7,
+          "privateMB": 68.5,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 17912,
+          "name": "chrome",
+          "workingSetMB": 1721,
+          "privateMB": 1593.1,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 21192,
+          "name": "chrome",
+          "workingSetMB": 69.8,
+          "privateMB": 35.9,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 21780,
+          "name": "chrome",
+          "workingSetMB": 19.5,
+          "privateMB": 14.5,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 21972,
+          "name": "chrome",
+          "workingSetMB": 478.6,
+          "privateMB": 635.1,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 22904,
+          "name": "chrome",
+          "workingSetMB": 8.9,
+          "privateMB": 6.8,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 22956,
+          "name": "chrome",
+          "workingSetMB": 47,
+          "privateMB": 24.6,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 23344,
+          "name": "chrome",
+          "workingSetMB": 25.3,
+          "privateMB": 15.1,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 23452,
+          "name": "chrome",
+          "workingSetMB": 58.5,
+          "privateMB": 34.6,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 23568,
+          "name": "chrome",
+          "workingSetMB": 216.2,
+          "privateMB": 125.3,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 23760,
+          "name": "chrome",
+          "workingSetMB": 21.7,
+          "privateMB": 13.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 24004,
+          "name": "chrome",
+          "workingSetMB": 84.1,
+          "privateMB": 38.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 24488,
+          "name": "chrome",
+          "workingSetMB": 36.2,
+          "privateMB": 13,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 25436,
+          "name": "chrome",
+          "workingSetMB": 16.8,
+          "privateMB": 8.8,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 25520,
+          "name": "chrome",
+          "workingSetMB": 28.6,
+          "privateMB": 19,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 25572,
+          "name": "chrome",
+          "workingSetMB": 127.8,
+          "privateMB": 72.6,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 25772,
+          "name": "chrome",
+          "workingSetMB": 84.3,
+          "privateMB": 38.5,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 29448,
+          "name": "chrome",
+          "workingSetMB": 83.3,
+          "privateMB": 38.3,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 30288,
+          "name": "chrome",
+          "workingSetMB": 21.8,
+          "privateMB": 14.7,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 30888,
+          "name": "chrome",
+          "workingSetMB": 181.9,
+          "privateMB": 113.5,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 32592,
+          "name": "chrome",
+          "workingSetMB": 358.1,
+          "privateMB": 321.5,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 32980,
+          "name": "chrome",
+          "workingSetMB": 106,
+          "privateMB": 55.2,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 33356,
+          "name": "chrome",
+          "workingSetMB": 9.6,
+          "privateMB": 2.3,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 34036,
+          "name": "chrome",
+          "workingSetMB": 33.6,
+          "privateMB": 18,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 35628,
+          "name": "chrome",
+          "workingSetMB": 40.6,
+          "privateMB": 16.8,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 36400,
+          "name": "chrome",
+          "workingSetMB": 29.1,
+          "privateMB": 15.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 37844,
+          "name": "chrome",
+          "workingSetMB": 20.7,
+          "privateMB": 9.3,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 41300,
+          "name": "chrome",
+          "workingSetMB": 827,
+          "privateMB": 835.3,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 42332,
+          "name": "chrome",
+          "workingSetMB": 124.9,
+          "privateMB": 71,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 42788,
+          "name": "chrome",
+          "workingSetMB": 141.2,
+          "privateMB": 62.6,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 43444,
+          "name": "chrome",
+          "workingSetMB": 130.2,
+          "privateMB": 76.2,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 34428,
+          "name": "java",
+          "workingSetMB": 318.9,
+          "privateMB": 680.9,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 37412,
+          "name": "java",
+          "workingSetMB": 295.2,
+          "privateMB": 555.9,
+          "rikeBackend": true,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 33988,
+          "name": "node",
+          "workingSetMB": 89.6,
+          "privateMB": 128,
+          "rikeBackend": false,
+          "rikeFrontend": true
+        },
+        {
+          "pid": 36704,
+          "name": "node",
+          "workingSetMB": 46.9,
+          "privateMB": 58.4,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        },
+        {
+          "pid": 40480,
+          "name": "node",
+          "workingSetMB": 100.3,
+          "privateMB": 108.2,
+          "rikeBackend": false,
+          "rikeFrontend": false
+        }
+      ]
+    }
+  ],
+  "trends": {
+    "backend": {
+      "firstMB": 278.7,
+      "lastMB": 295.2,
+      "deltaMB": 16.5,
+      "monotonicGrowth": false
+    },
+    "frontend": {
+      "firstMB": 86.9,
+      "lastMB": 89.6,
+      "deltaMB": 2.7,
+      "monotonicGrowth": false
+    }
+  },
+  "conclusion": "NO_REPRODUCIBLE_APPLICATION_LEAK"
+}

@@ -1,5 +1,7 @@
 # 功能、代码、数据库与技术映射
 
+> PR #33 的最终路由、截图、前端 API、Controller、Service、表和 Flyway 逐项索引见 [FEATURE_SCREENSHOT_CODE_INDEX](FEATURE_SCREENSHOT_CODE_INDEX.md)。当前数据库基线为 Flyway V29、50 张业务表；早期 V14/35 表描述仅作为历史阶段信息保留。
+
 路径均核对当前代码。前端路由集中于 `src/router/index.ts`；后端 API 统一以 `/api/v1` 为前缀。
 
 | 角色 | 功能 | 前端路由 | Vue View / Component | 前端 API | Backend Controller | Backend Service | 主要表 | 核心技术 | 主要测试 |
@@ -8,7 +10,7 @@
 | 全部 | 图形 CAPTCHA | `/login/:role?` | `components/auth/ImageCaptcha.vue` | `api/auth.ts` | `RenZhengController` | `TuXingYanZhengMaFuWu` | 内存限时 challenge | 随机 PNG、一次性验证 | `RenZhengJiChengTest`,`ImageCaptcha.spec.ts` |
 | 全部 | 角色选择 | `/select-role` | `auth/RoleSelectionView.vue` | `api/auth.ts` | `RenZhengController` | `RenZhengFuWu` | `yong_hu_jiao_se` | JWT 角色声明、Router guard | `postLoginRoute.spec.ts`,`RenZhengJiChengTest` |
 | ADMIN | 学生导入 | `/admin/students/import` | `admin/StudentImportView.vue` | `api/admin/studentImport.ts` | `xueshengdaoru/StudentImportController` | `StudentImportService`,`StudentImportConfirmService` | `yong_hu`,`xue_sheng_dang_an`,`ban_ji_xue_sheng` | Apache POI、preview/confirm、事务、BCrypt | `RenZhengJiChengTest`,`FinalImportTemplatesIntegrationTest` |
-| ADMIN | 教师管理与默认密码恢复 | `/admin/teachers` | `admin/TeachersView.vue` | `api/admin/teachers.ts` | `jiaoshi/JiaoShiGuanLiController` | `JiaoShiGuanLiFuWu` | `yong_hu`,`jiao_shi_dang_an`,`ren_ke_guan_xi` | BCrypt、批量原子事务、首次改密、审计 | `JiaoShiGuanLiFuWuTest`,`StudentManagementIntegrationTest`,`teachers.spec.ts` |
+| ADMIN | 教师管理、角色与默认密码恢复 | `/admin/teachers` | `admin/TeachersView.vue` | `api/admin/teachers.ts` | `jiaoshi/JiaoShiGuanLiController` | `JiaoShiGuanLiFuWu` | `yong_hu`,`jiao_shi_dang_an`,`ren_ke_guan_xi`,`yong_hu_jiao_se`,`jiao_se` | BCrypt、真实 `roles: string[]`、TEACHER+ADMIN、批量原子事务、最后管理员与当前管理员保护 | `JiaoShiGuanLiFuWuTest`,`StudentManagementIntegrationTest`,`teachers.spec.ts` |
 | ADMIN | 学生管理与默认密码恢复 | `/admin/students` | `admin/StudentsView.vue` | `api/admin/students.ts` | `xueshengguanli/StudentManagementController` | `StudentManagementService` | `yong_hu`,`xue_sheng_dang_an`,`ban_ji_xue_sheng` | BCrypt、批量原子事务、首次改密、no-store | `StudentManagementIntegrationTest`,`students.spec.ts`,`AdminPasswordRecoveryViews.spec.ts` |
 | ADMIN | 班级 | `/admin/classes` | `admin/ClassesView.vue` | `api/admin/classes.ts` | `jiaoxue/BanJiController` | `BanJiFuWu` | `ban_ji`,`ban_ji_xue_sheng` | Bean Validation、状态约束、审计事务 | `BanJiAuditTransactionIntegrationTest` |
 | ADMIN | 任课关系 | `/admin/teachers` | `admin/TeachersView.vue` | `api/admin/teachers.ts` | `JiaoShiGuanLiController` | `JiaoShiGuanLiFuWu` | `ren_ke_guan_xi` | 教师+班级+科目唯一约束 | `JiaoShiGuanLiFuWuTest` |

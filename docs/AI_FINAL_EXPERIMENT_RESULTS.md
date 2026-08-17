@@ -1,8 +1,14 @@
 # AI 最终实验事实
 
-更新时间：2026-08-12
+更新时间：2026-08-16
 
 本文只记录 PR #31 已真实执行的数据，不推导 AI 准确率、用户满意度或虚构平均质量分。
+
+## PR #33 增量说明
+
+PR #31 的真实调用数据继续作为历史实验事实，不外推到当前 Schema V2、新颖度、GLM/xAI、深度思考或搜索。PR #33 自动化使用 Fake/Mock HTTP 验证请求映射、字段级 Parser、一次修复、新颖度、429/超时/非法 URL、确定性判分和原子回滚，不把 Mock 写成真实 Provider PASS。当前没有可安全使用的轮换后凭据，DeepSeek variant、DeepSeek tutor、GLM Vision、xAI Vision 与 Web Search 分别记为 `BLOCKED_EXTERNAL_PROVIDER`。
+
+GLM/xAI 管理端按 HTTP 400、401/403、429、5xx、TIMEOUT、INVALID_RESPONSE 与 CONFIGURATION_ERROR 安全分类，并只显示状态、延迟、时间和安全错误码。完整请求、Key、Authorization、Base64、Prompt、reasoning_content 与原始响应均不回显；Provider 由管理员显式选择，不隐式自动切换。
 
 ## DeepSeek 真实结果
 
@@ -36,3 +42,25 @@
 V12 Demo 日志只有 provider、model、purpose、业务关联、success/error、latency、input/output token 和时间等安全元数据；不存在 Prompt、输出、图片 Base64、Key 或 JWT 列。PR #31 真实调用后 V12 共 4 条安全元数据记录。学生响应不显示 DeepSeek、GLM、model id、API URL、Key 或 Token。
 
 `FINAL_MANUAL_ACCEPTANCE_PENDING`：五项质量评价只有用户真正完成候选审核后才可进入论文人工评价统计。
+
+## PR #33 当前真实 Provider 窗口（2026-08-16）
+
+本轮重新检查了进程环境中的 Provider Key，仅记录 PRESENT/ABSENT，不读取或输出值；当前 DeepSeek、GLM、xAI、Web Search 轮换 Key 均为 `ABSENT`。本轮没有从正式库读取或复制数据库 Key，也没有向 Provider 发起请求，因此最终状态如下：
+
+| 业务窗口 | 本轮状态 | 说明 |
+|---|---|---|
+| DeepSeek objective variant | `BLOCKED_EXTERNAL_PROVIDER` | 未发起调用 |
+| DeepSeek subjective/topic variant | `BLOCKED_EXTERNAL_PROVIDER` | 未发起调用 |
+| DeepSeek tutor | `BLOCKED_EXTERNAL_PROVIDER` | 未发起调用 |
+| GLM Vision single-image smoke | `BLOCKED_EXTERNAL_PROVIDER` | 未发起调用 |
+| xAI Vision | `BLOCKED_EXTERNAL_PROVIDER` | 本轮不自动 fallback，未发起调用 |
+| Web Search | `BLOCKED_EXTERNAL_PROVIDER` | 未发起调用 |
+
+以上状态不覆盖 PR #31 历史真实 DeepSeek/GLM 窗口，也不把 Fake/Mock 合同测试写成 `REAL_PASS`。Parser、超时、候选 DRAFT/PENDING 状态机与降级测试通过，但真实 Provider 仍待安全凭据窗口。
+
+## PR #33 最终集中回归（2026-08-16）
+
+- 后端：`mvn clean test` 为 215 tests、0 failures、0 errors、3 skipped；随机临时库按 V1–V29 完整迁移。
+- 前端：68 个测试文件、220 tests 全部通过；`type-check`、`build` 和 `npm audit --omit=dev` 通过，0 vulnerabilities。build 的大 chunk 只是已知 warning。
+- 正式库：只读回查为 V29、50 张业务表；15 个已发布专题单元、45 条单元题目关系、65 张已发布高频考点卡片。科学内容审计为 600 个字符串、105 条正式库行、0 errors。
+- 本轮没有新增真实 Provider 请求，五个业务窗口继续为 `BLOCKED_EXTERNAL_PROVIDER`；机器回归、Demo 和夹具证据不替代真人验收。正式浏览器因本机无轮换正式学生凭据记为 `BLOCKED_LOCAL_CREDENTIAL`。

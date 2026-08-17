@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.neu.riketiku.tiku.admin.AdminQuestionIntegrationTestSupport;
+import com.neu.riketiku.database.DatabaseSchemaFacts;
 import com.neu.riketiku.zhanghao.entity.YongHu;
 import com.neu.riketiku.zhanghao.mapper.YongHuMapper;
 import java.sql.Connection;
@@ -36,7 +37,11 @@ class UserTeachingDatabaseModelTest extends AdminQuestionIntegrationTestSupport 
         "xue_xi_jie_guo", "cuo_ti_ji_lu", "gao_pin_kao_dian", "si_xin_hui_hua", "si_xin_xiao_xi",
         "guan_li_cao_zuo_ri_zhi", "ai_diao_yong_ri_zhi", "ai_cuo_ti_fen_xi", "ai_hui_hua", "ai_xiao_xi",
         "ai_mo_xing_pei_zhi", "ai_sheng_cheng_ren_wu", "ai_hou_xuan_ti_zhi_liang_ping_jia",
-        "ai_shi_jue_shang_xia_wen"
+        "ai_shi_jue_shang_xia_wen", "mi_ma_chong_zhi_shen_qing", "shi_juan", "shi_juan_ti_mu",
+        "ai_xue_sheng_bian_shi_shi_li", "gao_pin_kao_dian_zhi_shi_dian", "gao_pin_kao_dian_fu_jian",
+        "zhuan_ti_xue_xi_dan_yuan", "zhuan_ti_xue_xi_dan_yuan_ti_mu",
+        "shi_juan_fa_bu", "shi_juan_fa_bu_ti_mu", "shi_juan_ti_jiao", "shi_juan_xue_sheng_da_ti",
+        "gao_pin_kao_dian_shen_he_ji_lu", "xue_sheng_zhi_shi_ka_pian_zhuang_tai", "zhi_shi_ka_pian_lian_xi_shi_li"
     );
 
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(4);
@@ -69,7 +74,7 @@ class UserTeachingDatabaseModelTest extends AdminQuestionIntegrationTestSupport 
         Integer roleCount = jdbcTemplate.queryForObject(
             "SELECT COUNT(*) FROM jiao_se WHERE jiao_se_dai_ma IN ('STUDENT','TEACHER','ADMIN')", Integer.class);
 
-        assertThat(latestVersion).isEqualTo(14);
+        assertThat(latestVersion).isEqualTo(DatabaseSchemaFacts.LATEST_FLYWAY_VERSION);
         Set<String> profileColumns = Set.copyOf(jdbcTemplate.queryForList("""
             SELECT column_name FROM information_schema.columns
             WHERE table_schema=DATABASE() AND table_name='yong_hu'
@@ -244,7 +249,7 @@ class UserTeachingDatabaseModelTest extends AdminQuestionIntegrationTestSupport 
     }
 
     @Test
-    void emptyDatabaseShouldMigrateFromV1ToV14() throws Exception {
+    void emptyDatabaseShouldMigrateFromV1ToLatest() throws Exception {
         String configuredUrl = environment.getRequiredProperty("spring.datasource.url");
         String username = environment.getRequiredProperty("spring.datasource.username");
         String password = environment.getRequiredProperty("spring.datasource.password");
@@ -266,22 +271,26 @@ class UserTeachingDatabaseModelTest extends AdminQuestionIntegrationTestSupport 
             Flyway flyway = Flyway.configure()
                 .dataSource(testUrl, username, password)
                 .locations("classpath:db/migration")
+                .callbacks(new com.neu.riketiku.config.LegacyVariantModeFlywayCallback())
                 .cleanDisabled(true)
                 .load();
-            assertThat(flyway.migrate().migrationsExecuted).isEqualTo(14);
+            assertThat(flyway.migrate().migrationsExecuted).isEqualTo(DatabaseSchemaFacts.LATEST_FLYWAY_VERSION);
 
             try (Connection connection = DriverManager.getConnection(testUrl, username, password);
                  Statement statement = connection.createStatement()) {
                 assertThat(singleInt(statement,
                     "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='" + schema
                         + "' AND table_name <> 'flyway_schema_history'"))
-                    .isEqualTo(35);
+                    .isEqualTo(DatabaseSchemaFacts.BUSINESS_TABLE_COUNT);
                 assertThat(singleInt(statement, "SELECT COUNT(*) FROM ti_mu")).isEqualTo(3);
                 assertThat(singleInt(statement,
-                    "SELECT COUNT(*) FROM flyway_schema_history WHERE success=1")).isEqualTo(14);
+                    "SELECT COUNT(*) FROM flyway_schema_history WHERE success=1"))
+                    .isEqualTo(DatabaseSchemaFacts.LATEST_FLYWAY_VERSION);
                 assertThat(singleInt(statement, "SELECT COUNT(*) FROM information_schema.columns WHERE table_schema='" + schema + "' AND table_name='gao_pin_kao_dian' AND column_name='ren_ke_guan_xi_id'")).isEqualTo(1);
                 assertThat(singleInt(statement, "SELECT COUNT(*) FROM information_schema.columns WHERE table_schema='" + schema + "' AND table_name='si_xin_hui_hua'")).isEqualTo(8);
-                assertThat(singleInt(statement, "SELECT COUNT(*) FROM information_schema.columns WHERE table_schema='" + schema + "' AND table_name='si_xin_xiao_xi'")).isEqualTo(8);
+                assertThat(singleInt(statement, "SELECT COUNT(*) FROM information_schema.columns WHERE table_schema='" + schema + "' AND table_name='si_xin_xiao_xi'")).isEqualTo(11);
+                assertThat(singleInt(statement, "SELECT COUNT(*) FROM information_schema.columns WHERE table_schema='" + schema + "' AND table_name='ti_mu' AND column_name IN ('zhuan_ti_lei_xing','ke_jian_fan_wei','ren_ke_guan_xi_id','chuang_jian_ren_id')")).isEqualTo(4);
+                assertThat(singleInt(statement, "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='" + schema + "' AND table_name IN ('gao_pin_kao_dian_zhi_shi_dian','gao_pin_kao_dian_fu_jian')")).isEqualTo(2);
                 assertThat(singleInt(statement, "SELECT COUNT(*) FROM information_schema.referential_constraints WHERE constraint_schema='" + schema + "' AND table_name IN ('si_xin_hui_hua','si_xin_xiao_xi')")).isEqualTo(4);
                 assertThat(singleInt(statement, "SELECT COUNT(*) FROM information_schema.statistics WHERE table_schema='" + schema + "' AND table_name='si_xin_hui_hua' AND index_name='uk_si_xin_hui_hua_scope_student' AND non_unique=0")).isEqualTo(2);
             }

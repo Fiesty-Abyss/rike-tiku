@@ -1,5 +1,13 @@
 # 答辩事实与问答
 
+## PR #33 补充口径
+
+- 为什么 AI 不直接改变答案？正式判分与 `STANDARD` 是数据库事实；AI 只解释或生成 `PENDING` 候选，人工审核是发布门禁。
+- “深度思考”是否展示思维链？不展示、不持久化、不写日志；服务端只保存最终 `content`。
+- 联网搜索如何防提示注入？只调用官方结构化搜索接口，限制结果数、超时和 URL；摘要标记为 `UNTRUSTED_WEB_CONTEXT`，不能覆盖 STANDARD。
+- 变式题为何不是聊天文本？独立结构化 API 复用候选 Parser、答案校验和确定性判分，避免出现只有题干没有选项的不可作答结果。
+- PDF 如何实现？页面提供 A4 print CSS 和 `window.print()`；PDF 由系统打印对话框“另存为 PDF”，不引入重型 PDF 依赖。
+
 ## 1. 为什么用 DeepSeek？
 
 项目需要中文物化生文本推理、结构化 JSON 和 OpenAI-compatible HTTP 契约。DeepSeek 作为文本“大脑”统一承担错因、当前题答疑和候选生成，减少多模型业务分叉；本科 Demo 默认用成本和延迟更适合的 `deepseek-v4-flash`。
