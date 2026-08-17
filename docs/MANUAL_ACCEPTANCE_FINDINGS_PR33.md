@@ -1,6 +1,6 @@
 # PR #33 人工验收事实台账
 
-更新时间：2026-08-16
+更新时间：2026-08-17
 真人状态：`FINAL_USER_REVIEW_PENDING`
 
 机器测试、匿名 Demo、Mock/夹具和 Provider 合同测试均不替代用户真人复验。此前泄露的智谱凭据已视为永久失效，本轮未读取、调用、保存或复述；真实 Provider 分项为 `BLOCKED_EXTERNAL_PROVIDER`。
@@ -40,5 +40,7 @@
 | MA33-22 | 第三轮变式新颖度规则过于二元，无法解释 WARN，也没有按变化方式约束变化维度 | HIGH | 旧逻辑只按相似度做通过/拒绝，缺少 ACCEPT/WARN/REJECT 分层、模式维度门槛、难度复杂度门槛和有限修复预算 | 新颖度服务、候选生成服务/Prompt/DTO、学生变式服务/DTO、教师与学生候选前端及测试 | 新颖度单测 3/3；候选生成集成 7/7；学生变式集成 4/4；WARN 仅允许预览/DRAFT/PENDING，REJECT 阻断发布 | Provider 当前为 `BLOCKED_EXTERNAL_PROVIDER`，未把 Mock 写成真实生成验收 | `54fc43f` | FINAL_USER_REVIEW_PENDING |
 | MA33-23 | 正式专题内容只有 6 个单元/18 条关系，学生端学科覆盖不足 | MEDIUM | 正式库原有受控内容源只编排了每科 2 个单元；本轮新增 v2 内容源并用正式库 guard + 事务幂等同步扩充 | v2 专题内容源、内容构建/同步脚本、正式内容门禁、正式浏览器断言 | 正式库 V29/50：15 个已发布单元、45 条关系，物理 6/化学 5/生物 4；第二次同步 0 insert/0 create；无迁移 | Demo 仍保留匿名旧基线 3 个单元；正式浏览器本轮为 `BLOCKED_LOCAL_CREDENTIAL`，不把 Demo 旧内容当正式内容 | `54fc43f` | FINAL_USER_REVIEW_PENDING |
 | MA33-24 | 错题本全部学科筛选触发 Element Plus `value=undefined` 运行时 warning | LOW | “全部学科”使用了未定义的 option value；placeholder 与 clearable 已足以表达未筛选状态 | `WrongQuestionsView.vue` | 错题本专项通过；Demo 最终复验 0 console warning、0 console/page/request error | `pr33-demo-scientific/browser-results-demo-final-wrong-book.json` | `54fc43f` | FINAL_USER_REVIEW_PENDING |
+| MA33-25 | 专题详情将 `\\fracrac`、`\\ce` 等表达式显示为原始文本，且图像题无图 | HIGH | 正式内容中残留拼写污染；专题数据未附 QUESTION 图片 | 修正 v2 专题源、同步现有 PUBLISHED 行；正式题 `396` 写入受控 v-t 教学图附件 | `ScientificText`/mhchem 专项；正式库审计 600 strings/105 rows/0 errors | 正式数据库已更新；浏览器真人复验仍待完成 | 待本轮普通提交 | IMPLEMENTED_PENDING_USER_REVIEW |
+| MA33-28 | 管理员不能删除单条操作日志或已处理的密码恢复记录 | MEDIUM | 管理接口与页面均缺少受控删除动作 | 操作日志物理删除（不产生删除日志）；仅 `RESOLVED`/`REJECTED` 恢复记录可删 | 后端专项 5 tests；前端专项 8 tests | 浏览器复验待进行 | 待本轮普通提交 | IMPLEMENTED_PENDING_USER_REVIEW |
 
 本轮正式库机器/数据验收摘要：`rike_tiku` V29/50，15 个已发布专题单元、45 条单元题目关系、65 张已发布卡片；学科分布为物理 6、化学 5、生物 4。科学内容审计为 600 个字符串/105 条正式库行、0 errors。Demo 浏览器 4 条路线均为 200，0 console/page/failed-request error、0 overflow；正式库浏览器因当前环境没有可用的轮换正式学生凭据，状态为 `BLOCKED_LOCAL_CREDENTIAL`。上述数字均不表示真人验收，也不表示 Provider PASS。

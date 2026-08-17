@@ -33,7 +33,7 @@
           "difficulty": 3,
           "knowledgePointId": 33,
           "stem": "用纸带研究小车的匀加速运动，连续相等时间内的位移依次增大。说明判断依据、加速度求法和减小随机误差的方法。",
-          "standardAnalysis": "相等时间间隔内位移差近似相等是匀加速的证据；可用\\(a=\\fracrac{\\Delta v}{\\Delta t}\\)或逐差法处理，并增加测量次数取平均值。"
+          "standardAnalysis": "相等时间间隔内位移差近似相等是匀加速的证据；可用\\(a=\\frac{\\Delta v}{\\Delta t}\\)或逐差法处理，并增加测量次数取平均值。"
         }
       ]
     },
@@ -60,7 +60,7 @@
           "difficulty": 3,
           "knowledgePointId": 41,
           "stem": "导体棒长0.50 m，在0.80 T匀强磁场中以4.0 m/s垂直切割磁感线，回路电阻0.40 Ω。求感应电动势和电流，并说明安培力的方向。",
-          "standardAnalysis": "用\\(E=Blv\\)求电动势、用\\(I=\\fracrac{E}{R}\\)求电流；安培力阻碍导体棒相对磁通量的变化。"
+          "standardAnalysis": "用\\(E=Blv\\)求电动势、用\\(I=\\frac{E}{R}\\)求电流；安培力阻碍导体棒相对磁通量的变化。"
         },
         {
           "title": "折射率实验设计",
@@ -69,7 +69,7 @@
           "difficulty": 3,
           "knowledgePointId": 12,
           "stem": "用半圆形玻璃砖和量角器测定玻璃折射率。说明光路、记录量和计算关系，并解释光线从圆心射向弧面的原因。",
-          "standardAnalysis": "记录入射角和折射角，依据\\(n=\\fracrac{\\sin i}{\\sin r}\\)计算；从圆心入射时光线垂直弧面，减少弧面折射带来的干扰。"
+          "standardAnalysis": "记录入射角和折射角，依据\\(n=\\frac{\\sin i}{\\sin r}\\)计算；从圆心入射时光线垂直弧面，减少弧面折射带来的干扰。"
         }
       ]
     },
@@ -132,7 +132,7 @@
           "difficulty": 3,
           "knowledgePointId": 58,
           "stem": "惰性电极电解\\(\\ce{CuSO4}\\)溶液，阴极析出3.2 g铜。计算转移电子的物质的量，并比较铜作阳极时的变化。",
-          "standardAnalysis": "阴极反应为\\(\\ce{Cu^{2+}+2e^- -> Cu}\\)，由\\(n(\\ce{Cu})=\\fracrac{m}{M}\\)和电子计量关系求\\(n(e^-)\\)；铜阳极优先溶解，溶液中\\(\\ce{Cu^{2+}}\\)浓度变化不同。"
+          "standardAnalysis": "阴极反应为\\(\\ce{Cu^{2+}+2e^- -> Cu}\\)，由\\(n(\\ce{Cu})=\\frac{m}{M}\\)和电子计量关系求\\(n(e^-)\\)；铜阳极优先溶解，溶液中\\(\\ce{Cu^{2+}}\\)浓度变化不同。"
         },
         {
           "title": "有机合成路线",
@@ -159,7 +159,7 @@
           "difficulty": 3,
           "knowledgePointId": 123,
           "stem": "豌豆高茎D对矮茎d显性，圆粒R对皱粒r显性，两对基因独立遗传。DdRr自交，求矮茎圆粒概率。",
-          "standardAnalysis": "两对性状分别按分离定律计算，矮茎概率为\\(\\fracrac14\\)，圆粒概率为\\(\\fracrac34\\)，独立遗传时相乘得到\\(\\fracrac{3}{16}\\)。"
+          "standardAnalysis": "两对性状分别按分离定律计算，矮茎概率为\\(\\frac{1}{4}\\)，圆粒概率为\\(\\frac{3}{4}\\)，独立遗传时相乘得到\\(\\frac{3}{16}\\)。"
         },
         {
           "title": "光合作用材料分析",
@@ -240,7 +240,7 @@
           "difficulty": 3,
           "knowledgePointId": 26,
           "stem": "两辆车从同一直线上不同位置出发，已知各自初速度和加速度。说明用何种方程判断相遇时刻，并指出解的物理取舍。",
-          "standardAnalysis": "分别写出\\(x=x_0+v_0t+\\fracrac12at^2\\)，令两车位置相等得到关于t的方程；舍去负时间和不满足运动阶段条件的根。"
+          "standardAnalysis": "分别写出\\(x=x_0+v_0t+\\frac{1}{2}at^2\\)，令两车位置相等得到关于t的方程；舍去负时间和不满足运动阶段条件的根。"
         },
         {
           "title": "测量不确定度",
@@ -276,7 +276,7 @@
           "difficulty": 3,
           "knowledgePointId": 16,
           "stem": "光滑水平面上的物块压缩轻弹簧后由静止释放。说明分析过程中可使用的能量关系，并指出何时不能把机械能守恒用于碰撞阶段。",
-          "standardAnalysis": "无摩擦阶段可用\\(\\fracrac12kx^2=\\fracrac12mv^2\\)；若存在非弹性碰撞，机械能转化为内能，应先用动量守恒处理碰撞。"
+          "standardAnalysis": "无摩擦阶段可用\\(\\frac{1}{2}kx^2=\\frac{1}{2}mv^2\\)；若存在非弹性碰撞，机械能转化为内能，应先用动量守恒处理碰撞。"
         },
         {
           "title": "冲量与受力时间",
@@ -303,7 +303,7 @@
           "difficulty": 2,
           "knowledgePointId": 39,
           "stem": "正电荷在电场中受到电场力，说明电场强度的定义、方向和单位。",
-          "standardAnalysis": "电场强度定义为\\(E=\\fracrac{F}{q}\\)，方向与正电荷受力方向一致，单位可写作N/C或V/m。"
+          "standardAnalysis": "电场强度定义为\\(E=\\frac{F}{q}\\)，方向与正电荷受力方向一致，单位可写作N/C或V/m。"
         },
         {
           "title": "电容器变化",
@@ -312,7 +312,7 @@
           "difficulty": 3,
           "knowledgePointId": 40,
           "stem": "平行板电容器保持与电源连接，增大两板间距，判断电容、电压和电荷量的变化。",
-          "standardAnalysis": "由\\(C=\\fracrac{\\varepsilon S}{d}\\)可知间距增大使电容减小；电源保持电压不变，故\\(Q=CU\\)中的电荷量也减小。"
+          "standardAnalysis": "由\\(C=\\frac{\\varepsilon S}{d}\\)可知间距增大使电容减小；电源保持电压不变，故\\(Q=CU\\)中的电荷量也减小。"
         },
         {
           "title": "伏安法测电阻",
@@ -348,7 +348,7 @@
           "difficulty": 3,
           "knowledgePointId": 43,
           "stem": "带电粒子以速度v垂直进入匀强磁场，说明轨道半径和周期与速度、质量、电荷量、磁感应强度的关系。",
-          "standardAnalysis": "由\\(qvB=\\fracrac{mv^2}{r}\\)得\\(r=\\fracrac{mv}{qB}\\)，周期为\\(T=\\fracrac{2\\pi m}{qB}\\)；周期与速率无关但依赖质量、电荷量和磁场。"
+          "standardAnalysis": "由\\(qvB=\\frac{mv^2}{r}\\)得\\(r=\\frac{mv}{qB}\\)，周期为\\(T=\\frac{2\\pi m}{qB}\\)；周期与速率无关但依赖质量、电荷量和磁场。"
         },
         {
           "title": "光电效应",
@@ -375,7 +375,7 @@
           "difficulty": 2,
           "knowledgePointId": 61,
           "stem": "说明质量、摩尔质量和物质的量之间的换算关系，并指出气体体积换算前需要确认的条件。",
-          "standardAnalysis": "使用\\(n=\\fracrac{m}{M}\\)换算时质量和摩尔质量单位要匹配；气体摩尔体积还需要题目给出的温度、压强和气体状态条件。"
+          "standardAnalysis": "使用\\(n=\\frac{m}{M}\\)换算时质量和摩尔质量单位要匹配；气体摩尔体积还需要题目给出的温度、压强和气体状态条件。"
         },
         {
           "title": "离子方程式",
@@ -528,7 +528,7 @@
           "difficulty": 3,
           "knowledgePointId": 95,
           "stem": "比较生态系统中的能量流动和物质循环，说明为什么提高资源利用率不等同于提高营养级能量传递效率。",
-          "standardAnalysis": "能量沿食物链单向流动并逐级损耗，物质可在生态系统内循环；传递效率是\\(\\fracrac{下一营养级同化量}{本营养级同化量}\\times100\\%\\)，口径不能混用。"
+          "standardAnalysis": "能量沿食物链单向流动并逐级损耗，物质可在生态系统内循环；传递效率是\\(\\frac{下一营养级同化量}{本营养级同化量}\\times100\\%\\)，口径不能混用。"
         },
         {
           "title": "现代生物技术证据",

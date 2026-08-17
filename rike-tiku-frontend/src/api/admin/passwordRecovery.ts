@@ -3,3 +3,4 @@ export interface PasswordRecoveryItem {id:number;userId:number;username:string;n
 export const fetchPasswordRecoveries=()=>http.get<{records:PasswordRecoveryItem[];pendingCount:number}>('/admin/password-recovery-requests').then(r=>r.data)
 export const resolvePasswordRecovery=(id:number)=>http.post(`/admin/password-recovery-requests/${id}/resolve`).then(r=>r.data)
 export const rejectPasswordRecovery=(id:number,reason:string)=>http.post(`/admin/password-recovery-requests/${id}/reject`,{reason}).then(r=>r.data)
+export const deletePasswordRecovery=(id:number)=>http.delete(`/admin/password-recovery-requests/${id}`)

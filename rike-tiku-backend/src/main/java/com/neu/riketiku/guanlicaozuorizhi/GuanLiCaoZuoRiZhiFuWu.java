@@ -83,6 +83,14 @@ public class GuanLiCaoZuoRiZhiFuWu {
         return csv.toString();
     }
 
+    /** Deliberately not audited: otherwise each deletion would create an undeletable replacement row. */
+    @Transactional
+    public void delete(long id) {
+        if (jdbc.update("DELETE FROM guan_li_cao_zuo_ri_zhi WHERE id=?", id) != 1) {
+            throw new RenZhengYeWuYiChang("OPERATION_LOG_NOT_FOUND", "日志不存在", org.springframework.http.HttpStatus.NOT_FOUND);
+        }
+    }
+
     private String filters(List<Object> arguments,String module,String action,String result,Long operatorId,Long objectId,String keyword,LocalDateTime start,LocalDateTime end) {
         StringBuilder where = new StringBuilder(" WHERE 1=1");
         equal(where, arguments, "l.mo_kuai", module);

@@ -135,6 +135,22 @@ def main() -> None:
         if existing_unit:
             if existing_unit[1] != 3:
                 raise SystemExit(f"EXISTING_UNIT_NOT_THREE_QUESTIONS={definition['title']}")
+            # The first sync deliberately preserved published topic questions.  A later
+            # content correction must also reach those existing rows; only scientific
+            # text and its matching content hash are changed, never answers or history.
+            for item in definition["questions"]:
+                stem = f"【专题演示】{item['title']}｜{item['stem']}"
+                digest = hashlib.sha256(stem.encode("utf-8")).hexdigest()
+                statements.append(
+                    "UPDATE ti_mu SET ti_gan=" + sql(stem) + ",nei_rong_ha_xi=" + sql(digest)
+                    + " WHERE ke_mu_id=" + str(subject_id) + " AND ti_gan LIKE "
+                    + sql(f"【专题演示】{item['title']}｜%") + " AND yi_shan_chu=0"
+                )
+                statements.append(
+                    "UPDATE ti_mu_jie_xi SET jie_xi_nei_rong=" + sql(item["standardAnalysis"])
+                    + " WHERE ti_mu_id IN (SELECT id FROM ti_mu q WHERE q.ke_mu_id=" + str(subject_id)
+                    + " AND q.ti_gan=" + sql(stem) + " AND q.yi_shan_chu=0)"
+                )
             continue
         statements.append(
             "INSERT INTO zhuan_ti_xue_xi_dan_yuan(ke_mu_id,biao_ti,jian_jie,nan_du_ceng_ji,zhu_zhi_shi_dian_id,pai_xu,zhuang_tai,chuang_jian_ren_id,lai_yuan_lei_xing,lai_yuan_ming_cheng,quan_li_zhuang_tai) "

@@ -62,6 +62,12 @@ public class PasswordRecoveryService {
             return new PasswordRecoveryDtos.Resolution(requestId,"REJECTED");
         });
     }
+    @Transactional
+    public void delete(long requestId){
+        RequestRow row=lock(requestId);
+        if("PENDING".equals(row.status())) throw new RenZhengYeWuYiChang("PASSWORD_RECOVERY_PENDING", "请先处理或驳回待处理的密码恢复请求", HttpStatus.CONFLICT);
+        jdbc.update("DELETE FROM mi_ma_chong_zhi_shen_qing WHERE id=?",requestId);
+    }
     private RequestRow lock(long id){return jdbc.query("SELECT yong_hu_id,zhuang_tai FROM mi_ma_chong_zhi_shen_qing WHERE id=? FOR UPDATE",(rs,row)->new RequestRow(rs.getLong(1),rs.getString(2)),id).stream().findFirst().orElseThrow(()->new RenZhengYeWuYiChang("PASSWORD_RECOVERY_NOT_FOUND","密码恢复请求不存在",HttpStatus.NOT_FOUND));}
     private void conflict(){throw new RenZhengYeWuYiChang("PASSWORD_RECOVERY_ALREADY_HANDLED","密码恢复请求已经处理",HttpStatus.CONFLICT);}
     private record RequestRow(long userId,String status){}
