@@ -4,11 +4,11 @@
 
 ## 当前状态
 
-> PR #33 最终收口（2026-08-17）：用户完成最终页面审查并明确授权在最后两项修复和最终 HEAD 回归通过后 ordinary merge。已移除忘记密码弹窗的内部安全说明；教师列表现在从 `yong_hu_jiao_se` 返回真实 `roles`，以独立标签显示教师与管理员，并支持直接授权、撤销、重新授权及最后管理员/当前管理员保护。Flyway 仍为 V1–V29、50 张业务表，无 V30。
+> Post-merge V30 质量修补（2026-08-17）：PR #33 已合并；当前维护分支完成专题内容重写、专题主观题手动组卷、题型中文化和发布附件快照。Flyway 为 V1–V30、50 张业务表；V1–V29 未改动，V30 仅扩展已有发布/作答表字段。
 
-最终机器门禁：后端全量 217 tests（0 failures、0 errors、3 skipped），`mvn clean test` 和 package 通过；前端全量 68 files / 221 tests、type-check、build、`npm audit --omit=dev` 通过，audit 为 0 vulnerabilities。随机临时 schema 完整执行 V1–V29；正式 `rike_tiku` 只读核验 V29、50 张业务表、0 failed migration。科学内容审计为 600 strings / 0 database rows / 0 errors；正式参考文献 22。真实 Provider 仍分别记为 `BLOCKED_EXTERNAL_PROVIDER`，不外推为真实 PASS。
+最终机器门禁：后端全量 220 tests（0 failures、0 errors、3 skipped），`mvn test` 和 `mvn package` 通过；前端全量 68 files / 222 tests、type-check、build、`npm audit --omit=dev` 通过，audit 为 0 vulnerabilities。随机临时 schema 完整执行 V1–V30；正式 `rike_tiku` 正常迁移并校验 V30、50 张业务表、0 failed migration。科学内容审计为 600 strings / 117 database rows / 0 errors；正式参考文献 22。真实 Provider 仍分别记为 `BLOCKED_EXTERNAL_PROVIDER`，不外推为真实 PASS。
 
-正式 `rike_tiku` 的迁移前真实版本为 V24/41 表。仓库外备份为 1,326,218 bytes，SHA-256 `039C9E885007EB79ED317E1A1E5C5A6DCEB7EC2746C0777957E41E60FE65E622`。首次迁移揭示 V25 与历史 `NUMERIC_CONDITION` 的约束兼容缺陷；从已校验备份恢复到 V24 后，由版本门禁 Flyway callback 将该旧枚举语义映射为 `CONDITION_RECOMBINATION`，随后 V25–V29 正常迁移。当前为 V29/50 表、0 failed migration；9 用户、389 题、378 PUBLISHED 保持，另有 65 张已发布高频考点卡片和 15 个已发布专题单元、45 条单元题目关系；本轮通过受控内容脚本写入学生展示内容，没有 reset/seed/迁移。
+正式 `rike_tiku` 的历史迁移记录保留；本轮从 V29 正常迁移至 V30，未 reset 或 clean。V30 为 `shi_juan_fa_bu_ti_mu` 增加 `fu_jian_kuai_zhao` JSON，并将 `shi_juan_xue_sheng_da_ti.zhuang_tai` 扩为 `VARCHAR(32)` 以合法保存 `SUBJECTIVE_PENDING`。当前为 V30/50 表、0 failed migration；正式内容为 15 个已发布专题单元、45 条单元题目关系，学科分布物理 6 / 化学 5 / 生物 4，专题类型为计算 14 / 实验 9 / 流程 5 / 材料分析 13 / 综合 4。同步脚本按稳定单元与学习阶段更新，不复制 `ti_mu` 事实。
 
 历史记录：PR #31 已由用户明确决定 ordinary merge，merge commit 为 `c79b7a6f93e32509989282995419bbaf64666182`；此前 PR #32 `chore/final-local-production-thesis-package` 曾记录正式库由 V11 正规迁移至 V14。本段不代表当前版本，当前版本以本节首段的 PR #33、V29/50 和最终门禁记录为准。
 
@@ -27,7 +27,7 @@
 | 最终用户人工验收 | `FINAL_MANUAL_ACCEPTANCE_PENDING` |
 
 - 架构保持前后端分离的模块化单体，不使用微服务。
-- Flyway 为 V1–V29，共 50 张业务表；V1–V29 均为已执行迁移，不得修改。
+- Flyway 为 V1–V30，共 50 张业务表；V1–V29 均为已执行迁移，不得修改。
 - 正式答案与 STANDARD 标准解析是权威事实，AI 不能覆盖。
 - DeepSeek 负责文本推理，GLM-4.6V-Flash 只提供受控 `UNTRUSTED_VISION_CONTEXT`。
 - 学生端统一显示“RIKE 理科学习助手”，不显示 Provider、模型代码、API 地址、Key 或 Token。

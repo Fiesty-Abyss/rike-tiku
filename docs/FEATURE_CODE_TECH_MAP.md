@@ -1,6 +1,6 @@
 # 功能、代码、数据库与技术映射
 
-> PR #33 的最终路由、截图、前端 API、Controller、Service、表和 Flyway 逐项索引见 [FEATURE_SCREENSHOT_CODE_INDEX](FEATURE_SCREENSHOT_CODE_INDEX.md)。当前数据库基线为 Flyway V29、50 张业务表；早期 V14/35 表描述仅作为历史阶段信息保留。
+> PR #33 的最终路由、截图、前端 API、Controller、Service、表和 Flyway 逐项索引见 [FEATURE_SCREENSHOT_CODE_INDEX](FEATURE_SCREENSHOT_CODE_INDEX.md)。当前数据库基线为 Flyway V30、50 张业务表；V30 只扩展发布附件快照和主观题待处理状态，不新增表。
 
 路径均核对当前代码。前端路由集中于 `src/router/index.ts`；后端 API 统一以 `/api/v1` 为前缀。
 
@@ -23,6 +23,8 @@
 | STUDENT | 错题 | `/student/wrong-questions` | `WrongQuestionsView.vue` | `api/student/practice.ts` | `StudentPracticeController` | `StudentPracticeService` | `cuo_ti_ji_lu`,`xue_sheng_da_ti` | 最近错误正式事实、REVIEWING/MASTERED | `StudentPracticeIntegrationTest`,`WrongQuestionsView.spec.ts` |
 | STUDENT | 掌握度与推荐 | `/student/subjects/:subjectCode` | `SubjectDashboardView.vue` | `api/student/learningMastery.ts` | `LearningMasteryController` | `LearningMasteryService` | `xue_xi_jie_guo` | 规则计算、知识点聚合 | `LearningMasteryIntegrationTest`,`SubjectDashboardView.spec.ts` |
 | STUDENT/TEACHER | 高频考点 | 学科工作台、`/teacher/scopes/:scopeId` | `SubjectDashboardView.vue`,`TeacherScopeWorkspaceView.vue` | `api/student/highFrequency.ts`,`api/teacher.ts` | `XueShengGaoPinKaoDianController`,`JiaoShiGaoPinKaoDianController` | `JiaoShiGaoPinKaoDianFuWu` | `gao_pin_kao_dian`,`ren_ke_guan_xi` | 三元任课范围 | `JiaoShiGaoPinKaoDianIntegrationTest` |
+| STUDENT | 专题学习 | `/student/topics`、`/student/topics/units/:unitId` | `student/TopicLearningView.vue`、`QuestionContent.vue`、`StandardAnalysis.vue` | `api/student/topicLearning.ts` | `zhuantixuexi/TopicLearningController` | `TopicLearningService` | `ti_mu`、`ti_mu_jie_xi`、`ti_mu_fu_jian`、`zhuan_ti_xue_xi_dan_yuan`、`zhuan_ti_xue_xi_dan_yuan_ti_mu` | 统一题目事实、三阶段编排、KaTeX/mhchem、受控附件 | `TopicLearningContentContractTest`,`TopicLearningIntegrationTest`,`TopicLearningView.spec.ts` |
+| TEACHER/STUDENT | 专题主观大题混合组卷与发布 | `/teacher/papers`、`/teacher/papers/:id/:version`、`/student/papers/:releaseId` | `TeacherPaperBuilderView.vue`、`PaperPreviewView.vue`、`StudentPapersView.vue` | `api/teacher/papers.ts`、`api/student/papers.ts` | `shijuan/PaperController`、`PaperAssignmentTeacherController`、`PaperAssignmentStudentController` | `PaperService`、`PaperAssignmentService` | `ti_mu`、`shi_juan_ti_mu`、`shi_juan_fa_bu_ti_mu`、`shi_juan_xue_sheng_da_ti` | 中文题型映射、V30 附件快照、客观确定性判分、`SUBJECTIVE_PENDING` | `PaperAssignmentIntegrationTest`,`TeacherPaperBuilderView.spec.ts`,`PaperPreviewView.spec.ts`,`StudentPapersView.spec.ts` |
 | STUDENT/TEACHER | 私信 | `/messages`、`/messages/:id` | `MessagesView.vue`,`MessageConversationView.vue` | `api/messages.ts` | `sixin/SiXinController` | `SiXinFuWu` | `si_xin_hui_hua`,`si_xin_xiao_xi` | 授权会话、轮询 | `SiXinIntegrationTest`,`MessagesView.spec.ts` |
 | 全部 | 个人中心 | `/profile` | `ProfileView.vue` | `api/profile.ts` | `gerenzhongxin/ProfileController` | `ProfileService` | 用户/教师/学生档案 | MIME 头像、角色信息 | `ProfileIntegrationTest`,`ProfileView.spec.ts` |
 | ADMIN | 操作日志 | `/admin/operation-logs` | `admin/OperationLogsView.vue` | `api/admin/operationLogs.ts` | `GuanLiCaoZuoRiZhiController` | `GuanLiCaoZuoRiZhiFuWu` | `guan_li_cao_zuo_ri_zhi` | 独立记录事务、安全摘要 | `GuanLiCaoZuoRiZhiIntegrationTest`,`operationLogs.spec.ts` |
