@@ -1,0 +1,10 @@
+{
+  "route": "/student/wrong-questions",
+  "status": 200,
+  "consoleWarnings": 0,
+  "consoleErrors": 0,
+  "pageErrors": 0,
+  "failedRequests": 0,
+  "rawScientificMarkup": false,
+  "overflow": false
+}

@@ -23,7 +23,9 @@ public final class AiModelConfigDtos {
                        LocalDateTime createdAt, LocalDateTime updatedAt) { }
 
     public record ConnectionResult(boolean success, String provider, String model, long latencyMillis,
-                                   String status, String visionSummaryPreview, String safeError) { }
+                                   String status, String visionSummaryPreview, String safeError,
+                                   String safeErrorCode,Integer httpStatus,String providerErrorCode,
+                                   Long retryAfterSeconds,LocalDateTime testedAt) { }
 
     public record Page(List<Item> records) { }
 }

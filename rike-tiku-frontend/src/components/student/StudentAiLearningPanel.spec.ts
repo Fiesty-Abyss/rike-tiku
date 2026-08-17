@@ -3,7 +3,7 @@ import { flushPromises, mount } from '@vue/test-utils'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import StudentAiLearningPanel from './StudentAiLearningPanel.vue'
 
-const api = vi.hoisted(() => ({ fetchAiAnalysis:vi.fn(), generateAiAnalysis:vi.fn(), createAiConversation:vi.fn(), sendAiMessage:vi.fn() }))
+const api = vi.hoisted(() => ({ fetchAiAnalysis:vi.fn(), fetchAiModelOptions:vi.fn(), fetchAiCapabilities:vi.fn(), generateAiAnalysis:vi.fn(), createAiConversation:vi.fn(), sendAiMessage:vi.fn() }))
 const warning = vi.hoisted(() => vi.fn())
 vi.mock('../../api/student/aiLearning', () => ({ ...api, fetchAiConversation:vi.fn() }))
 vi.mock('element-plus', () => ({ ElMessage:{ warning } }))
@@ -15,7 +15,7 @@ const stubs = {
 }
 
 describe('学生 AI 学习面板', () => {
-  beforeEach(() => { vi.clearAllMocks(); api.fetchAiAnalysis.mockResolvedValue({ answerFactId:19,status:'NOT_GENERATED',commonMistakes:[],reviewSuggestions:[],cached:false }) })
+  beforeEach(() => { vi.clearAllMocks(); api.fetchAiAnalysis.mockResolvedValue({ answerFactId:19,status:'NOT_GENERATED',commonMistakes:[],reviewSuggestions:[],cached:false }); api.fetchAiModelOptions.mockResolvedValue([{id:3,displayName:'DeepSeek V4 Flash',modelCode:'deepseek-v4-flash',available:true,defaultOption:true,capabilityTags:['快速']}]); api.fetchAiCapabilities.mockResolvedValue({webSearchAvailable:false}) })
   it('清楚标注 AI 辅助且不展示 provider、模型或 token', async () => {
     api.fetchAiAnalysis.mockResolvedValue({ answerFactId:19,status:'SUCCESS',errorType:'CONCEPT_ERROR',errorReason:'概念混淆',correctThinking:'先判断受力',commonMistakes:['直接套公式'],reviewSuggestions:['复习受力'],cached:false })
     const wrapper = mount(StudentAiLearningPanel, { props:{ answerFactId:19,wrong:true }, global:{ stubs, directives:{ loading:()=>undefined } } })
@@ -44,15 +44,18 @@ describe('学生 AI 学习面板', () => {
     expect(wrapper.text()).toContain('当前题目答疑')
   })
   it('创建绑定当前答题事实的会话并展示轮数，发送失败不暴露底层异常', async () => {
-    api.createAiConversation.mockResolvedValue({ id:7,answerFactId:19,questionId:2,status:'ACTIVE',usedRounds:0,maxRounds:8,remainingRounds:8,messages:[] })
+    api.createAiConversation.mockResolvedValue({ id:7,answerFactId:19,questionId:2,status:'ACTIVE',usedRounds:0,maxRounds:10,remainingRounds:10,messages:[] })
     api.sendAiMessage.mockRejectedValue({ message:'当前题目答疑暂不可用' })
     const wrapper = mount(StudentAiLearningPanel, { props:{ answerFactId:19,wrong:true }, global:{ stubs, directives:{ loading:()=>undefined } } })
     await flushPromises()
     await wrapper.findAll('button').find(button => button.text().includes('当前题目答疑'))!.trigger('click')
     await flushPromises()
-    expect(api.createAiConversation).toHaveBeenCalledWith(19)
+    expect(wrapper.text()).toContain('DeepSeek V4 Flash')
+    await wrapper.findAll('button').find(button => button.text().includes('开始答疑'))!.trigger('click')
+    await flushPromises()
+    expect(api.createAiConversation).toHaveBeenCalledWith(19, { modelConfigId:3, thinkingMode:'STANDARD', webSearch:false })
     expect(wrapper.text()).toContain('RIKE 理科学习助手', '已绑定当前题目')
-    expect(wrapper.text()).toContain('剩余 8 / 8 轮')
+    expect(wrapper.text()).toContain('剩余 10 / 10 轮')
     await wrapper.find('textarea').setValue('为什么要先受力分析？')
     await wrapper.findAll('button').find(button => button.text() === '发送')!.trigger('click')
     await flushPromises()

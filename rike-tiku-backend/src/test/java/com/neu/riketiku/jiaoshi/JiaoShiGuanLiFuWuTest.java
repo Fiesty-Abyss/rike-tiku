@@ -51,6 +51,38 @@ class JiaoShiGuanLiFuWuTest extends AdminQuestionIntegrationTestSupport {
     }
 
     @Test @Transactional
+    void teacherRolesComeFromRoleRowsAndAdminTransitionsKeepTeacherRole() {
+        String suffix = suffix();
+        var teacher = service.create(new JiaoShiChuangJianQingQiu("T" + suffix, "教师甲", "teacher_" + suffix, "物理教师兼管理员", "Password1", "ENABLED")).teacher();
+
+        assertThat(service.page(1, 20, "T" + suffix, null, null, null, null).records())
+                .singleElement().satisfies(item -> assertThat(item.roles()).containsExactly("TEACHER"));
+        assertThat(service.get(teacher.id()).roles()).containsExactly("TEACHER");
+
+        assertThat(service.grantAdmin(teacher.id(), -1L).roles()).containsExactly("TEACHER", "ADMIN");
+        assertThat(service.page(1, 20, "T" + suffix, null, null, null, null).records())
+                .singleElement().satisfies(item -> assertThat(item.roles()).containsExactly("TEACHER", "ADMIN"));
+        var anotherTeacher = service.create(new JiaoShiChuangJianQingQiu("U" + suffix, "教师乙", "assistant_" + suffix, null, "Password1", "ENABLED")).teacher();
+        service.grantAdmin(anotherTeacher.id(), -1L);
+        assertThat(service.revokeAdmin(teacher.id(), -1L).roles()).containsExactly("TEACHER");
+        assertThat(service.grantAdmin(teacher.id(), -1L).roles()).containsExactly("TEACHER", "ADMIN");
+    }
+
+    @Test @Transactional
+    void adminRoleProtectionRejectsSelfRevokeAndLastEnabledAdminRevoke() {
+        String suffix = suffix();
+        var teacher = service.create(new JiaoShiChuangJianQingQiu("T" + suffix, "教师甲", "teacher_" + suffix, null, "Password1", "ENABLED")).teacher();
+        Long userId = jdbc.queryForObject("SELECT yong_hu_id FROM jiao_shi_dang_an WHERE id=?", Long.class, teacher.id());
+        service.grantAdmin(teacher.id(), -1L);
+
+        assertThatThrownBy(() -> service.revokeAdmin(teacher.id(), userId))
+                .isInstanceOf(RenZhengYeWuYiChang.class).hasMessageContaining("不能撤销自己的管理员权限");
+        jdbc.update("UPDATE yong_hu SET zhang_hao_zhuang_tai='DISABLED' WHERE id<>?", userId);
+        assertThatThrownBy(() -> service.revokeAdmin(teacher.id(), -1L))
+                .isInstanceOf(RenZhengYeWuYiChang.class).hasMessageContaining("至少需要保留一名可用管理员");
+    }
+
+    @Test @Transactional
     void adminResetTeacherPasswordInvalidatesOldPasswordAndAuditsWithoutPlaintext() {
         String suffix = suffix();
         var created = service.create(new JiaoShiChuangJianQingQiu("T" + suffix, "教师甲", "teacher_" + suffix, null, "OldPassword1", "ENABLED"));

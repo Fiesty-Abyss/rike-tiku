@@ -24,6 +24,17 @@ class QuestionAttachmentStorageTest {
     }
 
     @Test
+    void storesSelfContainedSvgAndWebpButRejectsActiveSvgContent() throws Exception {
+        QuestionAttachmentStorage storage = new QuestionAttachmentStorage(Files.createTempDirectory("attachment-modern").toString());
+        byte[] svg="<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\"><circle cx=\"32\" cy=\"32\" r=\"20\"/></svg>".getBytes(java.nio.charset.StandardCharsets.UTF_8);
+        byte[] webp=new byte[]{'R','I','F','F',8,0,0,0,'W','E','B','P','V','P','8',' '};
+        assertThat(storage.read(storage.store("science.svg",svg).relativePath(),storage.store("science.svg",svg).hash()).mime()).isEqualTo("image/svg+xml");
+        assertThat(storage.store("science.webp",webp).mime()).isEqualTo("image/webp");
+        assertThatThrownBy(()->storage.store("unsafe.svg","<svg><script>alert(1)</script></svg>".getBytes())).isInstanceOf(RenZhengYeWuYiChang.class);
+        assertThatThrownBy(()->storage.store("external.svg","<svg><image href=\"https://example.com/a.png\"/></svg>".getBytes())).isInstanceOf(RenZhengYeWuYiChang.class);
+    }
+
+    @Test
     void rejectsTraversalMissingDisguisedAndHashMismatch() throws Exception {
         QuestionAttachmentStorage storage = new QuestionAttachmentStorage(Files.createTempDirectory("attachment-test").toString());
         var saved = storage.store("a.png", image("png"));

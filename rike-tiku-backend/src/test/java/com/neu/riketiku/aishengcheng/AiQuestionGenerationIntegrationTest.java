@@ -10,6 +10,7 @@ import com.neu.riketiku.ai.provider.AiModelProvider;
 import com.neu.riketiku.ai.provider.AiModelRequest;
 import com.neu.riketiku.ai.provider.AiModelResult;
 import com.neu.riketiku.ai.provider.AiTokenUsage;
+import com.neu.riketiku.aixuesheng.StudentAiService;
 import com.neu.riketiku.renzheng.RenZhengYeWuYiChang;
 import com.neu.riketiku.tiku.admin.AdminQuestionIntegrationTestSupport;
 import com.neu.riketiku.tiku.admin.QuestionAdminService;
@@ -32,19 +33,19 @@ import org.springframework.transaction.annotation.Transactional;
 @Import(AiQuestionGenerationIntegrationTest.Config.class)
 class AiQuestionGenerationIntegrationTest extends AdminQuestionIntegrationTestSupport {
     @Autowired AiQuestionGenerationService service; @Autowired QueueAiProvider provider;
-    @Autowired JdbcTemplate jdbc; @Autowired QuestionAdminService questions;
+    @Autowired JdbcTemplate jdbc; @Autowired QuestionAdminService questions; @Autowired StudentAiService studentAi;
     @BeforeEach void reset(){provider.reset();}
 
     @Test @Transactional
     void generatesOnlyPendingThenRequiresQualityReviewBeforePublishing(){
         long admin=user("admin");long point=point();long mother=mother("牛顿第二定律母题");
         String motherStem=jdbc.queryForObject("SELECT ti_gan FROM ti_mu WHERE id=?",String.class,mother);
-        provider.answer(candidate(motherStem+"变",point));
-        var request=request(mother,point,"SCENARIO",1);
+        provider.answer(candidate("空间站货物运输中依据合力和加速度判断运动状态",point,"SCENARIO_TRANSFER"));
+        var request=request(mother,point,"SCENARIO_TRANSFER",1);
         var task=service.generate(admin,"ADMIN",request);
         assertThat(task.status()).isEqualTo("SUCCESS");assertThat(task.generatedCount()).isEqualTo(1);
         var candidate=task.candidates().getFirst();
-        assertThat(candidate.status()).isEqualTo("PENDING");assertThat(candidate.duplicateWarning()).isEqualTo("SUSPECTED_DUPLICATE");
+        assertThat(candidate.status()).isEqualTo("PENDING");assertThat(candidate.duplicateWarning()).isEqualTo("NONE");
         assertThat(jdbc.queryForObject("SELECT fu_ti_mu_id FROM ti_mu WHERE id=?",Long.class,candidate.questionId())).isEqualTo(mother);
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM ti_mu_lai_yuan WHERE ti_mu_id=? AND lai_yuan_lei_xing='AI_GENERATED'",Integer.class,candidate.questionId())).isEqualTo(3);
         assertThatThrownBy(()->questions.transition(candidate.questionId(),"APPROVED","PENDING","PUBLISHED",null,admin))
@@ -58,36 +59,97 @@ class AiQuestionGenerationIntegrationTest extends AdminQuestionIntegrationTestSu
     @Test @Transactional
     void rejectsInvalidJsonExactBatchAndPendingLimitsWithoutPublishing(){
         long admin=user("limits");long point=point();long mother=mother("电路母题");
-        assertThatThrownBy(()->service.generate(admin,"ADMIN",new AiQuestionGenerationDtos.Generate(mother,"SINGLE_CHOICE",List.of(point),2,"SCENARIO",4))).isInstanceOf(RenZhengYeWuYiChang.class);
-        provider.answer("{bad");
-        assertThatThrownBy(()->service.generate(admin,"ADMIN",request(mother,point,"SCENARIO",1))).isInstanceOf(RenZhengYeWuYiChang.class);
+        assertThatThrownBy(()->service.generate(admin,"ADMIN",new AiQuestionGenerationDtos.Generate(mother,"SINGLE_CHOICE",List.of(point),2,"SCENARIO_TRANSFER",4))).isInstanceOf(RenZhengYeWuYiChang.class);
+        provider.answer("{bad");provider.answer("{still-bad");
+        assertThatThrownBy(()->service.generate(admin,"ADMIN",request(mother,point,"SCENARIO_TRANSFER",1))).isInstanceOf(RenZhengYeWuYiChang.class);
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM ti_mu WHERE fu_ti_mu_id=?",Integer.class,mother)).isZero();
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM ai_sheng_cheng_ren_wu WHERE zhuang_tai='FAILED'",Integer.class)).isEqualTo(1);
 
-        provider.answer(candidate("电路母题增加电阻条件后的分析",point));
-        var first=service.generate(admin,"ADMIN",request(mother,point,"DISTRACTOR",1));
-        provider.answer(candidate("电路母题增加电阻条件后的分析",point));
+        provider.answer(candidate("电路母题增加电阻条件后的分析",point,"DISTRACTOR_REDESIGN"));
+        var first=service.generate(admin,"ADMIN",request(mother,point,"DISTRACTOR_REDESIGN",1));
+        provider.answer(candidate("电路母题增加电阻条件后的分析",point,"COMBINED"));
         assertThatThrownBy(()->service.generate(admin,"ADMIN",request(mother,point,"COMBINED",1))).isInstanceOfSatisfying(RenZhengYeWuYiChang.class,e->assertThat(e.getCode()).isEqualTo("QUESTION_DUPLICATE"));
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM ti_mu WHERE fu_ti_mu_id=?",Integer.class,mother)).isEqualTo(1);
         seedPending(mother,admin,5);
-        assertThatThrownBy(()->service.generate(admin,"ADMIN",request(mother,point,"KNOWLEDGE_ANGLE",1))).isInstanceOfSatisfying(RenZhengYeWuYiChang.class,e->assertThat(e.getCode()).isEqualTo("AI_PENDING_LIMIT_REACHED"));
+        assertThatThrownBy(()->service.generate(admin,"ADMIN",request(mother,point,"CONDITION_RECOMBINATION",1))).isInstanceOfSatisfying(RenZhengYeWuYiChang.class,e->assertThat(e.getCode()).isEqualTo("AI_PENDING_LIMIT_REACHED"));
         assertThat(first.candidates()).hasSize(1);
     }
 
     @Test @Transactional
     void enforcesPublishedMotherAndTeacherSubjectScope(){
         long teacher=user("teacher");long point=point();long published=mother("物理母题");long draft=mother("未发布母题");jdbc.update("UPDATE ti_mu SET zhuang_tai='DRAFT' WHERE id=?",draft);
-        assertThatThrownBy(()->service.generate(teacher,"TEACHER",request(published,point,"SCENARIO",1))).isInstanceOfSatisfying(RenZhengYeWuYiChang.class,e->assertThat(e.getStatus().value()).isEqualTo(403));
-        assertThatThrownBy(()->service.generate(teacher,"TEACHER",request(draft,point,"SCENARIO",1))).isInstanceOfSatisfying(RenZhengYeWuYiChang.class,e->assertThat(e.getCode()).isEqualTo("AI_MOTHER_QUESTION_UNAVAILABLE"));
+        assertThatThrownBy(()->service.generate(teacher,"TEACHER",request(published,point,"SCENARIO_TRANSFER",1))).isInstanceOfSatisfying(RenZhengYeWuYiChang.class,e->assertThat(e.getStatus().value()).isEqualTo(403));
+        assertThatThrownBy(()->service.generate(teacher,"TEACHER",request(draft,point,"SCENARIO_TRANSFER",1))).isInstanceOfSatisfying(RenZhengYeWuYiChang.class,e->assertThat(e.getCode()).isEqualTo("AI_MOTHER_QUESTION_UNAVAILABLE"));
         jdbc.update("INSERT INTO jiao_shi_dang_an(yong_hu_id,gong_hao,xing_ming,zhuang_tai) VALUES (?,?,?,'ACTIVE')",teacher,"T"+teacher,"匿名教师");long teacherId=jdbc.queryForObject("SELECT LAST_INSERT_ID()",Long.class);
         jdbc.update("INSERT INTO ban_ji(ban_ji_bian_ma,ban_ji_ming_cheng,nian_ji,ru_xue_nian_fen) VALUES (?,?,?,2025)","AIG"+teacher,"AI测试班","高二");long classId=jdbc.queryForObject("SELECT LAST_INSERT_ID()",Long.class);
         jdbc.update("INSERT INTO ren_ke_guan_xi(jiao_shi_id,ban_ji_id,ke_mu_id,shi_fou_zhu_ren_ke,zhuang_tai,kai_shi_shi_jian) VALUES (?,?,1,0,'ACTIVE',CURRENT_TIMESTAMP(3))",teacherId,classId);
         assertThat(service.knowledgePoints(teacher,"TEACHER",1)).extracting(AiQuestionGenerationDtos.KnowledgePointOption::id).contains(point);
         long chemistryPoint=point(2);long chemistryMother=mother(2,"化学母题");
         assertThatThrownBy(()->service.knowledgePoints(teacher,"TEACHER",2)).isInstanceOfSatisfying(RenZhengYeWuYiChang.class,e->assertThat(e.getStatus().value()).isEqualTo(403));
-        assertThatThrownBy(()->service.generate(teacher,"TEACHER",request(chemistryMother,chemistryPoint,"SCENARIO",1))).isInstanceOfSatisfying(RenZhengYeWuYiChang.class,e->assertThat(e.getStatus().value()).isEqualTo(403));
-        provider.answer(candidate("物理母题更换实验情境后的判断",point));
-        assertThat(service.generate(teacher,"TEACHER",request(published,point,"SCENARIO",1)).status()).isEqualTo("SUCCESS");
+        assertThatThrownBy(()->service.generate(teacher,"TEACHER",request(chemistryMother,chemistryPoint,"SCENARIO_TRANSFER",1))).isInstanceOfSatisfying(RenZhengYeWuYiChang.class,e->assertThat(e.getStatus().value()).isEqualTo(403));
+        provider.answer(candidate("物理母题更换实验情境后的判断",point,"SCENARIO_TRANSFER"));
+        assertThat(service.generate(teacher,"TEACHER",request(published,point,"SCENARIO_TRANSFER",1)).status()).isEqualTo("SUCCESS");
+    }
+
+    @Test @Transactional
+    void topicVisualFlagChangesGenerationBehaviorInsteadOfSilentlyFallingBack(){
+        long student=user("topic_student");
+        String suffix=UUID.randomUUID().toString().replace("-","").substring(0,10);
+        jdbc.update("INSERT INTO xue_sheng_dang_an(yong_hu_id,xue_hao,xing_ming,nian_ji) VALUES (?,?,?,?)",student,"TOP"+suffix,"匿名专题学生","高二");
+        long point=point();
+        long mother=mother("无图片专题母题");
+        jdbc.update("UPDATE ti_mu SET ti_mu_lei_xing='SUBJECTIVE',shi_yong_mo_shi='TOPIC_LEARNING',shi_fou_ke_zi_dong_pan_fen=0,zheng_que_da_an=CAST(? AS JSON) WHERE id=?",
+                "{\"schemaVersion\":1,\"type\":\"SUBJECTIVE\"}",mother);
+        provider.answer("""
+                {"schemaVersion":2,"candidates":[{"stem":"在全新实验材料中分析两个独立条件并写出完整推理过程","questionType":"SUBJECTIVE","difficulty":3,"options":[],"correctAnswer":{"schemaVersion":1,"type":"SUBJECTIVE"},"standardAnalysis":"先识别实验变量，再分别分析两个条件，最后综合得到结论。","variationMode":"COMBINED","variationSummary":"更换实验场景并重组推理条件","changedDimensions":["SCENARIO","CONDITION","REASONING_PATH"]}]}
+                """);
+        var textOnly=new AiQuestionGenerationDtos.Generate(mother,"SUBJECTIVE",List.of(point),3,"COMBINED",1);
+        var generated=service.generateTopic(student,textOnly,false,true);
+        assertThat(generated.status()).isEqualTo("SUCCESS");
+        assertThat(generated.visionUsed()).isFalse();
+
+        var visualRequired=new AiQuestionGenerationDtos.Generate(mother,"SUBJECTIVE",List.of(point),3,"SCENARIO_TRANSFER",1);
+        assertThatThrownBy(() -> service.generateTopic(student,visualRequired,true,true))
+                .isInstanceOfSatisfying(RenZhengYeWuYiChang.class,error -> assertThat(error.getCode()).isEqualTo("AI_VISION_UNAVAILABLE"));
+        assertThat(jdbc.queryForObject("SELECT zhuang_tai FROM ai_sheng_cheng_ren_wu WHERE mu_ti_mu_id=? AND bian_shi_fang_shi='SCENARIO_TRANSFER'",String.class,mother)).isEqualTo("FAILED");
+    }
+
+    @Test @Transactional
+    void studentTopicCandidateStaysPrivateUntilExplicitTeacherSubmission(){
+        long student=user("topic_private_student");
+        String suffix=UUID.randomUUID().toString().replace("-","").substring(0,10);
+        jdbc.update("INSERT INTO xue_sheng_dang_an(yong_hu_id,xue_hao,xing_ming,nian_ji) VALUES (?,?,?,?)",student,"TP"+suffix,"匿名专题学生","高二");
+        long point=point(); long mother=mother("学生专题候选母题");
+        jdbc.update("UPDATE ti_mu SET ti_mu_lei_xing='SUBJECTIVE',shi_yong_mo_shi='TOPIC_LEARNING',shi_fou_ke_zi_dong_pan_fen=0,zheng_que_da_an=CAST(? AS JSON) WHERE id=?",
+                "{\"schemaVersion\":1,\"type\":\"SUBJECTIVE\"}",mother);
+        provider.answer("""
+                {"schemaVersion":2,"candidates":[{"stem":"在新的实验材料中分析两个条件并写出完整推理过程","questionType":"SUBJECTIVE","difficulty":3,"options":[],"correctAnswer":{"schemaVersion":1,"type":"SUBJECTIVE"},"standardAnalysis":"先识别变量，再分别分析条件，最后综合结论。","variationMode":"COMBINED","variationSummary":"重组专题情境与推理条件","changedDimensions":["SCENARIO","CONDITION","REASONING_PATH"]}]}
+                """);
+        var generated=service.generateTopic(student,new AiQuestionGenerationDtos.Generate(mother,"SUBJECTIVE",List.of(point),3,"COMBINED",1),false,true);
+        long candidate=generated.candidates().getFirst().questionId();
+        assertThat(generated.candidates().getFirst().status()).isEqualTo("DRAFT");
+        var tutor=studentAi.createConversation(student,null,candidate,null,"TOPIC_QUESTION",null,"STANDARD",false);
+        assertThat(tutor.contextType()).isEqualTo("TOPIC_QUESTION");
+        assertThat(tutor.messages()).isEmpty();
+
+        long teacher=user("topic_private_teacher");
+        jdbc.update("INSERT INTO jiao_shi_dang_an(yong_hu_id,gong_hao,xing_ming,zhuang_tai) VALUES (?,?,?,'ACTIVE')",teacher,"TP"+suffix,"匿名教师");
+        long teacherProfile=jdbc.queryForObject("SELECT LAST_INSERT_ID()",Long.class);
+        jdbc.update("INSERT INTO ban_ji(ban_ji_bian_ma,ban_ji_ming_cheng,nian_ji,ru_xue_nian_fen) VALUES (?,?,?,2025)","TP"+suffix,"专题审核班","高二");
+        long classId=jdbc.queryForObject("SELECT LAST_INSERT_ID()",Long.class);
+        jdbc.update("INSERT INTO ren_ke_guan_xi(jiao_shi_id,ban_ji_id,ke_mu_id,shi_fou_zhu_ren_ke,zhuang_tai,kai_shi_shi_jian) VALUES (?,?,1,0,'ACTIVE',CURRENT_TIMESTAMP(3))",teacherProfile,classId);
+
+        assertThat(service.tasks(teacher,"TEACHER")).noneMatch(task -> task.id()==generated.id());
+        assertThatThrownBy(() -> service.task(generated.id(),teacher,"TEACHER"))
+                .isInstanceOfSatisfying(RenZhengYeWuYiChang.class,error -> assertThat(error.getCode()).isEqualTo("AI_STUDENT_CANDIDATE_PRIVATE"));
+        assertThatThrownBy(() -> service.review(teacher,"TEACHER",candidate,new AiQuestionGenerationDtos.Review(1,1,1,1,1,"APPROVED",3,"不应直审")))
+                .isInstanceOfSatisfying(RenZhengYeWuYiChang.class,error -> assertThat(error.getCode()).isEqualTo("AI_STUDENT_CANDIDATE_PRIVATE"));
+
+        var submitted=service.submitStudentTopicVariant(student,candidate);
+        assertThat(submitted.candidates().getFirst().status()).isEqualTo("PENDING");
+        assertThat(service.task(generated.id(),teacher,"TEACHER").candidates()).hasSize(1);
+        var approved=service.review(teacher,"TEACHER",candidate,new AiQuestionGenerationDtos.Review(1,1,1,1,1,"APPROVED",3,"人工审核通过"));
+        assertThat(approved.status()).isEqualTo("PUBLISHED");
     }
 
     @Test
@@ -135,11 +197,11 @@ class AiQuestionGenerationIntegrationTest extends AdminQuestionIntegrationTestSu
     @Test @Transactional
     void safelyReusesFailedRequestTaskButStillRejectsEffectiveDuplicate(){
         long admin=user("retry");long point=point();long mother=mother("动量守恒母题");
-        var request=request(mother,point,"KNOWLEDGE_ANGLE",1);
-        provider.answer("{bad");
+        var request=request(mother,point,"REPRESENTATION_SWITCH",1);
+        provider.answer("{bad");provider.answer("{still-bad");
         assertThatThrownBy(()->service.generate(admin,"ADMIN",request)).isInstanceOf(RenZhengYeWuYiChang.class);
         long failedTask=jdbc.queryForObject("SELECT id FROM ai_sheng_cheng_ren_wu WHERE zhuang_tai='FAILED'",Long.class);
-        provider.answer(candidate("动量守恒母题改变知识角度后的判断",point));
+        provider.answer(candidate("冰面碰撞实验中比较相互作用前后的总动量",point,"REPRESENTATION_SWITCH"));
         var retried=service.generate(admin,"ADMIN",request);
         assertThat(retried.id()).isEqualTo(failedTask);assertThat(retried.status()).isEqualTo("SUCCESS");
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM ai_sheng_cheng_ren_wu WHERE mu_ti_mu_id=?",Integer.class,mother)).isEqualTo(1);
@@ -147,9 +209,9 @@ class AiQuestionGenerationIntegrationTest extends AdminQuestionIntegrationTestSu
     }
 
     private AiQuestionGenerationDtos.Generate request(long mother,long point,String mode,int count){return new AiQuestionGenerationDtos.Generate(mother,"SINGLE_CHOICE",List.of(point),2,mode,count);}
-    private String candidate(String stem,long point){return "{\"candidates\":["+candidateJson(stem,point,"改变情境并保持知识点一致")+"]}";}
-    private String candidateBatch(long point){return "{\"candidates\":["+candidateJson("批次原子性候选一",point,"第一候选已进入持久化路径")+","+candidateJson("批次原子性候选二",point,"FORCE_ATOMIC_FAILURE")+"]}";}
-    private String candidateJson(String stem,long point,String summary){return "{\"stem\":\""+stem+"\",\"questionType\":\"SINGLE_CHOICE\",\"difficulty\":2,\"options\":[{\"label\":\"A\",\"content\":\"正确\",\"correct\":true},{\"label\":\"B\",\"content\":\"错误\",\"correct\":false}],\"correctAnswer\":{\"schemaVersion\":1,\"type\":\"SINGLE_CHOICE\",\"optionLabels\":[\"A\"]},\"standardAnalysis\":\"候选解析，必须人工复核\",\"knowledgePoints\":["+point+"],\"variationSummary\":\""+summary+"\"}";}
+    private String candidate(String stem,long point,String mode){return "{\"schemaVersion\":2,\"candidates\":["+candidateJson(stem,point,"改变情境并重组条件",mode)+"]}";}
+    private String candidateBatch(long point){return "{\"schemaVersion\":2,\"candidates\":["+candidateJson("太空舱实验中依据加速度与合力关系选择结论",point,"第一候选已进入持久化路径","COMBINED")+","+candidateJson("传送带实验中依据受力变化选择正确结论",point,"FORCE_ATOMIC_FAILURE","COMBINED")+"]}";}
+    private String candidateJson(String stem,long point,String summary,String mode){String dimensions=switch(mode){case "SCENARIO_TRANSFER"->"[\"SCENARIO\",\"CONDITION\"]";case "CONDITION_RECOMBINATION"->"[\"CONDITION\",\"DATA\"]";case "REPRESENTATION_SWITCH"->"[\"REPRESENTATION\",\"REASONING_PATH\"]";case "DISTRACTOR_REDESIGN"->"[\"DISTRACTOR\",\"REASONING_PATH\"]";case "COMBINED"->"[\"SCENARIO\",\"CONDITION\",\"REASONING_PATH\"]";default->"[\"SCENARIO\",\"CONDITION\"]";};return "{\"stem\":\""+stem+"\",\"questionType\":\"SINGLE_CHOICE\",\"difficulty\":2,\"options\":[{\"label\":\"A\",\"content\":\"合力方向与加速度方向一致\",\"correct\":true},{\"label\":\"B\",\"content\":\"速度方向始终等于合力方向\",\"correct\":false}],\"correctAnswer\":{\"schemaVersion\":1,\"type\":\"SINGLE_CHOICE\",\"optionLabels\":[\"A\"]},\"standardAnalysis\":\"先分析新的受力情境，再由动力学关系逐步判断。\",\"variationMode\":\""+mode+"\",\"variationSummary\":\""+summary+"\",\"changedDimensions\":"+dimensions+"}";}
     private long user(String prefix){String name=prefix+UUID.randomUUID().toString().replace("-","").substring(0,10);jdbc.update("INSERT INTO yong_hu(yong_hu_ming,mi_ma_zhai_yao,shi_fou_shou_ci_deng_lu) VALUES (?,?,0)",name,"x".repeat(60));return jdbc.queryForObject("SELECT LAST_INSERT_ID()",Long.class);}
     private long point(){return point(1);}
     private long point(long subjectId){return jdbc.queryForObject("SELECT id FROM zhi_shi_dian WHERE ke_mu_id=? AND zhuang_tai='ACTIVE' LIMIT 1",Long.class,subjectId);}

@@ -3,6 +3,7 @@ package com.neu.riketiku.demo;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import com.neu.riketiku.database.DatabaseSchemaFacts;
 import com.neu.riketiku.tiku.admin.AdminQuestionIntegrationTestSupport;
 import com.neu.riketiku.xueshenglianxi.StudentPracticeDtos;
 import com.neu.riketiku.xueshenglianxi.StudentPracticeService;
@@ -17,16 +18,27 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.Normalizer;
 import java.util.HashSet;
+import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class DemoDataServiceIntegrationTest extends AdminQuestionIntegrationTestSupport {
+    private static final Path ATTACHMENT_ROOT = Path.of("target", "demo-test-attachments-" + UUID.randomUUID())
+            .toAbsolutePath();
+
+    @DynamicPropertySource
+    static void attachmentStorage(DynamicPropertyRegistry registry) {
+        registry.add("rike.tiku.attachment.storage-root", ATTACHMENT_ROOT::toString);
+    }
+
     @Autowired private DemoDataService demo;
     @Autowired private StudentPracticeService practice;
     @Autowired private PasswordEncoder passwordEncoder;
@@ -66,7 +78,7 @@ class DemoDataServiceIntegrationTest extends AdminQuestionIntegrationTestSupport
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM jiao_shi_dang_an WHERE gong_hao LIKE 'DEMO_T%'", Integer.class)).isEqualTo(4);
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM xue_sheng_dang_an WHERE xue_hao LIKE 'DEMO_%'", Integer.class)).isEqualTo(9);
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM ren_ke_guan_xi r JOIN jiao_shi_dang_an t ON t.id=r.jiao_shi_id WHERE t.gong_hao LIKE 'DEMO_T%' AND r.zhuang_tai='ACTIVE'", Integer.class)).isEqualTo(9);
-        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM gao_pin_kao_dian h JOIN ren_ke_guan_xi r ON r.id=h.ren_ke_guan_xi_id JOIN ban_ji b ON b.id=r.ban_ji_id WHERE b.ban_ji_bian_ma IN ('DEMO_CLASS_199','DEMO_CLASS_200') AND h.zhuang_tai='ACTIVE'", Integer.class)).isEqualTo(12);
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM gao_pin_kao_dian h JOIN ren_ke_guan_xi r ON r.id=h.ren_ke_guan_xi_id JOIN ban_ji b ON b.id=r.ban_ji_id WHERE b.ban_ji_bian_ma IN ('DEMO_CLASS_199','DEMO_CLASS_200') AND h.zhuang_tai='PUBLISHED'", Integer.class)).isEqualTo(66);
         assertThat(jdbc.queryForList("""
                 SELECT a.jie_xi_nei_rong FROM ti_mu_jie_xi a JOIN ti_mu q ON q.id=a.ti_mu_id
                 WHERE q.ti_gan LIKE '【演示】%' AND a.jie_xi_lei_xing='STANDARD'
@@ -315,7 +327,17 @@ class DemoDataServiceIntegrationTest extends AdminQuestionIntegrationTestSupport
                         new StudentPracticeDtos.CreateRequest(subjectId, List.of(knowledgePointId), null, null, 5));
                 List<String> stems = session.questions().stream().map(StudentPracticeDtos.SessionQuestion::stem).sorted().toList();
                 questionSets.add(stems);
-                selectedVariant |= stems.stream().anyMatch(stem -> stem.contains("变式："));
+                List<Long> selectedQuestionIds = jdbc.queryForList("""
+                        SELECT ti_mu_id FROM lian_xi_ti_mu
+                        WHERE lian_xi_hui_hua_id=? ORDER BY ti_mu_shun_xu
+                        """, Long.class, session.id());
+                Integer variantCount = jdbc.queryForObject("""
+                        SELECT COUNT(*) FROM ti_mu
+                        WHERE id IN (%s) AND ti_gan LIKE '【演示】变式：%%'
+                        """.formatted(selectedQuestionIds.stream().map(id -> "?").collect(java.util.stream.Collectors.joining(","))),
+                        Integer.class, selectedQuestionIds.toArray());
+                selectedVariant |= variantCount != null && variantCount > 0;
+                assertThat(stems).noneMatch(stem -> stem.startsWith("变式：") || stem.startsWith("覆盖："));
             }
             assertThat(selectedVariant).as("subjectId=" + subjectId).isTrue();
             assertThat(questionSets).as("相同知识点多次随机题集应发生变化, subjectId=" + subjectId).hasSizeGreaterThan(1);
@@ -360,7 +382,8 @@ class DemoDataServiceIntegrationTest extends AdminQuestionIntegrationTestSupport
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM ti_mu WHERE ti_gan LIKE '【专题演示】%'", Integer.class)).isZero();
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM ti_mu", Integer.class)).isEqualTo(baselineQuestions);
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM ke_mu", Integer.class)).isEqualTo(3);
-        assertThat(jdbc.queryForObject("SELECT MAX(CAST(version AS UNSIGNED)) FROM flyway_schema_history WHERE success=1", Integer.class)).isEqualTo(14);
+        assertThat(jdbc.queryForObject("SELECT MAX(CAST(version AS UNSIGNED)) FROM flyway_schema_history WHERE success=1", Integer.class))
+                .isEqualTo(DatabaseSchemaFacts.LATEST_FLYWAY_VERSION);
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM gao_pin_kao_dian", Integer.class)).isZero();
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM si_xin_hui_hua", Integer.class)).isZero();
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM si_xin_xiao_xi", Integer.class)).isZero();

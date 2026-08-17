@@ -2,8 +2,14 @@ package com.neu.riketiku.aixuesheng;
 
 import com.neu.riketiku.ai.provider.AiModelResult;
 import com.neu.riketiku.ai.provider.AiProviderException;
+import com.neu.riketiku.ai.config.AiRuntimeConfigurationService;
 import com.neu.riketiku.ai.vision.VisionContextService;
+import com.neu.riketiku.ai.search.WebSearchClient;
+import com.neu.riketiku.ai.search.WebSearchException;
+import com.neu.riketiku.ai.search.WebSearchRequest;
+import com.neu.riketiku.ai.search.WebSearchResult;
 import com.neu.riketiku.renzheng.RenZhengYeWuYiChang;
+import com.neu.riketiku.tiku.QuestionDisplayTextNormalizer;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.sql.PreparedStatement;
@@ -14,6 +20,7 @@ import java.util.Collections;
 import java.util.HexFormat;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 import java.util.regex.Pattern;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -25,7 +32,7 @@ import tools.jackson.databind.ObjectMapper;
 
 @Service
 public class StudentAiService {
-    public static final int MAX_ROUNDS = 8;
+    public static final int MAX_ROUNDS = 10;
     private static final int RECENT_MESSAGES = 12;
     private static final int HISTORY_CHAR_BUDGET = 6000;
     private static final int MAX_ASSISTANT_CHARS = 2000;
@@ -41,16 +48,24 @@ public class StudentAiService {
     private final StudentAiPromptFactory prompts;
     private final StudentAiAnalysisParser parser;
     private final VisionContextService visionContexts;
+    private final WebSearchClient webSearch;
+    private final AiRuntimeConfigurationService runtimeConfigurations;
+    private final QuestionDisplayTextNormalizer textNormalizer;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     public StudentAiService(JdbcTemplate jdbc, StudentAiProviderClient provider,
                             StudentAiPromptFactory prompts, StudentAiAnalysisParser parser,
-                            VisionContextService visionContexts) {
+                            VisionContextService visionContexts, WebSearchClient webSearch,
+                            AiRuntimeConfigurationService runtimeConfigurations,
+                            QuestionDisplayTextNormalizer textNormalizer) {
         this.jdbc = jdbc;
         this.provider = provider;
         this.prompts = prompts;
         this.parser = parser;
         this.visionContexts = visionContexts;
+        this.webSearch = webSearch;
+        this.runtimeConfigurations = runtimeConfigurations;
+        this.textNormalizer = textNormalizer;
     }
 
     @Transactional(readOnly = true)
@@ -124,16 +139,45 @@ public class StudentAiService {
 
     @Transactional
     public StudentAiDtos.Conversation createConversation(Long userId, Long answerFactId) {
-        StudentAiFact fact = requireFact(userId, answerFactId);
+        return createConversation(userId, answerFactId, null, null, "PRACTICE_RESULT", null, "STANDARD", false);
+    }
+
+    @Transactional
+    public StudentAiDtos.Conversation createConversation(Long userId, Long answerFactId, Long modelConfigId,
+                                                         String rawThinkingMode, boolean webSearch) {
+        return createConversation(userId,answerFactId,null,null,"PRACTICE_RESULT",modelConfigId,rawThinkingMode,webSearch);
+    }
+
+    @Transactional
+    public StudentAiDtos.Conversation createConversation(Long userId, Long answerFactId, Long topicQuestionId, Long knowledgeCardId,
+                                                         String rawContextType, Long modelConfigId,
+                                                         String rawThinkingMode, boolean webSearch) {
+        String contextType = Set.of("TOPIC_QUESTION","KNOWLEDGE_CARD").contains(String.valueOf(rawContextType).toUpperCase(Locale.ROOT))?String.valueOf(rawContextType).toUpperCase(Locale.ROOT):"PRACTICE_RESULT";
+        if (("PRACTICE_RESULT".equals(contextType) && (answerFactId == null || topicQuestionId != null || knowledgeCardId!=null))
+                || ("TOPIC_QUESTION".equals(contextType) && (topicQuestionId == null || answerFactId != null || knowledgeCardId!=null))
+                || ("KNOWLEDGE_CARD".equals(contextType) && (knowledgeCardId==null || answerFactId!=null || topicQuestionId!=null))) {
+            throw failure("AI_CONVERSATION_CONTEXT_INVALID", "AI 会话必须且只能绑定一种题目上下文", HttpStatus.BAD_REQUEST);
+        }
+        StudentAiFact fact = switch(contextType){case "TOPIC_QUESTION"->requireTopicFact(userId,topicQuestionId);case "KNOWLEDGE_CARD"->requireCardFact(userId,knowledgeCardId);default->requireFact(userId,answerFactId);};
+        String thinkingMode = "DEEP".equalsIgnoreCase(rawThinkingMode) ? "DEEP" : "STANDARD";
+        if (modelConfigId != null) runtimeConfigurations.text(modelConfigId);
+        boolean effectiveWebSearch = webSearch && runtimeConfigurations.searchAvailable();
         GeneratedKeyHolder holder = new GeneratedKeyHolder();
         jdbc.update(connection -> {
             PreparedStatement statement = connection.prepareStatement("""
-                    INSERT INTO ai_hui_hua (xue_sheng_id,xue_sheng_da_ti_id,lian_xi_ti_mu_id,zhuang_tai,lei_ji_lun_shu)
-                    VALUES (?,?,?,'ACTIVE',0)
+                    INSERT INTO ai_hui_hua (xue_sheng_id,xue_sheng_da_ti_id,lian_xi_ti_mu_id,shang_xia_wen_lei_xing,
+                      zhuan_ti_ti_mu_id,zhi_shi_ka_pian_id,ai_mo_xing_pei_zhi_id,si_kao_mo_shi,shi_fou_lian_wang,zhuang_tai,lei_ji_lun_shu)
+                    VALUES (?,?,?,?,?,?,?,?,?, 'ACTIVE',0)
                     """, Statement.RETURN_GENERATED_KEYS);
             statement.setLong(1, fact.studentId());
-            statement.setLong(2, fact.answerFactId());
-            statement.setLong(3, fact.practiceQuestionId());
+            if (fact.answerFactId() == null) statement.setNull(2,java.sql.Types.BIGINT); else statement.setLong(2,fact.answerFactId());
+            if (fact.practiceQuestionId() == null) statement.setNull(3,java.sql.Types.BIGINT); else statement.setLong(3,fact.practiceQuestionId());
+            statement.setString(4,contextType);
+            if (topicQuestionId == null) statement.setNull(5,java.sql.Types.BIGINT); else statement.setLong(5,topicQuestionId);
+            if (knowledgeCardId == null) statement.setNull(6,java.sql.Types.BIGINT); else statement.setLong(6,knowledgeCardId);
+            if (modelConfigId == null) statement.setNull(7, java.sql.Types.BIGINT); else statement.setLong(7, modelConfigId);
+            statement.setString(8, thinkingMode);
+            statement.setBoolean(9, effectiveWebSearch);
             return statement;
         }, holder);
         return conversation(userId, holder.getKey().longValue());
@@ -149,18 +193,23 @@ public class StudentAiService {
     public StudentAiDtos.Conversation sendMessage(Long userId, Long conversationId, String rawContent) {
         ConversationRow row = requireConversation(userId, conversationId, true);
         if (!"ACTIVE".equals(row.status()) || row.rounds() >= MAX_ROUNDS) {
-            throw failure("AI_CONVERSATION_LIMIT_REACHED", "本会话已达到 8 轮上限，请开启新会话", HttpStatus.CONFLICT);
+            throw failure("AI_CONVERSATION_LIMIT_REACHED", "本会话已达到 10 轮上限，请开启新会话", HttpStatus.CONFLICT);
         }
         String content = rawContent == null ? "" : rawContent.trim();
         if (content.isEmpty() || content.length() > 500) {
             throw failure("AI_MESSAGE_INVALID", "追问内容需为 1 至 500 字", HttpStatus.BAD_REQUEST);
         }
-        StudentAiFact fact = requireFact(userId, row.answerFactId());
+        StudentAiFact fact = switch(row.contextType()){case "TOPIC_QUESTION"->requireTopicFact(userId,row.topicQuestionId());case "KNOWLEDGE_CARD"->requireCardFact(userId,row.knowledgeCardId());default->requireFact(userId,row.answerFactId());};
         String assistant = guardedReply(content);
+        List<WebSearchResult> sources = List.of();
         if (assistant == null) {
             try {
+                if (row.webSearch()) {
+                    try { sources = webSearch.search(new WebSearchRequest(searchQuery(fact, content), 5)); }
+                    catch (WebSearchException ignored) { sources = List.of(); }
+                }
                 AiModelResult result = provider.generate(prompts.tutor(fact, recentMessages(row.id()), content,
-                        visionContext(fact.questionId())));
+                        fact.questionId()==null?null:visionContext(fact.questionId()), row.thinkingMode(), sources), row.modelConfigId());
                 assistant = safeAssistant(result.content());
             } catch (AiProviderException exception) {
                 throw providerFailure(exception);
@@ -169,8 +218,8 @@ public class StudentAiService {
         int firstSequence = row.rounds() * 2 + 1;
         jdbc.update("INSERT INTO ai_xiao_xi (ai_hui_hua_id,fa_yan_jiao_se,nei_rong,xu_hao) VALUES (?,'USER',?,?)",
                 row.id(), content, firstSequence);
-        jdbc.update("INSERT INTO ai_xiao_xi (ai_hui_hua_id,fa_yan_jiao_se,nei_rong,xu_hao) VALUES (?,'ASSISTANT',?,?)",
-                row.id(), assistant, firstSequence + 1);
+        jdbc.update("INSERT INTO ai_xiao_xi (ai_hui_hua_id,fa_yan_jiao_se,nei_rong,lian_wang_lai_yuan,xu_hao) VALUES (?,'ASSISTANT',?,CAST(? AS JSON),?)",
+                row.id(), assistant, sources.isEmpty() ? null : sourcesJson(sources), firstSequence + 1);
         int rounds = row.rounds() + 1;
         jdbc.update("UPDATE ai_hui_hua SET lei_ji_lun_shu=?,zhuang_tai=? WHERE id=? AND xue_sheng_id=?",
                 rounds, rounds >= MAX_ROUNDS ? "LIMIT_REACHED" : "ACTIVE", row.id(), row.studentId());
@@ -195,6 +244,41 @@ public class StudentAiService {
                 rs.getString(10), rs.getString(11), rs.getString(12), rs.getBoolean(13)), answerFactId, userId)
                 .stream().findFirst().orElseThrow(this::notFound);
     }
+
+    private StudentAiFact requireTopicFact(Long userId, Long questionId) {
+        if (userId == null || questionId == null) throw notFound();
+        return jdbc.query("""
+                SELECT NULL,xs.id,NULL,q.id,k.ke_mu_dai_ma,q.ti_mu_lei_xing,q.ti_gan,NULL,NULL,NULL,
+                  a.jie_xi_nei_rong,COALESCE((SELECT JSON_ARRAYAGG(z.wan_zheng_lu_jing) FROM ti_mu_zhi_shi_dian qz
+                    JOIN zhi_shi_dian z ON z.id=qz.zhi_shi_dian_id WHERE qz.ti_mu_id=q.id AND qz.yi_shan_chu=0),JSON_ARRAY()),0
+                FROM ti_mu q JOIN ke_mu k ON k.id=q.ke_mu_id
+                LEFT JOIN ti_mu_jie_xi a ON a.ti_mu_id=q.id AND a.jie_xi_lei_xing='STANDARD' AND a.yi_shan_chu=0
+                JOIN xue_sheng_dang_an xs ON xs.yong_hu_id=? AND xs.zhuang_tai='ACTIVE' AND xs.yi_shan_chu=0
+                WHERE q.id=? AND q.ti_mu_lei_xing='SUBJECTIVE' AND q.shi_yong_mo_shi='TOPIC_LEARNING'
+                  AND q.yi_shan_chu=0
+                  AND (
+                    (q.zhuang_tai='PUBLISHED' AND q.ke_jian_fan_wei='GLOBAL')
+                    OR (q.zhuang_tai='PUBLISHED' AND EXISTS (SELECT 1 FROM ban_ji_xue_sheng bx JOIN ren_ke_guan_xi r
+                      ON r.id=q.ren_ke_guan_xi_id AND r.ban_ji_id=bx.ban_ji_id AND r.ke_mu_id=q.ke_mu_id
+                      WHERE bx.xue_sheng_id=xs.id AND bx.shi_fou_zhu_ban_ji=1 AND bx.zhuang_tai='ACTIVE'
+                        AND bx.tui_chu_shi_jian IS NULL AND r.zhuang_tai='ACTIVE'))
+                    OR (q.zhuang_tai='DRAFT' AND EXISTS (SELECT 1 FROM ai_hou_xuan_ti_zhi_liang_ping_jia v
+                      JOIN ai_sheng_cheng_ren_wu g ON g.id=v.ai_sheng_cheng_ren_wu_id
+                      WHERE v.ti_mu_id=q.id AND g.chuang_jian_ren_id=? AND g.chuang_jian_ren_jiao_se='STUDENT'))
+                  )
+                """,(rs,n)->new StudentAiFact(null,rs.getLong(2),null,rs.getLong(4),rs.getString(5),rs.getString(6),
+                 textNormalizer.normalize(rs.getString(7)),null,null,null,rs.getString(11),rs.getString(12),false),userId,questionId,userId)
+                .stream().findFirst().orElseThrow(this::notFound);
+    }
+
+    private StudentAiFact requireCardFact(Long userId,Long cardId){if(userId==null||cardId==null)throw notFound();return jdbc.query("""
+            SELECT xs.id,k.ke_mu_dai_ma,h.biao_ti,h.nei_rong,h.latex_nei_rong,h.shi_yong_tiao_jian,h.han_yi_tui_dao,h.chang_jian_wu_qu,h.li_zi,h.ji_yi_kou_jue,
+              COALESCE((SELECT JSON_ARRAYAGG(p.wan_zheng_lu_jing) FROM gao_pin_kao_dian_zhi_shi_dian hp JOIN zhi_shi_dian p ON p.id=hp.zhi_shi_dian_id WHERE hp.gao_pin_kao_dian_id=h.id),JSON_ARRAY())
+            FROM gao_pin_kao_dian h JOIN ren_ke_guan_xi r ON r.id=h.ren_ke_guan_xi_id JOIN ke_mu k ON k.id=r.ke_mu_id
+            JOIN ban_ji_xue_sheng bx ON bx.ban_ji_id=r.ban_ji_id AND bx.shi_fou_zhu_ban_ji=1 AND bx.zhuang_tai='ACTIVE' AND bx.tui_chu_shi_jian IS NULL
+            JOIN xue_sheng_dang_an xs ON xs.id=bx.xue_sheng_id AND xs.yong_hu_id=? AND xs.zhuang_tai='ACTIVE' AND xs.yi_shan_chu=0
+            WHERE h.id=? AND h.zhuang_tai='PUBLISHED' AND h.yi_shan_chu=0
+            """,(rs,n)->{String reviewed="审核正文："+rs.getString(4)+"\nLaTeX："+String.valueOf(rs.getString(5))+"\n适用条件："+String.valueOf(rs.getString(6))+"\n含义与推导："+String.valueOf(rs.getString(7))+"\n常见误区："+String.valueOf(rs.getString(8))+"\n例子："+String.valueOf(rs.getString(9))+"\n口诀："+String.valueOf(rs.getString(10));return new StudentAiFact(null,rs.getLong(1),null,null,rs.getString(2),"KNOWLEDGE_CARD",rs.getString(3),null,null,null,reviewed,rs.getString(11),false);},userId,cardId).stream().findFirst().orElseThrow(this::notFound);}
 
     private StudentAiDtos.Analysis findAnalysis(StudentAiFact fact, boolean forCache) {
         return jdbc.query("""
@@ -229,31 +313,34 @@ public class StudentAiService {
     private ConversationRow requireConversation(Long userId, Long id, boolean lock) {
         if (userId == null || id == null) throw notFound();
         String sql = """
-                SELECT h.id,h.xue_sheng_id,h.xue_sheng_da_ti_id,lt.ti_mu_id,h.zhuang_tai,h.lei_ji_lun_shu
+                SELECT h.id,h.xue_sheng_id,h.xue_sheng_da_ti_id,COALESCE(lt.ti_mu_id,h.zhuan_ti_ti_mu_id),
+                       h.shang_xia_wen_lei_xing,h.zhuan_ti_ti_mu_id,h.zhi_shi_ka_pian_id,h.zhuang_tai,h.lei_ji_lun_shu,
+                       h.ai_mo_xing_pei_zhi_id,h.si_kao_mo_shi,h.shi_fou_lian_wang
                 FROM ai_hui_hua h
                 JOIN xue_sheng_dang_an xs ON xs.id=h.xue_sheng_id
-                JOIN lian_xi_ti_mu lt ON lt.id=h.lian_xi_ti_mu_id
+                LEFT JOIN lian_xi_ti_mu lt ON lt.id=h.lian_xi_ti_mu_id
                 WHERE h.id=? AND xs.yong_hu_id=? AND xs.zhuang_tai='ACTIVE' AND xs.yi_shan_chu=0
                 """ + (lock ? " FOR UPDATE" : "");
-        return jdbc.query(sql, (rs, n) -> new ConversationRow(rs.getLong(1), rs.getLong(2), rs.getLong(3),
-                rs.getLong(4), rs.getString(5), rs.getInt(6)), id, userId)
+        return jdbc.query(sql, (rs, n) -> new ConversationRow(rs.getLong(1), rs.getLong(2), rs.getObject(3,Long.class),
+                rs.getObject(4,Long.class),rs.getString(5),rs.getObject(6,Long.class),rs.getObject(7,Long.class),rs.getString(8),rs.getInt(9),
+                rs.getObject(10, Long.class), rs.getString(11),rs.getBoolean(12)), id, userId)
                 .stream().findFirst().orElseThrow(this::notFound);
     }
 
     private List<StudentAiDtos.Message> allMessages(long conversationId) {
         return jdbc.query("""
-                SELECT id,fa_yan_jiao_se,nei_rong,xu_hao,chuang_jian_shi_jian
+                SELECT id,fa_yan_jiao_se,nei_rong,xu_hao,chuang_jian_shi_jian,CAST(lian_wang_lai_yuan AS CHAR)
                 FROM ai_xiao_xi WHERE ai_hui_hua_id=? ORDER BY xu_hao
                 """, (rs, n) -> new StudentAiDtos.Message(rs.getLong(1), rs.getString(2), rs.getString(3),
-                rs.getInt(4), rs.getObject(5, LocalDateTime.class)), conversationId);
+                rs.getInt(4), rs.getObject(5, LocalDateTime.class), readSources(rs.getString(6))), conversationId);
     }
 
     private List<StudentAiDtos.Message> recentMessages(long conversationId) {
         List<StudentAiDtos.Message> descending = jdbc.query("""
-                SELECT id,fa_yan_jiao_se,nei_rong,xu_hao,chuang_jian_shi_jian
+                SELECT id,fa_yan_jiao_se,nei_rong,xu_hao,chuang_jian_shi_jian,CAST(lian_wang_lai_yuan AS CHAR)
                 FROM ai_xiao_xi WHERE ai_hui_hua_id=? ORDER BY xu_hao DESC LIMIT ?
                 """, (rs, n) -> new StudentAiDtos.Message(rs.getLong(1), rs.getString(2), rs.getString(3),
-                rs.getInt(4), rs.getObject(5, LocalDateTime.class)), conversationId, RECENT_MESSAGES);
+                rs.getInt(4), rs.getObject(5, LocalDateTime.class), readSources(rs.getString(6))), conversationId, RECENT_MESSAGES);
         Collections.reverse(descending);
         List<StudentAiDtos.Message> budgeted = new ArrayList<>();
         int characters = 0;
@@ -268,8 +355,9 @@ public class StudentAiService {
     }
 
     private StudentAiDtos.Conversation toConversation(ConversationRow row, List<StudentAiDtos.Message> messages) {
-        return new StudentAiDtos.Conversation(row.id(), row.answerFactId(), row.questionId(), row.status(), row.rounds(),
-                MAX_ROUNDS, Math.max(0, MAX_ROUNDS - row.rounds()), messages);
+        return new StudentAiDtos.Conversation(row.id(), row.answerFactId(),row.topicQuestionId(),row.knowledgeCardId(),row.contextType(), row.questionId(), row.status(), row.rounds(),
+                MAX_ROUNDS, Math.max(0, MAX_ROUNDS - row.rounds()), row.modelConfigId(), row.thinkingMode(),
+                row.webSearch(), messages);
     }
 
     private String guardedReply(String content) {
@@ -325,6 +413,13 @@ public class StudentAiService {
         catch (Exception ignored) { return List.of(); }
     }
 
+    private String searchQuery(StudentAiFact fact,String content){
+        String value=(fact.subjectCode()+" "+fact.stem()+" "+fact.knowledgePointsJson()+" "+content).replaceAll("\\s+"," ").trim();
+        return value.substring(0,Math.min(70,value.length()));
+    }
+    private String sourcesJson(List<WebSearchResult> sources){return objectMapper.writeValueAsString(sources.stream().map(s->new StudentAiDtos.Source(s.title(),s.url(),s.publisher(),s.publishDate())).toList());}
+    private List<StudentAiDtos.Source> readSources(String json){if(json==null)return List.of();try{return objectMapper.readValue(json,new TypeReference<List<StudentAiDtos.Source>>(){});}catch(Exception ignored){return List.of();}}
+
     private String safeCode(String value) {
         if (value == null) return null;
         String clean = value.replaceAll("[^A-Za-z0-9_.:-]", "_");
@@ -345,7 +440,8 @@ public class StudentAiService {
         return new RenZhengYeWuYiChang(code, message, status);
     }
 
-    private record ConversationRow(long id, long studentId, long answerFactId, long questionId,
-                                   String status, int rounds) { }
+    private record ConversationRow(long id, long studentId, Long answerFactId, Long questionId,
+                                   String contextType,Long topicQuestionId,Long knowledgeCardId,String status, int rounds, Long modelConfigId, String thinkingMode,
+                                   boolean webSearch) { }
     private record AnalysisLock(String status, String hash) { }
 }

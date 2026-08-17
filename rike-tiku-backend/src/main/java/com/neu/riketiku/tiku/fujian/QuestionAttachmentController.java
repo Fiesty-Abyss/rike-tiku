@@ -27,6 +27,10 @@ public class QuestionAttachmentController {
         return response(service.wrongQuestion(user.id(), questionId, attachmentId));
     }
 
+    @GetMapping("/api/v1/student/topic-learning/{questionId}/attachments/{attachmentId}/content")
+    public ResponseEntity<byte[]> topic(@PathVariable long questionId,@PathVariable long attachmentId,
+            @AuthenticationPrincipal RenZhengYongHu user){return response(service.topic(user.id(),questionId,attachmentId));}
+
     private ResponseEntity<byte[]> response(QuestionAttachmentStorage.StoredImage image) {
         return ResponseEntity.ok().cacheControl(CacheControl.noStore()).contentType(MediaType.parseMediaType(image.mime())).body(image.bytes());
     }

@@ -1,0 +1,87 @@
+{
+  "generatedAt": "2026-08-16T06:34:11.309Z",
+  "database": "rike_tiku_demo",
+  "machineControlled": true,
+  "providerDisclosure": "Provider smoke not run; AI disabled for this environment.",
+  "summary": {
+    "assertions": 4,
+    "assertionFailures": 0,
+    "routes": 4,
+    "consoleErrors": 0,
+    "pageErrors": 0,
+    "failedRequests": 0,
+    "overflows": []
+  },
+  "assertions": [
+    {
+      "name": "page:/student/topics",
+      "pass": true,
+      "detail": "status=200,visible=true"
+    },
+    {
+      "name": "page:/student/topics/units/1",
+      "pass": true,
+      "detail": "status=200,visible=true"
+    },
+    {
+      "name": "page:/student/wrong-questions",
+      "pass": true,
+      "detail": "status=200,visible=true"
+    },
+    {
+      "name": "page:/student/knowledge-cards",
+      "pass": true,
+      "detail": "status=200,visible=true"
+    }
+  ],
+  "records": [
+    {
+      "route": "/student/topics",
+      "status": 200,
+      "finalPath": "/student/topics",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedRequests": [],
+      "overflow": false,
+      "rawMarkup": false,
+      "renderFallbacks": 0,
+      "katexCount": 0
+    },
+    {
+      "route": "/student/topics/units/1",
+      "status": 200,
+      "finalPath": "/student/topics/units/1",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedRequests": [],
+      "overflow": false,
+      "rawMarkup": false,
+      "renderFallbacks": 0,
+      "katexCount": 0
+    },
+    {
+      "route": "/student/wrong-questions",
+      "status": 200,
+      "finalPath": "/student/wrong-questions",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedRequests": [],
+      "overflow": false,
+      "rawMarkup": false,
+      "renderFallbacks": 0,
+      "katexCount": 0
+    },
+    {
+      "route": "/student/knowledge-cards",
+      "status": 200,
+      "finalPath": "/student/knowledge-cards",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedRequests": [],
+      "overflow": false,
+      "rawMarkup": false,
+      "renderFallbacks": 0,
+      "katexCount": 0
+    }
+  ]
+}
