@@ -1,5 +1,13 @@
 # RIKE V30 数据库结构参考
 
+> 当前 DDL 只读快照为 [`database/schema_snapshot_v30.sql`](../database/schema_snapshot_v30.sql)：含 Flyway history 表和 50 张业务表、无任何数据或凭据。`schema_snapshot_v29.sql` 是历史快照，不能作为当前结构；运行时唯一迁移事实是 V1–V30。
+
+## V30 关键设计结论
+
+- `ti_mu` 是普通题、教师私有题和专题主观大题的唯一事实源；`zhuan_ti_xue_xi_dan_yuan` 与关系表只负责教学编排，避免两份题干/答案漂移。
+- `shi_juan_fa_bu_ti_mu` 在 V27 冻结发布题干、选项、答案、STANDARD 和知识点，在 V30 追加 `fu_jian_kuai_zhao` JSON ARRAY，因此原题附件后续变化不改变已发布试卷的视觉事实。
+- `shi_juan_ti_jiao.ke_guan_de_fen` 只表示客观自动得分；`shi_juan_xue_sheng_da_ti.zhuang_tai='SUBJECTIVE_PENDING'` 表示主观作答已保存、待教师按 STANDARD 处理，不参与 AI 或规则自动正式评分。
+
 > Post-merge 复核（2026-08-17）：正式 `rike_tiku` 为 Flyway V30，50 张业务表，`flyway_schema_history` 无失败迁移。V30 不新增表：发布题目快照增加受控附件 JSON，学生逐题作答状态字段扩展以容纳 `SUBJECTIVE_PENDING`。
 
 > 本文由 `information_schema` 只读核验正式 `rike_tiku` 的 Flyway V1–V30 业务表。字段与约束以迁移脚本为准；`database/schema_snapshot_v29.sql` 是 V29 历史纯结构快照，不能替代 Flyway。

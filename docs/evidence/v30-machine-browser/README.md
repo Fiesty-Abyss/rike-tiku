@@ -1,4 +1,4 @@
-# V30 正式机器浏览器验收证据
+# V30 / PR34 正式机器浏览器验收证据
 
 验收环境为本机独立 Chromium profile，前端 `http://localhost:8080`、后端 `http://localhost:8081`、正式数据库 `rike_tiku`。本目录记录的是机器浏览器验收，不代表用户逐页人工验收。
 
@@ -6,4 +6,4 @@
 
 截图文件按页面和步骤命名。学生版不显示答案或 STANDARD；答案版显示 STANDARD；主观题在学生端明确标记为不自动评分，提交后为 `SUBJECTIVE_PENDING`，不计入客观题自动得分。内容同步后的补充复核确认：物理专题图片附件返回 HTTP 200 且显示，专题正文和 STANDARD 不再呈现字面量 `\\n`。
 
-状态：`MACHINE_BROWSER_VERIFIED`
+状态：`MACHINE_BROWSER_VERIFIED`。PR34-MA-001 的补充 handler 结果位于 `pr34-print-handler-results.json` 和 `pr34-print-*.png`：它们只验证 `BUTTON_CLICK → printPaper() → window.print()`，不声称 headless Chromium 打开了 OS 系统打印对话框；该项仍等待用户实际浏览器复点。
