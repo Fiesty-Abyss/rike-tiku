@@ -44,6 +44,8 @@
 | V30-14 [学生提交结果](evidence/v30-machine-browser/student-illustrated-paper-submitted.png) | 图6-x 混合试卷提交结果 / 客观得分与待处理主观题 | 同上，STUDENT；客观得分、客观总分、主观待人工处理。 | `shi_juan_ti_jiao.ke_guan_de_fen/ke_guan_zong_fen` 与答题状态 `SUBJECTIVE_PENDING`。 | R；V27/V30；PaperAssignmentIntegrationTest。 | 证明客观自动判分与主观题分离；不能把客观得分称整卷最终成绩。图注：**混合试卷提交后，系统分别呈现客观自动得分和主观题待人工处理状态。** |
 | V30-15 [PR34 学生版打印 handler](evidence/v30-machine-browser/pr34-print-student-preview.png) | 附图：学生版打印处理器 / 原生打印调用 | `/teacher/papers/{paperId}/student`，TEACHER；预览和打印按钮。 | 独立 Chromium 的受控教师/试卷 API 响应；无凭据、无正式业务记录，hook 不更改后端数据。 | R；`PaperPreviewView.vue`/spec；PR34-MA-001。 | 证明 click→`window.print()` handler；不能证明 OS 系统对话框或正式库数据。图注：**学生版预览的原生打印处理器机器调用记录。** |
 | V30-16 [PR34 答案版打印 handler](evidence/v30-machine-browser/pr34-print-answer-preview.png) | 附图：答案版打印处理器 / 原生打印调用 | `/teacher/papers/{paperId}/answer`，TEACHER；答案预览和打印按钮。 | 同一受控浏览器响应，详见 `pr34-print-handler-results.json`。 | R；`PaperPreviewView.vue`/spec；PR34-MA-001。 | 证明同一组件在答案路由也调用 handler；不能证明 OS 系统对话框或正式库数据。图注：**答案解析版预览的原生打印处理器机器调用记录。** |
+| V30-17 [带图主观题检索](evidence/v30-machine-browser/teacher-illustrated-subjective-search.png) | 备选图：带图专题题检索 / 附件可见性 | `/teacher/papers`，TEACHER；中文“主观大题”筛选、题干图片和题篮操作。 | 正式 `rike_tiku` 的受控 V30 验收数据；题目附件来自 `ti_mu_fu_jian`。 | R+T；V20/V26/V30；Paper/Topic tests。 | 与 V30-05/07 同一工作流的补充视角，证明附件不妨碍合法检索；不能证明跨范围可见。图注：**教师在手动组卷中检索带附件的专题主观题。** |
+| V30-18 [带图试卷质量建议](evidence/v30-machine-browser/teacher-illustrated-paper-quality.png) | 备选图：混合试卷质量核验 / 主观题评分边界 | `/teacher/papers`，TEACHER；题型分布、客观自动判分总分和主观题风险。 | 正式 `rike_tiku` 的受控 V30 混合试卷；类型统计来自试卷题目关系。 | R；V27/V30；quality/backend and builder tests。 | 与 V30-08 同一质量区域的带图试卷视角，证明中文化和评分边界；不能证明 AI 给出正式分数。图注：**混合试卷质量建议将客观自动判分与主观人工处理明确分开。** |
 
 ## PR #33 历史匿名图（01–42）
 
