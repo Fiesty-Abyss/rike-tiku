@@ -4,5 +4,9 @@ import com.neu.riketiku.renzheng.RenZhengYongHu;import com.neu.riketiku.tiku.adm
  private final TeacherPrivateQuestionService service;public TeacherPrivateQuestionController(TeacherPrivateQuestionService service){this.service=service;}
  @GetMapping public List<TeacherPrivateQuestionService.Item> list(@AuthenticationPrincipal RenZhengYongHu u){return service.list(u.id());}
  @PostMapping public TeacherPrivateQuestionService.Item create(@AuthenticationPrincipal RenZhengYongHu u,@RequestParam long teachingAssignmentId,@Valid @RequestBody QuestionDtos.Save save){return service.create(u.id(),teachingAssignmentId,save);}
+ @PutMapping("/{id}") public TeacherPrivateQuestionService.Item update(@AuthenticationPrincipal RenZhengYongHu u,@PathVariable long id,@Valid @RequestBody QuestionDtos.Save save){return service.update(u.id(),id,save);}
  @PostMapping("/{id}/publish") public TeacherPrivateQuestionService.Item publish(@AuthenticationPrincipal RenZhengYongHu u,@PathVariable long id){return service.publish(u.id(),id);}
+ @PostMapping("/{id}/submit-admin") public TeacherPrivateQuestionService.Item submitAdmin(@AuthenticationPrincipal RenZhengYongHu u,@PathVariable long id){return service.submitAdmin(u.id(),id);}
+ @PostMapping("/{id}/disable") public TeacherPrivateQuestionService.Item disable(@AuthenticationPrincipal RenZhengYongHu u,@PathVariable long id){return service.disable(u.id(),id);}
+ @DeleteMapping("/{id}") public void delete(@AuthenticationPrincipal RenZhengYongHu u,@PathVariable long id){service.delete(u.id(),id);}
 }
