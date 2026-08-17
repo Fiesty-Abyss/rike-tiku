@@ -1,6 +1,8 @@
 # PR #33 证据与根因审计
 
-> 审计状态：`PR33_EVIDENCE_AND_ROOT_CAUSE_AUDIT_BLOCKED`
+> 审计状态：`PR33_FINAL_TWO_FIXES_AND_MACHINE_REGRESSION_PASS`
+
+> 2026-08-17 最终补充：用户完成最终页面审查并仅提出恢复申请弹窗文案、教师/管理员真实角色区分两项修复。两项均已实现并由最终机器回归覆盖；角色撤销过程中发现并修复了历史 `INACTIVE` 与表约束不兼容的问题，改用合法 `DISABLED` 并支持重新授权。
 >
 > 审计对象：`feat/final-product-completion@2e0c1332f66df29cc9e4f2edc6c15393688edf82`
 >
