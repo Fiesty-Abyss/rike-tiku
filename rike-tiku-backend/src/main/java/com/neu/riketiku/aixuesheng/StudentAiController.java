@@ -1,6 +1,8 @@
 package com.neu.riketiku.aixuesheng;
 
 import com.neu.riketiku.renzheng.RenZhengYongHu;
+import com.neu.riketiku.ai.config.AiRuntimeConfigurationService;
+import java.util.List;
 import jakarta.validation.Valid;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
@@ -16,8 +18,21 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/student/ai")
 public class StudentAiController {
     private final StudentAiService service;
+    private final AiRuntimeConfigurationService runtimeConfigurations;
 
-    public StudentAiController(StudentAiService service) { this.service = service; }
+    public StudentAiController(StudentAiService service, AiRuntimeConfigurationService runtimeConfigurations) {
+        this.service = service;
+        this.runtimeConfigurations = runtimeConfigurations;
+    }
+
+    @GetMapping("/model-options")
+    public List<StudentAiDtos.ModelOption> modelOptions() {
+        return runtimeConfigurations.safeTextOptions().stream().map(option -> new StudentAiDtos.ModelOption(option.id(),
+                option.displayName(), option.modelCode(), option.available(), option.defaultOption(), option.capabilityTags())).toList();
+    }
+
+    @GetMapping("/capabilities")
+    public StudentAiDtos.Capabilities capabilities() { return new StudentAiDtos.Capabilities(runtimeConfigurations.searchAvailable()); }
 
     @GetMapping("/analyses/{answerFactId}")
     public StudentAiDtos.Analysis analysis(@PathVariable Long answerFactId,
@@ -35,7 +50,9 @@ public class StudentAiController {
     public StudentAiDtos.Conversation createConversation(
             @Valid @RequestBody StudentAiDtos.CreateConversationRequest request,
             @AuthenticationPrincipal RenZhengYongHu user) {
-        return service.createConversation(user.id(), request.answerFactId());
+        return service.createConversation(user.id(), request.answerFactId(), request.topicQuestionId(), request.knowledgeCardId(),
+                request.contextType(), request.modelConfigId(), request.thinkingMode(),
+                Boolean.TRUE.equals(request.webSearch()));
     }
 
     @GetMapping("/conversations/{conversationId}")

@@ -5,6 +5,7 @@ import type { ApiError } from '../../api/http'
 import aquaWorld from '../../assets/aqua/rike-aqua-world.webp'
 import { resolvePostLoginPath } from '../../auth/postLoginRoute'
 import LoginForm from '../../components/auth/LoginForm.vue'
+import PasswordRecoveryDialog from '../../components/auth/PasswordRecoveryDialog.vue'
 import AquaBrand from '../../components/layout/AquaBrand.vue'
 import { useAuthStore } from '../../stores/auth'
 import { useEntranceMotion } from '../../utils/entranceMotion'
@@ -15,6 +16,7 @@ const loading = ref(false)
 const errorMessage = ref('')
 const loginForm = ref<InstanceType<typeof LoginForm>>()
 const root = ref<HTMLElement>()
+const recoveryVisible=ref(false)
 useEntranceMotion(root, '.auth-world-copy, .auth-optic, .auth-panel', 0.08)
 
 const messages: Record<string, string> = {
@@ -71,7 +73,13 @@ async function handleLogin(payload: {
       <h2 id="login-title">欢迎登录</h2>
       <p class="auth-description">输入账号、密码和图形验证码后登录。</p>
       <LoginForm ref="loginForm" :loading="loading" :error-message="errorMessage" @submit="handleLogin" />
-      <p class="login-note">忘记密码请联系管理员，由管理员在账号管理中恢复默认密码。</p>
+      <button class="login-note-button" type="button" aria-haspopup="dialog" @click="recoveryVisible=true">
+        <span class="login-note-button__shield" aria-hidden="true">◇</span>
+        <span>遇到登录问题？</span>
+        <strong>申请密码恢复</strong>
+        <span class="login-note-button__arrow" aria-hidden="true">→</span>
+      </button>
+      <PasswordRecoveryDialog v-model="recoveryVisible" />
     </section>
   </main>
 </template>

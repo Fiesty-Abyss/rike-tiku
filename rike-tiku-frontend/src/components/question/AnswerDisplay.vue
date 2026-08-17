@@ -13,23 +13,33 @@ const props = withDefaults(defineProps<{
   attachments: () => [],
 })
 
+const parsedValue = computed(() => {
+  if (typeof props.value !== 'string') return { value: props.value, malformed: false }
+  const raw = props.value.trim()
+  if (!raw.startsWith('{') && !raw.startsWith('[')) return { value: props.value, malformed: false }
+  try { return { value: JSON.parse(raw) as unknown, malformed: false } }
+  catch { return { value: null, malformed: true } }
+})
+
 const choiceAnswers = computed(() => {
   if (props.questionType === 'FILL_BLANK') return []
   const optionMap = new Map(props.options.map(option => [option.label.trim().toUpperCase(), option.content]))
-  return optionLabels(props.value).map(label => ({ label, content: optionMap.get(label) }))
+  return optionLabels(parsedValue.value.value).map(label => ({ label, content: optionMap.get(label) }))
 })
 
 const blankAnswers = computed(() => {
   if (props.questionType !== 'FILL_BLANK') return []
-  if (Array.isArray(props.value)) return props.value.map(value => text(value))
-  const blanks = object(props.value)?.blanks
+  if (Array.isArray(parsedValue.value.value)) return parsedValue.value.value.map(value => text(value))
+  const blanks = object(parsedValue.value.value)?.blanks
   if (!Array.isArray(blanks)) return []
   // acceptedAnswers 的首项是人工审核后的 canonical answer；其余仅参与确定性判分。
   return blanks.map(blank => {
     const accepted = object(blank)?.acceptedAnswers
-    return Array.isArray(accepted) ? text(accepted[0]) : ''
+    if (!Array.isArray(accepted)) return ''
+    return accepted.map(text).filter(Boolean).join('；可接受：')
   })
 })
+const malformed = computed(()=>props.questionType!=='SUBJECTIVE' && parsedValue.value.malformed)
 
 function optionLabels(value: unknown) {
   const raw = typeof value === 'string'
@@ -55,6 +65,8 @@ function text(value: unknown) {
 
 <template>
   <div class="answer-display" :aria-label="questionType === 'FILL_BLANK' ? '填空答案' : '选择题答案'">
+    <span v-if="questionType==='SUBJECTIVE'" class="answer-display__subjective">本题不自动判分，请查看标准解析</span>
+    <span v-else-if="malformed" class="answer-display__error">答案结构异常，禁止通过审核</span>
     <ol v-if="questionType !== 'FILL_BLANK'" class="answer-display__choices">
       <li v-for="answer in choiceAnswers" :key="answer.label">
         <b>{{ answer.label }}.</b>
@@ -74,7 +86,11 @@ function text(value: unknown) {
         <QuestionContent :content="answer" :attachments="attachments" position="ANSWER" />
       </li>
     </ol>
-    <span v-if="questionType !== 'FILL_BLANK' && !choiceAnswers.length" class="answer-display__empty">未作答</span>
+    <span v-if="questionType !== 'FILL_BLANK' && questionType!=='SUBJECTIVE' && !choiceAnswers.length && !malformed" class="answer-display__empty">不存在答案</span>
     <span v-if="questionType === 'FILL_BLANK' && !blankAnswers.length" class="answer-display__empty">未作答</span>
   </div>
 </template>
+
+<style scoped>
+.answer-display{max-width:100%;overflow-wrap:anywhere}.answer-display__choices,.answer-display__blanks{margin:4px 0;padding-left:24px}.answer-display__content{overflow-wrap:anywhere}.answer-display__fallback{display:inline-block;min-width:1em}.answer-display__subjective{color:var(--el-text-color-secondary)}
+</style>

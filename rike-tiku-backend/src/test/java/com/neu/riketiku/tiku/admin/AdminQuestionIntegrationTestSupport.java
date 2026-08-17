@@ -3,6 +3,7 @@ package com.neu.riketiku.tiku.admin;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;
+import java.nio.file.Path;
 import java.util.UUID;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
@@ -16,8 +17,11 @@ public abstract class AdminQuestionIntegrationTestSupport {
     private static final String SCHEMA = "rike_tiku_question_test_" + UUID.randomUUID().toString().replace("-", "");
     private static final String ADMIN_URL = "jdbc:mysql://" + HOST + ":" + PORT + "/mysql" + OPTIONS;
     private static final String TEST_URL = "jdbc:mysql://" + HOST + ":" + PORT + "/" + SCHEMA + OPTIONS;
+    private static final Path ATTACHMENT_ROOT = Path.of(
+            System.getProperty("java.io.tmpdir"), "rike-tiku-test-attachments", SCHEMA);
 
     static {
+        System.setProperty("rike.tiku.attachment.storage-root", ATTACHMENT_ROOT.toString());
         try (Connection connection = DriverManager.getConnection(ADMIN_URL, USERNAME, PASSWORD);
              Statement statement = connection.createStatement()) {
             statement.execute("CREATE DATABASE `" + SCHEMA + "` CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci");

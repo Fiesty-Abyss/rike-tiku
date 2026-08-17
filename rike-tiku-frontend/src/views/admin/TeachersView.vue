@@ -14,6 +14,8 @@ import {
   fetchSubjects,
   fetchTeacher,
   fetchTeachers,
+  grantTeacherAdmin,
+  revokeTeacherAdmin,
   resetTeacherPassword,
   resetTeacherPasswords,
   type AccountStatus,
@@ -114,6 +116,10 @@ function message(error: unknown, fallback: string) {
     SUBJECT_UNAVAILABLE: "该科目当前不可用于任课关系。",
     TEACHING_ASSIGNMENT_REACTIVATION_NOT_SUPPORTED:
       "为保留历史，已结束或停用关系不可重新启用。",
+    LAST_ADMIN_REQUIRED: "系统至少需要保留一名启用的管理员，不能撤销该角色。",
+    ADMIN_SELF_REVOKE_FORBIDDEN: "当前登录管理员不能撤销自己的管理员角色。",
+    ADMIN_SELF_DISABLE_FORBIDDEN:
+      "当前登录管理员不能停用自己的账号或教师档案。",
   };
   return api.code
     ? map[api.code] || api.message || fallback
@@ -281,38 +287,84 @@ async function resetPassword() {
   if (!detail.value) return;
   try {
     const result = await executePasswordRecovery(
-      () => ElMessageBox.confirm(
-        "确认将该账号恢复为系统默认密码吗？原密码将立即失效，下次登录必须修改密码。",
-        "恢复默认密码",
-        { type: "warning", confirmButtonText: "确认恢复", cancelButtonText: "取消" },
-      ),
+      () =>
+        ElMessageBox.confirm(
+          "确认将该账号恢复为系统默认密码吗？原密码将立即失效，下次登录必须修改密码。",
+          "恢复默认密码",
+          {
+            type: "warning",
+            confirmButtonText: "确认恢复",
+            cancelButtonText: "取消",
+          },
+        ),
       () => resetTeacherPassword(detail.value!.teacher.id),
     );
     if (!result) return;
     initialPassword.value = result.initialPassword;
     passwordRecovered.value = true;
-    currentAccountReset.value = detail.value.teacher.username === auth.currentUser?.username;
+    currentAccountReset.value =
+      detail.value.teacher.username === auth.currentUser?.username;
     ElMessage.success("教师账号已恢复为系统默认密码。");
   } catch (error) {
     if (error === "cancel" || error === "close") return;
     ElMessage.error(message(error, "教师密码重置失败。"));
   }
 }
+async function changeAdminRole() {
+  if (!detail.value) return;
+  const hasAdmin = detail.value.roles.includes("ADMIN");
+  try {
+    await ElMessageBox.confirm(
+      hasAdmin
+        ? "确定撤销该教师的管理员权限吗？撤销后仍保留教师身份和任课关系。"
+        : "确定授予该教师管理员权限吗？授予后该账号仍保留教师身份。",
+      hasAdmin ? "撤销管理员" : "授予管理员",
+      { type: "warning", confirmButtonText: "确认", cancelButtonText: "取消" },
+    );
+    detail.value = hasAdmin
+      ? await revokeTeacherAdmin(detail.value.teacher.id)
+      : await grantTeacherAdmin(detail.value.teacher.id);
+    ElMessage.success(hasAdmin ? "管理员角色已撤销。" : "管理员角色已授予。");
+    await loadTeachers();
+  } catch (error) {
+    if (error === "cancel" || error === "close") return;
+    ElMessage.error(message(error, "管理员角色更新失败。"));
+  }
+}
+async function openRoleAction(item: TeacherItem) {
+  try {
+    detail.value = await fetchTeacher(item.id);
+    await changeAdminRole();
+  } catch (error) {
+    ElMessage.error(message(error, "教师详情加载失败。"));
+  }
+}
+function isAdmin(item: { roles?: string[] }) {
+  return item.roles?.includes("ADMIN") ?? false;
+}
 async function resetSelectedPasswords() {
   if (!selectedTeachers.value.length) return;
   try {
     const result = await executePasswordRecovery(
-      () => ElMessageBox.confirm(
-        `确认恢复选中的 ${selectedTeachers.value.length} 个账号吗？原密码将立即失效，下次登录必须修改密码。`,
-        "批量恢复默认密码",
-        { type: "warning", confirmButtonText: "确认恢复", cancelButtonText: "取消" },
-      ),
-      () => resetTeacherPasswords(selectedTeachers.value.map((item) => item.id)),
+      () =>
+        ElMessageBox.confirm(
+          `确认恢复选中的 ${selectedTeachers.value.length} 个账号吗？原密码将立即失效，下次登录必须修改密码。`,
+          "批量恢复默认密码",
+          {
+            type: "warning",
+            confirmButtonText: "确认恢复",
+            cancelButtonText: "取消",
+          },
+        ),
+      () =>
+        resetTeacherPasswords(selectedTeachers.value.map((item) => item.id)),
     );
     if (!result) return;
     initialPassword.value = result.initialPassword;
     passwordRecovered.value = true;
-    currentAccountReset.value = selectedTeachers.value.some((item) => item.username === auth.currentUser?.username);
+    currentAccountReset.value = selectedTeachers.value.some(
+      (item) => item.username === auth.currentUser?.username,
+    );
     ElMessage.success(`已恢复 ${result.resetCount} 个教师账号。`);
   } catch (error) {
     if (error === "cancel" || error === "close") return;
@@ -343,7 +395,13 @@ onMounted(loadTeachers);
           管理员创建教师账号，并以教师、班级、科目三元关系授予后续数据范围。
         </p>
       </div>
-      <div><el-button :disabled="selectedTeachers.length === 0" @click="resetSelectedPasswords">批量恢复默认密码</el-button><el-button type="primary" @click="openCreate">创建教师</el-button></div>
+      <div>
+        <el-button
+          :disabled="selectedTeachers.length === 0"
+          @click="resetSelectedPasswords"
+          >批量恢复默认密码</el-button
+        ><el-button type="primary" @click="openCreate">创建教师</el-button>
+      </div>
     </div>
     <el-alert
       v-if="initialPassword"
@@ -352,9 +410,12 @@ onMounted(loadTeachers);
       :closable="false"
       show-icon
       ><template #title
-        >{{ passwordRecovered ? "已恢复默认密码" : "初始密码仅显示一次" }}：<strong>{{ initialPassword }}</strong
+        >{{
+          passwordRecovered ? "已恢复默认密码" : "初始密码仅显示一次"
+        }}：<strong>{{ initialPassword }}</strong
         ><span v-if="passwordRecovered">　下次登录必须修改密码</span
-        ><span v-if="currentAccountReset">　当前登录账号也已恢复默认密码，请退出并使用默认密码重新登录。</span
+        ><span v-if="currentAccountReset"
+          >　当前登录账号也已恢复默认密码，请退出并使用默认密码重新登录。</span
         ><el-button link type="danger" @click="clearInitialPassword"
           >立即清空</el-button
         ></template
@@ -417,7 +478,14 @@ onMounted(loadTeachers);
         prop="displayPosition"
         label="展示职务"
         min-width="140"
-      /><el-table-column label="账号状态" min-width="110"
+      /><el-table-column label="系统角色" min-width="150"
+        ><template #default="{ row }"
+          ><el-tag>教师</el-tag
+          ><el-tag v-if="isAdmin(row)" type="warning" style="margin-left: 6px"
+            >管理员</el-tag
+          ></template
+        ></el-table-column
+      ><el-table-column label="账号状态" min-width="110"
         ><template #default="{ row }"
           ><el-tag
             :type="row.accountStatus === 'ENABLED' ? 'success' : 'danger'"
@@ -431,12 +499,16 @@ onMounted(loadTeachers);
             >{{ label(profileStatuses, row.profileStatus) }}</el-tag
           ></template
         ></el-table-column
-      ><el-table-column label="操作" fixed="right" min-width="150"
+      ><el-table-column label="操作" fixed="right" min-width="230"
         ><template #default="{ row }"
           ><el-button link type="primary" @click="showDetail(row)"
             >详情与任课</el-button
-          ><el-button link type="primary" @click="openEdit(row)"
-            >编辑</el-button
+          ><el-button link type="primary" @click="openEdit(row)">编辑</el-button
+          ><el-button
+            link
+            :type="isAdmin(row) ? 'warning' : 'primary'"
+            @click="openRoleAction(row)"
+            >{{ isAdmin(row) ? "撤销管理员" : "授予管理员" }}</el-button
           ></template
         ></el-table-column
       ></el-table
@@ -465,14 +537,13 @@ onMounted(loadTeachers);
         :model="form"
         :rules="teacherRules"
         label-width="96px"
-        >
+      >
         <el-alert
           v-if="editing"
           class="dialog-help"
           type="info"
           :closable="false"
-          title="工号和用户名创建后不可修改；如教师忘记密码，请在详情中恢复默认密码。"
-        />
+          title="工号和用户名创建后不可修改；如教师忘记密码，请在详情中恢复默认密码。" />
         <el-form-item label="工号" prop="employeeNumber"
           ><el-input
             v-model="form.employeeNumber"
@@ -542,8 +613,20 @@ onMounted(loadTeachers);
             ></el-descriptions
           >
           <div class="teacher-security-actions">
-            <p>工号和用户名不可修改。恢复后原密码立即失效，下次登录必须修改密码。</p>
-            <el-button type="danger" plain @click="resetPassword">恢复默认密码</el-button>
+            <p>
+              工号和用户名不可修改。恢复后原密码立即失效，下次登录必须修改密码。
+            </p>
+            <el-button type="danger" plain @click="resetPassword"
+              >恢复默认密码</el-button
+            >
+            <el-button
+              :type="detail.roles.includes('ADMIN') ? 'warning' : 'primary'"
+              plain
+              @click="changeAdminRole"
+              >{{
+                detail.roles.includes("ADMIN") ? "撤销管理员" : "授予管理员"
+              }}</el-button
+            >
           </div>
           <div class="section-title-row teacher-assignment-heading">
             <div>

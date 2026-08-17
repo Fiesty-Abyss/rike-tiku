@@ -1,0 +1,238 @@
+{
+  "generatedAt": "2026-08-14T07:02:09.229Z",
+  "database": "rike_tiku_demo",
+  "providerDisclosure": "Provider-dependent screens were not called because rotated credentials are absent. Existing variant screenshots 09/10 are explicitly deterministic UI fixtures.",
+  "summary": {
+    "routes": 14,
+    "consoleErrors": 0,
+    "pageErrors": 0,
+    "failedRequests": 0,
+    "overflows": [],
+    "missingExpected": [],
+    "assertionFailures": []
+  },
+  "assertions": [
+    {
+      "name": "password-recovery-desktop",
+      "pass": true
+    },
+    {
+      "name": "password-recovery-mobile-overflow",
+      "pass": true
+    },
+    {
+      "name": "wrong-active-detail-opened",
+      "pass": true
+    },
+    {
+      "name": "wrong-single-question-retry-created",
+      "pass": true
+    },
+    {
+      "name": "wrong-archived-filter-shows-item",
+      "pass": true
+    },
+    {
+      "name": "topic-unit-detail-has-2-to-3-authorized-questions",
+      "pass": true
+    },
+    {
+      "name": "topic-unit-ui-renders-2-to-3-questions",
+      "pass": true
+    },
+    {
+      "name": "199-paper-visible",
+      "pass": true
+    },
+    {
+      "name": "paper-submit-human-readable-answer-and-standard",
+      "pass": true
+    },
+    {
+      "name": "knowledge-card-favorite-state-updated",
+      "pass": true
+    },
+    {
+      "name": "message-confirm-centered",
+      "pass": true
+    },
+    {
+      "name": "message-recalled-state",
+      "pass": true
+    },
+    {
+      "name": "message-hidden-for-self",
+      "pass": true
+    },
+    {
+      "name": "200-paper-hidden",
+      "pass": true
+    },
+    {
+      "name": "topic-unit-cross-class-does-not-leak-private-question",
+      "pass": true
+    },
+    {
+      "name": "recalled-hidden-from-peer",
+      "pass": true
+    },
+    {
+      "name": "self-deleted-remains-for-peer",
+      "pass": true
+    },
+    {
+      "name": "teacher-class-stats-real-api",
+      "pass": true
+    },
+    {
+      "name": "teacher-student-profile-current-physics-scope-only",
+      "pass": true
+    },
+    {
+      "name": "other-subject-teacher-profile-forbidden",
+      "pass": true
+    }
+  ],
+  "records": [
+    {
+      "route": "/login/student",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedRequests": [],
+      "status": 200,
+      "finalPath": "/login",
+      "expected": true,
+      "overflow": false
+    },
+    {
+      "route": "/student/wrong-questions",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedRequests": [],
+      "status": 200,
+      "finalPath": "/student/wrong-questions",
+      "expected": true,
+      "overflow": false
+    },
+    {
+      "route": "/student/topics",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedRequests": [],
+      "status": 200,
+      "finalPath": "/student/topics",
+      "expected": true,
+      "overflow": false
+    },
+    {
+      "route": "/student/papers/1",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedRequests": [],
+      "status": 200,
+      "finalPath": "/student/papers/1",
+      "expected": true,
+      "overflow": false
+    },
+    {
+      "route": "/student/knowledge-cards",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedRequests": [],
+      "status": 200,
+      "finalPath": "/student/knowledge-cards",
+      "expected": true,
+      "overflow": false
+    },
+    {
+      "route": "/messages/1",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedRequests": [],
+      "status": 200,
+      "finalPath": "/messages/1",
+      "expected": true,
+      "overflow": false
+    },
+    {
+      "route": "/teacher/private-questions",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedRequests": [],
+      "status": 200,
+      "finalPath": "/teacher/private-questions",
+      "expected": true,
+      "overflow": false
+    },
+    {
+      "route": "/teacher/scopes/4/knowledge-cards",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedRequests": [],
+      "status": 200,
+      "finalPath": "/teacher/scopes/4/knowledge-cards",
+      "expected": true,
+      "overflow": false
+    },
+    {
+      "route": "/teacher/papers",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedRequests": [],
+      "status": 200,
+      "finalPath": "/teacher/papers",
+      "expected": true,
+      "overflow": false
+    },
+    {
+      "route": "/admin/operation-logs",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedRequests": [],
+      "status": 200,
+      "finalPath": "/admin/operation-logs",
+      "expected": true,
+      "overflow": false
+    },
+    {
+      "route": "/admin/questions/import",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedRequests": [],
+      "status": 200,
+      "finalPath": "/admin/questions/import",
+      "expected": true,
+      "overflow": false
+    },
+    {
+      "route": "/admin/students/import",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedRequests": [],
+      "status": 200,
+      "finalPath": "/admin/students/import",
+      "expected": true,
+      "overflow": false
+    },
+    {
+      "route": "/admin/ai-models",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedRequests": [],
+      "status": 200,
+      "finalPath": "/admin/ai-models",
+      "expected": true,
+      "overflow": false
+    },
+    {
+      "route": "/admin/questions",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedRequests": [],
+      "status": 200,
+      "finalPath": "/admin/questions",
+      "expected": true,
+      "overflow": false
+    }
+  ]
+}

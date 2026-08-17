@@ -10,6 +10,7 @@ import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.security.MessageDigest;
+import java.nio.charset.StandardCharsets;
 import java.util.HexFormat;
 import java.util.Locale;
 import javax.imageio.ImageIO;
@@ -17,7 +18,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-/** Stores only verified PNG/JPEG question images under an application-controlled relative path. */
+/** Stores verified raster images or tightly constrained self-contained SVG under an application-controlled path. */
 @Service
 public class QuestionAttachmentStorage {
     private static final long MAX_BYTES = 3L * 1024 * 1024;
@@ -115,11 +116,13 @@ public class QuestionAttachmentStorage {
     private ImageFact validate(String name, byte[] bytes) {
         if (bytes == null || bytes.length == 0 || bytes.length > MAX_BYTES) fail("ATTACHMENT_FILE_INVALID", "附件大小不合法", HttpStatus.UNPROCESSABLE_ENTITY);
         String lower = name == null ? "" : name.toLowerCase(Locale.ROOT);
-        String extension = lower.endsWith(".png") ? ".png" : lower.endsWith(".jpg") || lower.endsWith(".jpeg") ? ".jpg" : null;
-        if (extension == null) fail("ATTACHMENT_FILE_INVALID", "仅支持 PNG 或 JPEG 图片附件", HttpStatus.UNPROCESSABLE_ENTITY);
-        String mime = "png".equals(format(bytes)) ? "image/png" : "jpeg".equals(format(bytes)) ? "image/jpeg" : null;
-        if (mime == null || (".png".equals(extension) && !"image/png".equals(mime)) || (".jpg".equals(extension) && !"image/jpeg".equals(mime))) fail("ATTACHMENT_FILE_INVALID", "附件扩展名与实际图片类型不一致", HttpStatus.UNPROCESSABLE_ENTITY);
-        try {
+        String extension = lower.endsWith(".png") ? ".png" : lower.endsWith(".jpg") || lower.endsWith(".jpeg") ? ".jpg"
+                : lower.endsWith(".webp") ? ".webp" : lower.endsWith(".svg") ? ".svg" : null;
+        if (extension == null) fail("ATTACHMENT_FILE_INVALID", "仅支持 PNG、JPEG、WebP 或安全 SVG 图片附件", HttpStatus.UNPROCESSABLE_ENTITY);
+        String detected=format(bytes);String mime="png".equals(detected)?"image/png":"jpeg".equals(detected)?"image/jpeg":
+                "webp".equals(detected)?"image/webp":"svg".equals(detected)?"image/svg+xml":null;
+        if (mime == null || !MapExtension.matches(extension,mime)) fail("ATTACHMENT_FILE_INVALID", "附件扩展名与实际图片类型不一致", HttpStatus.UNPROCESSABLE_ENTITY);
+        if("image/svg+xml".equals(mime))validateSvg(bytes);else if(!"image/webp".equals(mime))try {
             BufferedImage image = ImageIO.read(new ByteArrayInputStream(bytes));
             if (image == null || image.getWidth() < 1 || image.getHeight() < 1) fail("ATTACHMENT_FILE_INVALID", "附件不是有效图片", HttpStatus.UNPROCESSABLE_ENTITY);
         } catch (IOException exception) { fail("ATTACHMENT_FILE_INVALID", "附件不是有效图片", HttpStatus.UNPROCESSABLE_ENTITY); }
@@ -129,8 +132,19 @@ public class QuestionAttachmentStorage {
     private String format(byte[] value) {
         if (value.length >= 8 && value[0] == (byte) 0x89 && value[1] == 0x50 && value[2] == 0x4e && value[3] == 0x47) return "png";
         if (value.length >= 3 && value[0] == (byte) 0xff && value[1] == (byte) 0xd8 && value[2] == (byte) 0xff) return "jpeg";
+        if(value.length>=16&&value[0]=='R'&&value[1]=='I'&&value[2]=='F'&&value[3]=='F'&&value[8]=='W'&&value[9]=='E'&&value[10]=='B'&&value[11]=='P')return "webp";
+        String prefix=new String(value,0,Math.min(value.length,512),StandardCharsets.UTF_8).stripLeading().toLowerCase(Locale.ROOT);
+        if(prefix.startsWith("<svg")||prefix.startsWith("<?xml")&&prefix.contains("<svg"))return "svg";
         return "";
     }
+
+    private void validateSvg(byte[] bytes){String value=new String(bytes,StandardCharsets.UTF_8);String lower=value.toLowerCase(Locale.ROOT);
+        if(!lower.contains("<svg")||lower.contains("<!doctype")||lower.contains("<!entity")||lower.contains("<script")
+                ||lower.contains("<foreignobject")||lower.matches("(?s).*\\son[a-z]+\\s*=.*")||lower.matches("(?s).*\\b(?:href|src)\\s*=.*"))
+            fail("ATTACHMENT_FILE_INVALID","SVG 包含脚本、外部资源或事件处理器",HttpStatus.UNPROCESSABLE_ENTITY);
+    }
+
+    private static final class MapExtension{private static boolean matches(String extension,String mime){return switch(extension){case ".png"->"image/png".equals(mime);case ".jpg"->"image/jpeg".equals(mime);case ".webp"->"image/webp".equals(mime);case ".svg"->"image/svg+xml".equals(mime);default->false;};}}
 
     private String sha256(byte[] value) {
         try { return HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(value)); }

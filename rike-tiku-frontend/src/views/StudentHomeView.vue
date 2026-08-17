@@ -56,6 +56,8 @@ async function logout() {
         <router-link to="/student/practice/new" active-class="" exact-active-class="" :class="{ 'is-nav-active': navActive('practice') }">自主练习</router-link>
         <router-link to="/student/wrong-questions" active-class="" exact-active-class="" :class="{ 'is-nav-active': navActive('wrong') }">错题本</router-link>
         <router-link to="/student/topics" active-class="" exact-active-class="" :class="{ 'is-nav-active': route.path.startsWith('/student/topics') }">专题学习</router-link>
+        <router-link to="/student/papers" active-class="" exact-active-class="" :class="{ 'is-nav-active': route.path.startsWith('/student/papers') }">我的试卷</router-link>
+        <router-link to="/student/knowledge-cards" active-class="" exact-active-class="" :class="{ 'is-nav-active': route.path.startsWith('/student/knowledge-cards') }">高频考点</router-link>
         <router-link to="/messages" active-class="" exact-active-class="" :class="{ 'is-nav-active': navActive('messages') }">消息</router-link>
         <el-dropdown>
           <el-button text class="user-menu-button">

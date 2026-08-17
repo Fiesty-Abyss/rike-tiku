@@ -185,7 +185,7 @@ public class QuestionAttachmentAdminService {
     }
 
     private QuestionAttachmentStorage.StoredImage store(MultipartFile file) {
-        if (file == null || file.isEmpty()) throw error("ATTACHMENT_FILE_INVALID", "请选择 PNG 或 JPEG 图片", HttpStatus.UNPROCESSABLE_ENTITY);
+        if (file == null || file.isEmpty()) throw error("ATTACHMENT_FILE_INVALID", "请选择 PNG、JPEG、WebP 或安全 SVG 图片", HttpStatus.UNPROCESSABLE_ENTITY);
         try {
             return storage.store(fileName(file), file.getBytes());
         } catch (java.io.IOException exception) {

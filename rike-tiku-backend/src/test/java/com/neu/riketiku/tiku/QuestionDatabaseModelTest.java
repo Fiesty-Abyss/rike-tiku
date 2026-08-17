@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.neu.riketiku.tiku.admin.AdminQuestionIntegrationTestSupport;
+import com.neu.riketiku.database.DatabaseSchemaFacts;
 import com.neu.riketiku.tiku.entity.KeMu;
 import com.neu.riketiku.tiku.entity.TiMu;
 import com.neu.riketiku.tiku.entity.TiMuFuJian;
@@ -30,7 +31,13 @@ class QuestionDatabaseModelTest extends AdminQuestionIntegrationTestSupport {
         "ren_ke_guan_xi", "lian_xi_hui_hua", "lian_xi_ti_mu", "xue_sheng_da_ti",
         "xue_xi_jie_guo", "cuo_ti_ji_lu", "gao_pin_kao_dian", "si_xin_hui_hua", "si_xin_xiao_xi",
         "guan_li_cao_zuo_ri_zhi", "ai_diao_yong_ri_zhi", "ai_cuo_ti_fen_xi", "ai_hui_hua", "ai_xiao_xi",
-        "ai_mo_xing_pei_zhi", "ai_sheng_cheng_ren_wu", "ai_hou_xuan_ti_zhi_liang_ping_jia", "ai_shi_jue_shang_xia_wen"
+        "ai_mo_xing_pei_zhi", "ai_sheng_cheng_ren_wu", "ai_hou_xuan_ti_zhi_liang_ping_jia", "ai_shi_jue_shang_xia_wen",
+        "mi_ma_chong_zhi_shen_qing", "shi_juan", "shi_juan_ti_mu", "ai_xue_sheng_bian_shi_shi_li",
+        "gao_pin_kao_dian_zhi_shi_dian", "gao_pin_kao_dian_fu_jian",
+        "zhuan_ti_xue_xi_dan_yuan", "zhuan_ti_xue_xi_dan_yuan_ti_mu",
+        "shi_juan_fa_bu", "shi_juan_fa_bu_ti_mu", "shi_juan_ti_jiao", "shi_juan_xue_sheng_da_ti",
+        "gao_pin_kao_dian_shen_he_ji_lu", "xue_sheng_zhi_shi_ka_pian_zhuang_tai",
+        "zhi_shi_ka_pian_lian_xi_shi_li"
     );
 
     @Autowired
@@ -55,7 +62,7 @@ class QuestionDatabaseModelTest extends AdminQuestionIntegrationTestSupport {
         assertThat(Set.copyOf(tables)).isEqualTo(BUSINESS_TABLES);
         Integer migrations = jdbcTemplate.queryForObject(
             "SELECT COUNT(*) FROM flyway_schema_history WHERE success = 1", Integer.class);
-        assertThat(migrations).isEqualTo(14);
+        assertThat(migrations).isEqualTo(DatabaseSchemaFacts.LATEST_FLYWAY_VERSION);
     }
 
     @Test

@@ -1,0 +1,4 @@
+// @vitest-environment jsdom
+import {flushPromises,mount} from '@vue/test-utils';import {describe,expect,it,vi} from 'vitest';import PaperPreviewView from './PaperPreviewView.vue'
+const api=vi.hoisted(()=>({fetchPaper:vi.fn()}));vi.mock('../../api/teacher/papers',()=>api);vi.mock('vue-router',()=>({useRoute:()=>({params:{id:'7',version:'student'}})}));const stubs={ScientificText:{props:['content'],template:'<span>{{content}}</span>'}}
+describe('试卷学生版',()=>{it('隐藏答案并提供系统打印入口',async()=>{api.fetchPaper.mockResolvedValue({id:7,name:'物理测试卷',subjectName:'物理',totalScore:10,questions:[{id:1,order:1,score:10,stem:'题干',options:[],correctAnswer:'A',standardAnalysis:'解析',knowledgePoints:['力学'],difficulty:2}]});const wrapper=mount(PaperPreviewView,{global:{stubs}});await flushPromises();expect(wrapper.text()).toContain('打印 / 另存为 PDF');expect(wrapper.text()).not.toContain('正确答案');expect(wrapper.text()).not.toContain('STANDARD 解析')})})

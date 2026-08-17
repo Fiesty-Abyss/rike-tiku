@@ -38,7 +38,7 @@ public class QuestionAdminService {
     @Transactional(readOnly = true)
     public QuestionDtos.Page page(long page, long size, String subject, String type, String mode, Integer difficulty, String status, String keyword, String rights) {
         List<Object> arguments = new ArrayList<>();
-        StringBuilder where = new StringBuilder(" WHERE q.yi_shan_chu=0");
+        StringBuilder where = new StringBuilder(" WHERE q.yi_shan_chu=0 AND q.ke_jian_fan_wei='GLOBAL'");
         equal(where, arguments, "s.ke_mu_dai_ma", subject);
         equal(where, arguments, "q.ti_mu_lei_xing", type);
         equal(where, arguments, "q.shi_yong_mo_shi", mode);
@@ -72,7 +72,7 @@ public class QuestionAdminService {
         }
         validateRequest(request); validateSubject(request.subjectId()); validateKnowledgePoints(request.subjectId(), request.knowledgePointIds());
         String hash = calculateContentHash(request); rejectDuplicate(request.subjectId(), hash, 0);
-        jdbc.update("INSERT INTO ti_mu(ke_mu_id,ti_mu_lei_xing,shi_yong_mo_shi,ti_gan,zheng_que_da_an,nan_du,nan_du_shuo_ming,shi_fou_ke_zi_dong_pan_fen,zhuang_tai,nei_rong_ha_xi) VALUES (?,?,?,?,CAST(? AS JSON),?,?,?,'DRAFT',?)", request.subjectId(), request.questionType(), request.usageMode(), request.stem().trim(), request.correctAnswer(), request.difficulty(), blank(request.difficultyDescription()), request.autoGradable(), hash);
+        jdbc.update("INSERT INTO ti_mu(ke_mu_id,ti_mu_lei_xing,shi_yong_mo_shi,zhuan_ti_lei_xing,ti_gan,zheng_que_da_an,nan_du,nan_du_shuo_ming,shi_fou_ke_zi_dong_pan_fen,zhuang_tai,nei_rong_ha_xi,chuang_jian_ren_id) VALUES (?,?,?,?,?,CAST(? AS JSON),?,?,?,'DRAFT',?,?)", request.subjectId(), request.questionType(), request.usageMode(), topicType(request),request.stem().trim(), request.correctAnswer(), request.difficulty(), blank(request.difficultyDescription()), request.autoGradable(), hash,creatorId);
         Long id = jdbc.queryForObject("SELECT LAST_INSERT_ID()", Long.class); replaceChildren(id, request); return detailInternal(id);
     }
 
@@ -107,7 +107,7 @@ public class QuestionAdminService {
     private QuestionDtos.Detail updateInternal(Long id, QuestionDtos.Save request) {
         requireStatus(id, "DRAFT"); validateRequest(request); validateSubject(request.subjectId()); validateKnowledgePoints(request.subjectId(), request.knowledgePointIds());
         String hash = calculateContentHash(request); rejectDuplicate(request.subjectId(), hash, id);
-        jdbc.update("UPDATE ti_mu SET ke_mu_id=?,ti_mu_lei_xing=?,shi_yong_mo_shi=?,ti_gan=?,zheng_que_da_an=CAST(? AS JSON),nan_du=?,nan_du_shuo_ming=?,shi_fou_ke_zi_dong_pan_fen=?,nei_rong_ha_xi=? WHERE id=?", request.subjectId(), request.questionType(), request.usageMode(), request.stem().trim(), request.correctAnswer(), request.difficulty(), blank(request.difficultyDescription()), request.autoGradable(), hash, id);
+        jdbc.update("UPDATE ti_mu SET ke_mu_id=?,ti_mu_lei_xing=?,shi_yong_mo_shi=?,zhuan_ti_lei_xing=?,ti_gan=?,zheng_que_da_an=CAST(? AS JSON),nan_du=?,nan_du_shuo_ming=?,shi_fou_ke_zi_dong_pan_fen=?,nei_rong_ha_xi=? WHERE id=?", request.subjectId(), request.questionType(), request.usageMode(),topicType(request), request.stem().trim(), request.correctAnswer(), request.difficulty(), blank(request.difficultyDescription()), request.autoGradable(), hash, id);
         replaceChildren(id, request); return detailInternal(id);
     }
 
@@ -221,7 +221,7 @@ public class QuestionAdminService {
     private void validateComplete(Long id) { if (count("SELECT COUNT(*) FROM ti_mu_jie_xi WHERE ti_mu_id=? AND jie_xi_lei_xing='STANDARD' AND yi_shan_chu=0", id) == 0 || count("SELECT COUNT(*) FROM ti_mu_zhi_shi_dian WHERE ti_mu_id=? AND yi_shan_chu=0", id) == 0 || count("SELECT COUNT(*) FROM ti_mu_lai_yuan WHERE ti_mu_id=? AND yi_shan_chu=0", id) != 3) fail("QUESTION_INCOMPLETE", "提交审核前必须补全解析、知识点和来源", HttpStatus.BAD_REQUEST); }
     private void validatePublishableSources(Long id) { validateComplete(id); if (count("SELECT COUNT(*) FROM ti_mu_lai_yuan WHERE ti_mu_id=? AND quan_li_zhuang_tai NOT IN ('AUTHORIZED','OPEN_LICENSE','PUBLIC_OFFICIAL','USER_PROVIDED') AND yi_shan_chu=0", id) > 0) fail("QUESTION_RIGHTS_UNAVAILABLE", "来源权利状态不允许发布", HttpStatus.CONFLICT); }
     private QuestionDtos.Detail detailInternal(Long id) {
-        List<QuestionDtos.Item> items = jdbc.query("SELECT q.id,s.ke_mu_dai_ma,s.ke_mu_ming_cheng,q.ti_mu_lei_xing,q.shi_yong_mo_shi,LEFT(q.ti_gan,120),q.nan_du,q.shi_fou_ke_zi_dong_pan_fen,q.zhuang_tai,(SELECT quan_li_zhuang_tai FROM ti_mu_lai_yuan WHERE ti_mu_id=q.id AND nei_rong_lei_xing='QUESTION'),q.chuang_jian_shi_jian,q.geng_xin_shi_jian FROM ti_mu q JOIN ke_mu s ON s.id=q.ke_mu_id WHERE q.id=? AND q.yi_shan_chu=0", this::mapItem, id);
+        List<QuestionDtos.Item> items = jdbc.query("SELECT q.id,s.ke_mu_dai_ma,s.ke_mu_ming_cheng,q.ti_mu_lei_xing,q.shi_yong_mo_shi,LEFT(q.ti_gan,120),q.nan_du,q.shi_fou_ke_zi_dong_pan_fen,q.zhuang_tai,(SELECT quan_li_zhuang_tai FROM ti_mu_lai_yuan WHERE ti_mu_id=q.id AND nei_rong_lei_xing='QUESTION'),q.chuang_jian_shi_jian,q.geng_xin_shi_jian FROM ti_mu q JOIN ke_mu s ON s.id=q.ke_mu_id WHERE q.id=? AND q.yi_shan_chu=0 AND q.ke_jian_fan_wei='GLOBAL'", this::mapItem, id);
         if (items.isEmpty()) fail("QUESTION_NOT_FOUND", "题目不存在", HttpStatus.NOT_FOUND);
         QuestionDtos.Item item = items.getFirst();
         List<QuestionDtos.Option> options = jdbc.query("SELECT xuan_xiang_biao_shi,xuan_xiang_nei_rong,shi_fou_zheng_que FROM ti_mu_xuan_xiang WHERE ti_mu_id=? AND yi_shan_chu=0 ORDER BY pai_xu", (rs, row) -> new QuestionDtos.Option(rs.getString(1), rs.getString(2), rs.getBoolean(3)), id);
@@ -237,7 +237,8 @@ public class QuestionAdminService {
         }, id);
         List<QuestionDtos.Review> reviews = jdbc.query("SELECT id,shen_he_dong_zuo,yuan_zhuang_tai,mu_biao_zhuang_tai,shen_he_ren_id,shen_he_yi_jian,chuang_jian_shi_jian FROM ti_mu_shen_he_ji_lu WHERE ti_mu_id=? ORDER BY id", (rs, row) -> new QuestionDtos.Review(rs.getLong(1), rs.getString(2), rs.getString(3), rs.getString(4), (Long) rs.getObject(5), rs.getString(6), rs.getObject(7, LocalDateTime.class)), id);
         String stem = jdbc.queryForObject("SELECT ti_gan FROM ti_mu WHERE id=?", String.class, id);
-        return new QuestionDtos.Detail(item, stem, answer, options, analysis, points, sources, attachments, reviews, allowedActions(item.status()));
+        String provider = jdbc.query("SELECT COALESCE(xs.xing_ming,j.xing_ming,u.yong_hu_ming) FROM ti_mu q JOIN yong_hu u ON u.id=q.chuang_jian_ren_id LEFT JOIN xue_sheng_dang_an xs ON xs.yong_hu_id=u.id AND xs.yi_shan_chu=0 LEFT JOIN jiao_shi_dang_an j ON j.yong_hu_id=u.id AND j.yi_shan_chu=0 WHERE q.id=?", (rs,row) -> rs.getString(1), id).stream().findFirst().orElse("历史数据，未记录具体提供者");
+        return new QuestionDtos.Detail(item, stem, answer, options, analysis, points, provider, sources, attachments, reviews, allowedActions(item.status()));
     }
     private List<String> allowedActions(String status) {
         return switch (status) { case "DRAFT" -> List.of("SUBMIT"); case "PENDING" -> List.of("APPROVE", "RETURN"); case "PUBLISHED" -> List.of("DISABLE"); case "DISABLED" -> List.of("REPUBLISH"); default -> List.of(); };
@@ -299,6 +300,7 @@ public class QuestionAdminService {
     private Object[] join(Long subjectId, List<Long> ids) { List<Object> values = new ArrayList<>(); values.add(subjectId); values.addAll(ids); return values.toArray(); }
     private String placeholders(int count) { return String.join(",", java.util.Collections.nCopies(count, "?")); }
     private String blank(String value) { return value == null || value.isBlank() ? null : value.trim(); }
+    private String topicType(QuestionDtos.Save request){return "SUBJECTIVE".equals(request.questionType())?"COMPREHENSIVE":null;}
     private void fail(String code, String message, HttpStatus status) { throw new RenZhengYeWuYiChang(code, message, status); }
     private record ExistingOption(long id, String label) { }
 }

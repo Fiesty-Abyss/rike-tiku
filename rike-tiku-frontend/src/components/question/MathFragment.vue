@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref, watch } from 'vue'
 import katex from 'katex'
+import 'katex/contrib/mhchem'
 
 const props = withDefaults(defineProps<{ expression: string; display?: boolean }>(), { display: false })
 const host = ref<HTMLElement>()

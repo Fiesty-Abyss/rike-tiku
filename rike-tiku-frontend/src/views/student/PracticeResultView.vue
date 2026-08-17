@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { ElMessage } from 'element-plus'
-import { fetchPracticeResult, type PracticeResult } from '../../api/student/practice'
+import { ElMessage, ElMessageBox } from 'element-plus'
+import { archiveWrongQuestion, fetchPracticeResult, type PracticeResult } from '../../api/student/practice'
 import type { ApiError } from '../../api/http'
 import QuestionContent from '../../components/question/QuestionContent.vue'
 import AnswerDisplay from '../../components/question/AnswerDisplay.vue'
@@ -17,6 +17,8 @@ const loading = ref(true)
 const onlyWrong = ref(false)
 const currentQuestionId = ref<number | null>(null)
 const analysisExpanded = ref(true)
+const aiDocked = ref(false)
+const wrongRetryHandled = ref(false)
 const visibleQuestions = computed(() => result.value?.questions.filter(item => !onlyWrong.value || !item.correct) || [])
 const currentIndex = computed(() => Math.max(0, visibleQuestions.value.findIndex(item => item.question.practiceQuestionId === currentQuestionId.value)))
 const item = computed(() => visibleQuestions.value[currentIndex.value] || null)
@@ -43,17 +45,44 @@ function similarPractice() {
   void router.push({ path: '/student/practice/new', query: { subjectCode: result.value.subjectCode, knowledgePointId: point.id, referenceQuestionId: item.value.question.questionId, count: 5 } })
 }
 
-watch(item, value => { analysisExpanded.value = value ? !value.correct : true })
+watch(item, () => { analysisExpanded.value = true })
 watch(onlyWrong, () => {
   const first = visibleQuestions.value[0]
   currentQuestionId.value = first?.question.practiceQuestionId || null
 })
+
+async function clearWrongRetryContext() {
+  const query = { ...route.query }
+  delete query.fromWrongBook
+  delete query.wrongQuestionId
+  await router.replace({ path:route.path, query })
+}
+
+async function handleWrongRetry() {
+  if (wrongRetryHandled.value || route.query?.fromWrongBook !== 'true') return
+  const wrongQuestionId = Number(route.query?.wrongQuestionId)
+  const retryItem = result.value?.questions.find(record => record.question.questionId === wrongQuestionId)
+  if (!retryItem) return
+  wrongRetryHandled.value = true
+  await clearWrongRetryContext()
+  if (!retryItem.correct) return
+  try {
+    await ElMessageBox.confirm('本次已经回答正确，是否从活跃错题本移出？', '错题复习完成', {
+      type:'success', center:true, confirmButtonText:'移出错题本', cancelButtonText:'继续保留',
+    })
+    await archiveWrongQuestion(wrongQuestionId)
+    ElMessage.success('已从活跃错题本移出，历史答题和分析仍然保留。')
+  } catch (error) {
+    if (error !== 'cancel' && error !== 'close') ElMessage.error((error as ApiError).message || '移出错题本失败。')
+  }
+}
 
 onMounted(async () => {
   try {
     result.value = await fetchPracticeResult(Number(route.params.id))
     const firstWrong = result.value.questions.find(question => !question.correct)
     currentQuestionId.value = (firstWrong || result.value.questions[0])?.question.practiceQuestionId || null
+    await handleWrongRetry()
   } catch (error) {
     const api = error as ApiError
     ElMessage.error(api.message || '练习结果加载失败。')
@@ -65,7 +94,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <section class="student-page result-page" :data-subject="environment" v-loading="loading">
+  <section class="student-page result-page" :class="{'has-ai-dock':aiDocked}" :data-subject="environment" v-loading="loading">
     <template v-if="result">
       <header class="result-summary">
         <div><span class="result-kicker">{{ result.subjectName }} · 本次练习</span><h1>{{ result.totalScore }} 分</h1><p>共 {{ result.totalCount }} 题，答对 {{ result.correctCount }} 题。</p></div>
@@ -81,11 +110,16 @@ onMounted(async () => {
         <h2><QuestionContent :content="item.question.stem" :attachments="item.question.attachments" position="QUESTION" /></h2>
         <div class="answer-comparison"><div><span>你的答案</span><AnswerDisplay :question-type="item.question.questionType" :value="item.studentAnswer" :options="item.question.options" :attachments="item.question.attachments" /></div><div><span>正确答案</span><AnswerDisplay :question-type="item.question.questionType" :value="item.correctAnswer" :options="item.question.options" :attachments="item.question.attachments" /></div></div>
         <div class="knowledge-chip-row"><span>知识点</span><el-button v-for="point in item.question.knowledgePoints" :key="point.id" class="knowledge-chip" round plain @click="openKnowledgePoint(point.id)">{{ point.path }}</el-button></div>
+        <p v-if="item.correct" class="result-correct-guidance">本题已答对，也可以继续检查思路。</p>
         <section class="analysis-panel"><button type="button" class="analysis-toggle" :aria-expanded="analysisExpanded" @click="analysisExpanded = !analysisExpanded"><span>标准解析</span><span>{{ analysisExpanded ? '收起' : '展开' }}</span></button><div v-show="analysisExpanded" class="analysis-content"><StandardAnalysis :content="item.standardAnalysis" :attachments="item.question.attachments" /></div></section>
-        <StudentAiLearningPanel :answer-fact-id="item.answerFactId" :wrong="!item.correct" />
+        <StudentAiLearningPanel :answer-fact-id="item.answerFactId" :wrong="!item.correct" :question-context="{questionType:item.question.questionType,stem:item.question.stem,options:item.question.options,studentAnswer:item.studentAnswer,correctAnswer:item.correctAnswer,submitted:true}" @visibility="aiDocked=$event" />
         <div class="result-next-actions"><el-button :disabled="currentIndex === 0" @click="move(-1)">上一题</el-button><el-button type="primary" plain @click="similarPractice">练习类似题</el-button><el-button :disabled="currentIndex >= visibleQuestions.length - 1" @click="move(1)">下一题</el-button></div>
       </article>
       </Transition>
     </template>
   </section>
 </template>
+
+<style scoped>
+.result-page{transition:padding-right .22s ease}.result-page.has-ai-dock{padding-right:520px}@media(max-width:900px){.result-page.has-ai-dock{padding-right:0}}
+</style>

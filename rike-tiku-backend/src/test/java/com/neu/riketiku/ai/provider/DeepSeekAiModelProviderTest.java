@@ -57,6 +57,19 @@ class DeepSeekAiModelProviderTest {
     }
 
     @Test
+    void mapsOfficialV4ThinkingAndMaxEffortWithoutSamplingParameters() throws Exception {
+        AtomicInteger calls = new AtomicInteger();
+        server = server(attempt -> new Reply(200, successJson()), calls, 0);
+        provider(properties(0, Duration.ofSeconds(1))).generate(new AiModelRequest(
+                List.of(new AiMessage("user", "solve")), "unit-test", null, false, 800,
+                AiThinkingMode.ENABLED, "max"));
+        assertThat(lastRequest.get().path("thinking").path("type").asText()).isEqualTo("enabled");
+        assertThat(lastRequest.get().path("reasoning_effort").asText()).isEqualTo("max");
+        assertThat(lastRequest.get().has("temperature")).isFalse();
+        assertThat(lastRequest.get().has("top_p")).isFalse();
+    }
+
+    @Test
     void retries429And5xxExactlyOnce() throws Exception {
         assertRetriesThenSucceeds(429, AiProviderErrorType.RATE_LIMITED);
         stopServer();

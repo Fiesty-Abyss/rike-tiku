@@ -12,6 +12,7 @@ import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -57,5 +58,17 @@ public class SiXinController {
     @PostMapping("/conversations/{id}/read")
     ReadResponse read(@PathVariable long id, @AuthenticationPrincipal RenZhengYongHu principal) {
         return service.read(principal, id);
+    }
+
+    @PostMapping("/{conversationId}/messages/{messageId}/recall")
+    MessageResponse recall(@PathVariable long conversationId, @PathVariable long messageId,
+            @AuthenticationPrincipal RenZhengYongHu principal) {
+        return service.recall(principal, conversationId, messageId);
+    }
+
+    @DeleteMapping("/{conversationId}/messages/{messageId}")
+    void hide(@PathVariable long conversationId, @PathVariable long messageId,
+            @AuthenticationPrincipal RenZhengYongHu principal) {
+        service.hide(principal, conversationId, messageId);
     }
 }

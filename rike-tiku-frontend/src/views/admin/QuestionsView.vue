@@ -1,97 +1,1048 @@
 <script setup lang="ts">
-import { computed, onMounted, reactive, ref } from 'vue'
-import { useRouter } from 'vue-router'
-import { ElMessage, ElMessageBox, type FormInstance, type FormRules } from 'element-plus'
-import { fetchSubjects, type SubjectItem } from '../../api/admin/teachers'
-import { createQuestion, deleteQuestionAttachment, fetchKnowledgePoints, fetchQuestion, fetchQuestions, questionAction, replaceQuestionAttachment, updateQuestion, uploadQuestionAttachment, type AttachmentPosition, type Detail, type QuestionAttachment, type QuestionItem, type QuestionType, type Save, type Source } from '../../api/admin/questions'
-import { defaultOptions, normaliseForSave, sourceParts } from './questionForm'
-import type { ApiError } from '../../api/http'
-import { formatEnum } from '../../utils/formatters'
-import QuestionContent from '../../components/question/QuestionContent.vue'
-import ScientificText from '../../components/question/ScientificText.vue'
+import { computed, onMounted, reactive, ref } from "vue";
+import { useRouter } from "vue-router";
+import {
+  ElMessage,
+  ElMessageBox,
+  type FormInstance,
+  type FormRules,
+} from "element-plus";
+import { fetchSubjects, type SubjectItem } from "../../api/admin/teachers";
+import {
+  createQuestion,
+  deleteQuestionAttachment,
+  fetchKnowledgePoints,
+  fetchQuestion,
+  fetchQuestions,
+  questionAction,
+  replaceQuestionAttachment,
+  updateQuestion,
+  uploadQuestionAttachment,
+  type AttachmentPosition,
+  type Detail,
+  type QuestionAttachment,
+  type QuestionItem,
+  type QuestionType,
+  type Save,
+  type Source,
+} from "../../api/admin/questions";
+import { defaultOptions, normaliseForSave, sourceParts } from "./questionForm";
+import type { ApiError } from "../../api/http";
+import { formatEnum } from "../../utils/formatters";
+import QuestionContent from "../../components/question/QuestionContent.vue";
+import ScientificText from "../../components/question/ScientificText.vue";
+import AnswerDisplay from "../../components/question/AnswerDisplay.vue";
 
-const loading = ref(false)
-const router = useRouter()
-const saving = ref(false)
-const dialogVisible = ref(false)
-const detailVisible = ref(false)
-const editing = ref(false)
-const formRef = ref<FormInstance>()
-const records = ref<QuestionItem[]>([])
-const total = ref(0)
-const subjects = ref<SubjectItem[]>([])
-const knowledgePoints = ref<Array<{ id: number; name: string; path: string }>>([])
-const detail = ref<Detail | null>(null)
-const editingId = ref<number | null>(null)
-const blanks = ref<string[][]>([['']])
-const attachmentUploading = ref<string | null>(null)
+const loading = ref(false);
+const router = useRouter();
+const saving = ref(false);
+const dialogVisible = ref(false);
+const detailVisible = ref(false);
+const editing = ref(false);
+const formRef = ref<FormInstance>();
+const records = ref<QuestionItem[]>([]);
+const total = ref(0);
+const subjects = ref<SubjectItem[]>([]);
+const knowledgePoints = ref<Array<{ id: number; name: string; path: string }>>(
+  [],
+);
+const detail = ref<Detail | null>(null);
+const editingId = ref<number | null>(null);
+const blanks = ref<string[][]>([[""]]);
+const attachmentUploading = ref<string | null>(null);
 
-const filters = reactive({ page: 1, size: 10, subjectCode: '', questionType: '', usageMode: '', difficulty: undefined as number | undefined, status: '', keyword: '', rightsStatus: '' })
-const form = reactive<Save>({ subjectId: 0, questionType: 'SINGLE_CHOICE', usageMode: 'ONLINE_PRACTICE', stem: '', correctAnswer: '{}', difficulty: 2, difficultyDescription: '', autoGradable: true, options: defaultOptions(), standardAnalysis: '', knowledgePointIds: [], sources: sourceParts.map(contentType => ({ contentType, sourceType: 'TEACHER_CREATED', sourceName: '', rightsStatus: 'AUTHORIZED', sourceAddress: '', rightsBasis: '' })) })
-const questionTypes: Array<{ label: string; value: QuestionType }> = [{ label: '单选题', value: 'SINGLE_CHOICE' }, { label: '多选题', value: 'MULTIPLE_CHOICE' }, { label: '填空题', value: 'FILL_BLANK' }, { label: '主观题', value: 'SUBJECTIVE' }]
-const modes = [{ label: '在线练习', value: 'ONLINE_PRACTICE' }, { label: '专题学习', value: 'TOPIC_LEARNING' }]
-const statuses = ['DRAFT', 'PENDING', 'PUBLISHED', 'DISABLED']
-const rights = ['AUTHORIZED', 'OPEN_LICENSE', 'PUBLIC_OFFICIAL', 'USER_PROVIDED', 'COPYRIGHT_UNKNOWN', 'RESTRICTED']
-const formRules: FormRules = { subjectId: [{ required: true, message: '请选择学科', trigger: 'change' }], stem: [{ required: true, message: '请填写题干', trigger: 'blur' }], standardAnalysis: [{ required: true, message: '请填写标准解析', trigger: 'blur' }], knowledgePointIds: [{ type: 'array', required: true, min: 1, message: '至少选择一个知识点', trigger: 'change' }] }
-const isChoice = computed(() => form.questionType === 'SINGLE_CHOICE' || form.questionType === 'MULTIPLE_CHOICE')
+const filters = reactive({
+  page: 1,
+  size: 10,
+  subjectCode: "",
+  questionType: "",
+  usageMode: "",
+  difficulty: undefined as number | undefined,
+  status: "",
+  keyword: "",
+  rightsStatus: "",
+});
+const form = reactive<Save>({
+  subjectId: 0,
+  questionType: "SINGLE_CHOICE",
+  usageMode: "ONLINE_PRACTICE",
+  stem: "",
+  correctAnswer: "{}",
+  difficulty: 2,
+  difficultyDescription: "",
+  autoGradable: true,
+  options: defaultOptions(),
+  standardAnalysis: "",
+  knowledgePointIds: [],
+  sources: sourceParts.map((contentType) => ({
+    contentType,
+    sourceType: "TEACHER_CREATED",
+    sourceName: "",
+    rightsStatus: "AUTHORIZED",
+    sourceAddress: "",
+    rightsBasis: "",
+  })),
+});
+const questionTypes: Array<{ label: string; value: QuestionType }> = [
+  { label: "单选题", value: "SINGLE_CHOICE" },
+  { label: "多选题", value: "MULTIPLE_CHOICE" },
+  { label: "填空题", value: "FILL_BLANK" },
+  { label: "主观题", value: "SUBJECTIVE" },
+];
+const modes = [
+  { label: "在线练习", value: "ONLINE_PRACTICE" },
+  { label: "专题学习", value: "TOPIC_LEARNING" },
+];
+const statuses = ["DRAFT", "PENDING", "PUBLISHED", "DISABLED"];
+const rights = [
+  "AUTHORIZED",
+  "OPEN_LICENSE",
+  "PUBLIC_OFFICIAL",
+  "USER_PROVIDED",
+  "COPYRIGHT_UNKNOWN",
+  "RESTRICTED",
+];
+const formRules: FormRules = {
+  subjectId: [{ required: true, message: "请选择学科", trigger: "change" }],
+  stem: [{ required: true, message: "请填写题干", trigger: "blur" }],
+  standardAnalysis: [
+    { required: true, message: "请填写标准解析", trigger: "blur" },
+  ],
+  knowledgePointIds: [
+    {
+      type: "array",
+      required: true,
+      min: 1,
+      message: "至少选择一个知识点",
+      trigger: "change",
+    },
+  ],
+};
+const isChoice = computed(
+  () =>
+    form.questionType === "SINGLE_CHOICE" ||
+    form.questionType === "MULTIPLE_CHOICE",
+);
 
 function readableError(error: unknown, fallback: string) {
-  const api = error as ApiError
-  const messages: Record<string, string> = { QUESTION_DUPLICATE: '该学科下已存在内容完全相同的题目。', QUESTION_RIGHTS_UNAVAILABLE: '来源版权状态不允许发布，请先补充有效授权。', QUESTION_STATUS_INVALID: '当前题目状态不允许此操作。', QUESTION_SOURCE_INCOMPLETE: '题干、答案和标准解析的来源必须完整。', QUESTION_ANSWER_INVALID: '正确答案与题型或选项不一致。', QUESTION_KNOWLEDGE_POINT_INVALID: '知识点不存在、已停用或不属于当前学科。', ATTACHMENT_FILE_INVALID: '图片必须是 3MB 以内的真实 PNG/JPEG 文件。', ATTACHMENT_POSITION_INVALID: '图片只能关联题干或标准解析。', QUESTION_NOT_EDITABLE: '只有草稿题目可以上传、替换或删除图片。' }
-  return api.code ? messages[api.code] || api.message || fallback : api.message || fallback
+  const api = error as ApiError;
+  const messages: Record<string, string> = {
+    QUESTION_DUPLICATE: "该学科下已存在内容完全相同的题目。",
+    QUESTION_RIGHTS_UNAVAILABLE: "来源版权状态不允许发布，请先补充有效授权。",
+    QUESTION_STATUS_INVALID: "当前题目状态不允许此操作。",
+    QUESTION_SOURCE_INCOMPLETE: "题干、答案和标准解析的来源必须完整。",
+    QUESTION_ANSWER_INVALID: "正确答案与题型或选项不一致。",
+    QUESTION_KNOWLEDGE_POINT_INVALID: "知识点不存在、已停用或不属于当前学科。",
+    ATTACHMENT_FILE_INVALID: "图片必须是 3MB 以内的真实 PNG/JPEG 文件。",
+    ATTACHMENT_POSITION_INVALID: "图片只能关联题干或标准解析。",
+    QUESTION_NOT_EDITABLE: "只有草稿题目可以上传、替换或删除图片。",
+  };
+  return api.code
+    ? messages[api.code] || api.message || fallback
+    : api.message || fallback;
 }
-function sourceLabel(part: string) { return ({ QUESTION: '题干（STEM）', ANSWER: '标准答案', STANDARD_ANALYSIS: '标准解析' } as Record<string, string>)[part] || part }
-function stateLabel(value: string) { return ({ DRAFT: '草稿', PENDING: '待审核', PUBLISHED: '已发布', DISABLED: '已停用' } as Record<string, string>)[value] || value }
-function resetFilters() { Object.assign(filters, { page: 1, size: 10, subjectCode: '', questionType: '', usageMode: '', difficulty: undefined, status: '', keyword: '', rightsStatus: '' }); void load() }
-async function load() { loading.value = true; try { const data = await fetchQuestions(filters as unknown as Record<string, unknown>); records.value = data.records; total.value = data.total } catch (error) { ElMessage.error(readableError(error, '题目列表加载失败。')) } finally { loading.value = false } }
-async function loadKnowledgePoints() { if (!form.subjectId) { knowledgePoints.value = []; return }; try { knowledgePoints.value = await fetchKnowledgePoints(form.subjectId) } catch (error) { ElMessage.error(readableError(error, '知识点加载失败。')) } }
-function resetForm() { Object.assign(form, { subjectId: subjects.value[0]?.id || 0, questionType: 'SINGLE_CHOICE', usageMode: 'ONLINE_PRACTICE', stem: '', correctAnswer: '{}', difficulty: 2, difficultyDescription: '', autoGradable: true, options: defaultOptions(), standardAnalysis: '', knowledgePointIds: [], sources: sourceParts.map(contentType => ({ contentType, sourceType: 'TEACHER_CREATED', sourceName: '', rightsStatus: 'AUTHORIZED', sourceAddress: '', rightsBasis: '' })) }); blanks.value = [['']] }
-async function openCreate() { editing.value = false; editingId.value = null; resetForm(); await loadKnowledgePoints(); dialogVisible.value = true }
-function parseBlanks(answer: string) { try { const parsed = JSON.parse(answer); return Array.isArray(parsed.blanks) ? parsed.blanks.map((item: { acceptedAnswers?: string[] }) => item.acceptedAnswers?.length ? item.acceptedAnswers : ['']) : [['']] } catch { return [['']] } }
-async function openEdit(row: QuestionItem) { try { const data = await fetchQuestion(row.id); if (data.question.status !== 'DRAFT') { ElMessage.warning('只有草稿可以编辑。'); return }; detail.value = data; editing.value = true; editingId.value = row.id; Object.assign(form, { subjectId: subjects.value.find(item => item.subjectCode === data.question.subjectCode)?.id || 0, questionType: data.question.questionType, usageMode: data.question.usageMode, stem: data.stem, correctAnswer: data.correctAnswer, difficulty: data.question.difficulty, difficultyDescription: '', autoGradable: data.question.autoGradable, options: data.options, standardAnalysis: data.standardAnalysis, knowledgePointIds: data.knowledgePoints.map(item => item.id), sources: data.sources }); blanks.value = parseBlanks(data.correctAnswer); await loadKnowledgePoints(); dialogVisible.value = true } catch (error) { ElMessage.error(readableError(error, '题目详情加载失败。')) } }
-function changeType() { if (form.questionType === 'SUBJECTIVE') { form.usageMode = 'TOPIC_LEARNING'; form.autoGradable = false; form.options = [] } else if (form.questionType === 'FILL_BLANK') { form.autoGradable = true; form.options = []; if (!blanks.value.length) blanks.value = [['']] } else { form.autoGradable = true; if (form.options.length < 2) form.options = defaultOptions() } }
-function addOption() { const label = String.fromCharCode(65 + form.options.length); form.options.push({ label, content: '', correct: false }) }
-function removeOption(index: number) { if (form.options.length > 2) form.options.splice(index, 1) }
-function updateSingleCorrect(index: number) { if (form.questionType === 'SINGLE_CHOICE') form.options.forEach((option, current) => { option.correct = current === index }) }
-function addBlank() { blanks.value.push(['']) }
-function addAcceptedAnswer(index: number) { blanks.value[index].push('') }
-function removeBlank(index: number) { if (blanks.value.length > 1) blanks.value.splice(index, 1) }
-async function save() { const valid = await formRef.value?.validate().catch(() => false); if (!valid) return; const body = normaliseForSave(form, blanks.value); saving.value = true; try { if (editing.value && editingId.value) { detail.value = await updateQuestion(editingId.value, body); dialogVisible.value = false; ElMessage.success('草稿已保存。') } else { const created = await createQuestion(body); detail.value = created; editing.value = true; editingId.value = created.question.id; ElMessage.success('草稿已创建，现在可以上传题干或标准解析图片。') } await load() } catch (error) { ElMessage.error(readableError(error, '题目保存失败。')) } finally { saving.value = false } }
-function attachmentList(position: AttachmentPosition) { return detail.value?.attachments.filter(item => item.position === position) ?? [] }
-function validateAttachmentFile(file: File) { if (!['image/png', 'image/jpeg'].includes(file.type) || file.size > 3 * 1024 * 1024) { ElMessage.error('图片必须是 3MB 以内的真实 PNG/JPEG 文件。'); return false } return true }
-function selectedFile(position: AttachmentPosition, event: Event) { const input = event.target as HTMLInputElement; const file = input.files?.[0]; input.value = ''; if (file) void uploadAttachment(position, file) }
-function selectedReplacement(attachmentId: number, event: Event) { const input = event.target as HTMLInputElement; const file = input.files?.[0]; input.value = ''; if (file) void replaceAttachment(attachmentId, file) }
-async function refreshEditingDetail() { if (!editingId.value) return; const data = await fetchQuestion(editingId.value); detail.value = data; form.stem = data.stem; form.standardAnalysis = data.standardAnalysis }
-async function persistCurrentDraftBeforeAttachment() { if (!editingId.value) return false; const valid = await formRef.value?.validate().catch(() => false); if (!valid) { ElMessage.warning('请先补齐并保存当前草稿内容，再修改图片。'); return false } try { const saved = await updateQuestion(editingId.value, normaliseForSave(form, blanks.value)); detail.value = saved; return true } catch (error) { ElMessage.error(readableError(error, '当前草稿保存失败，未修改图片。')); return false } }
-async function uploadAttachment(position: AttachmentPosition, file: File) { if (!editingId.value || !validateAttachmentFile(file)) return; attachmentUploading.value = position; try { if (!await persistCurrentDraftBeforeAttachment()) return; await uploadQuestionAttachment(editingId.value, position, file); await refreshEditingDetail(); ElMessage.success('图片已上传并插入草稿正文。') } catch (error) { ElMessage.error(readableError(error, '图片上传失败。')) } finally { attachmentUploading.value = null } }
-async function replaceAttachment(attachmentId: number, file: File) { if (!editingId.value || !validateAttachmentFile(file)) return; attachmentUploading.value = `replace-${attachmentId}`; try { if (!await persistCurrentDraftBeforeAttachment()) return; await replaceQuestionAttachment(editingId.value, attachmentId, file); await refreshEditingDetail(); ElMessage.success('图片已替换。') } catch (error) { ElMessage.error(readableError(error, '图片替换失败。')) } finally { attachmentUploading.value = null } }
-async function deleteAttachment(attachment: QuestionAttachment) { if (!editingId.value) return; try { await ElMessageBox.confirm(`删除 ${attachment.fileName} 后会同时移除正文中的 ${attachment.objectMarker || '图片对象'}。`, '确认删除图片', { type: 'warning', confirmButtonText: '删除', cancelButtonText: '取消' }); attachmentUploading.value = `delete-${attachment.id}`; if (!await persistCurrentDraftBeforeAttachment()) return; await deleteQuestionAttachment(editingId.value, attachment.id); await refreshEditingDetail(); ElMessage.success('图片已删除。') } catch (error) { if ((error as { message?: string }).message) ElMessage.error(readableError(error, '图片删除失败。')) } finally { attachmentUploading.value = null } }
-async function showDetail(row: QuestionItem) { try { detail.value = await fetchQuestion(row.id); detailVisible.value = true } catch (error) { ElMessage.error(readableError(error, '题目详情加载失败。')) } }
-async function runAction(action: string) { if (!detail.value) return; let opinion: string | undefined; if (action === 'return') { const result = await ElMessageBox.prompt('请填写退回意见。', '审核退回', { inputPattern: /\S+/, inputErrorMessage: '退回意见不能为空', confirmButtonText: '确认退回', cancelButtonText: '取消' }); opinion = result.value.trim() } try { detail.value = await questionAction(detail.value.question.id, action, opinion); ElMessage.success('题目状态已更新。'); await load() } catch (error) { ElMessage.error(readableError(error, '状态更新失败。')) } }
-onMounted(async () => { try { subjects.value = await fetchSubjects(); await load() } catch (error) { ElMessage.error(readableError(error, '学科数据加载失败。')) } })
+function sourceLabel(part: string) {
+  return (
+    (
+      {
+        QUESTION: "题干（STEM）",
+        ANSWER: "标准答案",
+        STANDARD_ANALYSIS: "标准解析",
+      } as Record<string, string>
+    )[part] || part
+  );
+}
+function stateLabel(value: string) {
+  return (
+    (
+      {
+        DRAFT: "草稿",
+        PENDING: "待审核",
+        PUBLISHED: "已发布",
+        DISABLED: "已停用",
+      } as Record<string, string>
+    )[value] || value
+  );
+}
+function resetFilters() {
+  Object.assign(filters, {
+    page: 1,
+    size: 10,
+    subjectCode: "",
+    questionType: "",
+    usageMode: "",
+    difficulty: undefined,
+    status: "",
+    keyword: "",
+    rightsStatus: "",
+  });
+  void load();
+}
+async function load() {
+  loading.value = true;
+  try {
+    const data = await fetchQuestions(
+      filters as unknown as Record<string, unknown>,
+    );
+    records.value = data.records;
+    total.value = data.total;
+  } catch (error) {
+    ElMessage.error(readableError(error, "题目列表加载失败。"));
+  } finally {
+    loading.value = false;
+  }
+}
+async function loadKnowledgePoints() {
+  if (!form.subjectId) {
+    knowledgePoints.value = [];
+    return;
+  }
+  try {
+    knowledgePoints.value = await fetchKnowledgePoints(form.subjectId);
+  } catch (error) {
+    ElMessage.error(readableError(error, "知识点加载失败。"));
+  }
+}
+function resetForm() {
+  Object.assign(form, {
+    subjectId: subjects.value[0]?.id || 0,
+    questionType: "SINGLE_CHOICE",
+    usageMode: "ONLINE_PRACTICE",
+    stem: "",
+    correctAnswer: "{}",
+    difficulty: 2,
+    difficultyDescription: "",
+    autoGradable: true,
+    options: defaultOptions(),
+    standardAnalysis: "",
+    knowledgePointIds: [],
+    sources: sourceParts.map((contentType) => ({
+      contentType,
+      sourceType: "TEACHER_CREATED",
+      sourceName: "",
+      rightsStatus: "AUTHORIZED",
+      sourceAddress: "",
+      rightsBasis: "",
+    })),
+  });
+  blanks.value = [[""]];
+}
+async function openCreate() {
+  editing.value = false;
+  editingId.value = null;
+  resetForm();
+  await loadKnowledgePoints();
+  dialogVisible.value = true;
+}
+function parseBlanks(answer: string) {
+  try {
+    const parsed = JSON.parse(answer);
+    return Array.isArray(parsed.blanks)
+      ? parsed.blanks.map((item: { acceptedAnswers?: string[] }) =>
+          item.acceptedAnswers?.length ? item.acceptedAnswers : [""],
+        )
+      : [[""]];
+  } catch {
+    return [[""]];
+  }
+}
+async function openEdit(row: QuestionItem) {
+  try {
+    const data = await fetchQuestion(row.id);
+    if (data.question.status !== "DRAFT") {
+      ElMessage.warning("只有草稿可以编辑。");
+      return;
+    }
+    detail.value = data;
+    editing.value = true;
+    editingId.value = row.id;
+    Object.assign(form, {
+      subjectId:
+        subjects.value.find(
+          (item) => item.subjectCode === data.question.subjectCode,
+        )?.id || 0,
+      questionType: data.question.questionType,
+      usageMode: data.question.usageMode,
+      stem: data.stem,
+      correctAnswer: data.correctAnswer,
+      difficulty: data.question.difficulty,
+      difficultyDescription: "",
+      autoGradable: data.question.autoGradable,
+      options: data.options,
+      standardAnalysis: data.standardAnalysis,
+      knowledgePointIds: data.knowledgePoints.map((item) => item.id),
+      sources: data.sources,
+    });
+    blanks.value = parseBlanks(data.correctAnswer);
+    await loadKnowledgePoints();
+    dialogVisible.value = true;
+  } catch (error) {
+    ElMessage.error(readableError(error, "题目详情加载失败。"));
+  }
+}
+function changeType() {
+  if (form.questionType === "SUBJECTIVE") {
+    form.usageMode = "TOPIC_LEARNING";
+    form.autoGradable = false;
+    form.options = [];
+  } else if (form.questionType === "FILL_BLANK") {
+    form.autoGradable = true;
+    form.options = [];
+    if (!blanks.value.length) blanks.value = [[""]];
+  } else {
+    form.autoGradable = true;
+    if (form.options.length < 2) form.options = defaultOptions();
+  }
+}
+function addOption() {
+  const label = String.fromCharCode(65 + form.options.length);
+  form.options.push({ label, content: "", correct: false });
+}
+function removeOption(index: number) {
+  if (form.options.length > 2) form.options.splice(index, 1);
+}
+function updateSingleCorrect(index: number) {
+  if (form.questionType === "SINGLE_CHOICE")
+    form.options.forEach((option, current) => {
+      option.correct = current === index;
+    });
+}
+function addBlank() {
+  blanks.value.push([""]);
+}
+function addAcceptedAnswer(index: number) {
+  blanks.value[index].push("");
+}
+function removeBlank(index: number) {
+  if (blanks.value.length > 1) blanks.value.splice(index, 1);
+}
+async function save() {
+  const valid = await formRef.value?.validate().catch(() => false);
+  if (!valid) return;
+  const body = normaliseForSave(form, blanks.value);
+  saving.value = true;
+  try {
+    if (editing.value && editingId.value) {
+      detail.value = await updateQuestion(editingId.value, body);
+      dialogVisible.value = false;
+      ElMessage.success("草稿已保存。");
+    } else {
+      const created = await createQuestion(body);
+      detail.value = created;
+      editing.value = true;
+      editingId.value = created.question.id;
+      ElMessage.success("草稿已创建，现在可以上传题干或标准解析图片。");
+    }
+    await load();
+  } catch (error) {
+    ElMessage.error(readableError(error, "题目保存失败。"));
+  } finally {
+    saving.value = false;
+  }
+}
+function attachmentList(position: AttachmentPosition) {
+  return (
+    detail.value?.attachments.filter((item) => item.position === position) ?? []
+  );
+}
+function validateAttachmentFile(file: File) {
+  if (
+    !["image/png", "image/jpeg"].includes(file.type) ||
+    file.size > 3 * 1024 * 1024
+  ) {
+    ElMessage.error("图片必须是 3MB 以内的真实 PNG/JPEG 文件。");
+    return false;
+  }
+  return true;
+}
+function selectedFile(position: AttachmentPosition, event: Event) {
+  const input = event.target as HTMLInputElement;
+  const file = input.files?.[0];
+  input.value = "";
+  if (file) void uploadAttachment(position, file);
+}
+function selectedReplacement(attachmentId: number, event: Event) {
+  const input = event.target as HTMLInputElement;
+  const file = input.files?.[0];
+  input.value = "";
+  if (file) void replaceAttachment(attachmentId, file);
+}
+async function refreshEditingDetail() {
+  if (!editingId.value) return;
+  const data = await fetchQuestion(editingId.value);
+  detail.value = data;
+  form.stem = data.stem;
+  form.standardAnalysis = data.standardAnalysis;
+}
+async function persistCurrentDraftBeforeAttachment() {
+  if (!editingId.value) return false;
+  const valid = await formRef.value?.validate().catch(() => false);
+  if (!valid) {
+    ElMessage.warning("请先补齐并保存当前草稿内容，再修改图片。");
+    return false;
+  }
+  try {
+    const saved = await updateQuestion(
+      editingId.value,
+      normaliseForSave(form, blanks.value),
+    );
+    detail.value = saved;
+    return true;
+  } catch (error) {
+    ElMessage.error(readableError(error, "当前草稿保存失败，未修改图片。"));
+    return false;
+  }
+}
+async function uploadAttachment(position: AttachmentPosition, file: File) {
+  if (!editingId.value || !validateAttachmentFile(file)) return;
+  attachmentUploading.value = position;
+  try {
+    if (!(await persistCurrentDraftBeforeAttachment())) return;
+    await uploadQuestionAttachment(editingId.value, position, file);
+    await refreshEditingDetail();
+    ElMessage.success("图片已上传并插入草稿正文。");
+  } catch (error) {
+    ElMessage.error(readableError(error, "图片上传失败。"));
+  } finally {
+    attachmentUploading.value = null;
+  }
+}
+async function replaceAttachment(attachmentId: number, file: File) {
+  if (!editingId.value || !validateAttachmentFile(file)) return;
+  attachmentUploading.value = `replace-${attachmentId}`;
+  try {
+    if (!(await persistCurrentDraftBeforeAttachment())) return;
+    await replaceQuestionAttachment(editingId.value, attachmentId, file);
+    await refreshEditingDetail();
+    ElMessage.success("图片已替换。");
+  } catch (error) {
+    ElMessage.error(readableError(error, "图片替换失败。"));
+  } finally {
+    attachmentUploading.value = null;
+  }
+}
+async function deleteAttachment(attachment: QuestionAttachment) {
+  if (!editingId.value) return;
+  try {
+    await ElMessageBox.confirm(
+      `删除 ${attachment.fileName} 后会同时移除正文中的 ${attachment.objectMarker || "图片对象"}。`,
+      "确认删除图片",
+      { type: "warning", confirmButtonText: "删除", cancelButtonText: "取消" },
+    );
+    attachmentUploading.value = `delete-${attachment.id}`;
+    if (!(await persistCurrentDraftBeforeAttachment())) return;
+    await deleteQuestionAttachment(editingId.value, attachment.id);
+    await refreshEditingDetail();
+    ElMessage.success("图片已删除。");
+  } catch (error) {
+    if ((error as { message?: string }).message)
+      ElMessage.error(readableError(error, "图片删除失败。"));
+  } finally {
+    attachmentUploading.value = null;
+  }
+}
+async function showDetail(row: QuestionItem) {
+  try {
+    detail.value = await fetchQuestion(row.id);
+    detailVisible.value = true;
+  } catch (error) {
+    ElMessage.error(readableError(error, "题目详情加载失败。"));
+  }
+}
+async function runAction(action: string) {
+  if (!detail.value) return;
+  let opinion: string | undefined;
+  if (action === "return") {
+    const result = await ElMessageBox.prompt("请填写退回意见。", "审核退回", {
+      inputPattern: /\S+/,
+      inputErrorMessage: "退回意见不能为空",
+      confirmButtonText: "确认退回",
+      cancelButtonText: "取消",
+    });
+    opinion = result.value.trim();
+  }
+  try {
+    detail.value = await questionAction(
+      detail.value.question.id,
+      action,
+      opinion,
+    );
+    ElMessage.success("题目状态已更新。");
+    await load();
+  } catch (error) {
+    ElMessage.error(readableError(error, "状态更新失败。"));
+  }
+}
+onMounted(async () => {
+  try {
+    subjects.value = await fetchSubjects();
+    await load();
+  } catch (error) {
+    ElMessage.error(readableError(error, "学科数据加载失败。"));
+  }
+});
 </script>
 
 <template>
   <section class="admin-page question-page">
-    <div class="page-heading"><div><h1>题库审核发布</h1><p>草稿、审核与发布由后端状态机控制；版权与来源必须在发布时通过复核。</p></div><div><el-button @click="router.push('/admin/questions/import')">批量导入题目</el-button><el-button type="primary" @click="openCreate">创建草稿</el-button></div></div>
-    <el-form class="filter-panel" :inline="true" @submit.prevent="filters.page = 1; load()">
-      <el-form-item label="学科"><el-select v-model="filters.subjectCode" clearable><el-option v-for="subject in subjects" :key="subject.id" :label="subject.subjectName" :value="subject.subjectCode" /></el-select></el-form-item>
-      <el-form-item label="题型"><el-select v-model="filters.questionType" clearable><el-option v-for="item in questionTypes" :key="item.value" :label="item.label" :value="item.value" /></el-select></el-form-item>
-      <el-form-item label="使用模式"><el-select v-model="filters.usageMode" clearable><el-option v-for="item in modes" :key="item.value" :label="item.label" :value="item.value" /></el-select></el-form-item>
-      <el-form-item label="难度"><el-select v-model="filters.difficulty" clearable><el-option :value="1" label="1 · 基础" /><el-option :value="2" label="2 · 较易" /><el-option :value="3" label="3 · 中等" /><el-option :value="4" label="4 · 较难" /><el-option :value="5" label="5 · 困难" /></el-select></el-form-item>
-      <el-form-item label="状态"><el-select v-model="filters.status" clearable><el-option v-for="item in statuses" :key="item" :label="stateLabel(item)" :value="item" /></el-select></el-form-item>
-      <el-form-item label="权利状态"><el-select v-model="filters.rightsStatus" clearable><el-option v-for="item in rights" :key="item" :label="item" :value="item" /></el-select></el-form-item>
-      <el-form-item label="关键词"><el-input v-model="filters.keyword" clearable placeholder="题干关键词" /></el-form-item>
-      <el-form-item><el-button type="primary" native-type="submit">查询</el-button><el-button @click="resetFilters">重置</el-button><el-button :loading="loading" @click="load">刷新</el-button></el-form-item>
+    <div class="page-heading">
+      <div>
+        <h1>题库审核发布</h1>
+        <p>
+          草稿、审核与发布由后端状态机控制；版权与来源必须在发布时通过复核。
+        </p>
+      </div>
+      <div>
+        <el-button @click="router.push('/admin/questions/import')"
+          >批量导入题目</el-button
+        ><el-button type="primary" @click="openCreate">创建草稿</el-button>
+      </div>
+    </div>
+    <el-form
+      class="filter-panel"
+      :inline="true"
+      @submit.prevent="
+        filters.page = 1;
+        load();
+      "
+    >
+      <el-form-item label="学科"
+        ><el-select v-model="filters.subjectCode" clearable
+          ><el-option
+            v-for="subject in subjects"
+            :key="subject.id"
+            :label="subject.subjectName"
+            :value="subject.subjectCode" /></el-select
+      ></el-form-item>
+      <el-form-item label="题型"
+        ><el-select v-model="filters.questionType" clearable
+          ><el-option
+            v-for="item in questionTypes"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value" /></el-select
+      ></el-form-item>
+      <el-form-item label="使用模式"
+        ><el-select v-model="filters.usageMode" clearable
+          ><el-option
+            v-for="item in modes"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value" /></el-select
+      ></el-form-item>
+      <el-form-item label="难度"
+        ><el-select v-model="filters.difficulty" clearable
+          ><el-option :value="1" label="1 · 基础" /><el-option
+            :value="2"
+            label="2 · 较易" /><el-option
+            :value="3"
+            label="3 · 中等" /><el-option
+            :value="4"
+            label="4 · 较难" /><el-option
+            :value="5"
+            label="5 · 困难" /></el-select
+      ></el-form-item>
+      <el-form-item label="状态"
+        ><el-select v-model="filters.status" clearable
+          ><el-option
+            v-for="item in statuses"
+            :key="item"
+            :label="stateLabel(item)"
+            :value="item" /></el-select
+      ></el-form-item>
+      <el-form-item label="权利状态"
+        ><el-select v-model="filters.rightsStatus" clearable
+          ><el-option
+            v-for="item in rights"
+            :key="item"
+            :label="item"
+            :value="item" /></el-select
+      ></el-form-item>
+      <el-form-item label="关键词"
+        ><el-input v-model="filters.keyword" clearable placeholder="题干关键词"
+      /></el-form-item>
+      <el-form-item
+        ><el-button type="primary" native-type="submit">查询</el-button
+        ><el-button @click="resetFilters">重置</el-button
+        ><el-button :loading="loading" @click="load"
+          >刷新</el-button
+        ></el-form-item
+      >
     </el-form>
-    <el-table v-loading="loading" :data="records" class="data-table" empty-text="暂无符合条件的题目。"><el-table-column prop="subjectName" label="学科" min-width="80" /><el-table-column label="题型" min-width="130"><template #default="{ row }">{{ formatEnum(row.questionType) }}</template></el-table-column><el-table-column label="使用模式" min-width="120"><template #default="{ row }">{{ formatEnum(row.usageMode) }}</template></el-table-column><el-table-column prop="stemSummary" label="题干摘要" min-width="260" show-overflow-tooltip /><el-table-column prop="difficulty" label="难度" min-width="75" /><el-table-column label="状态" min-width="100"><template #default="{ row }"><el-tag>{{ stateLabel(row.status) }}</el-tag></template></el-table-column><el-table-column label="权利状态" min-width="145"><template #default="{ row }">{{ formatEnum(row.rightsStatus) }}</template></el-table-column><el-table-column label="操作" fixed="right" min-width="140"><template #default="{ row }"><el-button link type="primary" @click="showDetail(row)">详情</el-button><el-button v-if="row.status === 'DRAFT'" link type="primary" @click="openEdit(row)">编辑</el-button></template></el-table-column></el-table>
-    <el-pagination class="table-pagination" background layout="total, sizes, prev, pager, next" :total="total" v-model:current-page="filters.page" v-model:page-size="filters.size" :page-sizes="[10, 20, 50]" @current-change="load" @size-change="filters.page = 1; load()" />
-    <el-dialog v-model="dialogVisible" :title="editing ? '编辑草稿' : '创建题目草稿'" width="min(860px, calc(100vw - 32px))" destroy-on-close><el-form ref="formRef" :model="form" :rules="formRules" label-width="105px"><el-form-item label="学科" prop="subjectId"><el-select v-model="form.subjectId" @change="loadKnowledgePoints"><el-option v-for="subject in subjects" :key="subject.id" :label="subject.subjectName" :value="subject.id" /></el-select></el-form-item><el-form-item label="题型"><el-select v-model="form.questionType" @change="changeType"><el-option v-for="item in questionTypes" :key="item.value" :label="item.label" :value="item.value" /></el-select></el-form-item><el-form-item label="使用模式"><el-select v-model="form.usageMode" :disabled="form.questionType === 'SUBJECTIVE'"><el-option v-for="item in modes" :key="item.value" :label="item.label" :value="item.value" /></el-select><span v-if="form.questionType === 'SUBJECTIVE'" class="form-hint">主观题固定为专题学习，且不自动判分。</span></el-form-item><el-form-item label="题干" prop="stem"><el-input v-model="form.stem" type="textarea" :rows="4" /><div v-if="editing && detail" class="attachment-editor"><div class="attachment-editor-heading"><span>题干图片</span><label class="attachment-upload-control"><el-button size="small" plain :loading="attachmentUploading === 'QUESTION'" tag="span">上传 PNG/JPEG</el-button><input class="attachment-file-input" type="file" accept="image/png,image/jpeg" @change="selectedFile('QUESTION', $event)" /></label></div><QuestionContent :content="form.stem" :attachments="detail.attachments" position="QUESTION" /><div v-for="attachment in attachmentList('QUESTION')" :key="attachment.id" class="attachment-editor-row"><span>{{ attachment.fileName }} · {{ attachment.objectMarker }} · {{ attachment.renderStatus === 'AVAILABLE' ? '可用' : '不可用' }}</span><label class="attachment-upload-control"><el-button link size="small" :loading="attachmentUploading === `replace-${attachment.id}`" tag="span">替换</el-button><input class="attachment-file-input" type="file" accept="image/png,image/jpeg" @change="selectedReplacement(attachment.id, $event)" /></label><el-button link size="small" type="danger" :loading="attachmentUploading === `delete-${attachment.id}`" @click="deleteAttachment(attachment)">删除</el-button></div></div></el-form-item><el-form-item label="难度"><el-radio-group v-model="form.difficulty"><el-radio v-for="value in 5" :key="value" :value="value">{{ value }}</el-radio></el-radio-group></el-form-item><el-form-item label="难度说明"><el-input v-model="form.difficultyDescription" /></el-form-item>
-      <el-form-item v-if="isChoice" label="选项"><div class="question-editor"><div v-for="(option, index) in form.options" :key="`${option.label}-${index}`" class="option-row"><el-radio v-if="form.questionType === 'SINGLE_CHOICE'" :model-value="option.correct" :value="true" @change="updateSingleCorrect(index)" /><el-checkbox v-else v-model="option.correct" /><strong>{{ option.label }}</strong><el-input v-model="option.content" :placeholder="`选项 ${option.label} 内容`" /><el-button :disabled="form.options.length <= 2" link type="danger" @click="removeOption(index)">删除</el-button></div><el-button link type="primary" @click="addOption">添加选项</el-button></div></el-form-item>
-      <el-form-item v-if="form.questionType === 'FILL_BLANK'" label="填空答案"><div class="question-editor"><div v-for="(blank, blankIndex) in blanks" :key="blankIndex" class="blank-row"><strong>第 {{ blankIndex + 1 }} 空</strong><el-input v-for="(_, answerIndex) in blank" :key="answerIndex" v-model="blank[answerIndex]" placeholder="可接受答案" /><el-button link type="primary" @click="addAcceptedAnswer(blankIndex)">添加同义答案</el-button><el-button link type="danger" :disabled="blanks.length <= 1" @click="removeBlank(blankIndex)">删除空位</el-button></div><el-button link type="primary" @click="addBlank">添加空位</el-button></div></el-form-item>
-      <el-form-item label="标准解析" prop="standardAnalysis"><el-input v-model="form.standardAnalysis" type="textarea" :rows="4" /><div v-if="editing && detail" class="attachment-editor"><div class="attachment-editor-heading"><span>标准解析图片</span><label class="attachment-upload-control"><el-button size="small" plain :loading="attachmentUploading === 'STANDARD_ANALYSIS'" tag="span">上传 PNG/JPEG</el-button><input class="attachment-file-input" type="file" accept="image/png,image/jpeg" @change="selectedFile('STANDARD_ANALYSIS', $event)" /></label></div><QuestionContent :content="form.standardAnalysis" :attachments="detail.attachments" position="STANDARD_ANALYSIS" /><div v-for="attachment in attachmentList('STANDARD_ANALYSIS')" :key="attachment.id" class="attachment-editor-row"><span>{{ attachment.fileName }} · {{ attachment.objectMarker }} · {{ attachment.renderStatus === 'AVAILABLE' ? '可用' : '不可用' }}</span><label class="attachment-upload-control"><el-button link size="small" :loading="attachmentUploading === `replace-${attachment.id}`" tag="span">替换</el-button><input class="attachment-file-input" type="file" accept="image/png,image/jpeg" @change="selectedReplacement(attachment.id, $event)" /></label><el-button link size="small" type="danger" :loading="attachmentUploading === `delete-${attachment.id}`" @click="deleteAttachment(attachment)">删除</el-button></div></div></el-form-item><el-form-item label="知识点" prop="knowledgePointIds"><el-select v-model="form.knowledgePointIds" multiple filterable style="width: 100%"><el-option v-for="item in knowledgePoints" :key="item.id" :label="item.path" :value="item.id" /></el-select></el-form-item>
-      <el-divider content-position="left">内容来源与权利</el-divider><div v-for="source in form.sources" :key="source.contentType" class="source-editor"><strong>{{ sourceLabel(source.contentType) }}</strong><el-form-item label="来源类别"><el-select v-model="source.sourceType"><el-option label="教师创建" value="TEACHER_CREATED" /><el-option label="真实试题" value="REAL_EXAM" /><el-option label="AI候选" value="AI_GENERATED" /></el-select></el-form-item><el-form-item label="来源名称"><el-input v-model="source.sourceName" /></el-form-item><el-form-item label="来源地址"><el-input v-model="source.sourceAddress" placeholder="URL 或受控相对路径" /></el-form-item><el-form-item label="权利状态"><el-select v-model="source.rightsStatus"><el-option v-for="item in rights" :key="item" :label="item" :value="item" /></el-select></el-form-item><el-form-item label="权利依据"><el-input v-model="source.rightsBasis" /></el-form-item></div>
-    </el-form><template #footer><el-button @click="dialogVisible = false">取消</el-button><el-button type="primary" :loading="saving" @click="save">保存草稿</el-button></template></el-dialog>
-    <el-drawer v-model="detailVisible" title="题目详情与审核历史" size="min(900px, 100%)"><template v-if="detail"><el-descriptions :column="2" border><el-descriptions-item label="学科">{{ detail.question.subjectName }}</el-descriptions-item><el-descriptions-item label="状态">{{ stateLabel(detail.question.status) }}</el-descriptions-item><el-descriptions-item label="题型 / 模式">{{ formatEnum(detail.question.questionType) }} / {{ formatEnum(detail.question.usageMode) }}</el-descriptions-item><el-descriptions-item label="难度">{{ detail.question.difficulty }}</el-descriptions-item><el-descriptions-item label="题干" :span="2"><QuestionContent :content="detail.stem" :attachments="detail.attachments" position="QUESTION" /></el-descriptions-item><el-descriptions-item label="正确答案" :span="2"><pre class="question-json">{{ detail.correctAnswer }}</pre></el-descriptions-item><el-descriptions-item label="标准解析" :span="2"><QuestionContent :content="detail.standardAnalysis" :attachments="detail.attachments" position="STANDARD_ANALYSIS" /></el-descriptions-item><el-descriptions-item label="知识点" :span="2">{{ detail.knowledgePoints.map(item => item.path).join('；') || '—' }}</el-descriptions-item></el-descriptions><h2>选项</h2><el-table :data="detail.options" class="data-table" empty-text="此题没有选择题选项。"><el-table-column prop="label" label="标识" width="90" /><el-table-column label="内容"><template #default="{ row }"><ScientificText :content="row.content" /></template></el-table-column><el-table-column label="正确"><template #default="{ row }">{{ row.correct ? '是' : '否' }}</template></el-table-column></el-table><h2>来源与版权</h2><el-table :data="detail.sources" class="data-table"><el-table-column label="内容"><template #default="{ row }">{{ sourceLabel(row.contentType) }}</template></el-table-column><el-table-column label="类别"><template #default="{ row }">{{ formatEnum(row.sourceType) }}</template></el-table-column><el-table-column prop="sourceName" label="名称" /><el-table-column prop="sourceAddress" label="地址" show-overflow-tooltip /><el-table-column label="权利状态"><template #default="{ row }">{{ formatEnum(row.rightsStatus) }}</template></el-table-column><el-table-column prop="rightsBasis" label="权利依据" /></el-table><h2>附件业务信息</h2><el-table :data="detail.attachments" class="data-table" empty-text="暂无附件。"><el-table-column prop="position" label="关联位置" /><el-table-column prop="type" label="类型" /><el-table-column prop="fileName" label="文件名" /><el-table-column prop="objectMarker" label="对象标识" /><el-table-column prop="status" label="状态" /></el-table><h2>审核历史</h2><el-table :data="detail.reviews" class="data-table" empty-text="暂无审核记录。"><el-table-column prop="action" label="动作" /><el-table-column prop="fromStatus" label="原状态" /><el-table-column prop="toStatus" label="目标状态" /><el-table-column prop="reviewerId" label="审核人 ID" /><el-table-column prop="opinion" label="意见" /><el-table-column prop="createdAt" label="时间" /></el-table><div class="drawer-actions"><el-button v-if="detail.allowedActions.includes('SUBMIT')" type="primary" @click="runAction('submit-review')">提交审核</el-button><el-button v-if="detail.allowedActions.includes('APPROVE')" type="success" @click="runAction('approve')">审核通过</el-button><el-button v-if="detail.allowedActions.includes('RETURN')" @click="runAction('return')">审核退回</el-button><el-button v-if="detail.allowedActions.includes('DISABLE')" type="warning" @click="runAction('disable')">停用</el-button><el-button v-if="detail.allowedActions.includes('REPUBLISH')" type="success" @click="runAction('republish')">重新发布</el-button></div></template></el-drawer>
+    <el-table
+      v-loading="loading"
+      :data="records"
+      class="data-table"
+      empty-text="暂无符合条件的题目。"
+      ><el-table-column
+        prop="subjectName"
+        label="学科"
+        min-width="80"
+      /><el-table-column label="题型" min-width="130"
+        ><template #default="{ row }">{{
+          formatEnum(row.questionType)
+        }}</template></el-table-column
+      ><el-table-column label="使用模式" min-width="120"
+        ><template #default="{ row }">{{
+          formatEnum(row.usageMode)
+        }}</template></el-table-column
+      ><el-table-column
+        prop="stemSummary"
+        label="题干摘要"
+        min-width="260"
+        show-overflow-tooltip
+      /><el-table-column
+        prop="difficulty"
+        label="难度"
+        min-width="75"
+      /><el-table-column label="状态" min-width="100"
+        ><template #default="{ row }"
+          ><el-tag>{{ stateLabel(row.status) }}</el-tag></template
+        ></el-table-column
+      ><el-table-column label="权利状态" min-width="145"
+        ><template #default="{ row }">{{
+          formatEnum(row.rightsStatus)
+        }}</template></el-table-column
+      ><el-table-column label="操作" fixed="right" min-width="140"
+        ><template #default="{ row }"
+          ><el-button link type="primary" @click="showDetail(row)"
+            >详情</el-button
+          ><el-button
+            v-if="row.status === 'DRAFT'"
+            link
+            type="primary"
+            @click="openEdit(row)"
+            >编辑</el-button
+          ></template
+        ></el-table-column
+      ></el-table
+    >
+    <el-pagination
+      class="table-pagination"
+      background
+      layout="total, sizes, prev, pager, next"
+      :total="total"
+      v-model:current-page="filters.page"
+      v-model:page-size="filters.size"
+      :page-sizes="[10, 20, 50]"
+      @current-change="load"
+      @size-change="
+        filters.page = 1;
+        load();
+      "
+    />
+    <el-dialog
+      v-model="dialogVisible"
+      :title="editing ? '编辑草稿' : '创建题目草稿'"
+      width="min(860px, calc(100vw - 32px))"
+      destroy-on-close
+      ><el-form
+        ref="formRef"
+        :model="form"
+        :rules="formRules"
+        label-width="105px"
+        ><el-form-item label="学科" prop="subjectId"
+          ><el-select v-model="form.subjectId" @change="loadKnowledgePoints"
+            ><el-option
+              v-for="subject in subjects"
+              :key="subject.id"
+              :label="subject.subjectName"
+              :value="subject.id" /></el-select></el-form-item
+        ><el-form-item label="题型"
+          ><el-select v-model="form.questionType" @change="changeType"
+            ><el-option
+              v-for="item in questionTypes"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value" /></el-select></el-form-item
+        ><el-form-item label="使用模式"
+          ><el-select
+            v-model="form.usageMode"
+            :disabled="form.questionType === 'SUBJECTIVE'"
+            ><el-option
+              v-for="item in modes"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value" /></el-select
+          ><span v-if="form.questionType === 'SUBJECTIVE'" class="form-hint"
+            >主观题固定为专题学习，且不自动判分。</span
+          ></el-form-item
+        ><el-form-item label="题干" prop="stem"
+          ><el-input v-model="form.stem" type="textarea" :rows="4" />
+          <div v-if="editing && detail" class="attachment-editor">
+            <div class="attachment-editor-heading">
+              <span>题干图片</span
+              ><label class="attachment-upload-control"
+                ><el-button
+                  size="small"
+                  plain
+                  :loading="attachmentUploading === 'QUESTION'"
+                  tag="span"
+                  >上传 PNG/JPEG</el-button
+                ><input
+                  class="attachment-file-input"
+                  type="file"
+                  accept="image/png,image/jpeg"
+                  @change="selectedFile('QUESTION', $event)"
+              /></label>
+            </div>
+            <QuestionContent
+              :content="form.stem"
+              :attachments="detail.attachments"
+              position="QUESTION"
+            />
+            <div
+              v-for="attachment in attachmentList('QUESTION')"
+              :key="attachment.id"
+              class="attachment-editor-row"
+            >
+              <span
+                >{{ attachment.fileName }} · {{ attachment.objectMarker }} ·
+                {{
+                  attachment.renderStatus === "AVAILABLE" ? "可用" : "不可用"
+                }}</span
+              ><label class="attachment-upload-control"
+                ><el-button
+                  link
+                  size="small"
+                  :loading="attachmentUploading === `replace-${attachment.id}`"
+                  tag="span"
+                  >替换</el-button
+                ><input
+                  class="attachment-file-input"
+                  type="file"
+                  accept="image/png,image/jpeg"
+                  @change="selectedReplacement(attachment.id, $event)" /></label
+              ><el-button
+                link
+                size="small"
+                type="danger"
+                :loading="attachmentUploading === `delete-${attachment.id}`"
+                @click="deleteAttachment(attachment)"
+                >删除</el-button
+              >
+            </div>
+          </div></el-form-item
+        ><el-form-item label="难度"
+          ><el-radio-group v-model="form.difficulty"
+            ><el-radio v-for="value in 5" :key="value" :value="value">{{
+              value
+            }}</el-radio></el-radio-group
+          ></el-form-item
+        ><el-form-item label="难度说明"
+          ><el-input v-model="form.difficultyDescription"
+        /></el-form-item>
+        <el-form-item v-if="isChoice" label="选项"
+          ><div class="question-editor">
+            <div
+              v-for="(option, index) in form.options"
+              :key="`${option.label}-${index}`"
+              class="option-row"
+            >
+              <el-radio
+                v-if="form.questionType === 'SINGLE_CHOICE'"
+                :model-value="option.correct"
+                :value="true"
+                @change="updateSingleCorrect(index)"
+              /><el-checkbox v-else v-model="option.correct" /><strong>{{
+                option.label
+              }}</strong
+              ><el-input
+                v-model="option.content"
+                :placeholder="`选项 ${option.label} 内容`"
+              /><el-button
+                :disabled="form.options.length <= 2"
+                link
+                type="danger"
+                @click="removeOption(index)"
+                >删除</el-button
+              >
+            </div>
+            <el-button link type="primary" @click="addOption"
+              >添加选项</el-button
+            >
+          </div></el-form-item
+        >
+        <el-form-item v-if="form.questionType === 'FILL_BLANK'" label="填空答案"
+          ><div class="question-editor">
+            <div
+              v-for="(blank, blankIndex) in blanks"
+              :key="blankIndex"
+              class="blank-row"
+            >
+              <strong>第 {{ blankIndex + 1 }} 空</strong
+              ><el-input
+                v-for="(_, answerIndex) in blank"
+                :key="answerIndex"
+                v-model="blank[answerIndex]"
+                placeholder="可接受答案"
+              /><el-button
+                link
+                type="primary"
+                @click="addAcceptedAnswer(blankIndex)"
+                >添加同义答案</el-button
+              ><el-button
+                link
+                type="danger"
+                :disabled="blanks.length <= 1"
+                @click="removeBlank(blankIndex)"
+                >删除空位</el-button
+              >
+            </div>
+            <el-button link type="primary" @click="addBlank"
+              >添加空位</el-button
+            >
+          </div></el-form-item
+        >
+        <el-form-item label="标准解析" prop="standardAnalysis"
+          ><el-input
+            v-model="form.standardAnalysis"
+            type="textarea"
+            :rows="4"
+          />
+          <div v-if="editing && detail" class="attachment-editor">
+            <div class="attachment-editor-heading">
+              <span>标准解析图片</span
+              ><label class="attachment-upload-control"
+                ><el-button
+                  size="small"
+                  plain
+                  :loading="attachmentUploading === 'STANDARD_ANALYSIS'"
+                  tag="span"
+                  >上传 PNG/JPEG</el-button
+                ><input
+                  class="attachment-file-input"
+                  type="file"
+                  accept="image/png,image/jpeg"
+                  @change="selectedFile('STANDARD_ANALYSIS', $event)"
+              /></label>
+            </div>
+            <QuestionContent
+              :content="form.standardAnalysis"
+              :attachments="detail.attachments"
+              position="STANDARD_ANALYSIS"
+            />
+            <div
+              v-for="attachment in attachmentList('STANDARD_ANALYSIS')"
+              :key="attachment.id"
+              class="attachment-editor-row"
+            >
+              <span
+                >{{ attachment.fileName }} · {{ attachment.objectMarker }} ·
+                {{
+                  attachment.renderStatus === "AVAILABLE" ? "可用" : "不可用"
+                }}</span
+              ><label class="attachment-upload-control"
+                ><el-button
+                  link
+                  size="small"
+                  :loading="attachmentUploading === `replace-${attachment.id}`"
+                  tag="span"
+                  >替换</el-button
+                ><input
+                  class="attachment-file-input"
+                  type="file"
+                  accept="image/png,image/jpeg"
+                  @change="selectedReplacement(attachment.id, $event)" /></label
+              ><el-button
+                link
+                size="small"
+                type="danger"
+                :loading="attachmentUploading === `delete-${attachment.id}`"
+                @click="deleteAttachment(attachment)"
+                >删除</el-button
+              >
+            </div>
+          </div></el-form-item
+        ><el-form-item label="知识点" prop="knowledgePointIds"
+          ><el-select
+            v-model="form.knowledgePointIds"
+            multiple
+            filterable
+            style="width: 100%"
+            ><el-option
+              v-for="item in knowledgePoints"
+              :key="item.id"
+              :label="item.path"
+              :value="item.id" /></el-select
+        ></el-form-item>
+        <el-divider content-position="left">内容来源与权利</el-divider>
+        <div
+          v-for="source in form.sources"
+          :key="source.contentType"
+          class="source-editor"
+        >
+          <strong>{{ sourceLabel(source.contentType) }}</strong
+          ><el-form-item label="来源类别"
+            ><el-select v-model="source.sourceType"
+              ><el-option label="教师创建" value="TEACHER_CREATED" /><el-option
+                label="真实试题"
+                value="REAL_EXAM" /><el-option
+                label="AI候选"
+                value="AI_GENERATED" /></el-select></el-form-item
+          ><el-form-item label="来源名称"
+            ><el-input v-model="source.sourceName" /></el-form-item
+          ><el-form-item label="来源地址"
+            ><el-input
+              v-model="source.sourceAddress"
+              placeholder="URL 或受控相对路径" /></el-form-item
+          ><el-form-item label="权利状态"
+            ><el-select v-model="source.rightsStatus"
+              ><el-option
+                v-for="item in rights"
+                :key="item"
+                :label="item"
+                :value="item" /></el-select></el-form-item
+          ><el-form-item label="权利依据"
+            ><el-input v-model="source.rightsBasis"
+          /></el-form-item>
+        </div> </el-form
+      ><template #footer
+        ><el-button @click="dialogVisible = false">取消</el-button
+        ><el-button type="primary" :loading="saving" @click="save"
+          >保存草稿</el-button
+        ></template
+      ></el-dialog
+    >
+    <el-drawer
+      v-model="detailVisible"
+      title="题目详情与审核历史"
+      size="min(900px, 100%)"
+      ><template v-if="detail"
+        ><el-descriptions :column="2" border
+          ><el-descriptions-item label="学科">{{
+            detail.question.subjectName
+          }}</el-descriptions-item
+          ><el-descriptions-item label="状态">{{
+            stateLabel(detail.question.status)
+          }}</el-descriptions-item
+          ><el-descriptions-item label="提供者">{{
+            detail.provider || "历史数据，未记录具体提供者"
+          }}</el-descriptions-item
+          ><el-descriptions-item label="题型 / 模式"
+            >{{ formatEnum(detail.question.questionType) }} /
+            {{ formatEnum(detail.question.usageMode) }}</el-descriptions-item
+          ><el-descriptions-item label="难度">{{
+            detail.question.difficulty
+          }}</el-descriptions-item
+          ><el-descriptions-item label="题干" :span="2"
+            ><QuestionContent
+              :content="detail.stem"
+              :attachments="detail.attachments"
+              position="QUESTION" /></el-descriptions-item
+          ><el-descriptions-item label="正确答案" :span="2"
+            ><AnswerDisplay
+              :question-type="detail.question.questionType"
+              :value="detail.correctAnswer"
+              :options="detail.options"
+            />
+            <details>
+              <summary>技术结构</summary>
+              <pre class="question-json">{{ detail.correctAnswer }}</pre>
+            </details></el-descriptions-item
+          ><el-descriptions-item label="标准解析" :span="2"
+            ><QuestionContent
+              :content="detail.standardAnalysis"
+              :attachments="detail.attachments"
+              position="STANDARD_ANALYSIS" /></el-descriptions-item
+          ><el-descriptions-item label="知识点" :span="2">{{
+            detail.knowledgePoints.map((item) => item.path).join("；") || "—"
+          }}</el-descriptions-item></el-descriptions
+        >
+        <h2>选项</h2>
+        <el-table
+          :data="detail.options"
+          class="data-table"
+          empty-text="此题没有选择题选项。"
+          ><el-table-column
+            prop="label"
+            label="标识"
+            width="90"
+          /><el-table-column label="内容"
+            ><template #default="{ row }"
+              ><ScientificText
+                :content="row.content" /></template></el-table-column
+          ><el-table-column label="正确"
+            ><template #default="{ row }">{{
+              row.correct ? "是" : "否"
+            }}</template></el-table-column
+          ></el-table
+        >
+        <h2>来源与版权</h2>
+        <el-table :data="detail.sources" class="data-table"
+          ><el-table-column label="内容"
+            ><template #default="{ row }">{{
+              sourceLabel(row.contentType)
+            }}</template></el-table-column
+          ><el-table-column label="类别"
+            ><template #default="{ row }">{{
+              formatEnum(row.sourceType)
+            }}</template></el-table-column
+          ><el-table-column prop="sourceName" label="名称" /><el-table-column
+            prop="sourceAddress"
+            label="地址"
+            show-overflow-tooltip /><el-table-column label="权利状态"
+            ><template #default="{ row }">{{
+              formatEnum(row.rightsStatus)
+            }}</template></el-table-column
+          ><el-table-column prop="rightsBasis" label="权利依据"
+        /></el-table>
+        <h2>附件业务信息</h2>
+        <el-table
+          :data="detail.attachments"
+          class="data-table"
+          empty-text="暂无附件。"
+          ><el-table-column prop="position" label="关联位置" /><el-table-column
+            prop="type"
+            label="类型" /><el-table-column
+            prop="fileName"
+            label="文件名" /><el-table-column
+            prop="objectMarker"
+            label="对象标识" /><el-table-column prop="status" label="状态"
+        /></el-table>
+        <h2>审核历史</h2>
+        <el-table
+          :data="detail.reviews"
+          class="data-table"
+          empty-text="暂无审核记录。"
+          ><el-table-column prop="action" label="动作" /><el-table-column
+            prop="fromStatus"
+            label="原状态" /><el-table-column
+            prop="toStatus"
+            label="目标状态" /><el-table-column
+            prop="reviewerId"
+            label="审核人 ID" /><el-table-column
+            prop="opinion"
+            label="意见" /><el-table-column prop="createdAt" label="时间"
+        /></el-table>
+        <div class="drawer-actions">
+          <el-button
+            v-if="detail.allowedActions.includes('SUBMIT')"
+            type="primary"
+            @click="runAction('submit-review')"
+            >提交审核</el-button
+          ><el-button
+            v-if="detail.allowedActions.includes('APPROVE')"
+            type="success"
+            @click="runAction('approve')"
+            >审核通过</el-button
+          ><el-button
+            v-if="detail.allowedActions.includes('RETURN')"
+            @click="runAction('return')"
+            >审核退回</el-button
+          ><el-button
+            v-if="detail.allowedActions.includes('DISABLE')"
+            type="warning"
+            @click="runAction('disable')"
+            >停用</el-button
+          ><el-button
+            v-if="detail.allowedActions.includes('REPUBLISH')"
+            type="success"
+            @click="runAction('republish')"
+            >重新发布</el-button
+          >
+        </div></template
+      ></el-drawer
+    >
   </section>
 </template>

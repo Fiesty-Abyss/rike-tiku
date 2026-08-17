@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessageBox } from 'element-plus'
 import ChangePasswordDialog from '../components/auth/ChangePasswordDialog.vue'
 import AquaBrand from '../components/layout/AquaBrand.vue'
 
 import { useAuthStore } from '../stores/auth'
+import { fetchPasswordRecoveries } from '../api/admin/passwordRecovery'
 
 const router = useRouter()
 const route = useRoute()
@@ -15,6 +16,8 @@ const canSwitchRole = computed(() => authStore.roles.length > 1)
 const passwordVisible = ref(false)
 const routeTitle = computed(() => String(route.meta.title || '管理员工作台'))
 const routeSubtitle = computed(() => String(route.meta.subtitle || '系统管理'))
+const pendingRecoveries=ref(0)
+onMounted(async()=>{try{pendingRecoveries.value=(await fetchPasswordRecoveries()).pendingCount}catch{pendingRecoveries.value=0}})
 
 async function logout() {
   await ElMessageBox.confirm('退出后需要重新登录才能继续管理。', '确认退出登录', { type: 'warning', confirmButtonText: '退出登录', cancelButtonText: '取消' })
@@ -35,6 +38,7 @@ async function logout() {
         <el-menu-item index="/admin/ai-generation"><span>AI 候选题</span></el-menu-item>
         <el-menu-item index="/admin/ai-models"><span>AI 模型管理</span></el-menu-item>
         <el-menu-item index="/admin/students"><span>学生管理</span></el-menu-item>
+        <el-menu-item index="/admin/password-recovery"><span>密码恢复通知</span><el-badge v-if="pendingRecoveries" :value="pendingRecoveries" /></el-menu-item>
         <el-menu-item index="/admin/operation-logs"><span>操作日志</span></el-menu-item>
       </el-menu>
     </el-aside>

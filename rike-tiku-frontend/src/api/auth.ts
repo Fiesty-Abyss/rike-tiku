@@ -67,3 +67,5 @@ export async function changeInitialPassword(
 }
 
 export const changePassword = (request: ChangePasswordRequest) => http.post<LoginResponse>('/auth/change-password', request).then(response => response.data)
+export const requestPasswordRecovery = (request:{username:string;challengeId:string;captchaCode:string}) =>
+  http.post<{message:string}>('/auth/password-recovery-requests',request).then(response=>response.data)

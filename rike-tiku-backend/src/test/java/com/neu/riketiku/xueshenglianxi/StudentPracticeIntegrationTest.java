@@ -7,6 +7,7 @@ import tools.jackson.databind.node.JsonNodeFactory;
 import com.neu.riketiku.renzheng.RenZhengYeWuYiChang;
 import com.neu.riketiku.tiku.admin.AdminQuestionIntegrationTestSupport;
 import com.neu.riketiku.tiku.fujian.QuestionAttachmentContentService;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -28,8 +29,11 @@ class StudentPracticeIntegrationTest extends AdminQuestionIntegrationTestSupport
     @Transactional
     void createsFrozenPublishedQuestionsWithoutLeakingAnswers() {
         long userId = student("freeze");
-        question("SINGLE_CHOICE", "PUBLISHED", 1, "A");
-        var session = service.create(userId, new StudentPracticeDtos.CreateRequest(1L, null, List.of("SINGLE_CHOICE"), null, 1));
+        long questionId = question("SINGLE_CHOICE", "PUBLISHED", 1, "A");
+        long point = uniqueKnowledgePoint();
+        jdbc.update("DELETE FROM ti_mu_zhi_shi_dian WHERE ti_mu_id=?", questionId);
+        jdbc.update("INSERT INTO ti_mu_zhi_shi_dian(ti_mu_id,zhi_shi_dian_id,shi_fou_zhu_yao,pai_xu) VALUES (?,?,1,1)", questionId, point);
+        var session = service.create(userId, new StudentPracticeDtos.CreateRequest(1L, List.of(point), List.of("SINGLE_CHOICE"), null, 1));
 
         assertThat(session.status()).isEqualTo("CREATED");
         assertThat(session.questions()).hasSize(1);
@@ -65,10 +69,15 @@ class StudentPracticeIntegrationTest extends AdminQuestionIntegrationTestSupport
     @Transactional
     void gradesSingleMultipleAndFillBlankThenCreatesWrongQuestion() {
         long userId = student("mixed");
-        question("SINGLE_CHOICE", "PUBLISHED", 1, "A");
-        question("MULTIPLE_CHOICE", "PUBLISHED", 2, "AB");
-        question("FILL_BLANK", "PUBLISHED", 3, "填空答案");
-        var session = service.create(userId, new StudentPracticeDtos.CreateRequest(1L, null,
+        long point = uniqueKnowledgePoint();
+        for (long questionId : List.of(
+                question("SINGLE_CHOICE", "PUBLISHED", 1, "A"),
+                question("MULTIPLE_CHOICE", "PUBLISHED", 2, "AB"),
+                question("FILL_BLANK", "PUBLISHED", 3, "填空答案"))) {
+            jdbc.update("DELETE FROM ti_mu_zhi_shi_dian WHERE ti_mu_id=?", questionId);
+            jdbc.update("INSERT INTO ti_mu_zhi_shi_dian(ti_mu_id,zhi_shi_dian_id,shi_fou_zhu_yao,pai_xu) VALUES (?,?,1,1)", questionId, point);
+        }
+        var session = service.create(userId, new StudentPracticeDtos.CreateRequest(1L, List.of(point),
                 List.of("SINGLE_CHOICE", "MULTIPLE_CHOICE", "FILL_BLANK"), null, 3));
         var answers = session.questions().stream().map(question -> new StudentPracticeDtos.Answer(question.practiceQuestionId(), answerFor(question.questionType()), 10)).toList();
 
@@ -76,7 +85,7 @@ class StudentPracticeIntegrationTest extends AdminQuestionIntegrationTestSupport
         assertThat(result.totalCount()).isEqualTo(3);
         assertThat(result.correctCount()).isEqualTo(2);
         assertThat(result.questions()).extracting(StudentPracticeDtos.ResultQuestion::standardAnalysis).allMatch(value -> value.contains("标准解析"));
-        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM cuo_ti_ji_lu", Integer.class)).isEqualTo(1);
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM cuo_ti_ji_lu WHERE xue_sheng_id=(SELECT id FROM xue_sheng_dang_an WHERE yong_hu_id=?)", Integer.class, userId)).isEqualTo(1);
     }
 
     @Test
@@ -89,7 +98,7 @@ class StudentPracticeIntegrationTest extends AdminQuestionIntegrationTestSupport
 
         assertThatThrownBy(() -> service.submit(userId, session.id(), new StudentPracticeDtos.SubmitRequest(List.of(answer))))
                 .isInstanceOf(RenZhengYeWuYiChang.class).hasMessageContaining("无效选项");
-        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM xue_sheng_da_ti", Integer.class)).isZero();
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM xue_sheng_da_ti WHERE lian_xi_ti_mu_id IN (SELECT id FROM lian_xi_ti_mu WHERE lian_xi_hui_hua_id=?)", Integer.class, session.id())).isZero();
         assertThat(jdbc.queryForObject("SELECT zhuang_tai FROM lian_xi_hui_hua WHERE id=?", String.class, session.id())).isEqualTo("CREATED");
     }
 
@@ -111,16 +120,19 @@ class StudentPracticeIntegrationTest extends AdminQuestionIntegrationTestSupport
 
     @Test
     @Transactional
-    void accumulatesWrongQuestionAndMarksMasteredAfterTwoCorrectAttempts() {
+    void accumulatesWrongQuestionAndKeepsReviewingAfterTwoCorrectAttempts() {
         long userId = student("wrong");
         long questionId = question("SINGLE_CHOICE", "PUBLISHED", 1, "A");
-        submitSingle(userId, "B");
-        submitSingle(userId, "A");
-        submitSingle(userId, "A");
+        long point = uniqueKnowledgePoint();
+        jdbc.update("DELETE FROM ti_mu_zhi_shi_dian WHERE ti_mu_id=?", questionId);
+        jdbc.update("INSERT INTO ti_mu_zhi_shi_dian(ti_mu_id,zhi_shi_dian_id,shi_fou_zhu_yao,pai_xu) VALUES (?,?,1,1)", questionId, point);
+        submitSingle(userId, point, "B");
+        submitSingle(userId, point, "A");
+        submitSingle(userId, point, "A");
 
         assertThat(jdbc.queryForObject("SELECT cuo_wu_ci_shu FROM cuo_ti_ji_lu WHERE xue_sheng_id=(SELECT id FROM xue_sheng_dang_an WHERE yong_hu_id=?) AND ti_mu_id=?", Integer.class, userId, questionId)).isEqualTo(1);
         assertThat(jdbc.queryForObject("SELECT lian_xu_zheng_que_ci_shu FROM cuo_ti_ji_lu WHERE ti_mu_id=?", Integer.class, questionId)).isEqualTo(2);
-        assertThat(jdbc.queryForObject("SELECT zhuang_tai FROM cuo_ti_ji_lu WHERE ti_mu_id=?", String.class, questionId)).isEqualTo("MASTERED");
+        assertThat(jdbc.queryForObject("SELECT zhuang_tai FROM cuo_ti_ji_lu WHERE ti_mu_id=?", String.class, questionId)).isEqualTo("REVIEWING");
     }
 
     @Test
@@ -295,7 +307,10 @@ class StudentPracticeIntegrationTest extends AdminQuestionIntegrationTestSupport
     void historicalResultAndWrongDetailKeepSessionOptionSnapshotAfterQuestionChanges() {
         long userId = student("frozen_options");
         long questionId = question("SINGLE_CHOICE", "PUBLISHED", 1, "A");
-        var correctSession = service.create(userId, new StudentPracticeDtos.CreateRequest(1L, null, List.of("SINGLE_CHOICE"), null, 1));
+        long point = uniqueKnowledgePoint();
+        jdbc.update("DELETE FROM ti_mu_zhi_shi_dian WHERE ti_mu_id=?", questionId);
+        jdbc.update("INSERT INTO ti_mu_zhi_shi_dian(ti_mu_id,zhi_shi_dian_id,shi_fou_zhu_yao,pai_xu) VALUES (?,?,1,1)", questionId, point);
+        var correctSession = service.create(userId, new StudentPracticeDtos.CreateRequest(1L, List.of(point), List.of("SINGLE_CHOICE"), null, 1));
         jdbc.update("UPDATE ti_mu_xuan_xiang SET xuan_xiang_nei_rong='题库后来修改的内容' WHERE ti_mu_id=? AND xuan_xiang_biao_shi='A'", questionId);
         var correctAnswer = new StudentPracticeDtos.Answer(correctSession.questions().getFirst().practiceQuestionId(),
                 JsonNodeFactory.instance.textNode("A"), 1);
@@ -303,7 +318,7 @@ class StudentPracticeIntegrationTest extends AdminQuestionIntegrationTestSupport
         assertThat(result.questions().getFirst().question().options())
                 .extracting(StudentPracticeDtos.Option::content).contains("选项A").doesNotContain("题库后来修改的内容");
 
-        var wrongSession = service.create(userId, new StudentPracticeDtos.CreateRequest(1L, null, List.of("SINGLE_CHOICE"), null, 1));
+        var wrongSession = service.create(userId, new StudentPracticeDtos.CreateRequest(1L, List.of(point), List.of("SINGLE_CHOICE"), null, 1));
         var wrongAnswer = new StudentPracticeDtos.Answer(wrongSession.questions().getFirst().practiceQuestionId(),
                 JsonNodeFactory.instance.textNode("B"), 1);
         service.submit(userId, wrongSession.id(), new StudentPracticeDtos.SubmitRequest(List.of(wrongAnswer)));
@@ -369,8 +384,75 @@ class StudentPracticeIntegrationTest extends AdminQuestionIntegrationTestSupport
                 .containsOnly("BIOLOGY");
     }
 
-    private void submitSingle(long userId, String label) {
-        var session = service.create(userId, new StudentPracticeDtos.CreateRequest(1L, null, List.of("SINGLE_CHOICE"), null, 1));
+    @Test
+    @Transactional
+    void filtersWrongQuestionsByInclusiveDateRangeAndRejectsReversedRange() {
+        long userId = student("wrong_date");
+        long questionId = questionForSubject(1L, "SINGLE_CHOICE", 1);
+        long pointId = jdbc.queryForObject(
+                "SELECT zhi_shi_dian_id FROM ti_mu_zhi_shi_dian WHERE ti_mu_id=?",
+                Long.class,
+                questionId);
+        var session = service.create(userId,
+                new StudentPracticeDtos.CreateRequest(1L, List.of(pointId), List.of("SINGLE_CHOICE"), 1, 1));
+        service.submit(userId, session.id(), new StudentPracticeDtos.SubmitRequest(List.of(
+                new StudentPracticeDtos.Answer(
+                        session.questions().getFirst().practiceQuestionId(),
+                        JsonNodeFactory.instance.textNode("B"),
+                        1))));
+        jdbc.update("UPDATE cuo_ti_ji_lu SET zui_jin_cuo_wu_shi_jian='2026-08-10 23:59:59' WHERE ti_mu_id=?",
+                questionId);
+
+        var onDate = service.wrongQuestions(userId, "PHYSICS", pointId, "ACTIVE", null,
+                LocalDate.of(2026, 8, 10), LocalDate.of(2026, 8, 10), 0, 20);
+        var afterDate = service.wrongQuestions(userId, "PHYSICS", pointId, "ACTIVE", null,
+                LocalDate.of(2026, 8, 11), LocalDate.of(2026, 8, 12), 0, 20);
+
+        assertThat(onDate.total()).isEqualTo(1);
+        assertThat(onDate.items()).extracting(StudentPracticeDtos.WrongQuestionItem::questionId)
+                .containsExactly(questionId);
+        assertThat(afterDate.total()).isZero();
+        assertThatThrownBy(() -> service.wrongQuestions(userId, null, null, null, null,
+                LocalDate.of(2026, 8, 12), LocalDate.of(2026, 8, 11), 0, 20))
+                .isInstanceOf(RenZhengYeWuYiChang.class)
+                .hasMessageContaining("结束日期不能早于开始日期");
+    }
+
+    @Test
+    @Transactional
+    void mapsPublicWrongQuestionFiltersToRealLifecycleStatesAndReactivatesArchivedMistakes() {
+        long userId = student("wrong_status");
+        long questionId = questionForSubject(1L, "SINGLE_CHOICE", 1);
+        long pointId = jdbc.queryForObject("SELECT zhi_shi_dian_id FROM ti_mu_zhi_shi_dian WHERE ti_mu_id=?", Long.class, questionId);
+        var first = service.create(userId, new StudentPracticeDtos.CreateRequest(1L, List.of(pointId), List.of("SINGLE_CHOICE"), 1, 1));
+        service.submit(userId, first.id(), new StudentPracticeDtos.SubmitRequest(List.of(
+                new StudentPracticeDtos.Answer(first.questions().getFirst().practiceQuestionId(), JsonNodeFactory.instance.textNode("B"), 1))));
+
+        assertThat(service.wrongQuestions(userId,null,null,"ACTIVE",null,null,null,0,20).items())
+                .extracting(StudentPracticeDtos.WrongQuestionItem::status).containsExactly("NEW");
+        jdbc.update("UPDATE cuo_ti_ji_lu SET zhuang_tai='REVIEWING' WHERE ti_mu_id=?",questionId);
+        assertThat(service.wrongQuestions(userId,null,null,"ACTIVE",null,null,null,0,20).items())
+                .extracting(StudentPracticeDtos.WrongQuestionItem::status).containsExactly("REVIEWING");
+
+        service.archiveWrongQuestion(userId,questionId);
+        assertThat(service.wrongQuestions(userId,null,null,"ACTIVE",null,null,null,0,20).items()).isEmpty();
+        assertThat(service.wrongQuestions(userId,null,null,"MASTERED",null,null,null,0,20).items())
+                .extracting(StudentPracticeDtos.WrongQuestionItem::questionId).containsExactly(questionId);
+        assertThatThrownBy(() -> service.wrongQuestions(userId,null,null,"NEW",null,null,null,0,20))
+                .isInstanceOfSatisfying(RenZhengYeWuYiChang.class,error -> {
+                    assertThat(error.getCode()).isEqualTo("WRONG_QUESTION_STATUS_INVALID");
+                    assertThat(error.getStatus().value()).isEqualTo(400);
+                });
+
+        var retry = service.retryWrongQuestion(userId,questionId);
+        service.submit(userId,retry.id(),new StudentPracticeDtos.SubmitRequest(List.of(
+                new StudentPracticeDtos.Answer(retry.questions().getFirst().practiceQuestionId(),JsonNodeFactory.instance.textNode("B"),1))));
+        assertThat(service.wrongQuestions(userId,null,null,"ACTIVE",null,null,null,0,20).items())
+                .extracting(StudentPracticeDtos.WrongQuestionItem::status).containsExactly("NEW");
+    }
+
+    private void submitSingle(long userId, long knowledgePointId, String label) {
+        var session = service.create(userId, new StudentPracticeDtos.CreateRequest(1L, List.of(knowledgePointId), List.of("SINGLE_CHOICE"), null, 1));
         var answer = new StudentPracticeDtos.Answer(session.questions().getFirst().practiceQuestionId(), JsonNodeFactory.instance.textNode(label), 1);
         service.submit(userId, session.id(), new StudentPracticeDtos.SubmitRequest(List.of(answer)));
     }

@@ -23,6 +23,10 @@ const environment = computed(() => subjectTheme(session.value?.subjectCode))
 const typeLabel = (type: string) => ({ SINGLE_CHOICE: '单选题', MULTIPLE_CHOICE: '多选题', FILL_BLANK: '填空题' } as Record<string, string>)[type] || type
 const typeInstruction = (type: string) => ({ SINGLE_CHOICE: '请选择 1 项。', MULTIPLE_CHOICE: '请选择所有正确项；全部选对得分，错选或漏选不得分。', FILL_BLANK: '请按顺序填写每个空。' } as Record<string, string>)[type] || ''
 const difficultyLabel = (value: number) => ({ 1: '简单', 2: '中等', 3: '困难' } as Record<number, string>)[value] || String(value)
+const retryResultQuery = computed(() => {
+  const wrongQuestionId = String(route.query?.wrongQuestionId || '').trim()
+  return route.query?.fromWrongBook === 'true' && wrongQuestionId ? { fromWrongBook: 'true', wrongQuestionId } : undefined
+})
 
 function openKnowledgePoint(pointId: number) {
   if (!session.value) return
@@ -40,7 +44,7 @@ async function load() {
     const data = await fetchPracticeSession(Number(route.params.id))
     session.value = data
     Object.assign(answers, initialAnswers(data.questions))
-    if (data.status === 'SUBMITTED') await router.replace(`/student/practice/${data.id}/result`)
+    if (data.status === 'SUBMITTED') await router.replace({ path:`/student/practice/${data.id}/result`, query:retryResultQuery.value })
   } catch (error) {
     ElMessage.error(errorMessage(error))
     await router.replace('/student/practice')
@@ -65,7 +69,7 @@ async function submit() {
   submitting.value = true
   try {
     await submitPracticeSession(session.value.id, { answers: session.value.questions.map(item => ({ practiceQuestionId: item.practiceQuestionId, answer: answerPayload(item, answers[item.practiceQuestionId]), elapsedSeconds: elapsedTimer.seconds(item.practiceQuestionId) })) })
-    await router.replace(`/student/practice/${session.value.id}/result`)
+    await router.replace({ path:`/student/practice/${session.value.id}/result`, query:retryResultQuery.value })
   } catch (error) {
     if (question.value) elapsedTimer.enter(question.value.practiceQuestionId)
     ElMessage.error(errorMessage(error))

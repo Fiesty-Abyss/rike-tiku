@@ -18,7 +18,7 @@ public final class QuestionDtos {
                        Integer difficulty, boolean autoGradable, String status, String rightsStatus, LocalDateTime createdAt, LocalDateTime updatedAt) { }
     public record Page(List<Item> records, long total, long page, long size, long pages) { }
     public record Detail(Item question, String stem, String correctAnswer, List<Option> options, String standardAnalysis, List<KnowledgePoint> knowledgePoints,
-                         List<Source> sources, List<Attachment> attachments, List<Review> reviews, List<String> allowedActions) { }
+                         String provider, List<Source> sources, List<Attachment> attachments, List<Review> reviews, List<String> allowedActions) { }
     public record KnowledgePoint(Long id, String code, String name, String path) { }
     public record Attachment(Long id, String position, String type, String fileName, String objectMarker, String status,
                              String renderStatus, String contentUrl) { }

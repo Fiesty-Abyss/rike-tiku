@@ -39,6 +39,20 @@ public class QuestionAttachmentContentService {
     }
 
     @Transactional(readOnly = true)
+    public QuestionAttachmentStorage.StoredImage topic(long userId,long questionId,long attachmentId){
+        int visible=jdbc.queryForObject("""
+                SELECT COUNT(*) FROM ti_mu q JOIN xue_sheng_dang_an xs ON xs.yong_hu_id=? AND xs.zhuang_tai='ACTIVE' AND xs.yi_shan_chu=0
+                WHERE q.id=? AND q.ti_mu_lei_xing='SUBJECTIVE' AND q.shi_yong_mo_shi='TOPIC_LEARNING'
+                  AND q.zhuang_tai='PUBLISHED' AND q.yi_shan_chu=0
+                  AND (q.ke_jian_fan_wei='GLOBAL' OR EXISTS(SELECT 1 FROM ban_ji_xue_sheng bx
+                    JOIN ren_ke_guan_xi r ON r.id=q.ren_ke_guan_xi_id AND r.ban_ji_id=bx.ban_ji_id AND r.zhuang_tai='ACTIVE'
+                    WHERE bx.xue_sheng_id=xs.id AND bx.shi_fou_zhu_ban_ji=1 AND bx.zhuang_tai='ACTIVE' AND bx.tui_chu_shi_jian IS NULL))
+                """,Integer.class,userId,questionId);
+        if(visible!=1)throw missing();
+        return read(attachmentId,null,questionId);
+    }
+
+    @Transactional(readOnly = true)
     public String renderStatus(String relativePath, String hash, String type, String status) {
         return storage.renderStatus(relativePath, hash, type, status);
     }

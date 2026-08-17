@@ -72,6 +72,8 @@ async function logout() {
         </div>
         <div class="teacher-heading-actions">
           <el-button type="primary" @click="router.push('/teacher/ai-generation')">AI 变式题生成与审核</el-button>
+          <el-button type="primary" plain @click="router.push('/teacher/papers')">组卷与打印</el-button>
+          <el-button type="primary" plain @click="router.push('/teacher/private-questions')">我的班级题库</el-button>
           <el-button type="primary" plain @click="router.push('/messages')">消息</el-button>
         </div>
       </div>
@@ -91,14 +93,6 @@ async function logout() {
         </article>
         <el-empty v-if="!loading && !scopes.length" description="当前没有可展示的任教范围。" />
       </div>
-      <el-alert
-        class="teacher-roadmap"
-        title="当前工作边界"
-        type="info"
-        :closable="false"
-        show-icon
-        description="本页提供任教范围、学生练习学情、高频考点、师生私信与 AI 候选题人工审核；任务发布和考试不属于当前版本。"
-      />
     </section>
     <ChangePasswordDialog v-model="passwordVisible" />
   </main>

@@ -1,7 +1,6 @@
 package com.neu.riketiku.aixuesheng;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -22,21 +21,34 @@ public final class StudentAiDtos {
             LocalDateTime createdAt,
             LocalDateTime updatedAt) { }
 
-    public record CreateConversationRequest(@NotNull Long answerFactId) { }
+    public record CreateConversationRequest(Long answerFactId, Long topicQuestionId, Long knowledgeCardId, String contextType,
+                                            Long modelConfigId, String thinkingMode, Boolean webSearch) { }
 
     public record SendMessageRequest(
             @NotBlank(message = "追问内容不能为空")
             @Size(max = 500, message = "单条追问最多500字") String content) { }
 
-    public record Message(Long id, String role, String content, int sequence, LocalDateTime createdAt) { }
+    public record Source(String title, String url, String publisher, String publishDate) { }
+    public record Message(Long id, String role, String content, int sequence, LocalDateTime createdAt,
+                          List<Source> sources) { }
 
     public record Conversation(
             Long id,
             Long answerFactId,
+            Long topicQuestionId,
+            Long knowledgeCardId,
+            String contextType,
             Long questionId,
             String status,
             int usedRounds,
             int maxRounds,
             int remainingRounds,
+            Long modelConfigId,
+            String thinkingMode,
+            boolean webSearch,
             List<Message> messages) { }
+
+    public record ModelOption(Long id, String displayName, String modelCode, boolean available,
+                              boolean defaultOption, List<String> capabilityTags) { }
+    public record Capabilities(boolean webSearchAvailable) { }
 }

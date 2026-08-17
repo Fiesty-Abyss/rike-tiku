@@ -1,0 +1,59 @@
+{
+  "auditHead": "2e0c1332f66df29cc9e4f2edc6c15393688edf82",
+  "capturedAt": "2026-08-13T14:20:00+08:00",
+  "runtime": {
+    "database": "rike_tiku_demo",
+    "flywayAtStart": "23",
+    "flywayDisabledForAuditRuntime": true,
+    "dataMutationPerformed": false,
+    "backendPort": 18081,
+    "frontendPort": 18080,
+    "portsReleasedAfterAudit": true
+  },
+  "loginRecoveryTrigger": {
+    "viewport": "1440x900",
+    "appearance": "none",
+    "background": "rgba(0, 0, 0, 0)",
+    "border": "0.666667px solid rgba(0, 0, 0, 0)",
+    "widthPx": 245.6,
+    "heightPx": 38,
+    "horizontalOverflowPx": 0,
+    "hover": {
+      "background": "oklch(0.97 0.024 211 / 0.54)",
+      "transform": "translateY(-1px)"
+    },
+    "focusVisible": {
+      "focused": true,
+      "outline": "oklch(0.59 0.17 230) solid 2.66667px"
+    },
+    "conclusion": "NOT_BROWSER_DEFAULT_BUTTON"
+  },
+  "loginRecoveryDialogDesktop": {
+    "viewport": "1440x900",
+    "widthPx": 520,
+    "heightPx": 876,
+    "maxHeightPx": 876,
+    "captchaVisible": true,
+    "submitVisible": true,
+    "horizontalOverflowPx": 0,
+    "consoleErrors": 0
+  },
+  "loginRecoveryDialogMobile": {
+    "viewport": "390x844",
+    "widthPx": 366,
+    "heightPx": 820,
+    "maxHeightPx": 820,
+    "captchaVisible": true,
+    "submitVisible": true,
+    "horizontalOverflowPx": 0,
+    "consoleErrors": 0
+  },
+  "notCaptured": {
+    "messageMenu": "Demo has 0 si_xin_xiao_xi rows; creating messages is forbidden in this audit",
+    "messageRecall": "Would require a state-changing recall request and seeded message",
+    "messageDelete": "Would require a state-changing hide request and two-party verification",
+    "answerDisplay": "Authenticated question review route was not entered; CAPTCHA was not solved or bypassed",
+    "studentVariant": "Demo has 0 submitted answer facts and 0 model configs; formal DB is write-protected by this audit"
+  },
+  "evidenceClassification": "MACHINE_BROWSER_AUDIT_NOT_HUMAN_ACCEPTANCE"
+}
