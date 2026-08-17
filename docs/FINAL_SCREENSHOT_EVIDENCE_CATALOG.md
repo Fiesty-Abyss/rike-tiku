@@ -24,7 +24,7 @@
 
 ## V30 当前机器证据（推荐优先使用）
 
-全部为 `THESIS_READY + MACHINE_BROWSER_VERIFIED`，环境为正式 `rike_tiku`、`localhost:8080/8081`、独立 Chromium；commit 为 PR #34 的 V30 验收 commit `aba887a92e1bfa8bb24e184a5f1b09489efc7533`。题目/单元 ID、试卷 ID、发布 ID 是受控本地验收数据，图中不暴露凭据；需要复核时用文末只读 SQL 在同一环境查询。
+V30-01–14、V30-17–18 为 `THESIS_READY + MACHINE_BROWSER_VERIFIED`，环境为正式 `rike_tiku`、`localhost:8080/8081`、独立 Chromium；V30-15–16 为 `MACHINE_ONLY` handler 证据。V30 基础验收 commit 为 `aba887a92e1bfa8bb24e184a5f1b09489efc7533`；题目/单元 ID、试卷 ID、发布 ID 是受控本地验收数据，图中不暴露凭据；需要复核时用文末只读 SQL 在同一环境查询。
 
 | ID / 截图 | 推荐论文图名 / PPT 名 | 路由、角色、可见内容 | 数据和数据库来源 | 代码/API/迁移/测试 | 证明什么；不能证明什么；可用图注 |
 |---|---|---|---|---|---|
