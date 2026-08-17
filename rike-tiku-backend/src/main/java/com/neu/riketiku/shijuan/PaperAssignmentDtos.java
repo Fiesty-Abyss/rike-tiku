@@ -17,10 +17,13 @@ public final class PaperAssignmentDtos {
                           LocalDateTime publishedAt, LocalDateTime deadline, String status,
                           String submissionStatus, BigDecimal score, BigDecimal objectiveTotal) {}
     public record Option(String label, String content) {}
+    public record Attachment(Long id, String position, String type, String fileName, String objectMarker,
+                             String description, int order, String contentUrl) {}
     public record Question(Long itemId, int order, BigDecimal score, String type, String stem, int answerSlots,
                            List<Option> options, JsonNode submittedAnswer, Boolean correct,
                            BigDecimal awardedScore, String correctAnswer, String standardAnalysis,
-                           List<String> knowledgePoints) {}
+                           List<String> knowledgePoints, List<Attachment> stemAttachments,
+                           List<Attachment> analysisAttachments) {}
     public record Detail(Release release, List<Question> questions, boolean answersVisible) {}
     public record DraftAnswer(@NotNull Long itemId, JsonNode answer) {}
     public record SaveDraft(@NotEmpty List<@Valid DraftAnswer> answers) {}

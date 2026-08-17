@@ -638,8 +638,8 @@ public class DemoDataService {
         }
         long questionId = insert("""
                 INSERT INTO ti_mu (ke_mu_id,ti_mu_lei_xing,shi_yong_mo_shi,zhuan_ti_lei_xing,ti_gan,zheng_que_da_an,nan_du,nan_du_shuo_ming,shi_fou_ke_zi_dong_pan_fen,zhuang_tai,nei_rong_ha_xi)
-                VALUES (?,'SUBJECTIVE','TOPIC_LEARNING','COMPREHENSIVE',?,JSON_OBJECT('type','SUBJECTIVE'),?,'综合材料阅读与分步推理',0,'PUBLISHED',?)
-                """, subjectId, stem, q.difficulty(), contentHash);
+                VALUES (?,'SUBJECTIVE','TOPIC_LEARNING',?, ?,JSON_OBJECT('type','SUBJECTIVE'),?,'专题学习分步作答，不自动评分',0,'PUBLISHED',?)
+                """, subjectId, q.topicType(), stem, q.difficulty(), contentHash);
         jdbc.update("INSERT INTO ti_mu_jie_xi (ti_mu_id,jie_xi_lei_xing,jie_xi_nei_rong,ban_ben_hao,zhuang_tai) VALUES (?,'STANDARD',?,1,'PUBLISHED')",
                 questionId, q.analysis()+(illustrated?"〔图片对象 I102〕":""));
         if(illustrated){QuestionAttachmentStorage.StoredImage image=attachmentStorage.store("demo-topic-force.png",demoDiagram());
@@ -667,11 +667,12 @@ public class DemoDataService {
                 VALUES (?,?,?,?,?,1,SHA2(CONCAT('RIKE-DEMO-PAPER-',?),256),CURRENT_TIMESTAMP(3),DATE_ADD(CURRENT_TIMESTAMP(3),INTERVAL 30 DAY),'PUBLISHED')
                 """,paper,scope,facts.get("ban_ji_id"),facts.get("ke_mu_id"),facts.get("jiao_shi_id"),paper);
         jdbc.update("""
-                INSERT INTO shi_juan_fa_bu_ti_mu(shi_juan_fa_bu_id,ti_mu_id,ti_mu_shun_xu,fen_zhi,ti_mu_lei_xing,ti_gan_kuai_zhao,xuan_xiang_kuai_zhao,zheng_que_da_an_kuai_zhao,biao_zhun_jie_xi_kuai_zhao,zhi_shi_dian_kuai_zhao)
+                INSERT INTO shi_juan_fa_bu_ti_mu(shi_juan_fa_bu_id,ti_mu_id,ti_mu_shun_xu,fen_zhi,ti_mu_lei_xing,ti_gan_kuai_zhao,xuan_xiang_kuai_zhao,zheng_que_da_an_kuai_zhao,biao_zhun_jie_xi_kuai_zhao,zhi_shi_dian_kuai_zhao,fu_jian_kuai_zhao)
                 SELECT ?,q.id,i.ti_mu_shun_xu,i.fen_zhi,q.ti_mu_lei_xing,q.ti_gan,
                   (SELECT JSON_ARRAYAGG(JSON_OBJECT('label',o.xuan_xiang_biao_shi,'content',o.xuan_xiang_nei_rong)) FROM ti_mu_xuan_xiang o WHERE o.ti_mu_id=q.id AND o.yi_shan_chu=0),
                   q.zheng_que_da_an,a.jie_xi_nei_rong,
-                  (SELECT JSON_ARRAYAGG(p.wan_zheng_lu_jing) FROM ti_mu_zhi_shi_dian qp JOIN zhi_shi_dian p ON p.id=qp.zhi_shi_dian_id WHERE qp.ti_mu_id=q.id AND qp.yi_shan_chu=0)
+                  (SELECT JSON_ARRAYAGG(p.wan_zheng_lu_jing) FROM ti_mu_zhi_shi_dian qp JOIN zhi_shi_dian p ON p.id=qp.zhi_shi_dian_id WHERE qp.ti_mu_id=q.id AND qp.yi_shan_chu=0),
+                  JSON_ARRAY()
                 FROM shi_juan_ti_mu i JOIN ti_mu q ON q.id=i.ti_mu_id JOIN ti_mu_jie_xi a ON a.ti_mu_id=q.id AND a.jie_xi_lei_xing='STANDARD' WHERE i.shi_juan_id=?
                 """,release,paper);
     }
