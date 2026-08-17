@@ -10,6 +10,9 @@ import { questionTypeLabel, topicTypeLabel } from '../../utils/questionLabels'
 const route = useRoute()
 const paper = ref<Paper>()
 const answer = computed(() => route.params.version === 'answer')
+function printPaper() {
+  window.print()
+}
 onMounted(async () => { paper.value = await fetchPaper(Number(route.params.id)) })
 </script>
 
@@ -17,7 +20,7 @@ onMounted(async () => { paper.value = await fetchPaper(Number(route.params.id)) 
   <main v-if="paper" class="paper-preview">
     <header>
       <div><h1>{{ paper.name }}</h1><p>{{ paper.subjectName }} · 总分 {{ paper.totalScore }} 分</p></div>
-      <button type="button" @click="window.print()">打印 / 另存为 PDF</button>
+      <button type="button" @click="printPaper">打印 / 另存为 PDF</button>
     </header>
     <article v-for="question in paper.questions" :key="question.id" :class="['paper-question', { subjective: question.type === 'SUBJECTIVE' }]">
       <div class="question-meta"><strong>{{ question.order }}.</strong><el-tag size="small" effect="plain">{{ questionTypeLabel(question.type) }}</el-tag><el-tag v-if="question.topicType" size="small" type="warning" effect="plain">{{ topicTypeLabel(question.topicType) }}</el-tag><span>（{{ question.score }} 分）</span></div>

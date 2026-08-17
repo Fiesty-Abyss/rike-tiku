@@ -6,7 +6,7 @@
 |---|---|---|
 | 系统采用前后端分离模块化单体 | `DESIGN.md`、代码模块和 Maven/Vite 工程 | 已核验 |
 | Java 25、Spring Boot 4.1、Vue 3、MySQL 8.4 | POM、package.json、本机命令输出 | 已核验 |
-| Flyway V1–V30、50 张业务表 | 迁移目录、随机测试库、正式 `rike_tiku`；V29 纯结构快照仅保留历史查阅 | 已核验 |
+| Flyway V1–V30、50 张业务表 | 迁移目录、随机测试库、正式 `rike_tiku`；V30 纯结构快照为当前、V29 仅保留历史查阅 | 已核验 |
 | 既有 V1–V25 未修改 | Git blob hash 与迁移校验 | 已核验 |
 | Demo 题量 378 | DemoDataService validate 输出 | 已核验 |
 | 答疑最多 10 轮 | V15、`StudentAiService.MAX_ROUNDS`、集成测试 | 已核验 |
@@ -19,16 +19,16 @@
 | AI 科学文本不使用未过滤 v-html | `AiScientificContent` 源码与测试 | 已核验 |
 | 本轮点名后端专项 | 新颖度 3/3、候选生成集成 7/7、学生变式集成 4/4；使用随机临时 schema | 已执行 |
 | 本轮学生前端专项 | 5 files、12 tests，0 failures；type-check/build 通过 | 已执行 |
-| 后端最终全量 | `mvn test`：220 tests，0 failures，0 errors，3 skipped；`mvn package` 通过 | 已执行 |
-| 前端最终全量 | 68 files、222 tests；type-check、build、`npm audit --omit=dev` 通过，0 vulnerabilities | 已执行 |
+| 后端最终全量 | PR34 打印修补后的实际 `mvn test`/`mvn package` 结果见 `FINAL_PROJECT_FACTS.md` | 本轮重跑中 |
+| 前端最终全量 | PR34 打印修补后的实际测试、type-check、build、audit 结果见 `FINAL_PROJECT_FACTS.md` | 本轮重跑中 |
 | 专题内容与科学审计 | 15 单元 / 45 题、计算 14 / 实验 9 / 流程 5 / 材料分析 13 / 综合 4；600 strings、117 database rows、`SCIENTIFIC_CONTENT_ERRORS=0` | 已执行 |
 | 最终两项用户反馈 | 忘记密码弹窗不再展示内部安全实现说明；教师列表按真实角色表显示 TEACHER / ADMIN，授权、撤销、重新授权、最后管理员与当前管理员保护均有回归测试 | 已执行 |
-| 机器浏览器 | 正式 `rike_tiku`：11 pages / 56 assertions，0 console/page/failed-request error，0 overflow；覆盖三科专题、带图专题主观题混合组卷、打印、学生保存与提交 | `MACHINE_BROWSER_VERIFIED`；不等同真人验收 |
+| 机器浏览器 | 正式 `rike_tiku`：历史 V30 为 11 pages / 56 assertions，0 console/page/failed-request error，0 overflow；PR34 另补学生/答案预览 `window.print` handler hook | `MACHINE_BROWSER_VERIFIED`；不等同真人验收或 OS 对话框 |
 | 正式库迁移与本轮内容 | Flyway 从 V29 正常升级至 V30；`shi_juan_fa_bu_ti_mu.fu_jian_kuai_zhao` 冻结受控附件元数据，学生主观题保存为 `SUBJECTIVE_PENDING`；15 单元、45 关系 | 已核验；不新增表 |
 | V1–V30 checksum 与临时库 | 正式 `flyway_schema_history` 30 行均 `success=1`；随机临时 schema V1→V30 通过；V1–V29 迁移文件未改动 | 已核验 |
-| Word/PPT 交付物 | 既有 `docs/thesis/deliverables/` 通用 Word/PPT 仍标注待套学校模板；本轮未重新生成，未声称学校最终排版或系统视觉 PASS | 本轮未生成 |
+| Word/PPT 交付物 | 学校模板尚未提供；本轮只同步 Markdown 事实、截图目录和引用矩阵，不生成或声称学校最终排版 | 本轮未生成 |
 | 真实 DeepSeek/GLM/xAI/Search 本轮 smoke | 没有可安全使用的轮换后凭据，未消费真实 Provider | BLOCKED_EXTERNAL_PROVIDER；历史结果不外推为本轮 PASS |
-| 真人用户验收、问卷或学习成效提升 | 无本轮数据 | 禁止声称 |
+| PR #34 用户打印复验、问卷或学习成效提升 | PR34-MA-001 为 `USER_RETEST_PENDING`；无课堂效果数据 | 禁止声称 |
 
 论文中的“有效”只指指定测试或约束得到验证，不等同于教学效果经真实学生群体实验证明。
 

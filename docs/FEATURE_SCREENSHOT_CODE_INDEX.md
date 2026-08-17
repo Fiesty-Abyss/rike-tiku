@@ -1,4 +1,6 @@
-# 功能—截图—代码—表—技术精确索引
+# 功能—截图—代码—表—技术快速索引（QUICK_INDEX）
+
+> 30 秒定位用本文件；每张图的可见内容、数据、API、代码、表、迁移、测试、论文图注与不可声称结论见 [FINAL_SCREENSHOT_EVIDENCE_CATALOG.md](FINAL_SCREENSHOT_EVIDENCE_CATALOG.md)。当前 V30/PR34 事实见 [FINAL_PROJECT_FACTS.md](FINAL_PROJECT_FACTS.md)。
 
 用于论文、答辩和代码审查。路径均为仓库相对路径；“—”表示该纯前端入口没有业务 Controller/Service，不是通配符省略。历史论文截图位于 `docs/evidence/thesis-final/`；本轮正式学生证据位于 `docs/evidence/pr33-formal-student/`，明确标注为 machine-controlled。
 
