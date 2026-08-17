@@ -19,5 +19,7 @@ public class PasswordRecoveryController {
     ResponseEntity<PasswordRecoveryDtos.Resolution> resolve(@PathVariable long id,@AuthenticationPrincipal RenZhengYongHu user){return noStore(service.resolve(id,user.id()));}
     @PostMapping("/api/v1/admin/password-recovery-requests/{id}/reject")
     ResponseEntity<PasswordRecoveryDtos.Resolution> reject(@PathVariable long id,@AuthenticationPrincipal RenZhengYongHu user,@Valid @RequestBody PasswordRecoveryDtos.Reject request){return noStore(service.reject(id,user.id(),request.reason()));}
+    @DeleteMapping("/api/v1/admin/password-recovery-requests/{id}")
+    ResponseEntity<Void> delete(@PathVariable long id){service.delete(id);return ResponseEntity.noContent().build();}
     private <T> ResponseEntity<T> noStore(T body){return ResponseEntity.ok().cacheControl(CacheControl.noStore()).body(body);}
 }
