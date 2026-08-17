@@ -4,9 +4,9 @@
 
 ## 当前状态
 
-> PR #33 学生端第三轮最终集中修复（2026-08-16）：当前唯一交付分支为 `feat/final-product-completion`，本轮收口提交 `54fc43f` 已普通提交，PR #33 仍为 Draft / OPEN / 未合并。Flyway 为 V1–V29、50 张业务表；本轮补齐显式科学公式/化学式渲染、新颖度分层与专题内容扩充，并收掉错题筛选的运行时 warning。正式 `rike_tiku` 当前为 V29/50，15 个已发布专题单元、45 条单元题目关系、65 张已发布卡片；人工验收仍为 `FINAL_USER_REVIEW_PENDING`。
+> PR #33 最终收口（2026-08-17）：用户完成最终页面审查并明确授权在最后两项修复和最终 HEAD 回归通过后 ordinary merge。已移除忘记密码弹窗的内部安全说明；教师列表现在从 `yong_hu_jiao_se` 返回真实 `roles`，以独立标签显示教师与管理员，并支持直接授权、撤销、重新授权及最后管理员/当前管理员保护。Flyway 仍为 V1–V29、50 张业务表，无 V30。
 
-最终门禁：后端全量 215 tests（0 failures、0 errors、3 skipped），`mvn clean test` 和 package 通过；前端全量 68 files / 220 tests、type-check、build、`npm audit --omit=dev` 通过，audit 为 0 vulnerabilities。本轮新颖度单测 3/3、候选生成集成 7/7、学生变式集成 4/4、学生前端专项 5 files / 12 tests 均通过；科学内容审计 600 strings / 105 database rows / 0 errors。Demo 浏览器 4 routes 无 console/page/failed-request error、无 overflow；正式浏览器因本机无轮换正式学生凭据为 `BLOCKED_LOCAL_CREDENTIAL`。09/10 变式截图明确是确定性 UI 夹具，不是 Provider PASS。真实 Provider 因没有可安全使用的轮换后凭据而分别记为 `BLOCKED_EXTERNAL_PROVIDER`。
+最终机器门禁：后端全量 217 tests（0 failures、0 errors、3 skipped），`mvn clean test` 和 package 通过；前端全量 68 files / 221 tests、type-check、build、`npm audit --omit=dev` 通过，audit 为 0 vulnerabilities。随机临时 schema 完整执行 V1–V29；正式 `rike_tiku` 只读核验 V29、50 张业务表、0 failed migration。科学内容审计为 600 strings / 0 database rows / 0 errors；正式参考文献 22。真实 Provider 仍分别记为 `BLOCKED_EXTERNAL_PROVIDER`，不外推为真实 PASS。
 
 正式 `rike_tiku` 的迁移前真实版本为 V24/41 表。仓库外备份为 1,326,218 bytes，SHA-256 `039C9E885007EB79ED317E1A1E5C5A6DCEB7EC2746C0777957E41E60FE65E622`。首次迁移揭示 V25 与历史 `NUMERIC_CONDITION` 的约束兼容缺陷；从已校验备份恢复到 V24 后，由版本门禁 Flyway callback 将该旧枚举语义映射为 `CONDITION_RECOMBINATION`，随后 V25–V29 正常迁移。当前为 V29/50 表、0 failed migration；9 用户、389 题、378 PUBLISHED 保持，另有 65 张已发布高频考点卡片和 15 个已发布专题单元、45 条单元题目关系；本轮通过受控内容脚本写入学生展示内容，没有 reset/seed/迁移。
 

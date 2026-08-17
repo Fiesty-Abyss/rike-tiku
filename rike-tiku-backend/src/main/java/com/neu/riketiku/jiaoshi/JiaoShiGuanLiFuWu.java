@@ -95,11 +95,20 @@ public class JiaoShiGuanLiFuWu {
 
     @Transactional
     public JiaoShiXiangYing update(Long teacherId, JiaoShiXiuGaiQingQiu request) {
-        return auditLog.audited("TEACHER", "UPDATE", teacherId, "管理员修改教师档案或账号状态", () -> updateInternal(teacherId, request));
+        return update(teacherId, request, -1L);
     }
 
-    private JiaoShiXiangYing updateInternal(Long teacherId, JiaoShiXiuGaiQingQiu request) {
+    @Transactional
+    public JiaoShiXiangYing update(Long teacherId, JiaoShiXiuGaiQingQiu request, long actor) {
+        return auditLog.audited("TEACHER", "UPDATE", teacherId, "管理员修改教师档案或账号状态", () -> updateInternal(teacherId, request, actor));
+    }
+
+    private JiaoShiXiangYing updateInternal(Long teacherId, JiaoShiXiuGaiQingQiu request, long actor) {
         JiaoShiXiangYing teacher = findTeacher(teacherId);
+        Long targetUser = jdbcTemplate.queryForObject("SELECT yong_hu_id FROM jiao_shi_dang_an WHERE id=?", Long.class, teacherId);
+        if (targetUser != null && targetUser == actor && (!"ENABLED".equals(request.accountStatus()) || !"ACTIVE".equals(request.profileStatus()))) {
+            fail("ADMIN_SELF_DISABLE_FORBIDDEN", "当前管理员不能在当前会话中停用自己的账号或教师档案", HttpStatus.CONFLICT);
+        }
         jdbcTemplate.update("UPDATE yong_hu SET zhang_hao_zhuang_tai=? WHERE id=(SELECT yong_hu_id FROM jiao_shi_dang_an WHERE id=?)", request.accountStatus(), teacherId);
         jdbcTemplate.update("UPDATE jiao_shi_dang_an SET xing_ming=?,xian_shi_zhi_wu=?,zhuang_tai=? WHERE id=?",
                 trim(request.name()), emptyToNull(request.displayPosition()), request.profileStatus(), teacherId);
@@ -174,8 +183,27 @@ public class JiaoShiGuanLiFuWu {
     public RenKeXiangYing changeAssignmentStatus(Long assignmentId, RenKeZhuangTaiQingQiu request) {
         return auditLog.audited("TEACHING_ASSIGNMENT", "STATUS_CHANGE", assignmentId, "管理员结束或停用教师班级科目任课关系", () -> changeAssignmentStatusInternal(assignmentId, request));
     }
-    @Transactional public JiaoShiXiangQingXiangYing grantAdmin(Long teacherId,long actor){findTeacher(teacherId);Long user=jdbcTemplate.queryForObject("SELECT yong_hu_id FROM jiao_shi_dang_an WHERE id=?",Long.class,teacherId);Long role=jdbcTemplate.queryForObject("SELECT id FROM jiao_se WHERE jiao_se_dai_ma='ADMIN' AND zhuang_tai='ACTIVE' AND yi_shan_chu=0",Long.class);if(!exists("SELECT COUNT(*) FROM yong_hu_jiao_se WHERE yong_hu_id=? AND jiao_se_id=? AND zhuang_tai='ACTIVE'",user,role))jdbcTemplate.update("INSERT INTO yong_hu_jiao_se(yong_hu_id,jiao_se_id,zhuang_tai) VALUES (?,?, 'ACTIVE')",user,role);return get(teacherId);}
-    @Transactional public JiaoShiXiangQingXiangYing revokeAdmin(Long teacherId,long actor){Long user=jdbcTemplate.queryForObject("SELECT yong_hu_id FROM jiao_shi_dang_an WHERE id=?",Long.class,teacherId);if(user==actor)fail("ADMIN_SELF_REVOKE_FORBIDDEN","当前管理员不能撤销自己的管理员权限",HttpStatus.CONFLICT);Long admins=jdbcTemplate.queryForObject("SELECT COUNT(DISTINCT ur.yong_hu_id) FROM yong_hu_jiao_se ur JOIN jiao_se r ON r.id=ur.jiao_se_id JOIN yong_hu u ON u.id=ur.yong_hu_id WHERE r.jiao_se_dai_ma='ADMIN' AND ur.zhuang_tai='ACTIVE' AND u.zhang_hao_zhuang_tai='ENABLED' AND u.yi_shan_chu=0",Long.class);if(admins==null||admins<=1)fail("LAST_ADMIN_REQUIRED","系统至少需要保留一名可用管理员，请先授予其他教师管理员权限。",HttpStatus.CONFLICT);jdbcTemplate.update("UPDATE yong_hu_jiao_se SET zhuang_tai='INACTIVE' WHERE yong_hu_id=? AND jiao_se_id=(SELECT id FROM jiao_se WHERE jiao_se_dai_ma='ADMIN')",user);return get(teacherId);}
+    @Transactional
+    public JiaoShiXiangQingXiangYing grantAdmin(Long teacherId, long actor) {
+        findTeacher(teacherId);
+        Long user = jdbcTemplate.queryForObject("SELECT yong_hu_id FROM jiao_shi_dang_an WHERE id=?", Long.class, teacherId);
+        Long role = jdbcTemplate.queryForObject("SELECT id FROM jiao_se WHERE jiao_se_dai_ma='ADMIN' AND zhuang_tai='ACTIVE' AND yi_shan_chu=0", Long.class);
+        if (!exists("SELECT COUNT(*) FROM yong_hu_jiao_se WHERE yong_hu_id=? AND jiao_se_id=? AND zhuang_tai='ACTIVE'", user, role)) {
+            int restored = jdbcTemplate.update("UPDATE yong_hu_jiao_se SET zhuang_tai='ACTIVE' WHERE yong_hu_id=? AND jiao_se_id=? AND zhuang_tai='DISABLED'", user, role);
+            if (restored == 0) jdbcTemplate.update("INSERT INTO yong_hu_jiao_se(yong_hu_id,jiao_se_id,zhuang_tai) VALUES (?,?, 'ACTIVE')", user, role);
+        }
+        return get(teacherId);
+    }
+
+    @Transactional
+    public JiaoShiXiangQingXiangYing revokeAdmin(Long teacherId, long actor) {
+        Long user = jdbcTemplate.queryForObject("SELECT yong_hu_id FROM jiao_shi_dang_an WHERE id=?", Long.class, teacherId);
+        if (user == actor) fail("ADMIN_SELF_REVOKE_FORBIDDEN", "当前管理员不能撤销自己的管理员权限", HttpStatus.CONFLICT);
+        Long admins = jdbcTemplate.queryForObject("SELECT COUNT(DISTINCT ur.yong_hu_id) FROM yong_hu_jiao_se ur JOIN jiao_se r ON r.id=ur.jiao_se_id JOIN yong_hu u ON u.id=ur.yong_hu_id WHERE r.jiao_se_dai_ma='ADMIN' AND ur.zhuang_tai='ACTIVE' AND u.zhang_hao_zhuang_tai='ENABLED' AND u.yi_shan_chu=0", Long.class);
+        if (admins == null || admins <= 1) fail("LAST_ADMIN_REQUIRED", "系统至少需要保留一名可用管理员，请先授予其他教师管理员权限。", HttpStatus.CONFLICT);
+        jdbcTemplate.update("UPDATE yong_hu_jiao_se SET zhuang_tai='DISABLED' WHERE yong_hu_id=? AND jiao_se_id=(SELECT id FROM jiao_se WHERE jiao_se_dai_ma='ADMIN')", user);
+        return get(teacherId);
+    }
 
     private RenKeXiangYing changeAssignmentStatusInternal(Long assignmentId, RenKeZhuangTaiQingQiu request) {
         RenKeXiangYing existing = assignment(assignmentId);
@@ -206,7 +234,8 @@ public class JiaoShiGuanLiFuWu {
             SELECT p.id,p.gong_hao,p.xing_ming,p.xian_shi_zhi_wu,u.yong_hu_ming,u.zhang_hao_zhuang_tai,p.zhuang_tai
             FROM jiao_shi_dang_an p JOIN yong_hu u ON u.id=p.yong_hu_id WHERE p.id=? AND p.yi_shan_chu=0 AND u.yi_shan_chu=0""", teacherMapper(),id);
         if(list.isEmpty()) fail("TEACHER_NOT_FOUND","教师不存在",HttpStatus.NOT_FOUND); return list.getFirst(); }
-    private RowMapper<JiaoShiXiangYing> teacherMapper(){return (rs,row)->new JiaoShiXiangYing(rs.getLong(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5),rs.getString(6),rs.getString(7));}
+    private RowMapper<JiaoShiXiangYing> teacherMapper(){return (rs,row)->new JiaoShiXiangYing(rs.getLong(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5),rs.getString(6),rs.getString(7),roles(rs.getLong(1)));}
+    private List<String> roles(long teacherId){return jdbcTemplate.queryForList("SELECT r.jiao_se_dai_ma FROM yong_hu_jiao_se ur JOIN jiao_se r ON r.id=ur.jiao_se_id JOIN jiao_shi_dang_an p ON p.yong_hu_id=ur.yong_hu_id WHERE p.id=? AND ur.zhuang_tai='ACTIVE' AND r.zhuang_tai='ACTIVE' AND r.yi_shan_chu=0 ORDER BY r.id",String.class,teacherId);}
     private RowMapper<RenKeXiangYing> assignmentMapper(){return (rs,row)->new RenKeXiangYing(rs.getLong(1),rs.getLong(2),rs.getString(3),rs.getString(4),rs.getLong(5),rs.getString(6),rs.getString(7),rs.getBoolean(8),rs.getString(9),rs.getObject(10,LocalDateTime.class),rs.getObject(11,LocalDateTime.class));}
     private boolean exists(String sql,Object... args){Long count=jdbcTemplate.queryForObject(sql,args,Long.class);return count!=null&&count>0;}
     private void validatePassword(String password){if(password.isBlank()||!password.matches(".*[A-Za-z].*")||!password.matches(".*[0-9].*"))fail("PASSWORD_POLICY_VIOLATION","初始密码必须为8至64位并同时包含字母和数字",HttpStatus.BAD_REQUEST);}

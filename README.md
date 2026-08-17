@@ -1,6 +1,6 @@
 # RIKE 理科学习辅助系统
 
-> **仓库事实：`main` 当前仍是 PR #32 稳定代码基线，并已提供本 Draft 分支的远程预览入口；本分支对应 Draft PR [#33](https://github.com/Fiesty-Abyss/rike-tiku/pull/33)，当前为 Flyway V29、50 张业务表，尚未合并到 `main`。**
+> **收口事实（2026-08-17）：PR [#33](https://github.com/Fiesty-Abyss/rike-tiku/pull/33) 已完成最终两项用户反馈修复并通过最终机器回归，合并状态以 GitHub PR 为准。数据库基线为 Flyway V29、50 张业务表。**
 
 面向高中物理、化学、生物的 Spring Boot 大模型题库系统。正式判分与 STANDARD 始终由确定性业务事实控制；AI 只承担解释、答疑和待人工审核的候选生成。
 
@@ -9,11 +9,11 @@
 - [V29 数据库参考](docs/DATABASE_SCHEMA_REFERENCE.md) · [V29 纯结构快照](database/schema_snapshot_v29.sql) · [SQL 示例](docs/SQL_EXAMPLES.md)
 - [文档初稿](docs/docs/RIKE_DOCS_DRAFT.md) · [事实核对表](docs/docs/RIKE_DOCS_FACT_CHECK.md) · [演示提纲](docs/docs/RIKE_DEMO_OUTLINE.md)
 
-## 当前 PR #33 收口事实（2026-08-16）
+## PR #33 最终收口事实（2026-08-17）
 
-- 学生端最终集中修复已推送到 `feat/final-product-completion`；PR #33 仍为 Draft / OPEN / 未合并，用户真人最终复验仍待完成。
-- 最终自动化：后端 212 tests、3 skipped；前端 68 个测试文件 / 219 tests；type-check、build、`npm audit --omit=dev` 通过，0 vulnerabilities。
-- 正式 `rike_tiku` 只读核验：Flyway V29、50 张业务表、6 个已发布专题单元、18 条单元题目关系、65 张已发布高频考点卡片，其中 60 张为结构化来源卡片。
+- 用户最终页面审查确认除两项外无其他大问题；本轮已移除忘记密码弹窗的安全实现说明，并在教师列表依据真实 `yong_hu_jiao_se` 角色显示“教师 / 管理员”，可直接授权或撤销管理员。
+- 最终自动化：后端 217 tests、0 failures、0 errors、3 skipped；前端 68 个测试文件 / 221 tests；type-check、build、`npm audit --omit=dev` 通过，0 vulnerabilities。
+- 正式 `rike_tiku` 只读核验：Flyway V29、50 张业务表、0 failed migration。随机临时 schema 已从 V1 完整迁移至 V29。
 - 真实 DeepSeek variant/tutor、GLM Vision、xAI Vision、Web Search 本轮均为 `BLOCKED_EXTERNAL_PROVIDER`；Mock/Fake 不代表真实 PASS。
 - 文档交付：通用 [Word 事实稿](docs/docs/deliverables/RIKE_文档事实稿_待套学校模板.docx) 与 [演示 PPT](docs/docs/deliverables/RIKE_演示PPT_待套学校模板.pptx) 已生成，未发现学校模板，使用前必须套用并视觉复核。
 

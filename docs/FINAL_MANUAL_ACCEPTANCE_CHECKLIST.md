@@ -1,8 +1,8 @@
 # 最终人工验收清单
 
-状态：`FINAL_MANUAL_ACCEPTANCE_PENDING`
+状态：`FINAL_USER_ACCEPTED_WITH_FINAL_TWO_FIXES`
 
-本清单由用户本人执行。Codex 与机器浏览器只能准备环境和证据，不能代替用户勾选。当前本机正式验收建议端口为前端 `http://localhost:18080`、后端 `http://localhost:18081`，数据库为 `rike_tiku`，恢复默认密码为 `a1234567`。人工环境使用真实图形验证码，不提供 `testCode`。机器证据位于 `docs/evidence/pr33-formal-student/`，不计为真人勾选。
+本清单保留历史逐项项目。2026-08-17 用户已完成最终页面审查，并明确表示除最后两项修复外无其他大问题；两项修复完成与最终回归通过后授权 ordinary merge。机器测试不表述为用户逐页验收。正式环境为前端 `http://localhost:8080`、后端 `http://localhost:8081`、数据库 `rike_tiku`；不在公开文档记录验收账号或密码。
 
 ## Login
 
