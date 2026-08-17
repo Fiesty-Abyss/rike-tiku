@@ -57,7 +57,7 @@ def main() -> None:
     topic = json.loads((ROOT / "docs/content/topic-units.v2.json").read_text(encoding="utf-8"))
     if len(content) != 30 or len(topic["units"]) != 15 or sum(len(item["questions"]) for item in topic["units"]) != 45:
         raise SystemExit("CONTENT_VERSION_GUARD_FAILED")
-    if one("SELECT version FROM flyway_schema_history ORDER BY installed_rank DESC LIMIT 1") != "29":
+    if one("SELECT version FROM flyway_schema_history ORDER BY installed_rank DESC LIMIT 1") != "30":
         raise SystemExit("FORMAL_FLYWAY_GUARD_FAILED")
     if one("SELECT COUNT(*) FROM information_schema.tables WHERE table_schema=DATABASE() AND table_type='BASE TABLE' AND table_name<>'flyway_schema_history'") != "50":
         raise SystemExit("FORMAL_TABLE_COUNT_GUARD_FAILED")
@@ -72,7 +72,7 @@ def main() -> None:
     scopes: dict[str, list[tuple[int, int, int]]] = {}
     for scope_id, subject_id, subject_code, creator_id in scope_rows:
         scopes.setdefault(subject_code, []).append((int(scope_id), int(subject_id), int(creator_id)))
-    if any(len(value) != 2 for value in scopes.values()) or set(scopes) != {"PHYSICS", "CHEMISTRY", "BIOLOGY"}:
+    if set(scopes) != {"PHYSICS", "CHEMISTRY", "BIOLOGY"} or any(not value for value in scopes.values()):
         raise SystemExit("FORMAL_SCOPE_GUARD_FAILED")
 
     point_rows = rows("SELECT id,ke_mu_id FROM zhi_shi_dian WHERE zhuang_tai='ACTIVE' AND yi_shan_chu=0")
@@ -124,7 +124,7 @@ def main() -> None:
     units_created = 0
     questions_created = 0
     relation_statements = 0
-    for definition in topic["units"]:
+    for unit_order, definition in enumerate(topic["units"], start=1):
         subject_code = definition["subjectCode"]
         scope_id, subject_id, creator_id = scopes[subject_code][0]
         primary = int(definition["primaryKnowledgePointId"])
@@ -135,26 +135,70 @@ def main() -> None:
         if existing_unit:
             if existing_unit[1] != 3:
                 raise SystemExit(f"EXISTING_UNIT_NOT_THREE_QUESTIONS={definition['title']}")
-            # The first sync deliberately preserved published topic questions.  A later
-            # content correction must also reach those existing rows; only scientific
-            # text and its matching content hash are changed, never answers or history.
-            for item in definition["questions"]:
+            unit_id = existing_unit[0]
+            statements.append(
+                "UPDATE zhuan_ti_xue_xi_dan_yuan SET jian_jie=" + sql(definition["introduction"])
+                + ",nan_du_ceng_ji=" + str(int(definition["difficulty"]))
+                + ",zhu_zhi_shi_dian_id=" + str(primary) + ",pai_xu=" + str(unit_order)
+                + ",zhuang_tai='PUBLISHED',yi_shan_chu=0 WHERE id=" + str(unit_id)
+            )
+            for order, item in enumerate(definition["questions"], start=1):
                 stem = f"【专题演示】{item['title']}｜{item['stem']}"
                 digest = hashlib.sha256(stem.encode("utf-8")).hexdigest()
-                statements.append(
-                    "UPDATE ti_mu SET ti_gan=" + sql(stem) + ",nei_rong_ha_xi=" + sql(digest)
-                    + " WHERE ke_mu_id=" + str(subject_id) + " AND ti_gan LIKE "
-                    + sql(f"【专题演示】{item['title']}｜%") + " AND yi_shan_chu=0"
+                current_question = one(
+                    "SELECT i.ti_mu_id FROM zhuan_ti_xue_xi_dan_yuan_ti_mu i "
+                    f"WHERE i.dan_yuan_id={unit_id} AND i.xue_xi_jie_duan={sql(item['stage'])}"
                 )
-                statements.append(
-                    "UPDATE ti_mu_jie_xi SET jie_xi_nei_rong=" + sql(item["standardAnalysis"])
-                    + " WHERE ti_mu_id IN (SELECT id FROM ti_mu q WHERE q.ke_mu_id=" + str(subject_id)
-                    + " AND q.ti_gan=" + sql(stem) + " AND q.yi_shan_chu=0)"
-                )
+                released = current_question and one(
+                    "SELECT COUNT(*) FROM shi_juan_fa_bu_ti_mu WHERE ti_mu_id=" + current_question
+                ) != "0"
+                if current_question and not released:
+                    statements.append(
+                        "UPDATE ti_mu SET zhuan_ti_lei_xing=" + sql(item["topicType"])
+                        + ",ti_gan=" + sql(stem) + ",zheng_que_da_an=CAST(" + sql('{"schemaVersion":1,"type":"SUBJECTIVE"}')
+                        + " AS JSON),nan_du=" + str(int(item["difficulty"]))
+                        + ",nan_du_shuo_ming=" + sql("专题学习题，学生分步作答；不自动评分")
+                        + ",shi_fou_ke_zi_dong_pan_fen=0,zhuang_tai='PUBLISHED',nei_rong_ha_xi=" + sql(digest)
+                        + " WHERE id=" + current_question
+                    )
+                    statements.append("UPDATE ti_mu_jie_xi SET jie_xi_nei_rong=" + sql(item["standardAnalysis"])
+                                      + ",zhuang_tai='PUBLISHED' WHERE ti_mu_id=" + current_question
+                                      + " AND jie_xi_lei_xing='STANDARD' AND yi_shan_chu=0")
+                    statements.append("DELETE FROM ti_mu_zhi_shi_dian WHERE ti_mu_id=" + current_question)
+                    statements.append("INSERT INTO ti_mu_zhi_shi_dian(ti_mu_id,zhi_shi_dian_id,shi_fou_zhu_yao,pai_xu) VALUES ("
+                                      + current_question + "," + str(int(item["knowledgePointId"])) + ",1,1)")
+                    statements.append("UPDATE zhuan_ti_xue_xi_dan_yuan_ti_mu SET pai_xu=" + str(order)
+                                      + " WHERE dan_yuan_id=" + str(unit_id) + " AND ti_mu_id=" + current_question)
+                else:
+                    # A published-paper snapshot must keep its original question.  Create a new
+                    # authored topic question and repoint only the teaching arrangement.
+                    answer = '{"schemaVersion":1,"type":"SUBJECTIVE"}'
+                    statements.append(
+                        "INSERT INTO ti_mu(ke_mu_id,ti_mu_lei_xing,shi_yong_mo_shi,zhuan_ti_lei_xing,ke_jian_fan_wei,ren_ke_guan_xi_id,chuang_jian_ren_id,ti_gan,zheng_que_da_an,nan_du,nan_du_shuo_ming,shi_fou_ke_zi_dong_pan_fen,zhuang_tai,nei_rong_ha_xi) "
+                        f"VALUES ({subject_id},'SUBJECTIVE','TOPIC_LEARNING',{sql(item['topicType'])},'GLOBAL',NULL,{creator_id},{sql(stem)},CAST({sql(answer)} AS JSON),{int(item['difficulty'])},{sql('专题学习题，学生分步作答；不自动评分')},0,'PUBLISHED',{sql(digest)})"
+                    )
+                    statements.append("SET @replacement_topic_question_id=LAST_INSERT_ID()")
+                    statements.append("INSERT INTO ti_mu_jie_xi(ti_mu_id,jie_xi_lei_xing,jie_xi_nei_rong,ban_ben_hao,zhuang_tai) VALUES (@replacement_topic_question_id,'STANDARD',"
+                                      + sql(item["standardAnalysis"]) + ",1,'PUBLISHED')")
+                    statements.append("SET @replacement_topic_standard_analysis_id=LAST_INSERT_ID()")
+                    if current_question:
+                        # Preserve the controlled files used by the authored topic question while
+                        # keeping the released-paper snapshot attached to the old immutable fact.
+                        statements.append(
+                            "INSERT INTO ti_mu_fu_jian(ti_mu_id,ti_mu_xuan_xiang_id,ti_mu_jie_xi_id,guan_lian_wei_zhi,fu_jian_lei_xing,yuan_shi_wen_jian_ming,xiang_dui_lu_jing,nei_rong_ha_xi,dui_xiang_biao_shi,zheng_wen_zi_fu_wei_zhi,yuan_shi_ye_ma,fu_jian_shuo_ming,pai_xu,zhuang_tai,yi_shan_chu) "
+                            "SELECT @replacement_topic_question_id,NULL,CASE WHEN f.guan_lian_wei_zhi='STANDARD_ANALYSIS' THEN @replacement_topic_standard_analysis_id ELSE NULL END,"
+                            "f.guan_lian_wei_zhi,f.fu_jian_lei_xing,f.yuan_shi_wen_jian_ming,f.xiang_dui_lu_jing,f.nei_rong_ha_xi,f.dui_xiang_biao_shi,f.zheng_wen_zi_fu_wei_zhi,f.yuan_shi_ye_ma,f.fu_jian_shuo_ming,f.pai_xu,f.zhuang_tai,f.yi_shan_chu "
+                            "FROM ti_mu_fu_jian f WHERE f.ti_mu_id=" + current_question
+                            + " AND f.guan_lian_wei_zhi IN ('QUESTION','STANDARD_ANALYSIS','ANSWER')"
+                        )
+                    statements.append("INSERT INTO ti_mu_zhi_shi_dian(ti_mu_id,zhi_shi_dian_id,shi_fou_zhu_yao,pai_xu) VALUES (@replacement_topic_question_id,"
+                                      + str(int(item["knowledgePointId"])) + ",1,1)")
+                    statements.append("UPDATE zhuan_ti_xue_xi_dan_yuan_ti_mu SET ti_mu_id=@replacement_topic_question_id,pai_xu="
+                                      + str(order) + " WHERE dan_yuan_id=" + str(unit_id) + " AND xue_xi_jie_duan=" + sql(item["stage"]))
             continue
         statements.append(
             "INSERT INTO zhuan_ti_xue_xi_dan_yuan(ke_mu_id,biao_ti,jian_jie,nan_du_ceng_ji,zhu_zhi_shi_dian_id,pai_xu,zhuang_tai,chuang_jian_ren_id,lai_yuan_lei_xing,lai_yuan_ming_cheng,quan_li_zhuang_tai) "
-            f"VALUES ({subject_id},{sql(definition['title'])},{sql(definition['introduction'])},{int(definition['difficulty'])},{primary},1,'PUBLISHED',{creator_id},'PROJECT_AUTHORED',{sql(SOURCE_NAME)},'USER_PROVIDED')"
+            f"VALUES ({subject_id},{sql(definition['title'])},{sql(definition['introduction'])},{int(definition['difficulty'])},{primary},{unit_order},'PUBLISHED',{creator_id},'PROJECT_AUTHORED',{sql(SOURCE_NAME)},'USER_PROVIDED')"
         )
         statements.append("SET @new_unit_id=LAST_INSERT_ID()")
         units_created += 1
@@ -195,7 +239,7 @@ def main() -> None:
     print(f"UNITS_CREATED={units_created}")
     print(f"QUESTIONS_CREATED={questions_created}")
     print(f"UNIT_RELATIONS_WRITTEN={relation_statements}")
-    print("FLYWAY=V29")
+    print("FLYWAY=V30")
     print("BUSINESS_TABLES=50")
 
 

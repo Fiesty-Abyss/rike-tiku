@@ -11,7 +11,7 @@
 | 5. 系统架构 | [总体设计](../DESIGN.md)、[论文实现事实](THESIS_IMPLEMENTATION_FACTS.md) | 前后端分离模块化单体 |
 | 6. AI 架构 | [AI 交接](AI_HANDOFF.md)、[AI Provider 配置](AI_PROVIDER_CONFIGURATION.md) | DeepSeek 文本推理、GLM 视觉上下文、STANDARD 权威 |
 | 7. 技术栈 | [项目首页](../README.md) | Java 25、Spring Boot 4.1、Vue 3、MySQL 8.4 |
-| 8. 数据库设计 | [数据库结构参考](DATABASE_SCHEMA_REFERENCE.md)、[V29 快照](../database/schema_snapshot_v29.sql) | 50 表、约束与生命周期 |
+| 8. 数据库设计 | [数据库结构参考](DATABASE_SCHEMA_REFERENCE.md)、[V29 历史快照](../database/schema_snapshot_v29.sql) | 50 表、V30 字段扩展、约束与生命周期 |
 | 9. API | [文档索引](README.md) 的 Admin / Teacher / Student / AI 区 | 接口、授权与降级行为 |
 | 10. Excel 导入 | [Excel 导入指南](EXCEL_IMPORT_GUIDE.md) | 学生与题目 preview/confirm |
 | 11. 功能代码映射 | [功能代码技术映射](FEATURE_CODE_TECH_MAP.md) | 路由、组件、Controller、Service、表、测试 |
@@ -32,10 +32,10 @@
 
 ## 当前事实
 
-- PR #32 已 ordinary merge，merge commit 为 `359fe61e7622b7f623afa212d37c24145273d47b`；PR #33 是唯一最终交付 PR，保持 Draft、未合并。
-- Flyway V1–V29，50 张业务表；V1–V25 已发布迁移未修改。
-- V20—V29 覆盖私有题、知识卡片、消息撤回、专题 AI/单元、变式新颖度、GLM/xAI、试卷发布/提交/画像和卡片练习。
-- `rike_tiku_demo` 保持 378 道 PUBLISHED 题基线与既有匿名截图资料；本轮正式 `rike_tiku` 另核验 15 个已发布专题单元、45 条单元题目关系和 65 张已发布高频考点卡片，学科覆盖物理 6 / 化学 5 / 生物 4。Demo 学生浏览器 4 条路线为 0 console/page/failed-request error、0 overflow；正式浏览器当前受 `BLOCKED_LOCAL_CREDENTIAL` 限制。
-- 最终集中回归已完成：后端 `mvn clean test` 为 215 tests、3 skipped；前端 68 个测试文件 / 220 tests；type-check、build、`npm audit --omit=dev` 通过，0 vulnerabilities。Word/PPT 通用交付物位于 [deliverables](thesis/deliverables/)，本轮未重新生成，仍标注待套学校模板。
+- PR #33 已 ordinary merge；当前工作为独立的 post-merge 维护分支，等待新的 Draft PR 人工验收，不自动合并。
+- Flyway V1–V30，50 张业务表；V1–V29 已发布迁移未修改。V30 只新增发布题附件快照 JSON，并扩展主观题待处理状态的字段长度。
+- 专题学习仍由统一 `ti_mu` 事实和专题单元编排关系组成：正式库 15 个单元、45 道 `SUBJECTIVE + TOPIC_LEARNING` 原创大题，物理 6 / 化学 5 / 生物 4；主观题可手动组卷但不自动评分。
+- 正式 `rike_tiku` 的独立 Chromium 机器浏览器已覆盖三科专题、教师混合组卷/质量建议/打印、学生混合试卷提交；11 页面、56 断言、0 console/page/failed-request error、0 overflow。证据为机器验收，不等同用户真人验收。
+- 最终集中回归已完成：后端 `mvn test` / `mvn package` 为 220 tests、3 skipped；前端 68 个测试文件 / 222 tests；type-check、build、`npm audit --omit=dev` 通过，0 vulnerabilities。Word/PPT 本轮未生成。
 - 学生候选变式在生成后保持本人可见的 DRAFT；只有显式提交后才进入 PENDING 教师审核。Provider 未配置时不得把候选预览写成真实 AI PASS。
 - 论文事实稿、核验表和答辩提纲位于 [thesis](thesis/)；人工阶段仍为 `FINAL_MANUAL_ACCEPTANCE_PENDING`。

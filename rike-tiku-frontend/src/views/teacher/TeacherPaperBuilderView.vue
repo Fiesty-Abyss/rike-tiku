@@ -18,6 +18,8 @@ import {
   type PaperQuestionOption,
 } from "../../api/teacher/papers";
 import ScientificText from "../../components/question/ScientificText.vue";
+import QuestionContent from "../../components/question/QuestionContent.vue";
+import { questionTypeLabel, topicTypeLabel } from "../../utils/questionLabels";
 
 const router = useRouter();
 const scopes = ref<TeachingScope[]>([]),
@@ -216,7 +218,7 @@ onMounted(load);
               label="多选"
               value="MULTIPLE_CHOICE" /><el-option
               label="填空"
-              value="FILL_BLANK" /></el-select
+              value="FILL_BLANK" /><el-option label="主观大题" value="SUBJECTIVE" /></el-select
           ><el-input-number
             v-model="form.difficulty"
             :min="1"
@@ -235,10 +237,11 @@ onMounted(load);
               class="question-card"
             >
               <div>
-                <el-tag>{{ question.type }}</el-tag
+                <el-tag>{{ questionTypeLabel(question.type) }}</el-tag
+                ><el-tag v-if="question.topicType" type="warning" effect="plain">{{ topicTypeLabel(question.topicType) }}</el-tag
                 ><span>难度 {{ question.difficulty }}</span>
               </div>
-              <ScientificText :content="question.stem" /><small>{{
+              <QuestionContent :content="question.stem" :attachments="question.stemAttachments" position="QUESTION" /><small>{{
                 question.knowledgePoints.join(" · ")
               }}</small
               ><el-button @click="add(question)">加入试卷</el-button>
@@ -252,7 +255,7 @@ onMounted(load);
             <h2>题篮 · {{ selected.length }} 题 · {{ total }} 分</h2>
             <article v-for="(question, index) in selected" :key="question.id">
               <strong>{{ index + 1 }}.</strong
-              ><ScientificText :content="question.stem" /><el-input-number
+              ><div><el-tag size="small" effect="plain">{{ questionTypeLabel(question.type) }}</el-tag><ScientificText :content="question.stem" /></div><el-input-number
                 v-model="question.score"
                 :min="0.5"
                 :step="0.5"
@@ -309,8 +312,8 @@ onMounted(load);
           /></el-form-item>
         </div>
         <el-alert
-          v-if="mode === 'RANDOM'"
-          title="随机组卷按学科、题型和难度抽取；保存后可在学生版、答案版预览并打印。"
+          v-if="mode !== 'MANUAL'"
+          title="随机与规则组卷默认只抽取可确定性判分的客观题；主观大题请在手动组卷中选择。"
           type="info"
           :closable="false"
       /></template>

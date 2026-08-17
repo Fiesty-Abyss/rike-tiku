@@ -99,6 +99,62 @@ class PaperAssignmentIntegrationTest extends AdminQuestionIntegrationTestSupport
                 .isInstanceOfSatisfying(RenZhengYeWuYiChang.class,error -> assertThat(error.getCode()).isEqualTo("PAPER_RELEASE_NOT_FOUND"));
     }
 
+    @Test
+    @Transactional
+    void publishesTopicSubjectiveQuestionWithFrozenAttachmentAndNeverAutoGradesIt() {
+        demo.seed();
+        long teacherUser = id("SELECT id FROM yong_hu WHERE yong_hu_ming='demo_physics_admin'");
+        long studentUser = id("SELECT id FROM yong_hu WHERE yong_hu_ming='demo_199_01'");
+        long subject = id("SELECT id FROM ke_mu WHERE ke_mu_dai_ma='PHYSICS'");
+        long scope = id("SELECT r.id FROM ren_ke_guan_xi r JOIN ban_ji b ON b.id=r.ban_ji_id JOIN jiao_shi_dang_an j ON j.id=r.jiao_shi_id WHERE b.ban_ji_bian_ma='DEMO_CLASS_199' AND j.yong_hu_id=" + teacherUser + " AND r.ke_mu_id=" + subject);
+
+        var searchable = papers.questions(teacherUser, subject, null, "SUBJECTIVE", null, null);
+        assertThat(searchable).isNotEmpty().allSatisfy(question -> assertThat(question.type()).isEqualTo("SUBJECTIVE"));
+        long subjective = searchable.stream().filter(question -> !question.stemAttachments().isEmpty()).findFirst().orElseThrow().id();
+        var paper = papers.save(teacherUser, new PaperDtos.Save(subject, "专题主观题发布", "MANUAL",
+                List.of(new PaperDtos.ItemInput(subjective, new BigDecimal("20")))));
+        var release = assignments.publish(teacherUser, paper.id(), new PaperAssignmentDtos.Publish(scope, LocalDateTime.now().plusHours(2)));
+        var detail = assignments.studentDetail(studentUser, release.id());
+        var question = detail.questions().getFirst();
+        assertThat(question.type()).isEqualTo("SUBJECTIVE");
+        assertThat(question.stemAttachments()).isNotEmpty();
+        assertThat(assignments.studentAttachment(studentUser, release.id(), question.itemId(),
+                question.stemAttachments().getFirst().id()).bytes()).isNotEmpty();
+        assertThat(assignments.quality(teacherUser, paper.id()).coverage()).noneMatch(value -> value.contains("{SUBJECTIVE="));
+
+        var result = assignments.submit(studentUser, release.id(), new PaperAssignmentDtos.Submit(List.of(
+                new PaperAssignmentDtos.DraftAnswer(question.itemId(), mapper.readTree("\"分步骤作答\"")))));
+        assertThat(result.objectiveScore()).isEqualByComparingTo("0");
+        assertThat(result.objectiveTotal()).isEqualByComparingTo("0");
+        assertThat(result.subjectivePendingCount()).isEqualTo(1);
+        assertThat(id("SELECT COUNT(*) FROM shi_juan_xue_sheng_da_ti WHERE shi_juan_ti_jiao_id=" + result.submissionId() + " AND zhuang_tai='SUBJECTIVE_PENDING'"))
+                .isEqualTo(1);
+    }
+
+    @Test
+    @Transactional
+    void teacherQuestionSearchDoesNotLeakAnotherTeachersPrivateTopicQuestion() {
+        demo.seed();
+        long teacher199 = id("SELECT id FROM yong_hu WHERE yong_hu_ming='demo_physics_admin'");
+        long subject = id("SELECT id FROM ke_mu WHERE ke_mu_dai_ma='PHYSICS'");
+        long scope199 = id("SELECT r.id FROM ren_ke_guan_xi r JOIN ban_ji b ON b.id=r.ban_ji_id JOIN jiao_shi_dang_an j ON j.id=r.jiao_shi_id WHERE b.ban_ji_bian_ma='DEMO_CLASS_199' AND j.yong_hu_id=" + teacher199 + " AND r.ke_mu_id=" + subject);
+        jdbc.update("INSERT INTO yong_hu(yong_hu_ming,mi_ma_zhai_yao) VALUES (?,?)", "topic_scope_other", "x".repeat(60));
+        long teacher200 = id("SELECT LAST_INSERT_ID()");
+        jdbc.update("INSERT INTO jiao_shi_dang_an(yong_hu_id,gong_hao,xing_ming) VALUES (?,?,?)", teacher200, "TOPIC_OTHER", "范围外教师");
+        long profile200 = id("SELECT LAST_INSERT_ID()");
+        jdbc.update("INSERT INTO ban_ji(ban_ji_bian_ma,ban_ji_ming_cheng,nian_ji,ru_xue_nian_fen) VALUES ('TOPIC_SCOPE_OTHER','范围外测试班','高二',2025)");
+        long class200 = id("SELECT LAST_INSERT_ID()");
+        jdbc.update("INSERT INTO ren_ke_guan_xi(jiao_shi_id,ban_ji_id,ke_mu_id,zhuang_tai,kai_shi_shi_jian) VALUES (?,?,?,'ACTIVE',CURRENT_DATE)", profile200, class200, subject);
+        long privateQuestion = id("SELECT q.id FROM ti_mu q WHERE q.ke_mu_id=" + subject + " AND q.ti_mu_lei_xing='SUBJECTIVE' AND q.shi_yong_mo_shi='TOPIC_LEARNING' ORDER BY q.id LIMIT 1");
+        jdbc.update("UPDATE ti_mu SET ke_jian_fan_wei='TEACHING_SCOPE_PRIVATE',ren_ke_guan_xi_id=?,chuang_jian_ren_id=? WHERE id=?", scope199, teacher199, privateQuestion);
+
+        assertThat(papers.questions(teacher199, subject, null, "SUBJECTIVE", null, null)).extracting(PaperDtos.QuestionOption::id).contains(privateQuestion);
+        assertThat(papers.questions(teacher200, subject, null, "SUBJECTIVE", null, null)).extracting(PaperDtos.QuestionOption::id).doesNotContain(privateQuestion);
+        assertThatThrownBy(() -> papers.save(teacher200, new PaperDtos.Save(subject, "越权专题题", "MANUAL",
+                List.of(new PaperDtos.ItemInput(privateQuestion, new BigDecimal("10"))))))
+                .isInstanceOf(RenZhengYeWuYiChang.class);
+    }
+
     private PaperAssignmentDtos.Release publishAndSubmit(long teacherUser,long studentUser,String subjectCode,String name) {
         long subject=id("SELECT id FROM ke_mu WHERE ke_mu_dai_ma='"+subjectCode+"'");
         long scope=id("SELECT r.id FROM ren_ke_guan_xi r JOIN ban_ji b ON b.id=r.ban_ji_id JOIN jiao_shi_dang_an j ON j.id=r.jiao_shi_id WHERE b.ban_ji_bian_ma='DEMO_CLASS_199' AND j.yong_hu_id="+teacherUser+" AND r.ke_mu_id="+subject+" AND r.zhuang_tai='ACTIVE'");

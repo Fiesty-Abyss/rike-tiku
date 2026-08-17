@@ -1,4 +1,43 @@
 // @vitest-environment jsdom
-import {flushPromises,mount} from '@vue/test-utils';import {beforeEach,describe,expect,it,vi} from 'vitest';import TeacherPaperBuilderView from './TeacherPaperBuilderView.vue'
-const api=vi.hoisted(()=>({fetchTeachingScopes:vi.fn(),createPaper:vi.fn(),createRulePaper:vi.fn(),fetchPaperQuality:vi.fn(),fetchPaperQuestions:vi.fn(),fetchPapers:vi.fn(),publishPaper:vi.fn(),push:vi.fn()}));vi.mock('../../api/teacher',()=>({fetchTeachingScopes:api.fetchTeachingScopes}));vi.mock('../../api/teacher/papers',()=>({createPaper:api.createPaper,createRulePaper:api.createRulePaper,fetchPaperQuality:api.fetchPaperQuality,fetchPaperQuestions:api.fetchPaperQuestions,fetchPapers:api.fetchPapers,publishPaper:api.publishPaper}));vi.mock('vue-router',()=>({useRouter:()=>({push:api.push})}));vi.mock('element-plus',()=>({ElMessage:{success:vi.fn(),warning:vi.fn()}}));const stubs={ScientificText:{props:['content'],template:'<span>{{content}}</span>'},ElSegmented:true,ElForm:{template:'<form><slot/></form>'},ElFormItem:{template:'<label><slot/></label>'},ElSelect:{template:'<div><slot/></div>'},ElOption:true,ElInput:true,ElInputNumber:true,ElButton:{template:'<button @click="$emit(\'click\')"><slot/></button>'},ElTag:{template:'<span><slot/></span>'},ElEmpty:true,ElTable:{template:'<div><slot/></div>'},ElTableColumn:{template:'<div><slot :row="{id:1,subjectId:1}"/></div>'},ElCheckboxGroup:{template:'<div><slot/></div>'},ElCheckbox:true,ElDialog:{template:'<div><slot/><slot name="footer"/></div>'},ElAlert:true,ElDatePicker:true}
-describe('教师组卷',()=>{beforeEach(()=>{api.fetchTeachingScopes.mockResolvedValue([{teachingAssignmentId:9,subjectId:1,subjectName:'物理',className:'199班',teachingStatus:'ACTIVE'}]);api.fetchPapers.mockResolvedValue([]);api.fetchPaperQuestions.mockResolvedValue([]);api.fetchPaperQuality.mockResolvedValue({notice:'辅助建议，不代替教师审核',coverage:[],risks:[],suggestions:[]})});it('提供筛选题库、题篮、预览和班级发布',async()=>{const wrapper=mount(TeacherPaperBuilderView,{global:{stubs}});await flushPromises();expect(wrapper.text()).toContain('检索已发布题目');expect(wrapper.text()).toContain('题篮');expect(wrapper.text()).toContain('学生版');expect(wrapper.text()).toContain('答案解析版');expect(wrapper.text()).toContain('发布到班级')})})
+import { flushPromises, mount } from '@vue/test-utils'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+import TeacherPaperBuilderView from './TeacherPaperBuilderView.vue'
+
+const api = vi.hoisted(() => ({
+  fetchTeachingScopes: vi.fn(), createPaper: vi.fn(), createRandomPaper: vi.fn(), createRulePaper: vi.fn(),
+  fetchPaperKnowledgePoints: vi.fn(), fetchPaperQuality: vi.fn(), fetchPaperQuestions: vi.fn(), fetchPapers: vi.fn(),
+  publishPaper: vi.fn(), requestAiPaperQuality: vi.fn(), push: vi.fn(),
+}))
+vi.mock('../../api/teacher', () => ({ fetchTeachingScopes: api.fetchTeachingScopes }))
+vi.mock('../../api/teacher/papers', () => api)
+vi.mock('vue-router', () => ({ useRouter: () => ({ push: api.push }) }))
+vi.mock('element-plus', () => ({ ElMessage: { success: vi.fn(), warning: vi.fn(), error: vi.fn() } }))
+
+const stubs = {
+  ScientificText: { props: ['content'], template: '<span>{{content}}</span>' },
+  QuestionContent: { props: ['content'], template: '<span>{{content}}</span>' }, ElSegmented: true,
+  ElForm: { template: '<form><slot/></form>' }, ElFormItem: { template: '<label><slot/></label>' },
+  ElSelect: { template: '<div><slot/></div>' }, ElOption: { props: ['label'], template: '<span>{{label}}</span>' }, ElInput: true, ElInputNumber: true,
+  ElButton: { template: '<button @click="$emit(\'click\')"><slot/></button>' }, ElTag: { template: '<span><slot/></span>' },
+  ElEmpty: true, ElTable: { template: '<div><slot/></div>' }, ElTableColumn: { template: '<div><slot :row="{id:1,subjectId:1}"/></div>' },
+  ElCheckboxGroup: { template: '<div><slot/></div>' }, ElCheckbox: true, ElDialog: { template: '<div><slot/><slot name="footer"/></div>' }, ElAlert: { props: ['title'], template: '<span>{{title}}</span>' }, ElDatePicker: true,
+}
+
+describe('教师组卷', () => {
+  beforeEach(() => {
+    api.fetchTeachingScopes.mockResolvedValue([{ teachingAssignmentId: 9, subjectId: 1, subjectName: '物理', className: '199班', teachingStatus: 'ACTIVE' }])
+    api.fetchPapers.mockResolvedValue([]); api.fetchPaperQuestions.mockResolvedValue([]); api.fetchPaperKnowledgePoints.mockResolvedValue([])
+    api.fetchPaperQuality.mockResolvedValue({ notice: '辅助建议，不代替教师审核', coverage: [], risks: [], suggestions: [] })
+  })
+  it('提供主观大题手动检索，并将随机规则边界说明给教师', async () => {
+    const wrapper = mount(TeacherPaperBuilderView, { global: { stubs } })
+    await flushPromises()
+    expect(wrapper.text()).toContain('主观大题')
+    expect(wrapper.text()).toContain('题篮')
+    ;(wrapper.vm as any).mode = 'RANDOM'
+    await flushPromises()
+    expect(wrapper.text()).toContain('随机与规则组卷默认只抽取可确定性判分的客观题')
+    expect(wrapper.text()).toContain('学生版')
+    expect(wrapper.text()).toContain('答案解析版')
+  })
+})
