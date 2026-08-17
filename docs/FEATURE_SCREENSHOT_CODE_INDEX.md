@@ -51,5 +51,7 @@
 | `pr33-formal-student/student-topic-units.png` | `/student/topics` / `rike_tiku` | 单元一级入口；正式数据现为 15 个单元，物理 6 / 化学 5 / 生物 4 | 历史正式浏览器截图；本轮正式账号为 `BLOCKED_LOCAL_CREDENTIAL`，不等同真人复验 |
 | `pr33-formal-student/student-topic-unit-detail.png` | `/student/topics/units/:id` / `rike_tiku` | 单元 3 道子题、基础理解/情境迁移/综合提升阶段导航；正式数据共 45 条关系 | 历史正式浏览器截图；Provider 未配置，未生成真实 AI 变式 |
 | `pr33-formal-student/student-high-frequency-points.png` | `/student/knowledge-cards` / `rike_tiku` | 物理、化学、生物分类与人类可读卡片字段 | 无伪造频次；不等同学习效果实验 |
+| `final-two-fixes/password-recovery-dialog` | `/login` | `components/auth/PasswordRecoveryDialog.vue` | 已移除账号枚举、管理员核验等内部实现说明；保留用户名、图形验证码、恢复申请与简短结果提示 | `PasswordRecoveryDialog.spec.ts` |
+| `final-two-fixes/teacher-system-roles` | `/admin/teachers` | `views/admin/TeachersView.vue` | 列表显示来自 `yong_hu_jiao_se` 的“教师 / 管理员”标签；直接授权、撤销与重新授权 | `api/admin/teachers.ts`、`JiaoShiGuanLiController`、`JiaoShiGuanLiFuWu` | `JiaoShiGuanLiFuWuTest`、`teachers.spec.ts` |
 
 本轮 Demo 机器证据位于 `docs/evidence/pr33-demo-scientific/`：4 条学生路由、0 console/page/failed-request error、0 overflow；Demo 只用于路由与渲染稳定性巡检，不替代正式库内容或真人验收。

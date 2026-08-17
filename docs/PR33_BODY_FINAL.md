@@ -1,6 +1,6 @@
-# PR #33 最终收口资料（保持 Draft）
+# PR #33 最终产品收口资料
 
-本 PR 继续作为 RIKE 最终交付的唯一产品 PR，目标分支为 `main`，产品分支为 `feat/final-product-completion`。本轮没有创建 PR #34，没有 force push、rebase、squash，也没有合并 PR #33。
+本 PR 是 RIKE 最终交付的唯一产品 PR，目标分支为 `main`，产品分支为 `feat/final-product-completion`。本轮没有创建 PR #34，没有 force push、rebase 或 squash；最终门禁通过后使用 ordinary merge commit 合并。
 
 ## 本轮范围
 
@@ -10,13 +10,15 @@
 - 学生入口改为物化生高频考点；正式库核验 65 张已发布卡片，其中 60 张来自本轮结构化内容源。没有伪造考试年份、频次或学习效果。
 - 科学内容统一使用显式 `\\(...\\)` / `\\[...\\]` 数学分隔符，化学式只在 KaTeX 数学片段内使用 `\\ce{...}`；正式库科学内容审计为 600 个字符串、105 条数据库行、0 errors。
 - 变式新颖度分为 ACCEPT/WARN/REJECT，按变化方式要求维度组合；WARN 只能预览或进入 DRAFT/PENDING，REJECT 不得发布，修复预算最多一次。
+- 用户最终页面审查已确认除最后两项外无其他大问题：忘记密码弹窗已移除账号枚举与管理员核验等内部实现说明；教师列表已基于 `yong_hu_jiao_se` 的真实 `roles` 区分教师和管理员，并可直接授予、撤销和重新授予 ADMIN。
+- 角色撤销保留教师和任课关系；当前管理员自撤销、最后 ENABLED ADMIN 撤销、当前管理员自停用均被后端保护。撤销使用角色关联表合法的 `DISABLED`，重新授权恢复为 `ACTIVE`。
 
 ## 最终验证
 
-- 后端：`mvn clean test`，215 tests、0 failures、0 errors、3 skipped；`mvn -DskipTests package` 通过。
-- 前端：68 个测试文件、220 tests；`npm run type-check`、`npm run build`、`npm audit --omit=dev` 通过，0 vulnerabilities。构建保留已知大 chunk warning。
-- 正式数据库：`rike_tiku` Flyway V29、50 张业务表；V1–V29 history 29 行全部成功，迁移文件未改动，无 `rike_tiku_` 临时 schema 残留。本轮正式内容写入为受控幂等脚本，不做 reset/seed/repair/迁移。
-- 正式浏览器本轮未完成登录后的页面验收：安全轮换正式账号在本机不存在，试验账号返回 `INVALID_CREDENTIALS`，状态为 `BLOCKED_LOCAL_CREDENTIAL`。Demo 18080/18081 独立 Chromium profile 覆盖 4 条学生路线，0 console/page/failed-request error、0 horizontal overflow；机器结果不等同真人复验。
+- 后端：`mvn clean test`，217 tests、0 failures、0 errors、3 skipped；`mvn -DskipTests package` 通过。
+- 前端：68 个测试文件、221 tests；`npm run type-check`、`npm run build`、`npm audit --omit=dev` 通过，0 vulnerabilities。构建保留已知大 chunk warning。
+- 随机临时 schema：Flyway V1 → V29 全量通过。正式数据库：`rike_tiku` Flyway V29、50 张业务表、0 failed migration；不执行 reset/seed/repair。
+- 用户已完成最终页面人工审查；机器自动化不表述为用户逐页验收。
 - 正式参考文献：22 条白名单，缺失 0、额外 0、BibTeX 22、正文外来引用 0、重复 key 0。
 
 ## Provider 与安全边界
@@ -25,11 +27,11 @@
 
 ## 文档交付
 
-- 论文事实稿、事实核验表、答辩提纲和论文资料中心已按 V29/50、215/220、15/45、公式渲染审计和 Provider 边界更新。
+- README、PRODUCT、开发状态、验收台账、证据审计、功能映射、数据库参考、最终清单和论文事实核验表已按 V29/50、217/221、公式审计和 Provider 边界更新。
 - `docs/thesis/deliverables/RIKE_论文事实稿_待套学校模板.docx`
 - `docs/thesis/deliverables/RIKE_答辩PPT_待套学校模板.pptx`
 - Word/PPT 使用前仍需套用学校模板；本机没有 Word/PowerPoint/LibreOffice 渲染器，已完成 OOXML/PPTX 结构、文字、图片和边界检查，未把系统渲染写成 PASS。
 
 ## 合并门禁
 
-当前仍为 `FINAL_USER_REVIEW_PENDING`。等待用户完成人工验收和 GPT 独立审查后，才允许用户明确决定 ordinary merge。
+`FINAL_USER_ACCEPTED`：用户已明确授权在上述两项修复与最终 HEAD 回归通过后 ordinary merge；无需再次等待人工审查。真实 Provider 仍为 `BLOCKED_EXTERNAL_PROVIDER`，不阻塞确定性产品主链与合并。

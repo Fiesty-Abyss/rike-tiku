@@ -1,6 +1,6 @@
 # RIKE 论文事实核对表
 
-更新时间：2026-08-16
+更新时间：2026-08-17
 
 | 论文陈述 | 可核验依据 | 状态 |
 |---|---|---|
@@ -19,9 +19,10 @@
 | AI 科学文本不使用未过滤 v-html | `AiScientificContent` 源码与测试 | 已核验 |
 | 本轮点名后端专项 | 新颖度 3/3、候选生成集成 7/7、学生变式集成 4/4；使用随机临时 schema | 已执行 |
 | 本轮学生前端专项 | 5 files、12 tests，0 failures；type-check/build 通过 | 已执行 |
-| 后端最终全量 | `mvn clean test`：215 tests，0 failures，0 errors，3 skipped；`mvn -DskipTests package` 通过 | 已执行 |
-| 前端最终全量 | 68 files、220 tests；type-check、build、`npm audit --omit=dev` 通过，0 vulnerabilities | 已执行 |
-| 科学内容审计 | v2 内容源 600 strings；正式库 105 rows；`SCIENTIFIC_CONTENT_ERRORS=0` | 已执行 |
+| 后端最终全量 | `mvn clean test`：217 tests，0 failures，0 errors，3 skipped；`mvn -DskipTests package` 通过 | 已执行 |
+| 前端最终全量 | 68 files、221 tests；type-check、build、`npm audit --omit=dev` 通过，0 vulnerabilities | 已执行 |
+| 科学内容审计 | 内容源 600 strings；`SCIENTIFIC_CONTENT_ERRORS=0` | 已执行 |
+| 最终两项用户反馈 | 忘记密码弹窗不再展示内部安全实现说明；教师列表按真实角色表显示 TEACHER / ADMIN，授权、撤销、重新授权、最后管理员与当前管理员保护均有回归测试 | 已执行 |
 | 机器浏览器 | Demo `rike_tiku_demo` 4 routes，0 console/page/failed-request error，0 overflow；独立临时 profile；正式浏览器本轮为 `BLOCKED_LOCAL_CREDENTIAL` | 已执行；不等同真人验收 |
 | 正式库迁移与本轮内容 | 仓库外 1,326,218-byte 备份（SHA-256 `039C9E885007EB79ED317E1A1E5C5A6DCEB7EC2746C0777957E41E60FE65E622`）后，由 Flyway 从实际 V24 正常迁移到 V29；9 用户、389 题/378 PUBLISHED 基线不变；本轮核验 15 单元、45 关系、65 张已发布卡片；学科覆盖物理 6 / 化学 5 / 生物 4 | 已核验；无新迁移 |
 | V1–V29 checksum 与临时库 | 正式 `flyway_schema_history` 29 行均 `success=1`；V1–V29 迁移文件在本轮无改动；最终回查无 `rike_tiku_` 临时 schema | 已核验 |

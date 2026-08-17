@@ -1,5 +1,7 @@
 # RIKE V29 数据库结构参考
 
+> 最终收口复核（2026-08-17）：正式 `rike_tiku` 为 Flyway V29，50 张业务表，`flyway_schema_history` 无失败迁移。教师系统角色继续复用既有 `yong_hu_jiao_se`，其 `zhuang_tai` 合法值为 `ACTIVE` / `DISABLED`；本轮未新增迁移或表。
+
 > 本文由 `information_schema` 只读生成，校验对象为隔离库 `rike_tiku_demo` 的 Flyway V1–V29 业务表。字段与约束以迁移脚本为准；`database/schema_snapshot_v29.sql` 仅是便于查阅的纯结构快照，不能替代 Flyway。
 
 ## 总体约定
