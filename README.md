@@ -1,6 +1,6 @@
 # RIKE 理科学习辅助系统
 
-> **最终产品候选基线（2026-08-18）：PR [#33](https://github.com/Fiesty-Abyss/rike-tiku/pull/33) 与 PR [#34](https://github.com/Fiesty-Abyss/rike-tiku/pull/34) 已 ordinary merge；PR [#35](https://github.com/Fiesty-Abyss/rike-tiku/pull/35) 已完成用户人工验收与最终回归，待 ordinary merge。Flyway V30、50 张业务表；合并后保持 `PRODUCT DEVELOPMENT = FROZEN` 与 `THESIS_AND_DEFENSE_DELIVERY`。**
+> **最终产品基线（2026-08-18）：PR [#33](https://github.com/Fiesty-Abyss/rike-tiku/pull/33)、PR [#34](https://github.com/Fiesty-Abyss/rike-tiku/pull/34) 与 PR [#35](https://github.com/Fiesty-Abyss/rike-tiku/pull/35) 均已 ordinary merge；PR #35 merge commit 为 `fde39c5`。Flyway V30、50 张业务表；`PRODUCT DEVELOPMENT = FROZEN`，项目进入 `THESIS_AND_DEFENSE_DELIVERY`。**
 
 面向高中物理、化学、生物的 Spring Boot 大模型题库系统。正式判分与 STANDARD 始终由确定性业务事实控制；AI 只承担解释、答疑和待人工审核的候选生成。
 
@@ -19,12 +19,12 @@
 - 真实 DeepSeek variant/tutor、GLM Vision、xAI Vision、Web Search 本轮均为 `BLOCKED_EXTERNAL_PROVIDER`；Mock/Fake 不代表真实 PASS。
 - 学校 Word/PPT 模板尚未提供；仓库现有 Markdown 事实稿、截图、数据库与文献入口可直接用于后续套版，不在本轮生成或假设学校模板。
 
-## PR #35 教师发布历史收口（待 ordinary merge）
+## PR #35 教师发布历史收口（已 ordinary merge）
 
 - 教师以唯一 `teachingAssignmentId` 选择真实任课范围，界面显示“学科（班级）”；私有题仅能在其绑定任课范围检索与发布。
 - 教师可集中查询全部班级发布记录、查看班级作答统计与已提交答卷；答案采用用户可读格式，题干、选项、答案和 STANDARD 继续复用 KaTeX/mhchem 科学内容渲染。
 - 撤回发布只将 release 标记为 `CANCELLED`，使学生不可见；试卷本体软删除仅隐藏“我的试卷”。两种操作都不删除冻结快照、学生提交或逐题答案。
-- PR #35 已获 `USER_MANUAL_ACCEPTANCE`；本轮未补跑独立机器浏览器，状态如实记录为 `MACHINE_BROWSER = NOT_RUN`，不影响用户已授权的普通合并。
+- PR #35 已获 `USER_MANUAL_ACCEPTANCE` 并 ordinary merge；本轮未补跑独立机器浏览器，状态如实记录为 `MACHINE_BROWSER = NOT_RUN`，不把用户人工审查误写为机器浏览器结果。
 
 ## 1. 公共门户
 
