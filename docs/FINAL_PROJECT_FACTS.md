@@ -109,6 +109,12 @@ AI 只能解释、对话、生成候选和给质量建议；候选需人工审�
 - [论文写作中心](THESIS_WRITING_HUB.md)、[论文事实核验](thesis/RIKE_THESIS_FACT_CHECK.md)、[答辩提纲](thesis/RIKE_DEFENSE_OUTLINE.md)、[答辩事实问答](DEFENSE_FACTS_AND_QA.md)。
 - [正式参考文献 22 条](THESIS_REFERENCES.md)、[引用使用矩阵](thesis/RIKE_REFERENCE_USAGE_MATRIX.md)。`research-only` 资料不属于正式论文引用。
 
+## 8a. PR #35 试卷发布管理维护（Draft，待用户复验）
+
+PR #35 仅补齐教师试卷发布后的管理闭环，不新增迁移、表或自动评分：教师可集中查询本人所有班级 release，并按唯一任课范围、状态和试卷名称筛选；可查看历史统计和已提交答卷。撤回将 release 标记为 `CANCELLED`，学生立即不可见，但冻结快照、提交和逐题答案继续保留。试卷本体使用既有 `shi_juan.yi_shan_chu` 软删除：从未发布或全部 release 已撤回时可清理“我的试卷”，只要存在 `PUBLISHED`/`CLOSED` release 即由服务端拒绝。详情见 [PR #35 人工验收记录](MANUAL_ACCEPTANCE_FINDINGS_PAPER_RELEASE_MANAGEMENT.md)。
+
+该 Draft 维护已完成随机临时 schema 回归：后端 **221 tests、0 failures、0 errors、3 skipped**，前端 **68 files、224 tests、0 failures**；后端 package、前端 type-check/build/audit 均通过（audit 0 vulnerabilities）。当前未将其标记为用户人工验收通过。
+
 ## 9. 论文快速取材
 
 | 论文主题 | 截图/代码入口 | 数据库与文献入口 |

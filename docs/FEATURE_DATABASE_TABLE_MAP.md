@@ -42,9 +42,9 @@
 
 | 表 | 业务事实 | 与其他表的关系 |
 |---|---|---|
-| [`shi_juan`](DATABASE_SCHEMA_REFERENCE.md#shi_juan) | 教师编辑中的逻辑试卷。 | 一张试卷有当前题目编排和多次发布。 |
+| [`shi_juan`](DATABASE_SCHEMA_REFERENCE.md#shi_juan) | 教师编辑中的逻辑试卷；`yi_shan_chu=1` 为试卷库软删除。 | 一张试卷有当前题目编排和多次发布；仅所有 release 均已撤回或从未发布时允许软删除，本体软删除不影响历史。 |
 | [`shi_juan_ti_mu`](DATABASE_SCHEMA_REFERENCE.md#shi_juan_ti_mu) | 编辑态题目、顺序和分值。 | 引用统一 `ti_mu`，手动组卷可以加入专题主观题。 |
-| [`shi_juan_fa_bu`](DATABASE_SCHEMA_REFERENCE.md#shi_juan_fa_bu) | 向一个 ACTIVE 任课班级发生的一次发布事实。 | 关联教师、班级、逻辑试卷和时间边界。 |
+| [`shi_juan_fa_bu`](DATABASE_SCHEMA_REFERENCE.md#shi_juan_fa_bu) | 向一个 ACTIVE 任课班级发生的一次发布事实。 | 关联教师、班级、逻辑试卷和时间边界；`CANCELLED` 使学生不可见但保留教师历史查看。 |
 | [`shi_juan_fa_bu_ti_mu`](DATABASE_SCHEMA_REFERENCE.md#shi_juan_fa_bu_ti_mu) | 发布时冻结题干、选项、分值、答案、STANDARD、知识点及 V30 附件快照。 | 后续原题修改不改变学生已见的视觉和评分事实。 |
 | [`shi_juan_ti_jiao`](DATABASE_SCHEMA_REFERENCE.md#shi_juan_ti_jiao) | 一名学生对一次发布的提交事实。 | 汇总客观自动得分，不把它伪装成整张卷最终分。 |
 | [`shi_juan_xue_sheng_da_ti`](DATABASE_SCHEMA_REFERENCE.md#shi_juan_xue_sheng_da_ti) | 学生逐题答案、状态和客观判分结果。 | 客观题确定性判分；主观题存为 `SUBJECTIVE_PENDING`，不由 AI/规则自动评分。 |
