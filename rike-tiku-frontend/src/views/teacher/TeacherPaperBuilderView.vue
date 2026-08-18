@@ -43,7 +43,7 @@ const publishForm = reactive({
   deadline: "",
 });
 const form = reactive({
-  subjectId: undefined as number | undefined,
+  teachingScopeId: undefined as number | undefined,
   name: "",
   knowledgePointId: undefined as number | undefined,
   questionType: "",
@@ -55,6 +55,8 @@ const form = reactive({
   count: 10,
   totalScore: 100,
 });
+const selectedScope = computed(() => scopes.value.find(scope => scope.teachingAssignmentId === form.teachingScopeId));
+const selectedSubjectId = computed(() => selectedScope.value?.subjectId);
 const total = computed(() =>
   selected.value.reduce((sum, item) => sum + Number(item.score || 0), 0),
 );
@@ -68,14 +70,15 @@ async function load() {
   papers.value = await fetchPapers();
 }
 async function loadPoints() {
-  points.value = form.subjectId
-    ? await fetchPaperKnowledgePoints(form.subjectId)
+  points.value = selectedSubjectId.value
+    ? await fetchPaperKnowledgePoints(selectedSubjectId.value)
     : [];
 }
 async function search() {
-  if (!form.subjectId) return;
+  if (!selectedSubjectId.value) return;
   questions.value = await fetchPaperQuestions({
-    subjectId: form.subjectId,
+    subjectId: selectedSubjectId.value,
+    teachingScopeId: form.teachingScopeId,
     knowledgePointId: form.knowledgePointId,
     questionType: form.questionType || undefined,
     difficulty: form.difficulty,
@@ -97,7 +100,7 @@ function move(index: number, delta: number) {
 }
 function ruleRequest() {
   return {
-    subjectId: form.subjectId,
+    subjectId: selectedSubjectId.value,
     name: form.name,
     knowledgePointIds: mode.value === "RANDOM" ? [] : form.knowledgePointIds,
     questionTypes: form.questionTypes,
@@ -110,7 +113,7 @@ async function save() {
   try {
     if (mode.value === "MANUAL")
       await createPaper({
-        subjectId: form.subjectId,
+        subjectId: selectedSubjectId.value,
         name: form.name,
         mode: "MANUAL",
         items: selected.value.map((item) => ({
@@ -171,7 +174,7 @@ async function openStats(row:any){selectedReleaseId.value=row.id;releaseStats.va
 async function openSubmission(row:any){if(row.status!=='SUBMITTED')return;selectedSubmission.value=await fetchTeacherSubmission(selectedReleaseId.value,row.studentId);answerVisible.value=true;}
 async function cancelRelease(row:any){try{await ElMessageBox.confirm('撤回后，该班学生将不再看到这份试卷；已经产生的作答和统计记录仍保留供教师查看。','确认撤回这次班级发布？',{confirmButtonText:'确认撤回',cancelButtonText:'取消',type:'warning'});await cancelPaperRelease(row.id);await openReleases({id:publishPaperId.value});ElMessage.success('已撤回发布，历史记录已保留。')}catch(error:any){if(error!=='cancel')ElMessage.error(error.message||'撤回失败')}}
 watch(
-  () => form.subjectId,
+  () => form.teachingScopeId,
   () => {
     questions.value = [];
     selected.value = [];
@@ -203,12 +206,12 @@ onMounted(load);
     <el-form label-position="top" class="builder-form"
       ><div class="base-fields">
         <el-form-item label="任教学科"
-          ><el-select v-model="form.subjectId"
+          ><el-select v-model="form.teachingScopeId" placeholder="选择任课范围"
             ><el-option
               v-for="scope in scopes"
-              :key="scope.subjectId"
-              :label="scope.subjectName"
-              :value="scope.subjectId" /></el-select></el-form-item
+              :key="scope.teachingAssignmentId"
+              :label="`${scope.subjectName}（${scope.className}）`"
+              :value="scope.teachingAssignmentId" /></el-select></el-form-item
         ><el-form-item label="试卷名称"
           ><el-input v-model="form.name" maxlength="120"
         /></el-form-item>
@@ -236,7 +239,7 @@ onMounted(load);
             :min="1"
             :max="5"
             placeholder="难度"
-          /><el-button :disabled="!form.subjectId" @click="search"
+          /><el-button :disabled="!selectedSubjectId" @click="search"
             >检索已发布题目</el-button
           >
         </section>
@@ -332,7 +335,7 @@ onMounted(load);
       <el-button
         type="primary"
         :disabled="
-          !form.subjectId ||
+          !selectedSubjectId ||
           !form.name.trim() ||
           (mode === 'MANUAL' && !selected.length)
         "
@@ -424,7 +427,7 @@ onMounted(load);
     >
     <el-dialog v-model="releaseVisible" title="发布管理" width="min(860px, calc(100vw - 24px))"><el-table :data="releases"><el-table-column prop="className" label="班级"/><el-table-column label="发布时间" min-width="170"><template #default="{row}">{{formatDateTime(row.publishedAt)}}</template></el-table-column><el-table-column label="截止时间" min-width="170"><template #default="{row}">{{formatDateTime(row.deadline)}}</template></el-table-column><el-table-column label="状态"><template #default="{row}"><el-tag>{{releaseStatus(row.status)}}</el-tag></template></el-table-column><el-table-column label="操作" min-width="190"><template #default="{row}"><el-button @click="openStats(row)">作答情况</el-button><el-button v-if="row.status!=='CANCELLED'" type="danger" plain @click="cancelRelease(row)">撤回发布</el-button></template></el-table-column></el-table></el-dialog>
     <el-dialog v-model="statsVisible" title="班级作答情况" width="min(980px, calc(100vw - 24px))"><el-descriptions v-if="releaseStats" :column="4" border><el-descriptions-item label="应交">{{releaseStats.assigned}}</el-descriptions-item><el-descriptions-item label="已提交">{{releaseStats.submitted}}</el-descriptions-item><el-descriptions-item label="未提交">{{releaseStats.unsubmitted}}</el-descriptions-item><el-descriptions-item label="客观题平均分">{{releaseStats.averageScore}}</el-descriptions-item></el-descriptions><h3>学生作答</h3><el-table :data="submissions"><el-table-column prop="studentNumber" label="学号"/><el-table-column prop="studentName" label="姓名"/><el-table-column label="状态"><template #default="{row}"><el-tag>{{submissionStatus(row.status)}}</el-tag></template></el-table-column><el-table-column label="客观得分"><template #default="{row}">{{row.objectiveScore==null?'-':`${row.objectiveScore} / ${row.objectiveTotal}`}}</template></el-table-column><el-table-column label="主观题"><template #default="{row}">{{row.subjectivePendingCount?`${row.subjectivePendingCount}题待人工处理`:''}}</template></el-table-column><el-table-column label="提交时间" min-width="170"><template #default="{row}">{{formatDateTime(row.submittedAt)}}</template></el-table-column><el-table-column label="操作"><template #default="{row}"><el-button v-if="row.status==='SUBMITTED'" @click="openSubmission(row)">查看答卷</el-button></template></el-table-column></el-table></el-dialog>
-    <el-dialog v-model="answerVisible" title="学生已提交答卷" width="min(900px, calc(100vw - 24px))"><article v-for="q in selectedSubmission?.questions" :key="q.itemId" class="question-card"><b>第{{q.order}}题 · {{questionTypeLabel(q.type)}} · {{q.score}}分</b><QuestionContent :content="q.stem" :attachments="q.stemAttachments" position="QUESTION"/><p v-for="o in q.options" :key="o.label"><b>{{o.label}}.</b> <ScientificText :content="o.content"/></p><h4>学生答案</h4><AnswerDisplay :question-type="q.type" :value="q.submittedAnswer" :options="q.options"/><template v-if="q.type!=='SUBJECTIVE'"><h4>正确答案</h4><AnswerDisplay :question-type="q.type" :value="q.correctAnswer" :options="q.options"/><p>客观得分：{{q.awardedScore}} / {{q.score}}</p></template><p v-else>状态：待人工处理</p><h4>STANDARD 标准解析</h4><StandardAnalysis :content="q.standardAnalysis" :attachments="q.analysisAttachments"/></article></el-dialog>
+    <el-dialog v-model="answerVisible" title="学生已提交答卷" width="min(900px, calc(100vw - 24px))"><article v-for="q in selectedSubmission?.questions" :key="q.itemId" class="submission-question"><b>第{{q.order}}题 · {{questionTypeLabel(q.type)}} · {{q.score}}分</b><QuestionContent :content="q.stem" :attachments="q.stemAttachments" position="QUESTION"/><p v-for="o in q.options" :key="o.label"><b>{{o.label}}.</b> <ScientificText :content="o.content"/></p><h4>学生答案</h4><AnswerDisplay :question-type="q.type" :value="q.submittedAnswer" :options="q.options"/><template v-if="q.type!=='SUBJECTIVE'"><h4>正确答案</h4><AnswerDisplay :question-type="q.type" :value="q.correctAnswer" :options="q.options"/><p>客观得分：{{q.awardedScore}} / {{q.score}}</p></template><p v-else>状态：待人工处理</p><section class="submission-standard"><h4>STANDARD 标准解析</h4><StandardAnalysis :content="q.standardAnalysis" :attachments="q.analysisAttachments"/></section></article></el-dialog>
   </main>
 </template>
 
@@ -501,6 +504,10 @@ onMounted(load);
 .paper-actions .el-button { width:100%; margin:0; }
 .question-card { overflow:hidden; }
 .question-card :deep(.katex-display) { overflow-x:auto; overflow-y:hidden; }
+.submission-question { display:block; padding:20px 0; border-bottom:1px solid var(--el-border-color-lighter); overflow:hidden; }
+.submission-standard { display:block; margin-top:14px; padding:14px 16px; border-left:3px solid var(--el-color-primary); background:var(--el-fill-color-lighter); }
+.submission-standard :deep(.standard-analysis),.submission-standard :deep(.standard-analysis__block) { display:block; width:100%; margin:0 0 12px; }
+.submission-question :deep(.katex-display) { overflow-x:auto; }
 @media (max-width: 800px) {
   .heading {
     align-items: stretch;
