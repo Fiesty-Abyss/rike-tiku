@@ -2,7 +2,7 @@
 
 > 当前事实入口：[FINAL_PROJECT_FACTS.md](FINAL_PROJECT_FACTS.md)。本文件不把历史阶段的测试数字当作当前基线。
 
-更新时间：2026-08-18。PR #33 已 ordinary merge；PR #34（`fix/topic-learning-paper-polish`）的唯一打印 finding 已获用户真实浏览器确认，正在执行最终门禁与普通合并。
+更新时间：2026-08-18。PR #33 与 PR #34 已 ordinary merge；PR #34 merge commit 为 `ea784b5a1b6572ea1a2625db347859bd6e410eda`。项目状态为 `THESIS_AND_DEFENSE_DELIVERY`，产品开发冻结。
 
 ## 当前产品事实
 

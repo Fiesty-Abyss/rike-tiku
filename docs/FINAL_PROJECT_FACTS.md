@@ -1,6 +1,6 @@
 # RIKE 最终项目事实包
 
-> 本文件是论文、答辩和后续维护的当前事实入口，不是开发日志。历史时间线中的旧测试数、旧 Flyway 版本或旧表数只能解释当时阶段，不能覆盖本文件。最后一次事实刷新：2026-08-18，PR #34 已取得 `PRINT_USER_VERIFIED`，正处于 ordinary merge 前最终门禁。
+> 本文件是论文、答辩和后续维护的当前事实入口，不是开发日志。历史时间线中的旧测试数、旧 Flyway 版本或旧表数只能解释当时阶段，不能覆盖本文件。最后一次事实刷新：2026-08-18，PR #34 已 ordinary merge；产品开发冻结。
 
 ## 1. 项目身份与运行边界
 
@@ -19,9 +19,9 @@
 | 里程碑 | 事实 |
 |---|---|
 | PR #33 | 主体产品完成 PR；已以 ordinary merge 合入 `main`，merge commit `fba1276862fee973129ee8b85c6fc3a1d55b8662`。 |
-| PR #34 | post-merge 的专题内容、主观题组卷、V30 附件快照、题型中文化和打印修补 PR；base 为 `fba1276862fee973129ee8b85c6fc3a1d55b8662`，branch 为 `fix/topic-learning-paper-polish`，Draft。 |
-| 当前产品阶段 | `FINAL_MANUAL_FIX_AND_REPOSITORY_FREEZE`；打印用户复验已通过，ordinary merge 后进入 `THESIS_AND_DEFENSE_DELIVERY`。 |
-| 当前 HEAD / PR #34 merge | 本轮在最终回归与 push 后写入 feature HEAD；Draft 期间不得把 feature head 误写成 main 或 merge commit。 |
+| PR #34 | post-merge 的专题内容、主观题组卷、V30 附件快照、题型中文化和打印修补 PR；base 为 `fba1276862fee973129ee8b85c6fc3a1d55b8662`，final head 为 `a456ace11df83018d285b04b198448cf0bbe5ba7`，已 ordinary merge。 |
+| PR #34 merge | `ea784b5a1b6572ea1a2625db347859bd6e410eda`，`mergedAt=2026-08-18T01:24:08Z`。 |
+| 当前产品阶段 | `THESIS_AND_DEFENSE_DELIVERY`；`PRODUCT DEVELOPMENT = FROZEN`。仅处理学校模板、论文、答辩材料、真实 BLOCKER 或老师明确要求。 |
 
 ## 3. 已实现、已验证与边界
 
