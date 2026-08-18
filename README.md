@@ -1,6 +1,6 @@
 # RIKE 理科学习辅助系统
 
-> **最终产品基线（2026-08-18）：PR [#33](https://github.com/Fiesty-Abyss/rike-tiku/pull/33) 与 PR [#34](https://github.com/Fiesty-Abyss/rike-tiku/pull/34) 均已 ordinary merge；PR #34 merge commit 为 `ea784b5`。Flyway V30、50 张业务表；`PRODUCT DEVELOPMENT = FROZEN`，项目进入 `THESIS_AND_DEFENSE_DELIVERY`。**
+> **最终产品候选基线（2026-08-18）：PR [#33](https://github.com/Fiesty-Abyss/rike-tiku/pull/33) 与 PR [#34](https://github.com/Fiesty-Abyss/rike-tiku/pull/34) 已 ordinary merge；PR [#35](https://github.com/Fiesty-Abyss/rike-tiku/pull/35) 已完成用户人工验收与最终回归，待 ordinary merge。Flyway V30、50 张业务表；合并后保持 `PRODUCT DEVELOPMENT = FROZEN` 与 `THESIS_AND_DEFENSE_DELIVERY`。**
 
 面向高中物理、化学、生物的 Spring Boot 大模型题库系统。正式判分与 STANDARD 始终由确定性业务事实控制；AI 只承担解释、答疑和待人工审核的候选生成。
 
@@ -14,10 +14,17 @@
 - V30 为已发布试卷题目增加 JSON 附件快照，并将学生逐题作答状态扩展为可保存 `SUBJECTIVE_PENDING`；不新增表，业务表保持 50 张。
 - 15 个专题单元、45 道 `SUBJECTIVE + TOPIC_LEARNING` 原创题按 FOUNDATION / TRANSFER / ADVANCED 编排；题型分布为计算 14、实验 9、流程 5、材料分析 13、综合 4。专题单元只编排既有 `ti_mu`，不建立第二套题库。
 - 教师手动组卷支持筛选和加入主观大题；随机/规则组卷仍只抽确定性客观题。发布快照冻结附件元数据，学生端可显示冻结附件并保存主观作答；主观题不由 AI 或规则自动评分。
-- 最终自动化：后端 220 tests、0 failures、0 errors、3 skipped；前端 68 个测试文件 / 223 tests；type-check、build、`npm audit --omit=dev` 通过，0 vulnerabilities。完整命令和证据边界见 [最终项目事实包](docs/FINAL_PROJECT_FACTS.md)。
+- 当前最终回归：后端 221 tests、0 failures、0 errors、3 skipped；前端 68 个测试文件 / 224 tests；type-check、build、`npm audit --omit=dev` 通过，0 vulnerabilities。完整命令和证据边界见 [最终项目事实包](docs/FINAL_PROJECT_FACTS.md)。
 - 正式 `rike_tiku` 已正常升级至 Flyway V30、50 张业务表、0 failed migration；随机临时 schema 已从 V1 完整迁移至 V30。正式机器浏览器 11 页 / 56 断言通过，0 console/page/failed-request error、0 overflow；证据位于 `docs/evidence/v30-machine-browser/`，不等同用户真人验收。
 - 真实 DeepSeek variant/tutor、GLM Vision、xAI Vision、Web Search 本轮均为 `BLOCKED_EXTERNAL_PROVIDER`；Mock/Fake 不代表真实 PASS。
 - 学校 Word/PPT 模板尚未提供；仓库现有 Markdown 事实稿、截图、数据库与文献入口可直接用于后续套版，不在本轮生成或假设学校模板。
+
+## PR #35 教师发布历史收口（待 ordinary merge）
+
+- 教师以唯一 `teachingAssignmentId` 选择真实任课范围，界面显示“学科（班级）”；私有题仅能在其绑定任课范围检索与发布。
+- 教师可集中查询全部班级发布记录、查看班级作答统计与已提交答卷；答案采用用户可读格式，题干、选项、答案和 STANDARD 继续复用 KaTeX/mhchem 科学内容渲染。
+- 撤回发布只将 release 标记为 `CANCELLED`，使学生不可见；试卷本体软删除仅隐藏“我的试卷”。两种操作都不删除冻结快照、学生提交或逐题答案。
+- PR #35 已获 `USER_MANUAL_ACCEPTANCE`；本轮未补跑独立机器浏览器，状态如实记录为 `MACHINE_BROWSER = NOT_RUN`，不影响用户已授权的普通合并。
 
 ## 1. 公共门户
 

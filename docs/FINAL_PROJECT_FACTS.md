@@ -1,6 +1,6 @@
 # RIKE 最终项目事实包
 
-> 本文件是论文、答辩和后续维护的当前事实入口，不是开发日志。历史时间线中的旧测试数、旧 Flyway 版本或旧表数只能解释当时阶段，不能覆盖本文件。最后一次事实刷新：2026-08-18，PR #34 已 ordinary merge；产品开发冻结。
+> 本文件是论文、答辩和后续维护的当前事实入口，不是开发日志。历史时间线中的旧测试数、旧 Flyway 版本或旧表数只能解释当时阶段，不能覆盖本文件。最后一次事实刷新：2026-08-18，PR #35 已完成用户人工验收与最终回归，待 ordinary merge；合并后产品继续冻结。
 
 ## 1. 项目身份与运行边界
 
@@ -21,6 +21,7 @@
 | PR #33 | 主体产品完成 PR；已以 ordinary merge 合入 `main`，merge commit `fba1276862fee973129ee8b85c6fc3a1d55b8662`。 |
 | PR #34 | post-merge 的专题内容、主观题组卷、V30 附件快照、题型中文化和打印修补 PR；base 为 `fba1276862fee973129ee8b85c6fc3a1d55b8662`，final head 为 `a456ace11df83018d285b04b198448cf0bbe5ba7`，已 ordinary merge。 |
 | PR #34 merge | `ea784b5a1b6572ea1a2625db347859bd6e410eda`，`mergedAt=2026-08-18T01:24:08Z`。 |
+| PR #35 | 冻结后真实教学闭环维护；base `f95effcc1ea681530b4be6d01de724f4f999d9f6`，final head 待 ordinary merge 时写入。覆盖任课范围、私有题隔离、release 管理、撤回、历史答卷与试卷软删除；不新增 Flyway 或表。 |
 | 当前产品阶段 | `THESIS_AND_DEFENSE_DELIVERY`；`PRODUCT DEVELOPMENT = FROZEN`。仅处理学校模板、论文、答辩材料、真实 BLOCKER 或老师明确要求。 |
 
 ## 3. 已实现、已验证与边界
@@ -94,7 +95,9 @@ AI 只能解释、对话、生成候选和给质量建议；候选需人工审�
 
 ## 7. 验证、人工验收与已知限制
 
-2026-08-17 print fix 后完整回归：后端 `mvn test` 为 **220 tests、0 failures、0 errors、3 skipped**；其后 `mvn -DskipTests package` 为 **BUILD SUCCESS**。前端单 worker `npm test -- --run --maxWorkers=1` 为 **68 files、223 tests、0 failures**；`npm run type-check`、`npm run build` 与 `npm audit --omit=dev` 通过，audit 为 **0 vulnerabilities**（构建仅保留既有 >500 kB chunk warning）。随机临时 schema 覆盖 V1→V30；正式 `rike_tiku` 只读核验 V30、30 条成功迁移、0 failed migration、50 业务表。科学审计为 **600 strings、117 formal database rows、0 errors**；正式文献/BibTeX 各 **22** 且一一对应。不得沿用 215、217、220（前端）或 222 等旧基线。
+PR #35 merge 前最终回归：后端 `mvn test` 与 `mvn package` 均为 **221 tests、0 failures、0 errors、3 skipped、BUILD SUCCESS**；前端单 worker `npm test -- --run --maxWorkers=1` 为 **68 files、224 tests、0 failures**；`npm run type-check`、`npm run build` 与 `npm audit --omit=dev` 通过，audit 为 **0 vulnerabilities**（构建仅保留既有 >500 kB chunk warning）。随机临时 schema 已从 V1 完整迁移至 V30；科学审计为 **600 strings、0 live database rows、0 errors**，其中 0 行表示本次不读取正式库，不可与历史正式库 117 行审计混写；正式文献/BibTeX 各 **22** 且一一对应。不得沿用 215、217、220（前端）或 222 等旧基线。
+
+正式数据库 `rike_tiku` 的本轮只读复核状态为 `FORMAL_DB_LIVE_RECHECK = LOCAL_NOT_VERIFIED`：本机没有可安全使用的数据库凭据，本轮没有猜测、输出或硬编码密码，也没有修改正式库。历史 V30/30 success/0 failed/50 表的已存档核验仍可查，但不得误写为本次 live recheck。
 
 现有 V30 机器浏览器证据为 11 页面、56 断言、0 console/page/非预期失败请求/横向溢出，属于 `MACHINE_BROWSER_VERIFIED`，不等同用户逐页验收。PR34-MA-001 增加两个独立 Chromium handler 断言：student preview=1、answer preview=1、0 console/page/failed request；受控路由响应仅证明处理器，不能证明 OS 打印对话框。
 
@@ -109,11 +112,11 @@ AI 只能解释、对话、生成候选和给质量建议；候选需人工审�
 - [论文写作中心](THESIS_WRITING_HUB.md)、[论文事实核验](thesis/RIKE_THESIS_FACT_CHECK.md)、[答辩提纲](thesis/RIKE_DEFENSE_OUTLINE.md)、[答辩事实问答](DEFENSE_FACTS_AND_QA.md)。
 - [正式参考文献 22 条](THESIS_REFERENCES.md)、[引用使用矩阵](thesis/RIKE_REFERENCE_USAGE_MATRIX.md)。`research-only` 资料不属于正式论文引用。
 
-## 8a. PR #35 试卷发布管理维护（Draft，待用户复验）
+## 8a. PR #35 试卷发布管理维护（用户已接受，待 ordinary merge）
 
 PR #35 仅补齐教师试卷发布后的管理闭环，不新增迁移、表或自动评分：教师可集中查询本人所有班级 release，并按唯一任课范围、状态和试卷名称筛选；可查看历史统计和已提交答卷。撤回将 release 标记为 `CANCELLED`，学生立即不可见，但冻结快照、提交和逐题答案继续保留。试卷本体使用既有 `shi_juan.yi_shan_chu` 软删除：从未发布或全部 release 已撤回时可清理“我的试卷”，只要存在 `PUBLISHED`/`CLOSED` release 即由服务端拒绝。详情见 [PR #35 人工验收记录](MANUAL_ACCEPTANCE_FINDINGS_PAPER_RELEASE_MANAGEMENT.md)。
 
-该 Draft 维护已完成随机临时 schema 回归：后端 **221 tests、0 failures、0 errors、3 skipped**，前端 **68 files、224 tests、0 failures**；后端 package、前端 type-check/build/audit 均通过（audit 0 vulnerabilities）。当前未将其标记为用户人工验收通过。
+该维护已完成随机临时 schema 回归：后端 **221 tests、0 failures、0 errors、3 skipped**，前端 **68 files、224 tests、0 failures**；`mvn test`、`mvn package`、前端 type-check/build/audit 均通过（audit 0 vulnerabilities）。用户人工确认教师发布管理、班级作答/历史、纵向答卷审查、答案显示、撤回不可见、任课范围区分和当前更多菜单均可接受。`MACHINE_BROWSER = NOT_RUN`，因此不把用户人工验收误写为机器浏览器证据。
 
 ## 9. 论文快速取材
 

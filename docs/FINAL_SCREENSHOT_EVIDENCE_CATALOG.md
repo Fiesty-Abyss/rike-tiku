@@ -110,6 +110,12 @@ V30-01–14、V30-17–18 为 `THESIS_READY + MACHINE_BROWSER_VERIFIED`，环境
 
 推荐论文位置：第 5 章批量导入与题库审核；推荐 PPT 标题：**“可核验的 Excel Preview/Confirm 导入链”**。完整字段、限制、对象标记和事务语义见 [Excel 精确导入指南](EXCEL_IMPORT_GUIDE.md)。
 
+## PR #35 发布管理的验收边界
+
+PR #35 没有新增可提交的本地浏览器截图，因而本目录不虚构 `THESIS_READY` 或 `MACHINE_BROWSER_VERIFIED` 图片路径。其教学闭环由用户实际页面审查确认，记录为 [`USER_MANUAL_ACCEPTANCE`](MANUAL_ACCEPTANCE_FINDINGS_PAPER_RELEASE_MANAGEMENT.md)：任课范围“学科（班级）”、全局班级发布记录、班级作答/已提交答卷、纵向 STANDARD 审查、撤回不可见、历史保留和软删除试卷库均已接受。
+
+对应实现为 `TeacherPaperBuilderView.vue`、`api/teacher/papers.ts`、`PaperController`、`PaperAssignmentTeacherController`、`PaperService` 与 `PaperAssignmentService`；核心表为 `shi_juan`、`shi_juan_fa_bu`、`shi_juan_fa_bu_ti_mu`、`shi_juan_ti_jiao`、`shi_juan_xue_sheng_da_ti`，迁移仍是 V27/V30。自动化覆盖见 `PaperAssignmentIntegrationTest`、`PaperServiceIntegrationTest` 和 `TeacherPaperBuilderView.spec.ts`。该文字记录可证明用户已接受相应界面，不可替代截图或机器浏览器视觉证据。
+
 ## 截图数据只读查询说明
 
 以下 SQL 只用于受控本地或匿名 Demo 环境的核对；不得写入、重置或暴露个人信息。
