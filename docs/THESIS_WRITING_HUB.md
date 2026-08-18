@@ -32,7 +32,7 @@
 
 ## 当前事实
 
-- PR #33 已 ordinary merge；PR #34 是独立的 post-merge 收口 PR，原生打印已获用户复验；详情见 `MANUAL_ACCEPTANCE_FINDINGS_PR34.md`。
+- PR #33、PR #34 已 ordinary merge；PR #35 为冻结后唯一真实教学闭环维护，已获用户人工接受并待 ordinary merge。论文写作应在 PR #35 合并后的 `main` 上取最终事实，详情见 `MANUAL_ACCEPTANCE_FINDINGS_PAPER_RELEASE_MANAGEMENT.md`。
 - Flyway V1–V30，50 张业务表；V1–V29 已发布迁移未修改。V30 只新增发布题附件快照 JSON，并扩展主观题待处理状态的字段长度。
 - 专题学习仍由统一 `ti_mu` 事实和专题单元编排关系组成：正式库 15 个单元、45 道 `SUBJECTIVE + TOPIC_LEARNING` 原创大题，物理 6 / 化学 5 / 生物 4；主观题可手动组卷但不自动评分。
 - 正式 `rike_tiku` 的独立 Chromium 历史机器浏览器已覆盖三科专题、教师混合组卷/质量建议/打印预览、学生混合试卷提交；11 页面、56 断言、0 console/page/failed-request error、0 overflow。打印 OS 对话框并未由 headless 环境声明验证；本轮补 handler machine check 和用户复验。

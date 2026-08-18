@@ -103,17 +103,27 @@ public class PaperService {
     @Transactional(readOnly = true)
     public List<PaperDtos.QuestionOption> questions(long userId, long subjectId, Long pointId, String type,
                                                      Integer difficulty, String keyword) {
+        return questions(userId, subjectId, null, pointId, type, difficulty, keyword);
+    }
+
+    @Transactional(readOnly = true)
+    public List<PaperDtos.QuestionOption> questions(long userId, long subjectId, Long teachingScopeId, Long pointId, String type,
+                                                     Integer difficulty, String keyword) {
         teacher(userId, subjectId);
+        if (teachingScopeId != null) teacherScope(userId, teachingScopeId, subjectId);
         List<Object> args = new ArrayList<>();
         StringBuilder sql = new StringBuilder("SELECT DISTINCT q.id,q.ti_mu_lei_xing,q.ti_gan,q.nan_du,q.shi_yong_mo_shi,q.zhuan_ti_lei_xing FROM ti_mu q");
         if (pointId != null) {
             sql.append(" JOIN ti_mu_zhi_shi_dian qp ON qp.ti_mu_id=q.id AND qp.zhi_shi_dian_id=? AND qp.yi_shan_chu=0");
         }
         sql.append(" WHERE q.ke_mu_id=? AND q.zhuang_tai='PUBLISHED' AND q.yi_shan_chu=0")
-                .append(" AND (q.ke_jian_fan_wei='GLOBAL' OR EXISTS (SELECT 1 FROM ren_ke_guan_xi r JOIN jiao_shi_dang_an j ON j.id=r.jiao_shi_id WHERE r.id=q.ren_ke_guan_xi_id AND j.yong_hu_id=? AND r.zhuang_tai='ACTIVE'))");
+                .append(" AND (q.ke_jian_fan_wei='GLOBAL' OR ")
+                .append(teachingScopeId == null
+                        ? "EXISTS (SELECT 1 FROM ren_ke_guan_xi r JOIN jiao_shi_dang_an j ON j.id=r.jiao_shi_id WHERE r.id=q.ren_ke_guan_xi_id AND j.yong_hu_id=? AND r.zhuang_tai='ACTIVE')"
+                        : "q.ren_ke_guan_xi_id=?").append(")");
         if (pointId != null) args.add(pointId);
         args.add(subjectId);
-        args.add(userId);
+        if (teachingScopeId == null) args.add(userId); else args.add(teachingScopeId);
         if (type != null && !type.isBlank()) {
             sql.append(" AND q.ti_mu_lei_xing=?");
             args.add(type.trim());
@@ -154,6 +164,16 @@ public class PaperService {
                 paper.score(), paper.status(), questions);
     }
 
+    @Transactional
+    public void softDelete(long userId, long paperId) {
+        base(userId, paperId);
+        Long active = jdbc.queryForObject("SELECT COUNT(*) FROM shi_juan_fa_bu WHERE shi_juan_id=? AND zhuang_tai IN ('PUBLISHED','CLOSED')", Long.class, paperId);
+        if (active != null && active > 0) {
+            throw new RenZhengYeWuYiChang("PAPER_DELETE_ACTIVE_RELEASE", "该试卷仍发布在班级中，请先撤回全部班级发布。", HttpStatus.CONFLICT);
+        }
+        jdbc.update("UPDATE shi_juan SET yi_shan_chu=1 WHERE id=?", paperId);
+    }
+
     @Transactional(readOnly = true)
     public PaperAttachmentContent teacherAttachment(long userId, long paperId, long attachmentId) {
         base(userId, paperId);
@@ -191,6 +211,13 @@ public class PaperService {
         return jdbc.query("SELECT DISTINCT j.id FROM jiao_shi_dang_an j JOIN ren_ke_guan_xi r ON r.jiao_shi_id=j.id WHERE j.yong_hu_id=? AND j.zhuang_tai='ACTIVE' AND j.yi_shan_chu=0 AND r.ke_mu_id=? AND r.zhuang_tai='ACTIVE'",
                 (rs, row) -> rs.getLong(1), userId, subjectId).stream().findFirst()
                 .orElseThrow(() -> new RenZhengYeWuYiChang("PAPER_SUBJECT_FORBIDDEN", "无权使用该学科组卷", HttpStatus.FORBIDDEN));
+    }
+
+    private void teacherScope(long userId, long teachingScopeId, long subjectId) {
+        Long count = jdbc.queryForObject("SELECT COUNT(*) FROM ren_ke_guan_xi r JOIN jiao_shi_dang_an j ON j.id=r.jiao_shi_id WHERE r.id=? AND j.yong_hu_id=? AND r.ke_mu_id=? AND r.zhuang_tai='ACTIVE'", Long.class, teachingScopeId, userId, subjectId);
+        if (count == null || count == 0) {
+            throw new RenZhengYeWuYiChang("PAPER_SCOPE_FORBIDDEN", "无权使用该任课范围组卷", HttpStatus.FORBIDDEN);
+        }
     }
 
     private void validateQuestions(long userId, long subjectId, List<Long> ids) {
