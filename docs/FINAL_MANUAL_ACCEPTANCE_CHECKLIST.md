@@ -4,6 +4,17 @@
 
 本清单保留历史逐项项目。2026-08-17 用户已完成最终页面审查，并明确表示除最后两项修复外无其他大问题；两项修复完成与最终回归通过后授权 ordinary merge。机器测试不表述为用户逐页验收。正式环境为前端 `http://localhost:8080`、后端 `http://localhost:8081`、数据库 `rike_tiku`；不在公开文档记录验收账号或密码。
 
+## PR #35 冻结后真实闭环验收（用户已确认）
+
+- [x] 教师发布管理可查看班级发布、作答统计、学生提交状态与已提交答卷。
+- [x] 任课范围以唯一任课关系选择并显示为“学科（班级）”；班级私有题不跨范围混入或发布。
+- [x] 答卷采用纵向人工审查，题干/选项/答案/STANDARD 使用统一科学内容渲染；不展示答案 JSON schema。
+- [x] 撤回 release 后学生立即不可见；教师仍能查看历史发布、统计与提交。
+- [x] 试卷本体仅软删除；有有效 release 时拒绝删除，全部撤回后可以从“我的试卷”清理且不删除历史事实。
+- [x] 用户接受当前“更多”菜单视觉并明确授权 PR #35 ordinary merge。
+
+证据边界：`USER_MANUAL_ACCEPTANCE = PASS`，`AUTOMATED_TEST_VERIFIED = PASS`，`MACHINE_BROWSER = NOT_RUN`。详见 [PR #35 人工验收记录](MANUAL_ACCEPTANCE_FINDINGS_PAPER_RELEASE_MANAGEMENT.md)。
+
 ## Login
 
 - [ ] 1. `demo_admin` 能以 ADMIN 登录。

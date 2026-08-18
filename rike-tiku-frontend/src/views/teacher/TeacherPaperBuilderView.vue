@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref, watch } from "vue";
 import { useRouter } from "vue-router";
-import { ElMessage } from "element-plus";
+import { ElMessage, ElMessageBox } from "element-plus";
 import { fetchTeachingScopes, type TeachingScope } from "../../api/teacher";
 import {
   createPaper,
@@ -12,6 +12,8 @@ import {
   fetchPaperQuestions,
   fetchPapers,
   publishPaper,
+  fetchPaperReleases, fetchPaperStats, fetchPaperSubmissions, fetchTeacherSubmission, cancelPaperRelease, deletePaper,
+  fetchTeacherPaperReleases,
   requestAiPaperQuality,
   type AiPaperQualityAssessment,
   type PaperQualityAssessment,
@@ -19,6 +21,8 @@ import {
 } from "../../api/teacher/papers";
 import ScientificText from "../../components/question/ScientificText.vue";
 import QuestionContent from "../../components/question/QuestionContent.vue";
+import AnswerDisplay from "../../components/question/AnswerDisplay.vue";
+import StandardAnalysis from "../../components/question/StandardAnalysis.vue";
 import { questionTypeLabel, topicTypeLabel } from "../../utils/questionLabels";
 
 const router = useRouter();
@@ -32,13 +36,17 @@ const quality = ref<PaperQualityAssessment>(),
   aiQuality = ref<AiPaperQualityAssessment>(),
   aiQualityLoading = ref(false),
   publishVisible = ref(false),
+  releaseVisible = ref(false), statsVisible = ref(false), answerVisible = ref(false), releaseHistoryVisible = ref(false),
   publishPaperId = ref(0);
+const releases = ref<any[]>([]), releaseStats = ref<any>(), selectedReleaseId = ref(0), submissions = ref<any[]>([]), selectedSubmission = ref<any>();
+const releaseHistory = ref<any[]>([]), releaseHistoryTotal = ref(0);
+const releaseFilters = reactive({ teachingScopeId: undefined as number | undefined, status: "", keyword: "", page: 1, size: 20 });
 const publishForm = reactive({
   teachingScopeId: undefined as number | undefined,
   deadline: "",
 });
 const form = reactive({
-  subjectId: undefined as number | undefined,
+  teachingScopeId: undefined as number | undefined,
   name: "",
   knowledgePointId: undefined as number | undefined,
   questionType: "",
@@ -50,6 +58,8 @@ const form = reactive({
   count: 10,
   totalScore: 100,
 });
+const selectedScope = computed(() => scopes.value.find(scope => scope.teachingAssignmentId === form.teachingScopeId));
+const selectedSubjectId = computed(() => selectedScope.value?.subjectId);
 const total = computed(() =>
   selected.value.reduce((sum, item) => sum + Number(item.score || 0), 0),
 );
@@ -63,14 +73,15 @@ async function load() {
   papers.value = await fetchPapers();
 }
 async function loadPoints() {
-  points.value = form.subjectId
-    ? await fetchPaperKnowledgePoints(form.subjectId)
+  points.value = selectedSubjectId.value
+    ? await fetchPaperKnowledgePoints(selectedSubjectId.value)
     : [];
 }
 async function search() {
-  if (!form.subjectId) return;
+  if (!selectedSubjectId.value) return;
   questions.value = await fetchPaperQuestions({
-    subjectId: form.subjectId,
+    subjectId: selectedSubjectId.value,
+    teachingScopeId: form.teachingScopeId,
     knowledgePointId: form.knowledgePointId,
     questionType: form.questionType || undefined,
     difficulty: form.difficulty,
@@ -92,7 +103,7 @@ function move(index: number, delta: number) {
 }
 function ruleRequest() {
   return {
-    subjectId: form.subjectId,
+    subjectId: selectedSubjectId.value,
     name: form.name,
     knowledgePointIds: mode.value === "RANDOM" ? [] : form.knowledgePointIds,
     questionTypes: form.questionTypes,
@@ -105,7 +116,7 @@ async function save() {
   try {
     if (mode.value === "MANUAL")
       await createPaper({
-        subjectId: form.subjectId,
+        subjectId: selectedSubjectId.value,
         name: form.name,
         mode: "MANUAL",
         items: selected.value.map((item) => ({
@@ -158,8 +169,18 @@ async function publish() {
     ElMessage.error(error.message || "发布失败");
   }
 }
+const releaseStatus=(s:string)=>s==='CANCELLED'?'已撤回':s==='CLOSED'||s==='EXPIRED'?'已截止':'进行中';
+const submissionStatus=(s:string)=>({NOT_STARTED:'未开始',IN_PROGRESS:'作答中',SUBMITTED:'已提交'} as any)[s]||s;
+const formatDateTime=(value?:string)=>value?value.replace('T',' ').replace(/\.\d+$/,''):'-';
+async function openReleases(row:any){publishPaperId.value=row.id;releases.value=await fetchPaperReleases(row.id);releaseVisible.value=true;}
+async function loadReleaseHistory(page=releaseFilters.page){releaseFilters.page=page;const result=await fetchTeacherPaperReleases({teachingScopeId:releaseFilters.teachingScopeId,status:releaseFilters.status||undefined,keyword:releaseFilters.keyword||undefined,page,size:releaseFilters.size});releaseHistory.value=result.items;releaseHistoryTotal.value=result.total;}
+async function openReleaseHistory(){releaseFilters.page=1;await loadReleaseHistory();releaseHistoryVisible.value=true;}
+async function openStats(row:any){selectedReleaseId.value=row.id ?? row.releaseId;releaseStats.value=await fetchPaperStats(selectedReleaseId.value);submissions.value=await fetchPaperSubmissions(selectedReleaseId.value);selectedSubmission.value=null;statsVisible.value=true;}
+async function openSubmission(row:any){if(row.status!=='SUBMITTED')return;selectedSubmission.value=await fetchTeacherSubmission(selectedReleaseId.value,row.studentId);answerVisible.value=true;}
+async function deleteSavedPaper(row:any){try{await ElMessageBox.confirm(`确认从试卷库删除“${row.name}”？\n\n删除后该试卷不再出现在“已保存试卷”中。\n\n如果存在已经撤回的历史班级发布，学生作答、统计和冻结快照仍会保留。`,'确认删除试卷',{confirmButtonText:'确认删除',cancelButtonText:'取消',type:'warning'});await deletePaper(row.id);await load();ElMessage.success('试卷已从试卷库删除，历史发布和作答仍已保留。')}catch(error:any){if(error!=='cancel')ElMessage.error(error.message||'删除失败')}}
+async function cancelRelease(row:any){try{await ElMessageBox.confirm('撤回后，该班学生将不再看到这份试卷；已经产生的作答和统计记录仍保留供教师查看。','确认撤回这次班级发布？',{confirmButtonText:'确认撤回',cancelButtonText:'取消',type:'warning'});await cancelPaperRelease(row.id ?? row.releaseId);const paperId=row.paperId ?? publishPaperId.value;const current=await fetchPaperReleases(paperId);releases.value=current;if(releaseHistoryVisible.value)await loadReleaseHistory();const hasActive=current.some((item:any)=>item.status==='PUBLISHED'||item.status==='CLOSED'||item.status==='EXPIRED');if(hasActive){ElMessage.success('已撤回该班发布。该试卷仍发布在其他班级，因此继续保留在试卷库中。');return;}try{await ElMessageBox.confirm('发布已撤回。\n\n是否同时从“已保存试卷”中删除这张试卷？\n\n删除只会清理教师试卷库，历史发布、学生作答和统计数据仍会保留。','发布已撤回',{confirmButtonText:'删除试卷',cancelButtonText:'仅撤回',type:'warning'});await deletePaper(paperId);await load();ElMessage.success('已撤回发布并从试卷库删除，历史记录仍已保留。')}catch(choice:any){if(choice==='cancel')ElMessage.success('已撤回发布，试卷仍保留在试卷库中。');else throw choice}}catch(error:any){if(error!=='cancel')ElMessage.error(error.message||'撤回失败')}}
 watch(
-  () => form.subjectId,
+  () => form.teachingScopeId,
   () => {
     questions.value = [];
     selected.value = [];
@@ -191,12 +212,12 @@ onMounted(load);
     <el-form label-position="top" class="builder-form"
       ><div class="base-fields">
         <el-form-item label="任教学科"
-          ><el-select v-model="form.subjectId"
+          ><el-select v-model="form.teachingScopeId" placeholder="选择任课范围"
             ><el-option
               v-for="scope in scopes"
-              :key="scope.subjectId"
-              :label="scope.subjectName"
-              :value="scope.subjectId" /></el-select></el-form-item
+              :key="scope.teachingAssignmentId"
+              :label="`${scope.subjectName}（${scope.className}）`"
+              :value="scope.teachingAssignmentId" /></el-select></el-form-item
         ><el-form-item label="试卷名称"
           ><el-input v-model="form.name" maxlength="120"
         /></el-form-item>
@@ -224,7 +245,7 @@ onMounted(load);
             :min="1"
             :max="5"
             placeholder="难度"
-          /><el-button :disabled="!form.subjectId" @click="search"
+          /><el-button :disabled="!selectedSubjectId" @click="search"
             >检索已发布题目</el-button
           >
         </section>
@@ -320,7 +341,7 @@ onMounted(load);
       <el-button
         type="primary"
         :disabled="
-          !form.subjectId ||
+          !selectedSubjectId ||
           !form.name.trim() ||
           (mode === 'MANUAL' && !selected.length)
         "
@@ -328,7 +349,7 @@ onMounted(load);
         >保存试卷</el-button
       ></el-form
     >
-    <h2>已保存试卷</h2>
+    <div class="paper-library-heading"><h2>我的试卷</h2><el-button plain @click="openReleaseHistory">班级发布记录</el-button></div>
     <el-table :data="papers"
       ><el-table-column
         prop="name"
@@ -344,13 +365,13 @@ onMounted(load);
         label="操作"
         min-width="300"
         ><template #default="{ row }"
-          ><el-button @click="router.push(`/teacher/papers/${row.id}/student`)"
+          ><div class="paper-actions"><el-button @click="router.push(`/teacher/papers/${row.id}/student`)"
             >学生版打印</el-button
           ><el-button @click="router.push(`/teacher/papers/${row.id}/answer`)"
             >答案解析版打印</el-button
           ><el-button type="primary" plain @click="openPublish(row)"
             >发布到班级</el-button
-          ></template
+          ><el-button plain @click="openReleases(row)">发布管理</el-button></div><el-dropdown trigger="click" @command="(command:string)=>command==='delete'&&deleteSavedPaper(row)"><el-button text>更多</el-button><template #dropdown><el-dropdown-menu><el-dropdown-item command="delete" divided>删除试卷</el-dropdown-item></el-dropdown-menu></template></el-dropdown></template
         ></el-table-column
       ></el-table
     >
@@ -409,6 +430,10 @@ onMounted(load);
         ></template
       ></el-dialog
     >
+    <el-dialog v-model="releaseVisible" title="发布管理" width="min(860px, calc(100vw - 24px))"><el-table :data="releases"><el-table-column prop="className" label="班级"/><el-table-column label="发布时间" min-width="170"><template #default="{row}">{{formatDateTime(row.publishedAt)}}</template></el-table-column><el-table-column label="截止时间" min-width="170"><template #default="{row}">{{formatDateTime(row.deadline)}}</template></el-table-column><el-table-column label="状态"><template #default="{row}"><el-tag>{{releaseStatus(row.status)}}</el-tag></template></el-table-column><el-table-column label="操作" min-width="190"><template #default="{row}"><el-button @click="openStats(row)">作答情况</el-button><el-button v-if="row.status!=='CANCELLED'" type="danger" plain @click="cancelRelease(row)">撤回发布</el-button></template></el-table-column></el-table></el-dialog>
+    <el-dialog v-model="releaseHistoryVisible" title="班级发布记录" width="min(1040px, calc(100vw - 24px))"><section class="release-filters"><el-select v-model="releaseFilters.teachingScopeId" clearable placeholder="全部任课范围"><el-option v-for="scope in scopes" :key="scope.teachingAssignmentId" :label="`${scope.subjectName}（${scope.className}）`" :value="scope.teachingAssignmentId"/></el-select><el-select v-model="releaseFilters.status" placeholder="有效发布"><el-option label="有效发布" value=""/><el-option label="进行中" value="PUBLISHED"/><el-option label="已截止" value="CLOSED"/><el-option label="已撤回" value="CANCELLED"/></el-select><el-input v-model="releaseFilters.keyword" clearable placeholder="搜索试卷名称" @keyup.enter="loadReleaseHistory(1)"/><el-button type="primary" @click="loadReleaseHistory(1)">查询</el-button></section><el-table :data="releaseHistory"><el-table-column prop="paperName" label="试卷名称" min-width="180"/><el-table-column label="任课范围" min-width="150"><template #default="{row}">{{row.subjectName}}（{{row.className}}）</template></el-table-column><el-table-column label="发布时间" min-width="170"><template #default="{row}">{{formatDateTime(row.publishedAt)}}</template></el-table-column><el-table-column label="截止时间" min-width="170"><template #default="{row}">{{formatDateTime(row.deadline)}}</template></el-table-column><el-table-column label="状态"><template #default="{row}"><el-tag>{{releaseStatus(row.status)}}</el-tag></template></el-table-column><el-table-column label="操作" min-width="190"><template #default="{row}"><el-button @click="openStats(row)">{{row.status==='CANCELLED'?'查看历史':'作答情况'}}</el-button><el-button v-if="row.status!=='CANCELLED'" type="danger" plain @click="cancelRelease(row)">撤回发布</el-button></template></el-table-column></el-table><el-pagination class="release-pagination" layout="total, prev, pager, next" :current-page="releaseFilters.page" :page-size="releaseFilters.size" :total="releaseHistoryTotal" @current-change="loadReleaseHistory"/></el-dialog>
+    <el-dialog v-model="statsVisible" title="班级作答情况" width="min(980px, calc(100vw - 24px))"><el-descriptions v-if="releaseStats" :column="4" border><el-descriptions-item label="应交">{{releaseStats.assigned}}</el-descriptions-item><el-descriptions-item label="已提交">{{releaseStats.submitted}}</el-descriptions-item><el-descriptions-item label="未提交">{{releaseStats.unsubmitted}}</el-descriptions-item><el-descriptions-item label="客观题平均分">{{releaseStats.averageScore}}</el-descriptions-item></el-descriptions><h3>学生作答</h3><el-table :data="submissions"><el-table-column prop="studentNumber" label="学号"/><el-table-column prop="studentName" label="姓名"/><el-table-column label="状态"><template #default="{row}"><el-tag>{{submissionStatus(row.status)}}</el-tag></template></el-table-column><el-table-column label="客观得分"><template #default="{row}">{{row.objectiveScore==null?'-':`${row.objectiveScore} / ${row.objectiveTotal}`}}</template></el-table-column><el-table-column label="主观题"><template #default="{row}">{{row.subjectivePendingCount?`${row.subjectivePendingCount}题待人工处理`:''}}</template></el-table-column><el-table-column label="提交时间" min-width="170"><template #default="{row}">{{formatDateTime(row.submittedAt)}}</template></el-table-column><el-table-column label="操作"><template #default="{row}"><el-button v-if="row.status==='SUBMITTED'" @click="openSubmission(row)">查看答卷</el-button></template></el-table-column></el-table></el-dialog>
+    <el-dialog v-model="answerVisible" title="学生已提交答卷" width="min(900px, calc(100vw - 24px))"><article v-for="q in selectedSubmission?.questions" :key="q.itemId" class="submission-question"><b>第{{q.order}}题 · {{questionTypeLabel(q.type)}} · {{q.score}}分</b><QuestionContent :content="q.stem" :attachments="q.stemAttachments" position="QUESTION"/><p v-for="o in q.options" :key="o.label"><b>{{o.label}}.</b> <ScientificText :content="o.content"/></p><h4>学生答案</h4><AnswerDisplay :question-type="q.type" :value="q.submittedAnswer" :options="q.options"/><template v-if="q.type!=='SUBJECTIVE'"><h4>正确答案</h4><AnswerDisplay :question-type="q.type" :value="q.correctAnswer" :options="q.options"/><p>客观得分：{{q.awardedScore}} / {{q.score}}</p></template><p v-else>状态：待人工处理</p><section class="submission-standard"><h4>STANDARD 标准解析</h4><StandardAnalysis :content="q.standardAnalysis" :attachments="q.analysisAttachments"/></section></article></el-dialog>
   </main>
 </template>
 
@@ -481,6 +506,17 @@ onMounted(load);
 .basket article > div {
   grid-column: 2/4;
 }
+.paper-actions { display:grid; grid-template-columns:repeat(2,minmax(110px,1fr)); gap:8px; }
+.paper-actions .el-button { width:100%; margin:0; }
+.paper-library-heading { display:flex; align-items:center; justify-content:space-between; gap:16px; }
+.release-filters { display:grid; grid-template-columns:1.2fr 1fr 1.4fr auto; gap:10px; margin-bottom:16px; }
+.release-pagination { margin-top:16px; justify-content:flex-end; }
+.question-card { overflow:hidden; }
+.question-card :deep(.katex-display) { overflow-x:auto; overflow-y:hidden; }
+.submission-question { display:block; padding:20px 0; border-bottom:1px solid var(--el-border-color-lighter); overflow:hidden; }
+.submission-standard { display:block; margin-top:14px; padding:14px 16px; border-left:3px solid var(--el-color-primary); background:var(--el-fill-color-lighter); }
+.submission-standard :deep(.standard-analysis),.submission-standard :deep(.standard-analysis__block) { display:block; width:100%; margin:0 0 12px; }
+.submission-question :deep(.katex-display) { overflow-x:auto; }
 @media (max-width: 800px) {
   .heading {
     align-items: stretch;
@@ -489,6 +525,7 @@ onMounted(load);
   .base-fields,
   .rule-fields,
   .filters,
+  .release-filters,
   .manual-grid {
     grid-template-columns: 1fr;
   }

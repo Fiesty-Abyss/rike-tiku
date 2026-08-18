@@ -155,6 +155,31 @@ class PaperAssignmentIntegrationTest extends AdminQuestionIntegrationTestSupport
                 .isInstanceOf(RenZhengYeWuYiChang.class);
     }
 
+    @Test
+    @Transactional
+    void softDeleteHidesPaperButKeepsCancelledReleaseAndSubmissionHistory() {
+        demo.seed();
+        long teacher = id("SELECT id FROM yong_hu WHERE yong_hu_ming='demo_physics_admin'");
+        long student = id("SELECT id FROM yong_hu WHERE yong_hu_ming='demo_199_01'");
+        long subject = id("SELECT id FROM ke_mu WHERE ke_mu_dai_ma='PHYSICS'");
+        long scope = id("SELECT r.id FROM ren_ke_guan_xi r JOIN ban_ji b ON b.id=r.ban_ji_id JOIN jiao_shi_dang_an j ON j.id=r.jiao_shi_id WHERE b.ban_ji_bian_ma='DEMO_CLASS_199' AND j.yong_hu_id=" + teacher + " AND r.ke_mu_id=" + subject);
+        long question = id("SELECT id FROM ti_mu WHERE ke_mu_id=" + subject + " AND ti_mu_lei_xing='SINGLE_CHOICE' AND zhuang_tai='PUBLISHED' AND yi_shan_chu=0 ORDER BY id LIMIT 1");
+        var paper = papers.save(teacher, new PaperDtos.Save(subject, "软删除历史保留", "MANUAL", List.of(new PaperDtos.ItemInput(question, new BigDecimal("10")))));
+        var release = assignments.publish(teacher, paper.id(), new PaperAssignmentDtos.Publish(scope, LocalDateTime.now().plusHours(2)));
+        assertThatThrownBy(() -> papers.softDelete(teacher, paper.id())).isInstanceOfSatisfying(RenZhengYeWuYiChang.class,
+                error -> assertThat(error.getCode()).isEqualTo("PAPER_DELETE_ACTIVE_RELEASE"));
+        var detail = assignments.studentDetail(student, release.id());
+        JsonNode answer = mapper.readTree(jdbc.queryForObject("SELECT CAST(zheng_que_da_an_kuai_zhao AS CHAR) FROM shi_juan_fa_bu_ti_mu WHERE id=?", String.class, detail.questions().getFirst().itemId())).path("optionLabels").get(0);
+        assignments.submit(student, release.id(), new PaperAssignmentDtos.Submit(List.of(new PaperAssignmentDtos.DraftAnswer(detail.questions().getFirst().itemId(), answer))));
+        assignments.cancel(teacher, release.id());
+        papers.softDelete(teacher, paper.id());
+        assertThat(papers.list(teacher)).extracting(PaperDtos.ListItem::id).doesNotContain(paper.id());
+        assertThat(assignments.teacherReleases(teacher, paper.id())).extracting(PaperAssignmentDtos.Release::status).contains("CANCELLED");
+        assertThat(assignments.submissions(teacher, release.id())).extracting(PaperAssignmentDtos.SubmissionRow::status).contains("SUBMITTED");
+        assertThat(assignments.teacherReleaseOverview(teacher, scope, "CANCELLED", "软删除", 1, 20).items())
+                .extracting(PaperAssignmentDtos.ReleaseOverview::paperId).contains(paper.id());
+    }
+
     private PaperAssignmentDtos.Release publishAndSubmit(long teacherUser,long studentUser,String subjectCode,String name) {
         long subject=id("SELECT id FROM ke_mu WHERE ke_mu_dai_ma='"+subjectCode+"'");
         long scope=id("SELECT r.id FROM ren_ke_guan_xi r JOIN ban_ji b ON b.id=r.ban_ji_id JOIN jiao_shi_dang_an j ON j.id=r.jiao_shi_id WHERE b.ban_ji_bian_ma='DEMO_CLASS_199' AND j.yong_hu_id="+teacherUser+" AND r.ke_mu_id="+subject+" AND r.zhuang_tai='ACTIVE'");
