@@ -1,21 +1,23 @@
 # RIKE 理科学习辅助系统
 
-> **收口事实（2026-08-17）：PR [#33](https://github.com/Fiesty-Abyss/rike-tiku/pull/33) 已完成最终两项用户反馈修复并通过最终机器回归，合并状态以 GitHub PR 为准。数据库基线为 Flyway V29、50 张业务表。**
+> **最终封板门禁（2026-08-18）：PR [#33](https://github.com/Fiesty-Abyss/rike-tiku/pull/33) 已 ordinary merge；PR #34 已完成打印用户复验并进入普通合并门禁。Flyway V30、50 张业务表；专题主观题继续以 `ti_mu` 为唯一事实源，可手动进入教师试卷，但不参与自动评分。**
 
 面向高中物理、化学、生物的 Spring Boot 大模型题库系统。正式判分与 STANDARD 始终由确定性业务事实控制；AI 只承担解释、答疑和待人工审核的候选生成。
 
-- [论文插图原始证据](docs/evidence/thesis-final/README.md) · [功能—截图—代码—表索引](docs/FEATURE_SCREENSHOT_CODE_INDEX.md)
-- [Excel 精确导入指南](docs/EXCEL_IMPORT_GUIDE.md) · [学生模板](docs/templates/student-import-template.xlsx) · [题目模板](docs/templates/question-import-template.xlsx)
-- [V29 数据库参考](docs/DATABASE_SCHEMA_REFERENCE.md) · [V29 纯结构快照](database/schema_snapshot_v29.sql) · [SQL 示例](docs/SQL_EXAMPLES.md)
-- [论文初稿](docs/thesis/RIKE_THESIS_DRAFT.md) · [事实核对表](docs/thesis/RIKE_THESIS_FACT_CHECK.md) · [答辩提纲](docs/thesis/RIKE_DEFENSE_OUTLINE.md)
+- [最终项目事实包](docs/FINAL_PROJECT_FACTS.md) · [最终截图证据目录](docs/FINAL_SCREENSHOT_EVIDENCE_CATALOG.md) · [功能—截图—代码—表快速索引](docs/FEATURE_SCREENSHOT_CODE_INDEX.md) · [功能技术地图](docs/FEATURE_CODE_TECH_MAP.md)
+- [功能—数据库表地图](docs/FEATURE_DATABASE_TABLE_MAP.md) · [Excel 精确导入指南](docs/EXCEL_IMPORT_GUIDE.md) · [学生模板](docs/templates/student-import-template.xlsx) · [题目模板](docs/templates/question-import-template.xlsx) · [Excel 模板/导入页截图](docs/FINAL_SCREENSHOT_EVIDENCE_CATALOG.md#excel-模板与导入页面资料)
+- [V30 数据库参考](docs/DATABASE_SCHEMA_REFERENCE.md) · [V30 纯结构快照](database/schema_snapshot_v30.sql) · [V29 历史快照](database/schema_snapshot_v29.sql) · [SQL 示例](docs/SQL_EXAMPLES.md)
+- [论文写作中心](docs/THESIS_WRITING_HUB.md) · [论文初稿](docs/thesis/RIKE_THESIS_DRAFT.md) · [事实核对表](docs/thesis/RIKE_THESIS_FACT_CHECK.md) · [答辩提纲](docs/thesis/RIKE_DEFENSE_OUTLINE.md) · [正式参考文献 22 条](docs/THESIS_REFERENCES.md)
 
-## PR #33 最终收口事实（2026-08-17）
+## Post-merge V30 专题与试卷质量修补（2026-08-17）
 
-- 用户最终页面审查确认除两项外无其他大问题；本轮已移除忘记密码弹窗的安全实现说明，并在教师列表依据真实 `yong_hu_jiao_se` 角色显示“教师 / 管理员”，可直接授权或撤销管理员。
-- 最终自动化：后端 217 tests、0 failures、0 errors、3 skipped；前端 68 个测试文件 / 221 tests；type-check、build、`npm audit --omit=dev` 通过，0 vulnerabilities。
-- 正式 `rike_tiku` 只读核验：Flyway V29、50 张业务表、0 failed migration。随机临时 schema 已从 V1 完整迁移至 V29。
+- V30 为已发布试卷题目增加 JSON 附件快照，并将学生逐题作答状态扩展为可保存 `SUBJECTIVE_PENDING`；不新增表，业务表保持 50 张。
+- 15 个专题单元、45 道 `SUBJECTIVE + TOPIC_LEARNING` 原创题按 FOUNDATION / TRANSFER / ADVANCED 编排；题型分布为计算 14、实验 9、流程 5、材料分析 13、综合 4。专题单元只编排既有 `ti_mu`，不建立第二套题库。
+- 教师手动组卷支持筛选和加入主观大题；随机/规则组卷仍只抽确定性客观题。发布快照冻结附件元数据，学生端可显示冻结附件并保存主观作答；主观题不由 AI 或规则自动评分。
+- 最终自动化：后端 220 tests、0 failures、0 errors、3 skipped；前端 68 个测试文件 / 223 tests；type-check、build、`npm audit --omit=dev` 通过，0 vulnerabilities。完整命令和证据边界见 [最终项目事实包](docs/FINAL_PROJECT_FACTS.md)。
+- 正式 `rike_tiku` 已正常升级至 Flyway V30、50 张业务表、0 failed migration；随机临时 schema 已从 V1 完整迁移至 V30。正式机器浏览器 11 页 / 56 断言通过，0 console/page/failed-request error、0 overflow；证据位于 `docs/evidence/v30-machine-browser/`，不等同用户真人验收。
 - 真实 DeepSeek variant/tutor、GLM Vision、xAI Vision、Web Search 本轮均为 `BLOCKED_EXTERNAL_PROVIDER`；Mock/Fake 不代表真实 PASS。
-- 论文交付：通用 [Word 事实稿](docs/thesis/deliverables/RIKE_论文事实稿_待套学校模板.docx) 与 [答辩 PPT](docs/thesis/deliverables/RIKE_答辩PPT_待套学校模板.pptx) 已生成，未发现学校模板，使用前必须套用并视觉复核。
+- 学校 Word/PPT 模板尚未提供；仓库现有 Markdown 事实稿、截图、数据库与文献入口可直接用于后续套版，不在本轮生成或假设学校模板。
 
 ## 1. 公共门户
 
@@ -328,7 +330,7 @@ Provider 配置与学生业务 API 分离，前端只能提交受控模型 ID。
 
 ### 功能说明
 
-专题单元引用 2–3 道既有 `TOPIC_LEARNING` 题，按基础理解、情境迁移和综合提升组织；支持题干/解析附件、本地草稿、STANDARD、专题答疑和待审核专题变式。主观题不自动评分，草稿不上传。
+专题单元引用既有 `SUBJECTIVE + TOPIC_LEARNING` 题，按基础理解、情境迁移和综合提升三题组织；当前正式内容为 15 个单元、45 道原创计算/实验/流程/材料分析/综合大题。支持题干/解析附件、本地草稿、STANDARD、专题答疑和待审核专题变式。主观题不自动评分，草稿不上传。
 
 ### 实现映射
 
@@ -391,7 +393,7 @@ Provider 配置与学生业务 API 分离，前端只能提交受控模型 ID。
 
 ### 功能说明
 
-教师把 READY 试卷发布到本人任课班级；系统冻结题目、选项、分值、答案和 STANDARD。学生自动保存草稿并幂等提交，客观题确定性判分；教师查看 SQL/规则计算的班级统计和学生画像。
+教师把 READY 试卷发布到本人任课班级；系统冻结题目、选项、分值、答案、STANDARD 与附件元数据。手动组卷可加入已发布专题主观大题；学生自动保存草稿并幂等提交，客观题确定性判分，主观题保存为待人工处理且不计入自动得分；教师查看 SQL/规则计算的班级统计和学生画像。
 
 ### 实现映射
 
@@ -492,10 +494,10 @@ Provider 配置与学生业务 API 分离，前端只能提交受控模型 ID。
 
 ## 工程、数据库与论文导航
 
-- 技术栈：Java 25、Spring Boot 4.1、Vue 3、TypeScript、MySQL 8.4、Flyway V1–V29。
-- 数据模型：50 张业务表；[字段/约束参考](docs/DATABASE_SCHEMA_REFERENCE.md)、[纯结构快照](database/schema_snapshot_v29.sql)、[ER 模块图](database/diagrams/rike_tiku_er.md)。
+- 技术栈：Java 25、Spring Boot 4.1、Vue 3、TypeScript、MySQL 8.4、Flyway V1–V30。
+- 数据模型：50 张业务表；[字段/约束参考](docs/DATABASE_SCHEMA_REFERENCE.md)、[V29 历史纯结构快照](database/schema_snapshot_v29.sql)、[ER 模块图](database/diagrams/rike_tiku_er.md)。
 - Excel：[学生模板](docs/templates/student-import-template.xlsx)、[题目19列模板](docs/templates/question-import-template.xlsx)、[Preview/Confirm 指南](docs/EXCEL_IMPORT_GUIDE.md)。
 - 论文：[写作资料中心](docs/THESIS_WRITING_HUB.md)、[论文初稿](docs/thesis/RIKE_THESIS_DRAFT.md)、[事实核对表](docs/thesis/RIKE_THESIS_FACT_CHECK.md)、[答辩提纲](docs/thesis/RIKE_DEFENSE_OUTLINE.md)。
 - 正式论文唯一白名单：[22条正式参考文献](docs/THESIS_REFERENCES.md)；正式引用管理：[references.bib](docs/references/references.bib)。扩展工程调研已物理隔离到 [research-only](docs/references/research-only/README.md)，不得作为开题报告或毕业论文正式引用。文献只用于说明研究与设计依据，不代表 RIKE 自身实验结果。
 
-真实 Provider 状态以当前验收记录为准：DeepSeek variant、DeepSeek tutor、GLM Vision、xAI Vision、Web Search 均因没有可安全使用的轮换后凭据而为 `BLOCKED_EXTERNAL_PROVIDER`；Mock/Fake 只用于自动化，不记作真实调用。人工验收状态为 `FINAL_USER_REVIEW_PENDING`。
+真实 Provider 状态以当前验收记录为准：DeepSeek variant、DeepSeek tutor、GLM Vision、xAI Vision、Web Search 均因没有可安全使用的轮换后凭据而为 `BLOCKED_EXTERNAL_PROVIDER`；Mock/Fake 只用于自动化，不记作真实调用。PR #34 用户人工验收已包含 `PRINT_USER_VERIFIED`；普通合并后的最终 main SHA 由 `FINAL_PROJECT_FACTS.md` 固化。

@@ -1,4 +1,6 @@
-# PR #33 人工验收事实台账
+# PR #33 人工验收事实台账（历史已合并）
+
+> PR #33 已 ordinary merge 至 `main`（`fba1276862fee973129ee8b85c6fc3a1d55b8662`）。该文件保留当时用户页面审查与修复链，不把机器浏览器冒充用户逐页审查；当前 PR #34 用户复验见 [MANUAL_ACCEPTANCE_FINDINGS_PR34.md](MANUAL_ACCEPTANCE_FINDINGS_PR34.md)。
 
 更新时间：2026-08-17
 用户最终审查状态：`FINAL_USER_ACCEPTED`
