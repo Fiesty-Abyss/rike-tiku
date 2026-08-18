@@ -38,6 +38,11 @@ public final class PaperAssignmentDtos {
     public record SubmissionRow(Long studentId, String studentNumber, String studentName, String status,
                                 BigDecimal objectiveScore, BigDecimal objectiveTotal, LocalDateTime submittedAt,
                                 int subjectivePendingCount) {}
+    /** A teacher-owned release remains available as teaching history even when its paper is soft-deleted. */
+    public record ReleaseOverview(Long releaseId, Long paperId, String paperName, Long subjectId, String subjectName,
+                                  Long teachingScopeId, Long classId, String className, LocalDateTime publishedAt,
+                                  LocalDateTime deadline, String status) {}
+    public record ReleasePage(List<ReleaseOverview> items, long total) {}
     public record StudentTrend(Long releaseId, String paperName, LocalDateTime submittedAt,
                                BigDecimal score, BigDecimal total, BigDecimal rate) {}
     public record StudentProfile(Long studentId, List<StudentTrend> trend, List<String> weakTypes,

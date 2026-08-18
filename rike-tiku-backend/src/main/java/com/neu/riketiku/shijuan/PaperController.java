@@ -31,9 +31,9 @@ public class PaperController {
     @GetMapping("/questions")
     public List<PaperDtos.QuestionOption> questions(@AuthenticationPrincipal RenZhengYongHu user,
             @RequestParam long subjectId, @RequestParam(required = false) Long knowledgePointId,
-            @RequestParam(required = false) String questionType, @RequestParam(required = false) Integer difficulty,
+            @RequestParam(required = false) Long teachingScopeId, @RequestParam(required = false) String questionType, @RequestParam(required = false) Integer difficulty,
             @RequestParam(required = false) String keyword) {
-        return service.questions(user.id(), subjectId, knowledgePointId, questionType, difficulty, keyword);
+        return service.questions(user.id(), subjectId, teachingScopeId, knowledgePointId, questionType, difficulty, keyword);
     }
     @GetMapping("/knowledge-points")
     public List<PaperDtos.KnowledgePoint> points(@AuthenticationPrincipal RenZhengYongHu user, @RequestParam long subjectId) {
@@ -53,6 +53,7 @@ public class PaperController {
         return response(storage.read(attachment.relativePath(), attachment.hash()));
     }
     @PostMapping public PaperDtos.Paper save(@AuthenticationPrincipal RenZhengYongHu user, @Valid @RequestBody PaperDtos.Save request) { return service.save(user.id(), request); }
+    @PostMapping("/{paperId}/delete") public void softDelete(@AuthenticationPrincipal RenZhengYongHu user, @PathVariable long paperId) { service.softDelete(user.id(), paperId); }
     @PostMapping("/rule") public PaperDtos.Paper rule(@AuthenticationPrincipal RenZhengYongHu user, @Valid @RequestBody PaperDtos.Rule request) { return service.rule(user.id(), request); }
     @PostMapping("/random") public PaperDtos.Paper random(@AuthenticationPrincipal RenZhengYongHu user, @Valid @RequestBody PaperDtos.Rule request) { return service.random(user.id(), request); }
 
