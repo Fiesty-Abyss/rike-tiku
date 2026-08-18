@@ -2,7 +2,7 @@
 
 ## 身份与边界
 
-- PR：[#34](https://github.com/Fiesty-Abyss/rike-tiku/pull/34)（合并前为 Draft）
+- PR：[#34](https://github.com/Fiesty-Abyss/rike-tiku/pull/34)（`MERGED`，ordinary merge commit `ea784b5a1b6572ea1a2625db347859bd6e410eda`，`mergedAt=2026-08-18T01:24:08Z`）
 - Base：`fba1276862fee973129ee8b85c6fc3a1d55b8662`（PR #33 ordinary merge 后的 `main`）
 - Branch：`fix/topic-learning-paper-polish`
 - 本记录的初始 HEAD：`aba887a92e1bfa8bb24e184a5f1b09489efc7533`
@@ -36,4 +36,4 @@
 
 ## 合并门槛
 
-`PR34-MA-001` 已满足用户复验门槛：`PRINT_HANDLER_MACHINE_VERIFIED` 与 `PRINT_USER_VERIFIED` 均为 YES。其余 PR #34 范围已由用户人工页面审查确认，无新的 BLOCKER/HIGH finding；在最终自动化、数据库、科学内容和文献门禁通过后可将 PR 转 Ready 并 ordinary merge。
+`PR34-MA-001` 已满足用户复验门槛：`PRINT_HANDLER_MACHINE_VERIFIED` 与 `PRINT_USER_VERIFIED` 均为 YES。其余 PR #34 范围已由用户人工页面审查确认，无新的 BLOCKER/HIGH finding；最终自动化、数据库、科学内容和文献门禁通过后，PR 已转 Ready 并 ordinary merge。
