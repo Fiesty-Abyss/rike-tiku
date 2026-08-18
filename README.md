@@ -500,4 +500,4 @@ Provider 配置与学生业务 API 分离，前端只能提交受控模型 ID。
 - 论文：[写作资料中心](docs/THESIS_WRITING_HUB.md)、[论文初稿](docs/thesis/RIKE_THESIS_DRAFT.md)、[事实核对表](docs/thesis/RIKE_THESIS_FACT_CHECK.md)、[答辩提纲](docs/thesis/RIKE_DEFENSE_OUTLINE.md)。
 - 正式论文唯一白名单：[22条正式参考文献](docs/THESIS_REFERENCES.md)；正式引用管理：[references.bib](docs/references/references.bib)。扩展工程调研已物理隔离到 [research-only](docs/references/research-only/README.md)，不得作为开题报告或毕业论文正式引用。文献只用于说明研究与设计依据，不代表 RIKE 自身实验结果。
 
-真实 Provider 状态以当前验收记录为准：DeepSeek variant、DeepSeek tutor、GLM Vision、xAI Vision、Web Search 均因没有可安全使用的轮换后凭据而为 `BLOCKED_EXTERNAL_PROVIDER`；Mock/Fake 只用于自动化，不记作真实调用。人工验收状态为 `FINAL_USER_REVIEW_PENDING`。
+真实 Provider 状态以当前验收记录为准：DeepSeek variant、DeepSeek tutor、GLM Vision、xAI Vision、Web Search 均因没有可安全使用的轮换后凭据而为 `BLOCKED_EXTERNAL_PROVIDER`；Mock/Fake 只用于自动化，不记作真实调用。PR #34 用户人工验收已包含 `PRINT_USER_VERIFIED`；普通合并后的最终 main SHA 由 `FINAL_PROJECT_FACTS.md` 固化。
