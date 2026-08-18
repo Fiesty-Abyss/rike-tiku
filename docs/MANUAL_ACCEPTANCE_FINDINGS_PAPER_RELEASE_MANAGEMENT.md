@@ -1,9 +1,10 @@
 # PR #35 教师试卷发布管理人工验收记录
 
-- PR：#35（Draft；ordinary merge 前最终记录）
+- PR：#35（MERGED；ordinary merge）
 - 分支：`fix/paper-release-management`
 - 基线：`f95effcc1ea681530b4be6d01de724f4f999d9f6`
 - 记录日期：2026-08-18
+- ordinary merge：`fde39c53efca316010abf63acf56fda2c631315c`，`mergedAt=2026-08-18T07:30:00Z`
 - 验收来源：用户人工页面审查与自动化回归；本轮没有独立机器浏览器复跑。
 
 ## 已确认的基础闭环
@@ -21,7 +22,7 @@
 
 用户已确认：教师发布管理可用；可查看班级作答、已提交学生答卷和历史记录；答卷采用纵向人工审查；答案 JSON 不直接展示；撤回后学生不可见；任课范围按“学科（班级）”区分；当前“更多”按钮视觉可接受，不再继续优化。
 
-证据状态：`USER_MANUAL_ACCEPTANCE = PASS`；`AUTOMATED_TEST_VERIFIED = PASS`；`MACHINE_BROWSER = NOT_RUN`。后者不应被误写成机器浏览器通过，也不影响用户已明确授权的 ordinary merge。
+证据状态：`USER_MANUAL_ACCEPTANCE = PASS`；`AUTOMATED_TEST_VERIFIED = PASS`；`MACHINE_BROWSER = NOT_RUN`。后者不应被误写成机器浏览器通过。用户已授权并完成 ordinary merge。
 
 ## 数据边界
 
