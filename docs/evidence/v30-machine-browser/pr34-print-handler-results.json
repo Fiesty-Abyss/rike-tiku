@@ -1,0 +1,27 @@
+{
+  "generatedAt": "2026-08-17",
+  "status": "PRINT_HANDLER_MACHINE_VERIFIED",
+  "environment": {
+    "frontend": "http://localhost:8080",
+    "browser": "independent headless Chromium profile",
+    "dataMode": "browser-routed controlled teacher and paper response; no credentials or formal business records used"
+  },
+  "assertions": [
+    {
+      "route": "/teacher/papers/1/student",
+      "action": "click 打印 / 另存为 PDF",
+      "windowPrintCalls": 1,
+      "result": "PASS"
+    },
+    {
+      "route": "/teacher/papers/1/answer",
+      "action": "click 打印 / 另存为 PDF",
+      "windowPrintCalls": 1,
+      "result": "PASS"
+    }
+  ],
+  "consoleErrors": 0,
+  "pageErrors": 0,
+  "unexpectedFailedRequests": 0,
+  "limitation": "Headless Chromium cannot prove that an operating-system print dialog opened. User manual retest remains pending."
+}

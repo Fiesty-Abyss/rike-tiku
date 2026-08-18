@@ -4,6 +4,7 @@ import com.neu.riketiku.ai.AiProviderService;
 import com.neu.riketiku.ai.provider.AiModelRequest;
 import com.neu.riketiku.renzheng.RenZhengYeWuYiChang;
 import com.neu.riketiku.tiku.QuestionDisplayTextNormalizer;
+import com.neu.riketiku.tiku.fujian.QuestionAttachmentStorage;
 import com.neu.riketiku.xueshenglianxi.ObjectiveAnswerGrader;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -11,6 +12,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HexFormat;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -31,14 +33,17 @@ public class PaperAssignmentService {
     private final ObjectiveAnswerGrader grader;
     private final QuestionDisplayTextNormalizer textNormalizer;
     private final AiProviderService aiProvider;
+    private final QuestionAttachmentStorage attachmentStorage;
     private final ObjectMapper mapper = new ObjectMapper();
 
     public PaperAssignmentService(JdbcTemplate jdbc, ObjectiveAnswerGrader grader,
-                                  QuestionDisplayTextNormalizer textNormalizer, AiProviderService aiProvider) {
+                                  QuestionDisplayTextNormalizer textNormalizer, AiProviderService aiProvider,
+                                  QuestionAttachmentStorage attachmentStorage) {
         this.jdbc = jdbc;
         this.grader = grader;
         this.textNormalizer = textNormalizer;
         this.aiProvider = aiProvider;
+        this.attachmentStorage = attachmentStorage;
     }
 
     @Transactional
@@ -70,10 +75,10 @@ public class PaperAssignmentService {
         long releaseId = jdbc.queryForObject("SELECT LAST_INSERT_ID()", Long.class);
         for (Snapshot item : items) jdbc.update("""
                 INSERT INTO shi_juan_fa_bu_ti_mu(shi_juan_fa_bu_id,ti_mu_id,ti_mu_shun_xu,fen_zhi,ti_mu_lei_xing,
-                  ti_gan_kuai_zhao,xuan_xiang_kuai_zhao,zheng_que_da_an_kuai_zhao,biao_zhun_jie_xi_kuai_zhao,zhi_shi_dian_kuai_zhao)
-                VALUES (?,?,?,?,?,?,CAST(? AS JSON),CAST(? AS JSON),?,CAST(? AS JSON))
+                  ti_gan_kuai_zhao,xuan_xiang_kuai_zhao,zheng_que_da_an_kuai_zhao,biao_zhun_jie_xi_kuai_zhao,zhi_shi_dian_kuai_zhao,fu_jian_kuai_zhao)
+                VALUES (?,?,?,?,?,?,CAST(? AS JSON),CAST(? AS JSON),?,CAST(? AS JSON),CAST(? AS JSON))
                 """, releaseId, item.questionId(), item.order(), item.score(), item.type(), item.stem(),
-                item.optionsJson(), item.answerJson(), item.analysis(), item.pointsJson());
+                item.optionsJson(), item.answerJson(), item.analysis(), item.pointsJson(), item.attachmentsJson());
         return teacherRelease(userId, releaseId);
     }
 
@@ -103,7 +108,7 @@ public class PaperAssignmentService {
                 SELECT i.id,i.ti_mu_shun_xu,i.fen_zhi,i.ti_mu_lei_xing,i.ti_gan_kuai_zhao,
                   CAST(i.xuan_xiang_kuai_zhao AS CHAR),CAST(a.xue_sheng_da_an AS CHAR),a.shi_fou_zheng_que,a.de_fen,
                   CAST(i.zheng_que_da_an_kuai_zhao AS CHAR),i.biao_zhun_jie_xi_kuai_zhao,
-                  CAST(i.zhi_shi_dian_kuai_zhao AS CHAR)
+                  CAST(i.zhi_shi_dian_kuai_zhao AS CHAR),CAST(i.fu_jian_kuai_zhao AS CHAR)
                 FROM shi_juan_fa_bu_ti_mu i
                 LEFT JOIN shi_juan_ti_jiao s ON s.shi_juan_fa_bu_id=i.shi_juan_fa_bu_id AND s.xue_sheng_id=?
                 LEFT JOIN shi_juan_xue_sheng_da_ti a ON a.shi_juan_ti_jiao_id=s.id AND a.shi_juan_fa_bu_ti_mu_id=i.id
@@ -111,8 +116,26 @@ public class PaperAssignmentService {
                 """, (rs, row) -> new PaperAssignmentDtos.Question(rs.getLong(1), rs.getInt(2), rs.getBigDecimal(3),
                 rs.getString(4), textNormalizer.normalize(rs.getString(5)), answerSlots(rs.getString(10)), options(rs.getString(6)), json(rs.getString(7)),
                 nullableBoolean(rs.getObject(8)), rs.getBigDecimal(9), submitted ? rs.getString(10) : null,
-                submitted ? rs.getString(11) : null, strings(rs.getString(12))), studentId, releaseId);
+                submitted ? rs.getString(11) : null, strings(rs.getString(12)),
+                attachments(rs.getString(13), "QUESTION", releaseId, rs.getLong(1)),
+                attachments(rs.getString(13), "STANDARD_ANALYSIS", releaseId, rs.getLong(1))), studentId, releaseId);
         return new PaperAssignmentDtos.Detail(release, questions, submitted);
+    }
+
+    @Transactional(readOnly = true)
+    public QuestionAttachmentStorage.StoredImage studentAttachment(long userId, long releaseId, long itemId,
+                                                                    long attachmentId) {
+        long studentId = student(userId);
+        studentRelease(studentId, releaseId);
+        String snapshot = jdbc.query("SELECT CAST(fu_jian_kuai_zhao AS CHAR) FROM shi_juan_fa_bu_ti_mu WHERE id=? AND shi_juan_fa_bu_id=?",
+                (rs, row) -> rs.getString(1), itemId, releaseId).stream().findFirst()
+                .orElseThrow(() -> error("PAPER_ATTACHMENT_NOT_FOUND", "试卷附件不存在或无权访问", HttpStatus.NOT_FOUND));
+        SnapshotAttachment attachment = snapshotAttachments(snapshot).stream().filter(item -> item.id() == attachmentId).findFirst()
+                .orElseThrow(() -> error("PAPER_ATTACHMENT_NOT_FOUND", "试卷附件不存在或无权访问", HttpStatus.NOT_FOUND));
+        if (!"IMAGE".equals(attachment.type()) || "ANSWER".equals(attachment.position())) {
+            throw error("PAPER_ATTACHMENT_NOT_FOUND", "试卷附件不存在或无权访问", HttpStatus.NOT_FOUND);
+        }
+        return attachmentStorage.read(attachment.relativePath(), attachment.hash());
     }
 
     @Transactional
@@ -220,13 +243,19 @@ public class PaperAssignmentService {
         List<Snapshot> items = snapshots(paperId);
         Map<String, Long> types = items.stream().collect(java.util.stream.Collectors.groupingBy(Snapshot::type, LinkedHashMap::new, java.util.stream.Collectors.counting()));
         Set<String> points = items.stream().flatMap(i -> strings(i.pointsJson()).stream()).collect(java.util.stream.Collectors.toCollection(java.util.LinkedHashSet::new));
+        BigDecimal objectiveTotal = items.stream().filter(item -> OBJECTIVE.contains(item.type())).map(Snapshot::score).reduce(BigDecimal.ZERO, BigDecimal::add);
+        long subjectiveCount = items.stream().filter(item -> "SUBJECTIVE".equals(item.type())).count();
+        BigDecimal subjectiveTotal = paper.totalScore().subtract(objectiveTotal);
         List<String> risks = new ArrayList<>();
         if (items.size() < 5) risks.add("题量较少，需由教师核对考查范围");
         if (types.size() == 1) risks.add("题型单一，建议人工检查题型梯度");
         if (points.size() < 2) risks.add("知识点覆盖较窄");
+        if (subjectiveCount > 0) risks.add("主观大题不进行 AI 或规则自动评分，需由教师按 STANDARD 人工处理");
         return new PaperAssignmentDtos.QualityAssessment("FACTS_READY",
                 "辅助建议，不代替教师审核",
-                List.of("题型分布: " + types, "知识点数: " + points.size(), "总分: " + paper.totalScore()),
+                List.of("题型分布：" + typeDistribution(types), "知识点覆盖：" + points.size() + " 个",
+                        "试卷总分：" + paper.totalScore() + " 分", "客观题自动判分：" + objectiveTotal + " 分",
+                        "主观大题：" + subjectiveCount + " 题，共 " + subjectiveTotal + " 分，不进行 AI 自动评分"),
                 risks, List.of("请结合班级薄弱点人工核对", "本评估不会换题、改分或发布试卷"));
     }
 
@@ -291,13 +320,30 @@ public class PaperAssignmentService {
             SELECT q.id,i.ti_mu_shun_xu,i.fen_zhi,q.ti_mu_lei_xing,q.ti_gan,
             COALESCE((SELECT JSON_ARRAYAGG(JSON_OBJECT('label',o.xuan_xiang_biao_shi,'content',o.xuan_xiang_nei_rong)) FROM ti_mu_xuan_xiang o WHERE o.ti_mu_id=q.id AND o.yi_shan_chu=0),'[]'),
             CAST(q.zheng_que_da_an AS CHAR),a.jie_xi_nei_rong,
-            COALESCE((SELECT JSON_ARRAYAGG(p.wan_zheng_lu_jing) FROM ti_mu_zhi_shi_dian qp JOIN zhi_shi_dian p ON p.id=qp.zhi_shi_dian_id WHERE qp.ti_mu_id=q.id AND qp.yi_shan_chu=0),'[]')
+            COALESCE((SELECT JSON_ARRAYAGG(p.wan_zheng_lu_jing) FROM ti_mu_zhi_shi_dian qp JOIN zhi_shi_dian p ON p.id=qp.zhi_shi_dian_id WHERE qp.ti_mu_id=q.id AND qp.yi_shan_chu=0),'[]'),
+            COALESCE((SELECT JSON_ARRAYAGG(JSON_OBJECT('id',f.id,'position',f.guan_lian_wei_zhi,'type',f.fu_jian_lei_xing,
+                'fileName',f.yuan_shi_wen_jian_ming,'objectMarker',f.dui_xiang_biao_shi,'description',COALESCE(f.dui_xiang_biao_shi,''),
+                'order',f.pai_xu,'relativePath',f.xiang_dui_lu_jing,'hash',f.nei_rong_ha_xi))
+                FROM ti_mu_fu_jian f WHERE f.ti_mu_id=q.id AND f.zhuang_tai='ACTIVE' AND f.yi_shan_chu=0),'[]')
             FROM shi_juan_ti_mu i JOIN ti_mu q ON q.id=i.ti_mu_id JOIN ti_mu_jie_xi a ON a.ti_mu_id=q.id AND a.jie_xi_lei_xing='STANDARD' WHERE i.shi_juan_id=? ORDER BY i.ti_mu_shun_xu
-            """,(rs,row)->new Snapshot(rs.getLong(1),rs.getInt(2),rs.getBigDecimal(3),rs.getString(4),textNormalizer.normalize(rs.getString(5)),rs.getString(6),rs.getString(7),rs.getString(8),rs.getString(9)),paper);}
+            """,(rs,row)->new Snapshot(rs.getLong(1),rs.getInt(2),rs.getBigDecimal(3),rs.getString(4),textNormalizer.normalize(rs.getString(5)),rs.getString(6),rs.getString(7),rs.getString(8),rs.getString(9),rs.getString(10)),paper);}
     private long student(long user){return jdbc.query("SELECT id FROM xue_sheng_dang_an WHERE yong_hu_id=? AND zhuang_tai='ACTIVE' AND yi_shan_chu=0",(rs,row)->rs.getLong(1),user).stream().findFirst().orElseThrow(()->error("STUDENT_PROFILE_REQUIRED","学生档案不可用",HttpStatus.FORBIDDEN));}
     private String hash(List<Snapshot> items){try{MessageDigest digest=MessageDigest.getInstance("SHA-256");return HexFormat.of().formatHex(digest.digest(mapper.writeValueAsBytes(items)));}catch(Exception e){throw new IllegalStateException("试卷快照哈希失败",e);}}
     private List<PaperAssignmentDtos.Option> options(String json){if(json==null)return List.of();return mapper.readValue(json,new TypeReference<List<PaperAssignmentDtos.Option>>(){});}
     private List<String> strings(String json){if(json==null)return List.of();return mapper.readValue(json,new TypeReference<List<String>>(){});}
+    private List<PaperAssignmentDtos.Attachment> attachments(String snapshot, String position, long releaseId, long itemId) {
+        return snapshotAttachments(snapshot).stream().filter(attachment -> position.equals(attachment.position()))
+                .map(attachment -> new PaperAssignmentDtos.Attachment(attachment.id(), attachment.position(), attachment.type(),
+                        attachment.fileName(), attachment.objectMarker(), attachment.description(), attachment.order(),
+                        "/api/v1/student/papers/" + releaseId + "/items/" + itemId + "/attachments/" + attachment.id() + "/content"))
+                .toList();
+    }
+    private List<SnapshotAttachment> snapshotAttachments(String json) {
+        if (json == null || json.isBlank()) return List.of();
+        return mapper.readValue(json, new TypeReference<List<SnapshotAttachment>>() { }).stream()
+                .sorted(Comparator.comparingInt(SnapshotAttachment::order).thenComparingLong(SnapshotAttachment::id))
+                .toList();
+    }
     private JsonNode json(String value){return value==null?null:mapper.readTree(value);}
     private int answerSlots(String answerJson){JsonNode answer=json(answerJson);return answer!=null&&answer.path("blanks").isArray()?answer.path("blanks").size():1;}
     private Boolean nullableBoolean(Object value){
@@ -307,10 +353,24 @@ public class PaperAssignmentService {
     }
     private BigDecimal rate(long correct,long all){return all==0?BigDecimal.ZERO:BigDecimal.valueOf(correct*100).divide(BigDecimal.valueOf(all),2,RoundingMode.HALF_UP);}
     private BigDecimal percent(BigDecimal score,BigDecimal total){return total==null||total.signum()==0?BigDecimal.ZERO:score.multiply(BigDecimal.valueOf(100)).divide(total,2,RoundingMode.HALF_UP);}
+    private String typeDistribution(Map<String, Long> types) {
+        return types.entrySet().stream().map(entry -> typeLabel(entry.getKey()) + " " + entry.getValue() + " 题")
+                .collect(java.util.stream.Collectors.joining("、"));
+    }
+    private String typeLabel(String type) {
+        return switch (type) {
+            case "SINGLE_CHOICE" -> "单选";
+            case "MULTIPLE_CHOICE" -> "多选";
+            case "FILL_BLANK" -> "填空";
+            case "SUBJECTIVE" -> "主观大题";
+            default -> "未分类题型";
+        };
+    }
     private RenZhengYeWuYiChang error(String code,String message,HttpStatus status){return new RenZhengYeWuYiChang(code,message,status);}
     private record Scope(long id,long classId,long subjectId,long teacherId,String className,String subjectName){}
     private record PaperBase(long id,long subjectId,String status,BigDecimal totalScore){}
-    private record Snapshot(long questionId,int order,BigDecimal score,String type,String stem,String optionsJson,String answerJson,String analysis,String pointsJson){}
+    private record Snapshot(long questionId,int order,BigDecimal score,String type,String stem,String optionsJson,String answerJson,String analysis,String pointsJson,String attachmentsJson){}
+    private record SnapshotAttachment(long id,String position,String type,String fileName,String objectMarker,String description,int order,String relativePath,String hash){}
     private record GradeItem(long answerId,String type,BigDecimal score,String correctAnswer,String optionsJson,JsonNode answer){}
     private static final class Counter{long all;long correct;void add(boolean ok){all++;if(ok)correct++;}}
 }

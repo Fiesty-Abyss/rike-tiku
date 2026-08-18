@@ -1,4 +1,4 @@
-# 扩展研究资料
+# NOT_APPROVED_FOR_FORMAL_THESIS_USE · 扩展研究资料
 
 本目录保存项目设计、技术调研和个人研究过程中收集的扩展资料。
 

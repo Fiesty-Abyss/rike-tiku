@@ -1,6 +1,6 @@
 # 最终人工验收清单
 
-状态：`FINAL_USER_ACCEPTED_WITH_FINAL_TWO_FIXES`
+状态：PR #33 为 `FINAL_USER_ACCEPTED_WITH_FINAL_TWO_FIXES`（历史已合并）；PR #34 用户已确认专题/主观试卷范围，且 `PR34-MA-001 = FIXED`、`PRINT_USER_VERIFIED`、`OS_PRINT_DIALOG_USER_VERIFIED`。详情见 [PR #34 人工验收记录](MANUAL_ACCEPTANCE_FINDINGS_PR34.md)。
 
 本清单保留历史逐项项目。2026-08-17 用户已完成最终页面审查，并明确表示除最后两项修复外无其他大问题；两项修复完成与最终回归通过后授权 ordinary merge。机器测试不表述为用户逐页验收。正式环境为前端 `http://localhost:8080`、后端 `http://localhost:8081`、数据库 `rike_tiku`；不在公开文档记录验收账号或密码。
 
