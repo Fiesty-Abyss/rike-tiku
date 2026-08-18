@@ -1,6 +1,6 @@
 # RIKE 理科学习辅助系统
 
-> **最终封板门禁（2026-08-18）：PR [#33](https://github.com/Fiesty-Abyss/rike-tiku/pull/33) 已 ordinary merge；PR #34 已完成打印用户复验并进入普通合并门禁。Flyway V30、50 张业务表；专题主观题继续以 `ti_mu` 为唯一事实源，可手动进入教师试卷，但不参与自动评分。**
+> **最终产品基线（2026-08-18）：PR [#33](https://github.com/Fiesty-Abyss/rike-tiku/pull/33) 与 PR [#34](https://github.com/Fiesty-Abyss/rike-tiku/pull/34) 均已 ordinary merge；PR #34 merge commit 为 `ea784b5`。Flyway V30、50 张业务表；`PRODUCT DEVELOPMENT = FROZEN`，项目进入 `THESIS_AND_DEFENSE_DELIVERY`。**
 
 面向高中物理、化学、生物的 Spring Boot 大模型题库系统。正式判分与 STANDARD 始终由确定性业务事实控制；AI 只承担解释、答疑和待人工审核的候选生成。
 
