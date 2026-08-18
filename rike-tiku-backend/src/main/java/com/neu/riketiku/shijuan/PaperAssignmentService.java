@@ -203,6 +203,26 @@ public class PaperAssignmentService {
     }
 
     @Transactional(readOnly = true)
+    public List<PaperAssignmentDtos.Release> teacherReleases(long userId,long paperId){
+        ownedPaper(userId,paperId);
+        return jdbc.query("SELECT r.id,r.shi_juan_id,p.shi_juan_ming_cheng,k.ke_mu_ming_cheng,b.ban_ji_ming_cheng,r.fa_bu_shi_jian,r.jie_zhi_shi_jian,r.zhuang_tai,NULL,NULL,NULL FROM shi_juan_fa_bu r JOIN shi_juan p ON p.id=r.shi_juan_id JOIN ke_mu k ON k.id=r.ke_mu_id JOIN ban_ji b ON b.id=r.ban_ji_id JOIN jiao_shi_dang_an j ON j.id=r.fa_bu_jiao_shi_id WHERE r.shi_juan_id=? AND j.yong_hu_id=? ORDER BY r.fa_bu_shi_jian DESC",(rs,row)->release(rs),paperId,userId);
+    }
+    @Transactional(readOnly = true)
+    public List<PaperAssignmentDtos.SubmissionRow> submissions(long userId,long releaseId){
+        teacherRelease(userId,releaseId);
+        return jdbc.query("SELECT s.id,s.xue_hao,s.xing_ming,COALESCE(t.zhuang_tai,'NOT_STARTED'),t.ke_guan_de_fen,t.ke_guan_zong_fen,t.ti_jiao_shi_jian,COALESCE((SELECT COUNT(*) FROM shi_juan_xue_sheng_da_ti a WHERE a.shi_juan_ti_jiao_id=t.id AND a.zhuang_tai='SUBJECTIVE_PENDING'),0) FROM shi_juan_fa_bu r JOIN ban_ji_xue_sheng bx ON bx.ban_ji_id=r.ban_ji_id AND bx.shi_fou_zhu_ban_ji=1 AND bx.zhuang_tai='ACTIVE' AND bx.tui_chu_shi_jian IS NULL JOIN xue_sheng_dang_an s ON s.id=bx.xue_sheng_id LEFT JOIN shi_juan_ti_jiao t ON t.shi_juan_fa_bu_id=r.id AND t.xue_sheng_id=s.id WHERE r.id=? ORDER BY s.xue_hao",(rs,row)->new PaperAssignmentDtos.SubmissionRow(rs.getLong(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getBigDecimal(5),rs.getBigDecimal(6),rs.getTimestamp(7)==null?null:rs.getTimestamp(7).toLocalDateTime(),rs.getInt(8)),releaseId);
+    }
+    @Transactional(readOnly = true)
+    public PaperAssignmentDtos.Detail teacherSubmission(long userId,long releaseId,long studentId){
+        PaperAssignmentDtos.Release release=teacherRelease(userId,releaseId);
+        PaperAssignmentDtos.SubmissionRow row=submissions(userId,releaseId).stream().filter(s->s.studentId()==studentId).findFirst().orElseThrow(()->error("PAPER_STUDENT_FORBIDDEN","学生不属于该发布班级",HttpStatus.NOT_FOUND));
+        if(!"SUBMITTED".equals(row.status()))throw error("PAPER_SUBMISSION_NOT_READY","仅可查看已提交答卷",HttpStatus.CONFLICT);
+        List<PaperAssignmentDtos.Question> questions=jdbc.query("SELECT i.id,i.ti_mu_shun_xu,i.fen_zhi,i.ti_mu_lei_xing,i.ti_gan_kuai_zhao,CAST(i.xuan_xiang_kuai_zhao AS CHAR),CAST(a.xue_sheng_da_an AS CHAR),a.shi_fou_zheng_que,a.de_fen,CAST(i.zheng_que_da_an_kuai_zhao AS CHAR),i.biao_zhun_jie_xi_kuai_zhao,CAST(i.zhi_shi_dian_kuai_zhao AS CHAR),CAST(i.fu_jian_kuai_zhao AS CHAR) FROM shi_juan_fa_bu_ti_mu i JOIN shi_juan_ti_jiao s ON s.shi_juan_fa_bu_id=i.shi_juan_fa_bu_id AND s.xue_sheng_id=? LEFT JOIN shi_juan_xue_sheng_da_ti a ON a.shi_juan_ti_jiao_id=s.id AND a.shi_juan_fa_bu_ti_mu_id=i.id WHERE i.shi_juan_fa_bu_id=? ORDER BY i.ti_mu_shun_xu",(rs,index)->new PaperAssignmentDtos.Question(rs.getLong(1),rs.getInt(2),rs.getBigDecimal(3),rs.getString(4),textNormalizer.normalize(rs.getString(5)),answerSlots(rs.getString(10)),options(rs.getString(6)),json(rs.getString(7)),nullableBoolean(rs.getObject(8)),rs.getBigDecimal(9),rs.getString(10),rs.getString(11),strings(rs.getString(12)),attachments(rs.getString(13),"QUESTION",releaseId,rs.getLong(1)),attachments(rs.getString(13),"STANDARD_ANALYSIS",releaseId,rs.getLong(1))),studentId,releaseId);
+        return new PaperAssignmentDtos.Detail(release,questions,true);
+    }
+    @Transactional public PaperAssignmentDtos.Release cancel(long userId,long releaseId){teacherRelease(userId,releaseId);jdbc.update("UPDATE shi_juan_fa_bu SET zhuang_tai='CANCELLED' WHERE id=? AND zhuang_tai IN ('PUBLISHED','CLOSED')",releaseId);return teacherRelease(userId,releaseId);}
+
+    @Transactional(readOnly = true)
     public PaperAssignmentDtos.StudentProfile studentProfile(long userId, long releaseId, long studentId) {
         teacherRelease(userId, releaseId);
         long authorizedScope = jdbc.queryForObject("""
