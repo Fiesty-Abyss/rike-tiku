@@ -1,11 +1,11 @@
 # RIKE 理科学习辅助系统
 
-> **当前维护事实（2026-08-17）：PR [#33](https://github.com/Fiesty-Abyss/rike-tiku/pull/33) 已 ordinary merge；PR #34 为 Draft，修补 V30 专题/主观试卷与打印。Flyway V30、50 张业务表；专题主观题继续以 `ti_mu` 为唯一事实源，可手动进入教师试卷，但不参与自动评分。**
+> **最终封板门禁（2026-08-18）：PR [#33](https://github.com/Fiesty-Abyss/rike-tiku/pull/33) 已 ordinary merge；PR #34 已完成打印用户复验并进入普通合并门禁。Flyway V30、50 张业务表；专题主观题继续以 `ti_mu` 为唯一事实源，可手动进入教师试卷，但不参与自动评分。**
 
 面向高中物理、化学、生物的 Spring Boot 大模型题库系统。正式判分与 STANDARD 始终由确定性业务事实控制；AI 只承担解释、答疑和待人工审核的候选生成。
 
 - [最终项目事实包](docs/FINAL_PROJECT_FACTS.md) · [最终截图证据目录](docs/FINAL_SCREENSHOT_EVIDENCE_CATALOG.md) · [功能—截图—代码—表快速索引](docs/FEATURE_SCREENSHOT_CODE_INDEX.md) · [功能技术地图](docs/FEATURE_CODE_TECH_MAP.md)
-- [Excel 精确导入指南](docs/EXCEL_IMPORT_GUIDE.md) · [学生模板](docs/templates/student-import-template.xlsx) · [题目模板](docs/templates/question-import-template.xlsx)
+- [功能—数据库表地图](docs/FEATURE_DATABASE_TABLE_MAP.md) · [Excel 精确导入指南](docs/EXCEL_IMPORT_GUIDE.md) · [学生模板](docs/templates/student-import-template.xlsx) · [题目模板](docs/templates/question-import-template.xlsx) · [Excel 模板/导入页截图](docs/FINAL_SCREENSHOT_EVIDENCE_CATALOG.md#excel-模板与导入页面资料)
 - [V30 数据库参考](docs/DATABASE_SCHEMA_REFERENCE.md) · [V30 纯结构快照](database/schema_snapshot_v30.sql) · [V29 历史快照](database/schema_snapshot_v29.sql) · [SQL 示例](docs/SQL_EXAMPLES.md)
 - [论文写作中心](docs/THESIS_WRITING_HUB.md) · [论文初稿](docs/thesis/RIKE_THESIS_DRAFT.md) · [事实核对表](docs/thesis/RIKE_THESIS_FACT_CHECK.md) · [答辩提纲](docs/thesis/RIKE_DEFENSE_OUTLINE.md) · [正式参考文献 22 条](docs/THESIS_REFERENCES.md)
 
@@ -17,7 +17,7 @@
 - 最终自动化：后端 220 tests、0 failures、0 errors、3 skipped；前端 68 个测试文件 / 223 tests；type-check、build、`npm audit --omit=dev` 通过，0 vulnerabilities。完整命令和证据边界见 [最终项目事实包](docs/FINAL_PROJECT_FACTS.md)。
 - 正式 `rike_tiku` 已正常升级至 Flyway V30、50 张业务表、0 failed migration；随机临时 schema 已从 V1 完整迁移至 V30。正式机器浏览器 11 页 / 56 断言通过，0 console/page/failed-request error、0 overflow；证据位于 `docs/evidence/v30-machine-browser/`，不等同用户真人验收。
 - 真实 DeepSeek variant/tutor、GLM Vision、xAI Vision、Web Search 本轮均为 `BLOCKED_EXTERNAL_PROVIDER`；Mock/Fake 不代表真实 PASS。
-- 论文交付：通用 [Word 事实稿](docs/thesis/deliverables/RIKE_论文事实稿_待套学校模板.docx) 与 [答辩 PPT](docs/thesis/deliverables/RIKE_答辩PPT_待套学校模板.pptx) 已生成，未发现学校模板，使用前必须套用并视觉复核。
+- 学校 Word/PPT 模板尚未提供；仓库现有 Markdown 事实稿、截图、数据库与文献入口可直接用于后续套版，不在本轮生成或假设学校模板。
 
 ## 1. 公共门户
 

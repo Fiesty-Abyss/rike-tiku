@@ -1,6 +1,6 @@
 # Product — RIKE 理科学习辅助系统
 
-> 当前可引用产品事实、已验证边界与已知限制见 [docs/FINAL_PROJECT_FACTS.md](docs/FINAL_PROJECT_FACTS.md)；逐图论文/PPT 资料见 [docs/FINAL_SCREENSHOT_EVIDENCE_CATALOG.md](docs/FINAL_SCREENSHOT_EVIDENCE_CATALOG.md)。PR #34 在用户完成打印复验前保持 Draft。
+> 当前可引用产品事实、已验证边界与已知限制见 [docs/FINAL_PROJECT_FACTS.md](docs/FINAL_PROJECT_FACTS.md)；逐图论文/PPT 资料见 [docs/FINAL_SCREENSHOT_EVIDENCE_CATALOG.md](docs/FINAL_SCREENSHOT_EVIDENCE_CATALOG.md)。PR #34 已取得 `PRINT_USER_VERIFIED`，等待最终门禁后的 ordinary merge。
 
 ## Product truth
 

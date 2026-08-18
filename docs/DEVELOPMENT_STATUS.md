@@ -2,7 +2,7 @@
 
 > 当前事实入口：[FINAL_PROJECT_FACTS.md](FINAL_PROJECT_FACTS.md)。本文件不把历史阶段的测试数字当作当前基线。
 
-更新时间：2026-08-17。PR #33 已 ordinary merge；PR #34（`fix/topic-learning-paper-polish`）为 Draft，正在处理唯一的打印人工复验项 `PR34-MA-001`。在用户确认实际浏览器打印或接受浏览器限制前，不得合并 PR #34。
+更新时间：2026-08-18。PR #33 已 ordinary merge；PR #34（`fix/topic-learning-paper-polish`）的唯一打印 finding 已获用户真实浏览器确认，正在执行最终门禁与普通合并。
 
 ## 当前产品事实
 
@@ -18,7 +18,7 @@
 |---|---|
 | PR #33 用户页面审查 | 两项最终修复后按用户条件授权 ordinary merge；PR #33 已合并。 |
 | PR #34 用户页面审查 | 专题、主观组卷、发布、学生作答、附件、STANDARD 和题型中文化已获范围内正向反馈。 |
-| PR34-MA-001 | 代码、点击级自动化和独立 Chromium handler 已修复/验证；用户实际 OS 打印复验仍为 `USER_RETEST_PENDING`。 |
+| PR34-MA-001 | `FIXED`；代码、点击级自动化、独立 Chromium handler 和用户真实 Chrome OS 打印窗口均已验证。 |
 | V30 机器浏览器 | 历史结果：11 页面、56 断言、0 console/page/非预期失败请求/overflow；仅为机器验收。 |
 | 正式数据库 | `rike_tiku` 使用 V30、50 业务表；只读 validate/结构核验，未 reset。 |
 | 随机临时 schema | 后端全量使用随机临时 schema，V1→V30 通过。 |
@@ -26,4 +26,4 @@
 
 ## 当前门槛
 
-本轮打印修复后的 backend/frontend 全量、type-check、build、audit、Flyway、科学审计和文献审计均已执行；实际数字见 [最终事实包](FINAL_PROJECT_FACTS.md)。用户确认打印前，PR #34 保持 Draft；不继续扩产品功能。
+本轮打印修复后的 backend/frontend 全量、type-check、build、audit、Flyway、科学审计和文献审计将以 merge 前最终 HEAD 的实际输出为准；实际数字见 [最终事实包](FINAL_PROJECT_FACTS.md)。不继续扩产品功能。

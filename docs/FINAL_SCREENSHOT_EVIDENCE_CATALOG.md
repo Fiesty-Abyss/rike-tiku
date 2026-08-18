@@ -96,6 +96,20 @@ V30-01–14、V30-17–18 为 `THESIS_READY + MACHINE_BROWSER_VERIFIED`，环境
 | [41](evidence/thesis-final/41-message-recall-confirm.png) | `/messages/:id`，登录用户；撤回确认。 | M；V22。 | **撤回操作需用户确认。** 不证明跨用户删除。 |
 | [42](evidence/thesis-final/42-message-delete-confirm.png) | `/messages/:id`，登录用户；仅本人删除确认。 | M；V22。 | **消息删除区分仅本人隐藏。** 不证明物理删除。 |
 
+## Excel 模板与导入页面资料
+
+这些图补足“模板本身”和“实际导入页面”的可离线阅读资料。模板图由仓库内真实 `.xlsx` 文件原样渲染，未填真实学生、密码或 Token；页面图是已存档的匿名原始证据。模板没有业务 API，导入页面才调用 API。
+
+| 图 | 状态、数据与页面 | 代码 / API / 表 / Flyway / 测试 | 论文/PPT 用途、证明与边界 |
+|---|---|---|---|
+| [EXCEL-01 学生模板](evidence/final-documentation/excel-student-template-overview.png) | `THESIS_READY`；源为 [`student-import-template.xlsx`](templates/student-import-template.xlsx)，Sheet `学生导入`，7 列，匿名模板数据。 | `StudentExcelTemplate`；`GET /api/v1/admin/student-import/template`；`yong_hu`、`yong_hu_jiao_se`、`xue_sheng_dang_an`、`ban_ji_xue_sheng`；V5/V6；`FinalImportTemplatesIntegrationTest`。 | 图注：**学生批量导入模板固定 7 个字段，导入前需保持 Sheet 名和表头不变。** 证明模板字段；不证明真实学生已被导入。 |
+| [EXCEL-02 题目模板](evidence/final-documentation/excel-question-template-overview.png) | `THESIS_READY`；源为 [`question-import-template.xlsx`](templates/question-import-template.xlsx)，Sheet `题目检查`，说明行、19 列和匿名示例。 | `QuestionImportService`；`POST /api/v1/admin/question-import/preview`、`confirm`；`dao_ru_pi_ci`、`ti_mu`、选项/解析/附件/来源/审核关系表；V2；`FinalImportTemplatesIntegrationTest`。 | 图注：**题目模板以 19 列承载题目、STANDARD、知识点、附件对象和来源信息。** 证明列结构；不证明导入内容已获发布授权。 |
+| [EXCEL-03 题目列细节](evidence/final-documentation/excel-question-template-columns.png) | `THESIS_READY`；EXCEL-02 的 A1:S6 精确列视图，无个人信息。 | 同 EXCEL-02；详见 [Excel 指南](EXCEL_IMPORT_GUIDE.md)。 | 图注：**题目导入通过精确表头和对象标记约束附件、来源与审核流程。** 不能证明 Excel 中的审核状态能绕过服务端状态机。 |
+| [EXCEL-04 题目导入页面](evidence/thesis-final/36-question-import.png) | `RAW_EVIDENCE + HISTORICAL`；`/admin/questions/import`，ADMIN，匿名 Demo 页面。 | `QuestionImportView.vue`、`QuestionImportService`；preview/confirm API；`dao_ru_pi_ci` 等；V2；导入集成测试。 | 图注：**管理员题目导入采用先预览、后确认的受控流程。** 不能证明截图中的文件已经成功写库。 |
+| [EXCEL-05 学生导入页面](evidence/thesis-final/37-student-import.png) | `RAW_EVIDENCE + HISTORICAL`；`/admin/students/import`，ADMIN，匿名 Demo 页面。 | `StudentImportView.vue`、`StudentImportService`；preview/confirm API；组织/账号表；V5/V6；导入集成测试。 | 图注：**管理员学生导入在确认前先呈现校验结果。** 不能证明任何真实学生信息。 |
+
+推荐论文位置：第 5 章批量导入与题库审核；推荐 PPT 标题：**“可核验的 Excel Preview/Confirm 导入链”**。完整字段、限制、对象标记和事务语义见 [Excel 精确导入指南](EXCEL_IMPORT_GUIDE.md)。
+
 ## 截图数据只读查询说明
 
 以下 SQL 只用于受控本地或匿名 Demo 环境的核对；不得写入、重置或暴露个人信息。
