@@ -20,6 +20,8 @@ import {
 } from "../../api/teacher/papers";
 import ScientificText from "../../components/question/ScientificText.vue";
 import QuestionContent from "../../components/question/QuestionContent.vue";
+import AnswerDisplay from "../../components/question/AnswerDisplay.vue";
+import StandardAnalysis from "../../components/question/StandardAnalysis.vue";
 import { questionTypeLabel, topicTypeLabel } from "../../utils/questionLabels";
 
 const router = useRouter();
@@ -163,6 +165,7 @@ async function publish() {
 }
 const releaseStatus=(s:string)=>s==='CANCELLED'?'已撤回':s==='CLOSED'||s==='EXPIRED'?'已截止':'进行中';
 const submissionStatus=(s:string)=>({NOT_STARTED:'未开始',IN_PROGRESS:'作答中',SUBMITTED:'已提交'} as any)[s]||s;
+const formatDateTime=(value?:string)=>value?value.replace('T',' ').replace(/\.\d+$/,''):'-';
 async function openReleases(row:any){publishPaperId.value=row.id;releases.value=await fetchPaperReleases(row.id);releaseVisible.value=true;}
 async function openStats(row:any){selectedReleaseId.value=row.id;releaseStats.value=await fetchPaperStats(row.id);submissions.value=await fetchPaperSubmissions(row.id);selectedSubmission.value=null;statsVisible.value=true;}
 async function openSubmission(row:any){if(row.status!=='SUBMITTED')return;selectedSubmission.value=await fetchTeacherSubmission(selectedReleaseId.value,row.studentId);answerVisible.value=true;}
@@ -353,13 +356,13 @@ onMounted(load);
         label="操作"
         min-width="300"
         ><template #default="{ row }"
-          ><el-button @click="router.push(`/teacher/papers/${row.id}/student`)"
+          ><div class="paper-actions"><el-button @click="router.push(`/teacher/papers/${row.id}/student`)"
             >学生版打印</el-button
           ><el-button @click="router.push(`/teacher/papers/${row.id}/answer`)"
             >答案解析版打印</el-button
           ><el-button type="primary" plain @click="openPublish(row)"
             >发布到班级</el-button
-          ><el-button plain @click="openReleases(row)">发布管理</el-button
+          ><el-button plain @click="openReleases(row)">发布管理</el-button></div
           ></template
         ></el-table-column
       ></el-table
@@ -419,9 +422,9 @@ onMounted(load);
         ></template
       ></el-dialog
     >
-    <el-dialog v-model="releaseVisible" title="发布管理" width="min(860px, calc(100vw - 24px))"><el-table :data="releases"><el-table-column prop="className" label="班级"/><el-table-column prop="publishedAt" label="发布时间"/><el-table-column prop="deadline" label="截止时间"/><el-table-column label="状态"><template #default="{row}"><el-tag>{{releaseStatus(row.status)}}</el-tag></template></el-table-column><el-table-column label="操作" min-width="190"><template #default="{row}"><el-button @click="openStats(row)">作答情况</el-button><el-button v-if="row.status!=='CANCELLED'" type="danger" plain @click="cancelRelease(row)">撤回发布</el-button></template></el-table-column></el-table></el-dialog>
-    <el-dialog v-model="statsVisible" title="班级作答情况" width="min(980px, calc(100vw - 24px))"><el-descriptions v-if="releaseStats" :column="4" border><el-descriptions-item label="应交">{{releaseStats.assigned}}</el-descriptions-item><el-descriptions-item label="已提交">{{releaseStats.submitted}}</el-descriptions-item><el-descriptions-item label="未提交">{{releaseStats.unsubmitted}}</el-descriptions-item><el-descriptions-item label="客观题平均分">{{releaseStats.averageScore}}</el-descriptions-item></el-descriptions><h3>学生作答</h3><el-table :data="submissions"><el-table-column prop="studentNumber" label="学号"/><el-table-column prop="studentName" label="姓名"/><el-table-column label="状态"><template #default="{row}"><el-tag>{{submissionStatus(row.status)}}</el-tag></template></el-table-column><el-table-column label="客观得分"><template #default="{row}">{{row.objectiveScore==null?'-':`${row.objectiveScore} / ${row.objectiveTotal}`}}</template></el-table-column><el-table-column label="主观题"><template #default="{row}">{{row.subjectivePendingCount?`${row.subjectivePendingCount}题待人工处理`:''}}</template></el-table-column><el-table-column prop="submittedAt" label="提交时间"/><el-table-column label="操作"><template #default="{row}"><el-button v-if="row.status==='SUBMITTED'" @click="openSubmission(row)">查看答卷</el-button></template></el-table-column></el-table></el-dialog>
-    <el-dialog v-model="answerVisible" title="学生已提交答卷" width="min(900px, calc(100vw - 24px))"><article v-for="q in selectedSubmission?.questions" :key="q.itemId" class="question-card"><b>第{{q.order}}题 · {{questionTypeLabel(q.type)}} · {{q.score}}分</b><QuestionContent :content="q.stem" :attachments="q.stemAttachments"/><p>学生答案：{{q.submittedAnswer||'未作答'}}</p><p v-if="q.type!=='SUBJECTIVE'">客观得分：{{q.awardedScore}} / {{q.score}}；正确答案：{{q.correctAnswer}}</p><p v-else>状态：待人工处理</p><ScientificText :content="q.standardAnalysis"/></article></el-dialog>
+    <el-dialog v-model="releaseVisible" title="发布管理" width="min(860px, calc(100vw - 24px))"><el-table :data="releases"><el-table-column prop="className" label="班级"/><el-table-column label="发布时间" min-width="170"><template #default="{row}">{{formatDateTime(row.publishedAt)}}</template></el-table-column><el-table-column label="截止时间" min-width="170"><template #default="{row}">{{formatDateTime(row.deadline)}}</template></el-table-column><el-table-column label="状态"><template #default="{row}"><el-tag>{{releaseStatus(row.status)}}</el-tag></template></el-table-column><el-table-column label="操作" min-width="190"><template #default="{row}"><el-button @click="openStats(row)">作答情况</el-button><el-button v-if="row.status!=='CANCELLED'" type="danger" plain @click="cancelRelease(row)">撤回发布</el-button></template></el-table-column></el-table></el-dialog>
+    <el-dialog v-model="statsVisible" title="班级作答情况" width="min(980px, calc(100vw - 24px))"><el-descriptions v-if="releaseStats" :column="4" border><el-descriptions-item label="应交">{{releaseStats.assigned}}</el-descriptions-item><el-descriptions-item label="已提交">{{releaseStats.submitted}}</el-descriptions-item><el-descriptions-item label="未提交">{{releaseStats.unsubmitted}}</el-descriptions-item><el-descriptions-item label="客观题平均分">{{releaseStats.averageScore}}</el-descriptions-item></el-descriptions><h3>学生作答</h3><el-table :data="submissions"><el-table-column prop="studentNumber" label="学号"/><el-table-column prop="studentName" label="姓名"/><el-table-column label="状态"><template #default="{row}"><el-tag>{{submissionStatus(row.status)}}</el-tag></template></el-table-column><el-table-column label="客观得分"><template #default="{row}">{{row.objectiveScore==null?'-':`${row.objectiveScore} / ${row.objectiveTotal}`}}</template></el-table-column><el-table-column label="主观题"><template #default="{row}">{{row.subjectivePendingCount?`${row.subjectivePendingCount}题待人工处理`:''}}</template></el-table-column><el-table-column label="提交时间" min-width="170"><template #default="{row}">{{formatDateTime(row.submittedAt)}}</template></el-table-column><el-table-column label="操作"><template #default="{row}"><el-button v-if="row.status==='SUBMITTED'" @click="openSubmission(row)">查看答卷</el-button></template></el-table-column></el-table></el-dialog>
+    <el-dialog v-model="answerVisible" title="学生已提交答卷" width="min(900px, calc(100vw - 24px))"><article v-for="q in selectedSubmission?.questions" :key="q.itemId" class="question-card"><b>第{{q.order}}题 · {{questionTypeLabel(q.type)}} · {{q.score}}分</b><QuestionContent :content="q.stem" :attachments="q.stemAttachments" position="QUESTION"/><p v-for="o in q.options" :key="o.label"><b>{{o.label}}.</b> <ScientificText :content="o.content"/></p><h4>学生答案</h4><AnswerDisplay :question-type="q.type" :value="q.submittedAnswer" :options="q.options"/><template v-if="q.type!=='SUBJECTIVE'"><h4>正确答案</h4><AnswerDisplay :question-type="q.type" :value="q.correctAnswer" :options="q.options"/><p>客观得分：{{q.awardedScore}} / {{q.score}}</p></template><p v-else>状态：待人工处理</p><h4>STANDARD 标准解析</h4><StandardAnalysis :content="q.standardAnalysis" :attachments="q.analysisAttachments"/></article></el-dialog>
   </main>
 </template>
 
@@ -494,6 +497,10 @@ onMounted(load);
 .basket article > div {
   grid-column: 2/4;
 }
+.paper-actions { display:grid; grid-template-columns:repeat(2,minmax(110px,1fr)); gap:8px; }
+.paper-actions .el-button { width:100%; margin:0; }
+.question-card { overflow:hidden; }
+.question-card :deep(.katex-display) { overflow-x:auto; overflow-y:hidden; }
 @media (max-width: 800px) {
   .heading {
     align-items: stretch;
