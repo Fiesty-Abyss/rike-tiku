@@ -32,10 +32,10 @@
 
 ## 当前事实
 
-- PR #33 已 ordinary merge；PR #34 是独立的 post-merge Draft，唯一待用户复验项是原生打印；详情见 `MANUAL_ACCEPTANCE_FINDINGS_PR34.md`。
+- PR #33 已 ordinary merge；PR #34 是独立的 post-merge 收口 PR，原生打印已获用户复验；详情见 `MANUAL_ACCEPTANCE_FINDINGS_PR34.md`。
 - Flyway V1–V30，50 张业务表；V1–V29 已发布迁移未修改。V30 只新增发布题附件快照 JSON，并扩展主观题待处理状态的字段长度。
 - 专题学习仍由统一 `ti_mu` 事实和专题单元编排关系组成：正式库 15 个单元、45 道 `SUBJECTIVE + TOPIC_LEARNING` 原创大题，物理 6 / 化学 5 / 生物 4；主观题可手动组卷但不自动评分。
 - 正式 `rike_tiku` 的独立 Chromium 历史机器浏览器已覆盖三科专题、教师混合组卷/质量建议/打印预览、学生混合试卷提交；11 页面、56 断言、0 console/page/failed-request error、0 overflow。打印 OS 对话框并未由 headless 环境声明验证；本轮补 handler machine check 和用户复验。
 - 打印修补后的最终集中回归数字以 `FINAL_PROJECT_FACTS.md` 的实际结果为准；学校 Word/PPT 模板尚未提供，本轮不生成新文档。
 - 学生候选变式在生成后保持本人可见的 DRAFT；只有显式提交后才进入 PENDING 教师审核。Provider 未配置时不得把候选预览写成真实 AI PASS。
-- 论文事实稿、核验表和答辩提纲位于 [thesis](thesis/)；PR #34 当前为 `USER_RETEST_PENDING`，不是用户最终通过。
+- 论文事实稿、核验表和答辩提纲位于 [thesis](thesis/)；PR #34 打印项为 `PRINT_USER_VERIFIED`，最终 main SHA 将在合并后补写。

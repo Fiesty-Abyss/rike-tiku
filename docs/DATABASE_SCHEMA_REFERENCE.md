@@ -1,5 +1,7 @@
 # RIKE V30 数据库结构参考
 
+> 最终结构导航：本文件逐表记录 50 张业务表的职责、创建迁移、主键、主要字段类型/可空性/默认值、外键、唯一约束、索引、CHECK 与删除语义；精确、可复现的完整 DDL 以 [schema_snapshot_v30.sql](../database/schema_snapshot_v30.sql) 为准。功能如何使用这些表见 [功能—数据库表地图](FEATURE_DATABASE_TABLE_MAP.md)。`flyway_schema_history` 只用于迁移审计，不计入 50 张业务表。
+
 > 当前 DDL 只读快照为 [`database/schema_snapshot_v30.sql`](../database/schema_snapshot_v30.sql)：含 Flyway history 表和 50 张业务表、无任何数据或凭据。`schema_snapshot_v29.sql` 是历史快照，不能作为当前结构；运行时唯一迁移事实是 V1–V30。
 
 ## V30 关键设计结论

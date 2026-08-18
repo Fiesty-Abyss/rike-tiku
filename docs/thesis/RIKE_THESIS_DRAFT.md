@@ -8,7 +8,7 @@
 
 后端使用 Java 25、Spring Boot 4.1、Spring Security、MyBatis-Plus、Flyway 和 MySQL 8.4，前端使用 Vue 3、TypeScript、Element Plus、GSAP 与 KaTeX。数据库由 Flyway V1–V30 管理，共 50 张业务表。正式判分遵循确定性规则，STANDARD 解析作为业务事实保存，AI 不能覆盖。DeepSeek 负责文本辅助，GLM 和 xAI 由管理员显式选择后用于视觉 Provider，智谱 Web Search 提供结构化网络来源。学生变式题经过 Schema V2、字段级解析、新颖度检查和确定性判分后，先保存为本人可见的 DRAFT；学生提交后才进入教师审核的 PENDING 状态，审核通过后才能进入已发布题库。
 
-自动化测试使用随机临时 MySQL schema；正式 `rike_tiku` 只作迁移与受控浏览器核验。PR #34 打印修补后的最终测试数字以 `FINAL_PROJECT_FACTS.md` 为准，不能沿用历史 215/220 基线。当前结构为 V30、50 张业务表；科学内容审计历史核验为 600 个字符串和 117 条正式库行、0 errors。V30 机器浏览器覆盖三科专题、混合组卷和学生提交；打印 OS 对话框仍待用户复验。由于没有轮换后的安全 Provider 凭据，真实 Provider 统一记录为 `BLOCKED_EXTERNAL_PROVIDER`。这些数字只说明工程验证范围，不代表真实学生群体的教学效果。
+自动化测试使用随机临时 MySQL schema；正式 `rike_tiku` 只作迁移与受控浏览器核验。PR #34 打印修补后的最终测试数字以 `FINAL_PROJECT_FACTS.md` 为准，不能沿用历史 215/220 基线。当前结构为 V30、50 张业务表；科学内容审计历史核验为 600 个字符串和 117 条正式库行、0 errors。V30 机器浏览器覆盖三科专题、混合组卷和学生提交；用户已在真实 Chrome 确认系统打印窗口打开，但未声称实际打印纸张。由于没有轮换后的安全 Provider 凭据，真实 Provider 统一记录为 `BLOCKED_EXTERNAL_PROVIDER`。这些数字只说明工程验证范围，不代表真实学生群体的教学效果。
 
 关键词：高中理科；在线题库；Spring Boot；大语言模型；人工审核；确定性判分
 

@@ -1,6 +1,6 @@
 # RIKE 最终项目事实包
 
-> 本文件是论文、答辩和后续维护的当前事实入口，不是开发日志。历史时间线中的旧测试数、旧 Flyway 版本或旧表数只能解释当时阶段，不能覆盖本文件。最后一次事实刷新：2026-08-17，PR #34 仍为 Draft，打印用户复验待完成。
+> 本文件是论文、答辩和后续维护的当前事实入口，不是开发日志。历史时间线中的旧测试数、旧 Flyway 版本或旧表数只能解释当时阶段，不能覆盖本文件。最后一次事实刷新：2026-08-18，PR #34 已取得 `PRINT_USER_VERIFIED`，正处于 ordinary merge 前最终门禁。
 
 ## 1. 项目身份与运行边界
 
@@ -20,7 +20,7 @@
 |---|---|
 | PR #33 | 主体产品完成 PR；已以 ordinary merge 合入 `main`，merge commit `fba1276862fee973129ee8b85c6fc3a1d55b8662`。 |
 | PR #34 | post-merge 的专题内容、主观题组卷、V30 附件快照、题型中文化和打印修补 PR；base 为 `fba1276862fee973129ee8b85c6fc3a1d55b8662`，branch 为 `fix/topic-learning-paper-polish`，Draft。 |
-| 当前产品阶段 | `FINAL_MANUAL_FIX_AND_REPOSITORY_FREEZE`；PR #34 打印复验后才进入 `THESIS_AND_DEFENSE_DELIVERY`。 |
+| 当前产品阶段 | `FINAL_MANUAL_FIX_AND_REPOSITORY_FREEZE`；打印用户复验已通过，ordinary merge 后进入 `THESIS_AND_DEFENSE_DELIVERY`。 |
 | 当前 HEAD / PR #34 merge | 本轮在最终回归与 push 后写入 feature HEAD；Draft 期间不得把 feature head 误写成 main 或 merge commit。 |
 
 ## 3. 已实现、已验证与边界
@@ -99,7 +99,7 @@ AI 只能解释、对话、生成候选和给质量建议；候选需人工审�
 现有 V30 机器浏览器证据为 11 页面、56 断言、0 console/page/非预期失败请求/横向溢出，属于 `MACHINE_BROWSER_VERIFIED`，不等同用户逐页验收。PR34-MA-001 增加两个独立 Chromium handler 断言：student preview=1、answer preview=1、0 console/page/failed request；受控路由响应仅证明处理器，不能证明 OS 打印对话框。
 
 - PR #33：用户完成最终页面审查并条件授权 ordinary merge；两项反馈修复后 PR #33 已合并。历史记录见 [PR #33 人工验收](MANUAL_ACCEPTANCE_FINDINGS_PR33.md)。
-- PR #34：用户已审查专题、主观组卷、发布、作答、STANDARD、附件和题型中文化；唯一新增 finding 为 [PR34-MA-001](MANUAL_ACCEPTANCE_FINDINGS_PR34.md)。其状态为代码已修复、机器 handler 已验证、`USER_RETEST_PENDING`。
+- PR #34：用户已审查专题、主观组卷、发布、作答、STANDARD、附件和题型中文化；唯一新增 finding 为 [PR34-MA-001](MANUAL_ACCEPTANCE_FINDINGS_PR34.md)，现为 `FIXED`。代码点击链为 `PRINT_HANDLER_MACHINE_VERIFIED`；用户真实 Chrome 已确认系统打印窗口打开（`PRINT_USER_VERIFIED` / `OS_PRINT_DIALOG_USER_VERIFIED`），未声称已实际打印纸张。
 - 已知限制：真实外部 Provider 依赖运行时凭据，因此本轮可为 `BLOCKED_EXTERNAL_PROVIDER`；主观题不做 AI/规则自动正式评分；headless 浏览器不能证明 OS 级打印窗口。
 
 ## 8. 离线资料入口
@@ -108,3 +108,16 @@ AI 只能解释、对话、生成候选和给质量建议；候选需人工审�
 - [快速功能—截图—代码索引](FEATURE_SCREENSHOT_CODE_INDEX.md) 与 [功能技术地图](FEATURE_CODE_TECH_MAP.md)。
 - [论文写作中心](THESIS_WRITING_HUB.md)、[论文事实核验](thesis/RIKE_THESIS_FACT_CHECK.md)、[答辩提纲](thesis/RIKE_DEFENSE_OUTLINE.md)、[答辩事实问答](DEFENSE_FACTS_AND_QA.md)。
 - [正式参考文献 22 条](THESIS_REFERENCES.md)、[引用使用矩阵](thesis/RIKE_REFERENCE_USAGE_MATRIX.md)。`research-only` 资料不属于正式论文引用。
+
+## 9. 论文快速取材
+
+| 论文主题 | 截图/代码入口 | 数据库与文献入口 |
+|---|---|---|
+| 需求分析与总体设计 | [截图目录](FINAL_SCREENSHOT_EVIDENCE_CATALOG.md)、[功能技术地图](FEATURE_CODE_TECH_MAP.md) | [引用使用矩阵](thesis/RIKE_REFERENCE_USAGE_MATRIX.md) |
+| 数据库设计 | [数据库结构参考](DATABASE_SCHEMA_REFERENCE.md)、[功能—表地图](FEATURE_DATABASE_TABLE_MAP.md) | [V30 DDL](../database/schema_snapshot_v30.sql) |
+| 学生学习闭环 | [学生/练习/错题截图](FINAL_SCREENSHOT_EVIDENCE_CATALOG.md#pr-33-历史匿名图0142) | `lian_xi_*`、`xue_sheng_da_ti`、`cuo_ti_ji_lu`；见功能—表地图 |
+| AI 边界 | [AI 截图与图注](FINAL_SCREENSHOT_EVIDENCE_CATALOG.md) | [AI 最终实验结果](AI_FINAL_EXPERIMENT_RESULTS.md)、引用矩阵；不得把外部阻塞写成 PASS |
+| 专题学习 | [V30 专题证据](FINAL_SCREENSHOT_EVIDENCE_CATALOG.md#v30-机器浏览器证据) | `ti_mu` 与专题单元关系；V20/V26 |
+| 教师组卷与发布 | [混合试卷证据](FINAL_SCREENSHOT_EVIDENCE_CATALOG.md#v30-机器浏览器证据) | `shi_juan*`、V27/V30；主观题不自动评分 |
+| 管理员与 Excel | [Excel 图和导入页](FINAL_SCREENSHOT_EVIDENCE_CATALOG.md#excel-模板与导入页面资料) | [Excel 导入指南](EXCEL_IMPORT_GUIDE.md)、导入/审核表 |
+| 测试与答辩 | [事实核验](thesis/RIKE_THESIS_FACT_CHECK.md)、[答辩提纲](thesis/RIKE_DEFENSE_OUTLINE.md) | [开发状态](DEVELOPMENT_STATUS.md)、[引用使用矩阵](thesis/RIKE_REFERENCE_USAGE_MATRIX.md) |

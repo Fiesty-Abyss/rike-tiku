@@ -2,6 +2,41 @@
 
 本文逐项对照当前 `StudentExcelTemplate`、`StudentImportService`、`StudentImportConfirmService`、`QuestionImportService` 与集成测试；不是旧设计稿的字段推测。模板：[学生模板](templates/student-import-template.xlsx) · [题目模板](templates/question-import-template.xlsx)。
 
+## 1 分钟快速开始
+
+### 学生导入
+
+1. 下载[学生模板](templates/student-import-template.xlsx)，只修改第 2 行及之后的数据行。
+2. 保留 Sheet 名 `学生导入` 和全部 7 个表头，不插列、不加公式。
+3. 上传后先执行 Preview，逐行修正错误，再 Confirm。
+4. Confirm 成功后仅在当次受控响应中安全交付初始密码；不要截图、复制到仓库或发到非安全渠道。
+
+![学生批量导入页面（匿名受控演示数据）](evidence/thesis-final/37-student-import.png)
+
+图：学生批量导入页面。实际模板的 Sheet 名和 7 个表头不可修改；页面截图是历史原始证据，模板文件才是字段的精确事实。
+
+### 题目导入
+
+1. 下载[题目 19 列模板](templates/question-import-template.xlsx)，一个文件只放一个学科。
+2. 保留 `题目检查` Sheet、第 1 行说明和第 2 行精确表头；数据从第 3 行开始。
+3. 填写数据库已有的完整知识点路径；图片使用对象标记，来源文件必须位于受控根且存在。
+4. Preview 后再 Confirm；所有题及 STANDARD 均先进入 `PENDING`，必须人工审核才可 `PUBLISHED`。
+
+![题目批量导入页面（匿名受控演示数据）](evidence/thesis-final/36-question-import.png)
+
+图：题目导入页面。19 列模板与来源/附件校验由服务端执行，Excel 中的“审核状态”不能绕过状态机。
+
+### Preview → Confirm 的真实语义
+
+```text
+Excel → Preview（表头、枚举、数据库冲突、附件、来源、hash 校验；不写库）
+      → 用户修正并确认
+      → Confirm（再次完整解析和校验；事务写库）
+      → 学生账号创建 / 题目与 STANDARD PENDING
+```
+
+Confirm 不信任旧 Preview 结果：同一文件仍会被重新解析、重新计算 hash；任何无效行或并发完整性冲突均使整批事务回滚。
+
 ## 学生导入：固定 7 列
 
 - 接口：`GET /api/v1/admin/student-import/template`、`POST /api/v1/admin/student-import/preview`、`POST /api/v1/admin/student-import/confirm`，仅 ADMIN。
@@ -71,6 +106,10 @@ Preview 只重新读取文件、校验表头/行/数据库冲突并返回逐行�
 选择题选项可包含对象标记。填空答案以 `①`—`⑩` 起始的片段拆为多个 `acceptedAnswers`；当前实现不提供同一空多答案分隔语法。解答题保留原始参考答案，但不进入在线自动判分。对象标记只接受全角括号形式 `〔图片对象 I001〕` / `〔公式对象 F001〕`。附件必须位于受控题库根下对应学科的 `母题库/images` 或 `母题库/attachments`，文件名匹配 `q<题号>_<任意说明>_image_001.<扩展名>` 或 `q<题号>_<任意说明>_formula_001.<扩展名>`；缺失、重复匹配、跨根路径或声明数量不符都会失败。
 
 来源文件仅接受受控根内普通文件。导入记录按 `REAL_EXAM` 写来源类型，但当前候选材料没有自动取得可发布授权，因此权利状态固定为 `COPYRIGHT_UNKNOWN`，依据写明“未提供可发布权利依据”；论文和产品不得把它解释为已获授权。
+
+#### 对象标记示例
+
+题干单元格可写：`如图〔图片对象 I001〕所示……`；对应附件必须在受控题库根的本学科 `母题库/images` 或 `母题库/attachments` 内，并按真实匹配规则命名为 `q<题号>_<说明>_image_001.<扩展名>`。公式对象使用 `〔公式对象 F001〕`。对象缺失、重复匹配、路径越界或声明数量不一致都会在 Preview/Confirm 被拒绝；不使用外链和 Base64 正文。
 
 ### Preview hash、Confirm 防篡改与 PENDING
 
