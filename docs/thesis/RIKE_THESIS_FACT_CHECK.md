@@ -29,6 +29,7 @@
 | Word/PPT 交付物 | 学校模板尚未提供；本轮只同步 Markdown 事实、截图目录和引用矩阵，不生成或声称学校最终排版 | 本轮未生成 |
 | 真实 DeepSeek/GLM/xAI/Search 本轮 smoke | 没有可安全使用的轮换后凭据，未消费真实 Provider | BLOCKED_EXTERNAL_PROVIDER；历史结果不外推为本轮 PASS |
 | PR #34 用户打印复验、问卷或学习成效提升 | PR34-MA-001 已 `PRINT_USER_VERIFIED`，仅证明系统打印窗口打开；仍无问卷或课堂效果数据 | 禁止声称学习成效提升 |
+| PR #35 教师发布历史与试卷库软删除 | `PaperService`、`PaperAssignmentService`、随机临时 schema 集成测试；后端 221 tests、前端 68 files/224 tests；release 历史与学生提交不物理删除 | Draft 维护已自动化验证，待用户复验；不将其写成课堂效果证据 |
 
 论文中的“有效”只指指定测试或约束得到验证，不等同于教学效果经真实学生群体实验证明。
 
