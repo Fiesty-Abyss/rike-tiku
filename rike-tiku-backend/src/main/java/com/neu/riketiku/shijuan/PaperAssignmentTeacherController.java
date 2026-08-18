@@ -28,6 +28,10 @@ public class PaperAssignmentTeacherController {
                                                 @PathVariable long releaseId) {
         return service.classStats(user.id(), releaseId);
     }
+    @GetMapping("/{paperId}/releases") public java.util.List<PaperAssignmentDtos.Release> releases(@AuthenticationPrincipal RenZhengYongHu user,@PathVariable long paperId){return service.teacherReleases(user.id(),paperId);}
+    @GetMapping("/releases/{releaseId}/submissions") public java.util.List<PaperAssignmentDtos.SubmissionRow> submissions(@AuthenticationPrincipal RenZhengYongHu user,@PathVariable long releaseId){return service.submissions(user.id(),releaseId);}
+    @GetMapping("/releases/{releaseId}/students/{studentId}/submission") public PaperAssignmentDtos.Detail submission(@AuthenticationPrincipal RenZhengYongHu user,@PathVariable long releaseId,@PathVariable long studentId){return service.teacherSubmission(user.id(),releaseId,studentId);}
+    @PostMapping("/releases/{releaseId}/cancel") public PaperAssignmentDtos.Release cancel(@AuthenticationPrincipal RenZhengYongHu user,@PathVariable long releaseId){return service.cancel(user.id(),releaseId);}
     @GetMapping("/releases/{releaseId}/students/{studentId}/profile")
     public PaperAssignmentDtos.StudentProfile profile(@AuthenticationPrincipal RenZhengYongHu user,
                                                       @PathVariable long releaseId, @PathVariable long studentId) {

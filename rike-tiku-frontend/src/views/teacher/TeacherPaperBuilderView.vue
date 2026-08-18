@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref, watch } from "vue";
 import { useRouter } from "vue-router";
-import { ElMessage } from "element-plus";
+import { ElMessage, ElMessageBox } from "element-plus";
 import { fetchTeachingScopes, type TeachingScope } from "../../api/teacher";
 import {
   createPaper,
@@ -12,6 +12,7 @@ import {
   fetchPaperQuestions,
   fetchPapers,
   publishPaper,
+  fetchPaperReleases, fetchPaperStats, fetchPaperSubmissions, fetchTeacherSubmission, cancelPaperRelease,
   requestAiPaperQuality,
   type AiPaperQualityAssessment,
   type PaperQualityAssessment,
@@ -32,7 +33,9 @@ const quality = ref<PaperQualityAssessment>(),
   aiQuality = ref<AiPaperQualityAssessment>(),
   aiQualityLoading = ref(false),
   publishVisible = ref(false),
+  releaseVisible = ref(false), statsVisible = ref(false), answerVisible = ref(false),
   publishPaperId = ref(0);
+const releases = ref<any[]>([]), releaseStats = ref<any>(), selectedReleaseId = ref(0), submissions = ref<any[]>([]), selectedSubmission = ref<any>();
 const publishForm = reactive({
   teachingScopeId: undefined as number | undefined,
   deadline: "",
@@ -158,6 +161,12 @@ async function publish() {
     ElMessage.error(error.message || "发布失败");
   }
 }
+const releaseStatus=(s:string)=>s==='CANCELLED'?'已撤回':s==='CLOSED'||s==='EXPIRED'?'已截止':'进行中';
+const submissionStatus=(s:string)=>({NOT_STARTED:'未开始',IN_PROGRESS:'作答中',SUBMITTED:'已提交'} as any)[s]||s;
+async function openReleases(row:any){publishPaperId.value=row.id;releases.value=await fetchPaperReleases(row.id);releaseVisible.value=true;}
+async function openStats(row:any){selectedReleaseId.value=row.id;releaseStats.value=await fetchPaperStats(row.id);submissions.value=await fetchPaperSubmissions(row.id);selectedSubmission.value=null;statsVisible.value=true;}
+async function openSubmission(row:any){if(row.status!=='SUBMITTED')return;selectedSubmission.value=await fetchTeacherSubmission(selectedReleaseId.value,row.studentId);answerVisible.value=true;}
+async function cancelRelease(row:any){try{await ElMessageBox.confirm('撤回后，该班学生将不再看到这份试卷；已经产生的作答和统计记录仍保留供教师查看。','确认撤回这次班级发布？',{confirmButtonText:'确认撤回',cancelButtonText:'取消',type:'warning'});await cancelPaperRelease(row.id);await openReleases({id:publishPaperId.value});ElMessage.success('已撤回发布，历史记录已保留。')}catch(error:any){if(error!=='cancel')ElMessage.error(error.message||'撤回失败')}}
 watch(
   () => form.subjectId,
   () => {
@@ -350,6 +359,7 @@ onMounted(load);
             >答案解析版打印</el-button
           ><el-button type="primary" plain @click="openPublish(row)"
             >发布到班级</el-button
+          ><el-button plain @click="openReleases(row)">发布管理</el-button
           ></template
         ></el-table-column
       ></el-table
@@ -409,6 +419,9 @@ onMounted(load);
         ></template
       ></el-dialog
     >
+    <el-dialog v-model="releaseVisible" title="发布管理" width="min(860px, calc(100vw - 24px))"><el-table :data="releases"><el-table-column prop="className" label="班级"/><el-table-column prop="publishedAt" label="发布时间"/><el-table-column prop="deadline" label="截止时间"/><el-table-column label="状态"><template #default="{row}"><el-tag>{{releaseStatus(row.status)}}</el-tag></template></el-table-column><el-table-column label="操作" min-width="190"><template #default="{row}"><el-button @click="openStats(row)">作答情况</el-button><el-button v-if="row.status!=='CANCELLED'" type="danger" plain @click="cancelRelease(row)">撤回发布</el-button></template></el-table-column></el-table></el-dialog>
+    <el-dialog v-model="statsVisible" title="班级作答情况" width="min(980px, calc(100vw - 24px))"><el-descriptions v-if="releaseStats" :column="4" border><el-descriptions-item label="应交">{{releaseStats.assigned}}</el-descriptions-item><el-descriptions-item label="已提交">{{releaseStats.submitted}}</el-descriptions-item><el-descriptions-item label="未提交">{{releaseStats.unsubmitted}}</el-descriptions-item><el-descriptions-item label="客观题平均分">{{releaseStats.averageScore}}</el-descriptions-item></el-descriptions><h3>学生作答</h3><el-table :data="submissions"><el-table-column prop="studentNumber" label="学号"/><el-table-column prop="studentName" label="姓名"/><el-table-column label="状态"><template #default="{row}"><el-tag>{{submissionStatus(row.status)}}</el-tag></template></el-table-column><el-table-column label="客观得分"><template #default="{row}">{{row.objectiveScore==null?'-':`${row.objectiveScore} / ${row.objectiveTotal}`}}</template></el-table-column><el-table-column label="主观题"><template #default="{row}">{{row.subjectivePendingCount?`${row.subjectivePendingCount}题待人工处理`:''}}</template></el-table-column><el-table-column prop="submittedAt" label="提交时间"/><el-table-column label="操作"><template #default="{row}"><el-button v-if="row.status==='SUBMITTED'" @click="openSubmission(row)">查看答卷</el-button></template></el-table-column></el-table></el-dialog>
+    <el-dialog v-model="answerVisible" title="学生已提交答卷" width="min(900px, calc(100vw - 24px))"><article v-for="q in selectedSubmission?.questions" :key="q.itemId" class="question-card"><b>第{{q.order}}题 · {{questionTypeLabel(q.type)}} · {{q.score}}分</b><QuestionContent :content="q.stem" :attachments="q.stemAttachments"/><p>学生答案：{{q.submittedAnswer||'未作答'}}</p><p v-if="q.type!=='SUBJECTIVE'">客观得分：{{q.awardedScore}} / {{q.score}}；正确答案：{{q.correctAnswer}}</p><p v-else>状态：待人工处理</p><ScientificText :content="q.standardAnalysis"/></article></el-dialog>
   </main>
 </template>
 

@@ -35,6 +35,9 @@ public final class PaperAssignmentDtos {
     public record ClassStats(long assigned, long submitted, long unsubmitted, BigDecimal averageScore,
                              List<QuestionMetric> questions, List<KnowledgeMetric> knowledgePoints,
                              List<String> weakPoints) {}
+    public record SubmissionRow(Long studentId, String studentNumber, String studentName, String status,
+                                BigDecimal objectiveScore, BigDecimal objectiveTotal, LocalDateTime submittedAt,
+                                int subjectivePendingCount) {}
     public record StudentTrend(Long releaseId, String paperName, LocalDateTime submittedAt,
                                BigDecimal score, BigDecimal total, BigDecimal rate) {}
     public record StudentProfile(Long studentId, List<StudentTrend> trend, List<String> weakTypes,
