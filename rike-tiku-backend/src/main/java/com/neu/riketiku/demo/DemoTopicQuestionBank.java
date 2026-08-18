@@ -90,5 +90,18 @@ final class DemoTopicQuestionBank {
 
     record TopicQuestion(String key, String subject, String title, String stem, String knowledgePath,
                          int difficulty, String analysis) {
+        String topicType() {
+            return switch (key) {
+                case "PT-01", "PT-05" -> "CALCULATION";
+                case "PT-03", "PT-04", "PT-06" -> "EXPERIMENT";
+                case "PT-02" -> "COMPREHENSIVE";
+                case "CT-01", "CT-06", "BT-06" -> "PROCESS";
+                case "CT-02" -> "EXPERIMENT";
+                case "CT-03", "CT-05", "BT-01" -> "CALCULATION";
+                case "CT-04", "BT-02", "BT-04", "BT-05" -> "MATERIAL_ANALYSIS";
+                case "BT-03" -> "EXPERIMENT";
+                default -> "COMPREHENSIVE";
+            };
+        }
     }
 }

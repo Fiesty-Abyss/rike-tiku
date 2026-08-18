@@ -12,7 +12,7 @@ const baseQuestion={itemId:3,order:1,score:10,type:'SINGLE_CHOICE',stem:'选择�
   options:[{label:'A',content:'选项 A'},{label:'B',content:'选项 B'}],submittedAnswer:null,knowledgePoints:['力学']}
 const stubs={ScientificText:{props:['content'],template:'<span>{{content}}</span>'},ElButton:{template:'<button><slot/></button>'},
   ElTag:{template:'<span><slot/></span>'},ElRadioGroup:{template:'<div><slot/></div>'},ElRadio:{template:'<label><slot/></label>'},
-  ElCheckboxGroup:true,ElCheckbox:true,ElInput:true,ElEmpty:true}
+  ElCheckboxGroup:true,ElCheckbox:true,ElInput:true,ElEmpty:true,ElAlert:{props:['title'],template:'<span>{{title}}</span>'}}
 
 describe('学生冻结试卷',()=>{
   beforeEach(()=>{vi.clearAllMocks();api.list.mockResolvedValue([])})
@@ -37,5 +37,15 @@ describe('学生冻结试卷',()=>{
     expect(wrapper.text()).not.toContain('"optionLabels"')
     expect(wrapper.text()).toContain('STANDARD')
     expect(wrapper.text()).toContain('由冻结条件可知应选择 A。')
+  })
+
+  it('主观大题保留输入区并明确不自动评分',async()=>{
+    api.detail.mockResolvedValue({release:{id:7,paperName:'混合试卷',subjectName:'物理',className:'199班',submissionStatus:'NOT_STARTED'},answersVisible:false,
+      questions:[{...baseQuestion,type:'SUBJECTIVE',stem:'请完成分步计算',options:[],stemAttachments:[],analysisAttachments:[]}]})
+    const wrapper=mount(StudentPapersView,{global:{stubs:{...stubs,AnswerDisplay:true}}})
+    await flushPromises()
+    expect(wrapper.text()).toContain('主观大题')
+    expect(wrapper.text()).toContain('系统不进行 AI 或规则自动评分')
+    expect(wrapper.text()).not.toContain('SINGLE_CHOICE')
   })
 })

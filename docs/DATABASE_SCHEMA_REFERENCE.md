@@ -1,8 +1,18 @@
-# RIKE V29 数据库结构参考
+# RIKE V30 数据库结构参考
 
-> 最终收口复核（2026-08-17）：正式 `rike_tiku` 为 Flyway V29，50 张业务表，`flyway_schema_history` 无失败迁移。教师系统角色继续复用既有 `yong_hu_jiao_se`，其 `zhuang_tai` 合法值为 `ACTIVE` / `DISABLED`；本轮未新增迁移或表。
+> 最终结构导航：本文件逐表记录 50 张业务表的职责、创建迁移、主键、主要字段类型/可空性/默认值、外键、唯一约束、索引、CHECK 与删除语义；精确、可复现的完整 DDL 以 [schema_snapshot_v30.sql](../database/schema_snapshot_v30.sql) 为准。功能如何使用这些表见 [功能—数据库表地图](FEATURE_DATABASE_TABLE_MAP.md)。`flyway_schema_history` 只用于迁移审计，不计入 50 张业务表。
 
-> 本文由 `information_schema` 只读生成，校验对象为隔离库 `rike_tiku_demo` 的 Flyway V1–V29 业务表。字段与约束以迁移脚本为准；`database/schema_snapshot_v29.sql` 仅是便于查阅的纯结构快照，不能替代 Flyway。
+> 当前 DDL 只读快照为 [`database/schema_snapshot_v30.sql`](../database/schema_snapshot_v30.sql)：含 Flyway history 表和 50 张业务表、无任何数据或凭据。`schema_snapshot_v29.sql` 是历史快照，不能作为当前结构；运行时唯一迁移事实是 V1–V30。
+
+## V30 关键设计结论
+
+- `ti_mu` 是普通题、教师私有题和专题主观大题的唯一事实源；`zhuan_ti_xue_xi_dan_yuan` 与关系表只负责教学编排，避免两份题干/答案漂移。
+- `shi_juan_fa_bu_ti_mu` 在 V27 冻结发布题干、选项、答案、STANDARD 和知识点，在 V30 追加 `fu_jian_kuai_zhao` JSON ARRAY，因此原题附件后续变化不改变已发布试卷的视觉事实。
+- `shi_juan_ti_jiao.ke_guan_de_fen` 只表示客观自动得分；`shi_juan_xue_sheng_da_ti.zhuang_tai='SUBJECTIVE_PENDING'` 表示主观作答已保存、待教师按 STANDARD 处理，不参与 AI 或规则自动正式评分。
+
+> Post-merge 复核（2026-08-17）：正式 `rike_tiku` 为 Flyway V30，50 张业务表，`flyway_schema_history` 无失败迁移。V30 不新增表：发布题目快照增加受控附件 JSON，学生逐题作答状态字段扩展以容纳 `SUBJECTIVE_PENDING`。
+
+> 本文由 `information_schema` 只读核验正式 `rike_tiku` 的 Flyway V1–V30 业务表。字段与约束以迁移脚本为准；`database/schema_snapshot_v29.sql` 是 V29 历史纯结构快照，不能替代 Flyway。
 
 ## 总体约定
 
@@ -12,7 +22,7 @@
 
 - 本参考完整列出 50 张业务表；每张表给出 MySQL 类型、NULL、默认值、主键/外键/UNIQUE/CHECK、精确索引与生命周期。
 
-- 本轮没有新增 V30；学生高频考点内容与专题单元是 V21/V26 已有表中的受控内容写入，不改变 V29 schema snapshot。正式库核验结果为 15 个 `PUBLISHED` 专题单元、45 条单元题目关系、65 张 `PUBLISHED` 卡片，学科分布为物理 6、化学 5、生物 4。V1–V29 history 29/29 成功，迁移文件相对远程无改动。
+- V30 只扩展现有表：`shi_juan_fa_bu_ti_mu.fu_jian_kuai_zhao` 为发布时冻结的附件数组；`shi_juan_xue_sheng_da_ti.zhuang_tai` 扩为 `varchar(32)`。正式库核验结果为 15 个 `PUBLISHED` 专题单元、45 条单元题目关系，学科分布为物理 6、化学 5、生物 4；专题类型为计算 14、实验 9、流程 5、材料分析 13、综合 4。V1–V30 history 30/30 成功，业务表仍为 50 张。
 
 ## Authentication
 
@@ -1034,6 +1044,7 @@
 | `zheng_que_da_an_kuai_zhao` | `json` | 否 | `NULL` | — | — |
 | `biao_zhun_jie_xi_kuai_zhao` | `longtext` | 否 | `NULL` | — | — |
 | `zhi_shi_dian_kuai_zhao` | `json` | 否 | `NULL` | — | — |
+| `fu_jian_kuai_zhao` | `json` | 否 | `NULL` | — | 发布时冻结的题干/解析附件数组，保存位置、类型、文件名、受控相对路径、顺序与SHA-256；创建/演进：V30 |
 
 约束：`CHECK:ck_shi_juan_fa_bu_ti_mu_answer`；`CHECK:ck_shi_juan_fa_bu_ti_mu_options`；`CHECK:ck_shi_juan_fa_bu_ti_mu_order`；`CHECK:ck_shi_juan_fa_bu_ti_mu_points`；`CHECK:ck_shi_juan_fa_bu_ti_mu_score`；`CHECK:ck_shi_juan_fa_bu_ti_mu_type`；`FOREIGN KEY:fk_shi_juan_fa_bu_ti_mu_question`；`FOREIGN KEY:fk_shi_juan_fa_bu_ti_mu_release`；`PRIMARY KEY:PRIMARY`；`UNIQUE:uk_shi_juan_fa_bu_ti_mu_order`；`UNIQUE:uk_shi_juan_fa_bu_ti_mu_question`。
 索引：`INDEX:idx_shi_juan_fa_bu_ti_mu_question(ti_mu_id)`；`UNIQUE/PRIMARY:PRIMARY(id)`；`UNIQUE/PRIMARY:uk_shi_juan_fa_bu_ti_mu_order(shi_juan_fa_bu_id,ti_mu_shun_xu)`；`UNIQUE/PRIMARY:uk_shi_juan_fa_bu_ti_mu_question(shi_juan_fa_bu_id,ti_mu_id)`。
@@ -1087,7 +1098,7 @@
 | `xue_sheng_da_an` | `json` | 是 | `NULL` | — | — |
 | `shi_fou_zheng_que` | `tinyint(1)` | 是 | `NULL` | — | — |
 | `de_fen` | `decimal(8,2)` | 是 | `NULL` | — | — |
-| `zhuang_tai` | `varchar(16)` | 否 | `DRAFT` | — | — |
+| `zhuang_tai` | `varchar(32)` | 否 | `DRAFT` | — | `DRAFT` / `SUBMITTED` / `SUBJECTIVE_PENDING` 等；V30 扩容 |
 | `bao_cun_shi_jian` | `datetime(3)` | 否 | `CURRENT_TIMESTAMP(3)` | DEFAULT_GENERATED | — |
 
 约束：`CHECK:ck_shi_juan_xue_sheng_da_ti_correct`；`CHECK:ck_shi_juan_xue_sheng_da_ti_score`；`CHECK:ck_shi_juan_xue_sheng_da_ti_status`；`FOREIGN KEY:fk_shi_juan_xue_sheng_da_ti_item`；`FOREIGN KEY:fk_shi_juan_xue_sheng_da_ti_submission`；`PRIMARY KEY:PRIMARY`；`UNIQUE:uk_shi_juan_xue_sheng_da_ti_submission_item`。

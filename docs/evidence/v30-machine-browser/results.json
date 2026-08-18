@@ -1,0 +1,375 @@
+{
+  "generatedAt": "2026-08-17T07:18:47.344Z",
+  "database": "rike_tiku",
+  "machineBrowser": "MACHINE_BROWSER_VERIFIED",
+  "summary": {
+    "assertions": 56,
+    "assertionFailures": 0,
+    "pages": 11,
+    "consoleErrors": 0,
+    "pageErrors": 0,
+    "failedRequests": 0,
+    "horizontalOverflow": 0
+  },
+  "assertions": [
+    {
+      "name": "TEACHER-login",
+      "pass": true,
+      "detail": "200"
+    },
+    {
+      "name": "route:/teacher/papers",
+      "pass": true,
+      "detail": "200"
+    },
+    {
+      "name": "text:teacher-paper-builder",
+      "pass": true,
+      "detail": "组卷与打印"
+    },
+    {
+      "name": "manual-subjective-filter",
+      "pass": true,
+      "detail": "主观大题\n材料分析题\n难度 4\n光电效应｜用不同频率单色光照射同一金属，测得遏止电压随频率近似线性增加；当频率低于 \n𝜈\n0\nν\n0\n\t​\n\n 时，即使增大光强也无光电子逸出。\\n（1）写出爱因斯坦光电方程并解释 \n𝜈\n0\nν\n0\n\t​\n\n 的含义；\\n（2）说明遏止电压变化反映的量；\\n（3）在 \n𝜈\n>\n𝜈\n0\nν>ν\n0\n\t​\n\n 时增大光强，光电流和遏止电压一般如何变化；\\n（4）为什么不能由该实验直接断言“所有金属逸出功相同”？\n近代物理\n加入试卷"
+    },
+    {
+      "name": "manual-mixed-basket-retry",
+      "pass": true,
+      "detail": "题篮 · 2 题 · 10 分\n1.\n主观大题\n光电效应｜用不同频率单色光照射同一金属，测得遏止电压随频率近似线性增加；当频率低于 \n𝜈\n0\nν\n0\n\t​\n\n 时，即使增大光强也无光电子逸出。\\n（1）写出爱因斯坦光电方程并解释 \n𝜈\n0\nν\n0\n\t​\n\n 的含义；\\n（2）说明遏止电压变化反映的量；\\n（3）在 \n𝜈\n>\n𝜈\n0\nν>ν\n0\n\t​\n\n 时增大光强，光电流和遏止电压一般如何变化；\\n（4）为什么不能由该实验直接断言“所有金属逸出功相同”？\n上移\n下移\n移除\n2.\n单选\n用多次测量取平均值主要可以减小哪类误差的影响？\n上移\n下移\n移除"
+    },
+    {
+      "name": "manual-paper-saved",
+      "pass": true,
+      "detail": "[{\"id\":2,\"subjectId\":1,\"name\":\"V30 物理专题主观题混合卷\",\"mode\":\"MANUAL\",\"totalScore\":10,\"status\":\"READY\",\"questionCount\":2}]"
+    },
+    {
+      "name": "paper-subjective-included",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "paper-objective-included",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "route:/teacher/papers/2/student",
+      "pass": true,
+      "detail": "200"
+    },
+    {
+      "name": "text:teacher-paper-student-print",
+      "pass": true,
+      "detail": "主观大题"
+    },
+    {
+      "name": "student-print-hides-standard",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "print-subjective-response-space",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "route:/teacher/papers/2/answer",
+      "pass": true,
+      "detail": "200"
+    },
+    {
+      "name": "text:teacher-paper-answer-print",
+      "pass": true,
+      "detail": "STANDARD 解析"
+    },
+    {
+      "name": "route:/teacher/papers",
+      "pass": true,
+      "detail": "200"
+    },
+    {
+      "name": "text:teacher-paper-publish-quality",
+      "pass": true,
+      "detail": "已保存试卷"
+    },
+    {
+      "name": "quality-distribution-localized",
+      "pass": true,
+      "detail": "发布冻结试卷\n发布后题干、选项、分值和 STANDARD 全部冻结。\n本人 ACTIVE 任课班级\nV30浏览器验收班 · 物理\n截止时间\n辅助建议，不代替教师审核\n\n题型分布：主观大题 1 题、单选 1 题\n\n知识点覆盖：2 个\n\n试卷总分：10.00 分\n\n客观题自动判分：5.00 分\n\n主观大题：1 题，共 5.00 分，不进行 AI 自动评分\n\n题量较少，需由教师核对考查范围\n主观大题不进行 AI 或规则自动评分，需由教师按 STANDARD 人工处理\nAI 质量建议\n取消\n确认发布"
+    },
+    {
+      "name": "quality-subjective-boundary",
+      "pass": true,
+      "detail": "发布冻结试卷\n发布后题干、选项、分值和 STANDARD 全部冻结。\n本人 ACTIVE 任课班级\nV30浏览器验收班 · 物理\n截止时间\n辅助建议，不代替教师审核\n\n题型分布：主观大题 1 题、单选 1 题\n\n知识点覆盖：2 个\n\n试卷总分：10.00 分\n\n客观题自动判分：5.00 分\n\n主观大题：1 题，共 5.00 分，不进行 AI 自动评分\n\n题量较少，需由教师核对考查范围\n主观大题不进行 AI 或规则自动评分，需由教师按 STANDARD 人工处理\nAI 质量建议\n取消\n确认发布"
+    },
+    {
+      "name": "publication-deadline-entered",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "STUDENT-login",
+      "pass": true,
+      "detail": "200"
+    },
+    {
+      "name": "topic-unit-total",
+      "pass": true,
+      "detail": "actual=15"
+    },
+    {
+      "name": "topic-subject-PHYSICS",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "topic-stages-PHYSICS",
+      "pass": true,
+      "detail": "[\"FOUNDATION\",\"TRANSFER\",\"ADVANCED\"]"
+    },
+    {
+      "name": "topic-subject-CHEMISTRY",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "topic-stages-CHEMISTRY",
+      "pass": true,
+      "detail": "[\"FOUNDATION\",\"TRANSFER\",\"ADVANCED\"]"
+    },
+    {
+      "name": "topic-subject-BIOLOGY",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "topic-stages-BIOLOGY",
+      "pass": true,
+      "detail": "[\"FOUNDATION\",\"TRANSFER\",\"ADVANCED\"]"
+    },
+    {
+      "name": "physics-illustrated-topic",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "route:/student/topics/units/7",
+      "pass": true,
+      "detail": "200"
+    },
+    {
+      "name": "text:student-physics-topic",
+      "pass": true,
+      "detail": "材料与问题"
+    },
+    {
+      "name": "physics-image-visible",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "physics-topic-type-localized",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "route:/student/topics/units/3",
+      "pass": true,
+      "detail": "200"
+    },
+    {
+      "name": "text:student-chemistry-topic",
+      "pass": true,
+      "detail": "材料与问题"
+    },
+    {
+      "name": "chemistry-no-render-fallback",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "route:/student/topics/units/5",
+      "pass": true,
+      "detail": "200"
+    },
+    {
+      "name": "text:student-biology-topic",
+      "pass": true,
+      "detail": "材料与问题"
+    },
+    {
+      "name": "biology-standard-visible",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "student-mixed-release-visible",
+      "pass": true,
+      "detail": "[{\"id\":1,\"paperId\":2,\"paperName\":\"V30 物理专题主观题混合卷\",\"subjectName\":\"物理\",\"className\":\"V30浏览器验收班\",\"publishedAt\":\"2026-08-17T15:15:53.116\",\"deadline\":\"2026-08-18T08:00:00\",\"status\":\"PUBLISHED\",\"submissionStatus\":\"NOT_STARTED\",\"score\":null,\"objectiveTotal\":null}]"
+    },
+    {
+      "name": "route:/student/papers",
+      "pass": true,
+      "detail": "200"
+    },
+    {
+      "name": "text:student-mixed-paper-list",
+      "pass": true,
+      "detail": "V30 物理专题主观题混合卷"
+    },
+    {
+      "name": "route:/teacher/papers",
+      "pass": true,
+      "detail": "200"
+    },
+    {
+      "name": "text:teacher-illustrated-paper-builder",
+      "pass": true,
+      "detail": "组卷与打印"
+    },
+    {
+      "name": "manual-illustrated-subjective-result",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "manual-illustrated-mixed-basket-corrected",
+      "pass": true,
+      "detail": "题篮 · 2 题 · 10 分\n1.\n主观大题\n速度时间图像｜某小车的 \n𝑣\n−\n𝑡\nv−t 图像如图：\\n〔图片对象 I001〕\\n在 \n0\n∼\n4\ns\n0∼4s 内速度从 \n0\n0 匀增至 \n8\nm\n/\ns\n8m/s，在 \n4\n∼\n7\ns\n4∼7s 内保持 \n8\nm\n/\ns\n8m/s。\\n（1）分别说明两个阶段的运动状态；\\n（2）求前 \n4\ns\n4s 的加速度；\\n（3）求 \n0\n∼\n7\ns\n0∼7s 内位移，并说明图像面积的物理意义。\n上移\n下移\n移除\n2.\n单选\n用多次测量取平均值主要可以减小哪类误差的影响？\n上移\n下移\n移除"
+    },
+    {
+      "name": "illustrated-paper-saved",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "illustrated-paper-attachment",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "illustrated-paper-objective",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "route:/teacher/papers",
+      "pass": true,
+      "detail": "200"
+    },
+    {
+      "name": "text:teacher-illustrated-paper-quality",
+      "pass": true,
+      "detail": "已保存试卷"
+    },
+    {
+      "name": "illustrated-quality-localized",
+      "pass": true,
+      "detail": "发布冻结试卷\n发布后题干、选项、分值和 STANDARD 全部冻结。\n本人 ACTIVE 任课班级\nV30浏览器验收班 · 物理\n截止时间\n辅助建议，不代替教师审核\n\n题型分布：主观大题 1 题、单选 1 题\n\n知识点覆盖：2 个\n\n试卷总分：10.00 分\n\n客观题自动判分：5.00 分\n\n主观大题：1 题，共 5.00 分，不进行 AI 自动评分\n\n题量较少，需由教师核对考查范围\n主观大题不进行 AI 或规则自动评分，需由教师按 STANDARD 人工处理\nAI 质量建议\n取消\n确认发布"
+    },
+    {
+      "name": "illustrated-release-visible",
+      "pass": true,
+      "detail": "[{\"id\":2,\"paperId\":3,\"paperName\":\"V30 物理专题图片混合卷\",\"subjectName\":\"物理\",\"className\":\"V30浏览器验收班\",\"publishedAt\":\"2026-08-17T15:18:17.071\",\"deadline\":\"2026-08-18T09:00:00\",\"status\":\"PUBLISHED\",\"submissionStatus\":\"NOT_STARTED\",\"score\":null,\"objectiveTotal\":null},{\"id\":1,\"paperId\":2,\"paperName\":\"V30 物理专题主观题混合卷\",\"subjectName\":\"物理\",\"className\":\"V30浏览器验收班\",\"publishedAt\":\"2026-08-17T15:15:53.116\",\"deadline\":\"2026-08-18T08:00:00\",\"status\":\"PUBLISHED\",\"submissionStatus\":\"IN_PROGRESS\",\"score\":0,\"objectiveTotal\":0}]"
+    },
+    {
+      "name": "route:/student/papers/2",
+      "pass": true,
+      "detail": "200"
+    },
+    {
+      "name": "text:student-illustrated-paper-answering",
+      "pass": true,
+      "detail": "主观大题作答会保存"
+    },
+    {
+      "name": "student-illustrated-subjective-image",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "student-subjective-pending-visible",
+      "pass": true,
+      "detail": "RIKE\n学生科学工作台\n三科工作台\n自主练习\n错题本\n专题学习\n我的试卷\n高频考点\n消息\nV\nV30浏览器验收学生\n\nFROZEN PAPER WORKSPACE\n\n试卷作答\n发布后题干、选项、分值与 STANDARD 均被冻结；客观题由确定性规则判分。\n返回任务列表\nV30 物理专题图片混合卷\n物理 · V30浏览器验收班\nNOT_STARTED\n草稿自动保存\n1.\n主观大题\n5 分\n速度时间图像｜某小车的 \n𝑣\n−\n𝑡\nv−t 图像如图：\\n\n\\n在 \n0\n∼\n4\ns\n0∼4s 内速度从 \n0\n0 匀增至 \n8\nm\n/\ns\n8m/s，在 \n4\n∼\n7\ns\n4∼7s 内保持 \n8\nm\n/\ns\n8m/s。\\n（1）分别说明两个阶段的运动状态；\\n（2）求前 \n4\ns\n4s 的加速度；\\n（3）求 \n0\n∼\n7\ns\n0∼7s 内位移，并说明图像面积的物理意义。\n主观大题作答会保存；系统不进行 AI 或规则自动评分。\n2.\n单选\n5 分\n用多次测量取平均值主要可以减小哪类误差的影响？\nA. 随机误差\nB. 所有系统误差\nC. 仪器零点错误\nD. 单位选择错误\n提交前请检查所有客观题；主观题会保存但不会由 AI 自动评分。\n提交试卷\n确认提交试卷\n\n提交后将冻结客观题答案；主观题作答会保存，但不由 AI 或规则自动评分。\n\n继续检查\n确认提交\n\n客观题自动得分 5/5；1 道主观题待教师处理"
+    }
+  ],
+  "pages": [
+    {
+      "route": "/teacher/papers",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedRequests": [],
+      "overflow": false
+    },
+    {
+      "route": "/teacher/papers/2/student",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedRequests": [],
+      "overflow": false
+    },
+    {
+      "route": "/teacher/papers/2/answer",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedRequests": [],
+      "overflow": false
+    },
+    {
+      "route": "/teacher/papers",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedRequests": [],
+      "overflow": false
+    },
+    {
+      "route": "/student/topics/units/7",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedRequests": [],
+      "overflow": false
+    },
+    {
+      "route": "/student/topics/units/3",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedRequests": [],
+      "overflow": false
+    },
+    {
+      "route": "/student/topics/units/5",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedRequests": [],
+      "overflow": false
+    },
+    {
+      "route": "/student/papers",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedRequests": [],
+      "overflow": false
+    },
+    {
+      "route": "/teacher/papers",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedRequests": [],
+      "overflow": false
+    },
+    {
+      "route": "/teacher/papers",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedRequests": [],
+      "overflow": false
+    },
+    {
+      "route": "/student/papers/2",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedRequests": [],
+      "overflow": false
+    }
+  ]
+}
