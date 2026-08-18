@@ -1,6 +1,6 @@
 # RIKE 最终项目事实包
 
-> 本文件是论文、答辩和后续维护的当前事实入口，不是开发日志。历史时间线中的旧测试数、旧 Flyway 版本或旧表数只能解释当时阶段，不能覆盖本文件。最后一次事实刷新：2026-08-18，PR #35 已完成用户人工验收与最终回归，待 ordinary merge；合并后产品继续冻结。
+> 本文件是论文、答辩和后续维护的当前事实入口，不是开发日志。历史时间线中的旧测试数、旧 Flyway 版本或旧表数只能解释当时阶段，不能覆盖本文件。最后一次事实刷新：2026-08-18，PR #35 已 ordinary merge；产品开发永久冻结。
 
 ## 1. 项目身份与运行边界
 
@@ -21,8 +21,9 @@
 | PR #33 | 主体产品完成 PR；已以 ordinary merge 合入 `main`，merge commit `fba1276862fee973129ee8b85c6fc3a1d55b8662`。 |
 | PR #34 | post-merge 的专题内容、主观题组卷、V30 附件快照、题型中文化和打印修补 PR；base 为 `fba1276862fee973129ee8b85c6fc3a1d55b8662`，final head 为 `a456ace11df83018d285b04b198448cf0bbe5ba7`，已 ordinary merge。 |
 | PR #34 merge | `ea784b5a1b6572ea1a2625db347859bd6e410eda`，`mergedAt=2026-08-18T01:24:08Z`。 |
-| PR #35 | 冻结后真实教学闭环维护；base `f95effcc1ea681530b4be6d01de724f4f999d9f6`，final head 待 ordinary merge 时写入。覆盖任课范围、私有题隔离、release 管理、撤回、历史答卷与试卷软删除；不新增 Flyway 或表。 |
-| 当前产品阶段 | `THESIS_AND_DEFENSE_DELIVERY`；`PRODUCT DEVELOPMENT = FROZEN`。仅处理学校模板、论文、答辩材料、真实 BLOCKER 或老师明确要求。 |
+| PR #35 | 冻结后真实教学闭环维护；base `f95effcc1ea681530b4be6d01de724f4f999d9f6`，final head `e1f90dc756baae02d6b501eeef967d511e0731ab`，已 ordinary merge。覆盖任课范围、私有题隔离、release 管理、撤回、历史答卷与试卷软删除；不新增 Flyway 或表。 |
+| PR #35 merge | `fde39c53efca316010abf63acf56fda2c631315c`，`mergedAt=2026-08-18T07:30:00Z`。这是产品代码最终合并基线；随后的 docs-only 事实提交不改变产品行为。 |
+| 当前产品阶段 | `THESIS_AND_DEFENSE_DELIVERY`；`PRODUCT DEVELOPMENT = FROZEN`；`NO OPEN PRODUCT DEVELOPMENT PR`。仅处理学校模板、论文、答辩材料、真实 BLOCKER 或老师明确要求。 |
 
 ## 3. 已实现、已验证与边界
 
@@ -112,11 +113,11 @@ PR #35 merge 前最终回归：后端 `mvn test` 与 `mvn package` 均为 **221 
 - [论文写作中心](THESIS_WRITING_HUB.md)、[论文事实核验](thesis/RIKE_THESIS_FACT_CHECK.md)、[答辩提纲](thesis/RIKE_DEFENSE_OUTLINE.md)、[答辩事实问答](DEFENSE_FACTS_AND_QA.md)。
 - [正式参考文献 22 条](THESIS_REFERENCES.md)、[引用使用矩阵](thesis/RIKE_REFERENCE_USAGE_MATRIX.md)。`research-only` 资料不属于正式论文引用。
 
-## 8a. PR #35 试卷发布管理维护（用户已接受，待 ordinary merge）
+## 8a. PR #35 试卷发布管理维护（已 ordinary merge）
 
 PR #35 仅补齐教师试卷发布后的管理闭环，不新增迁移、表或自动评分：教师可集中查询本人所有班级 release，并按唯一任课范围、状态和试卷名称筛选；可查看历史统计和已提交答卷。撤回将 release 标记为 `CANCELLED`，学生立即不可见，但冻结快照、提交和逐题答案继续保留。试卷本体使用既有 `shi_juan.yi_shan_chu` 软删除：从未发布或全部 release 已撤回时可清理“我的试卷”，只要存在 `PUBLISHED`/`CLOSED` release 即由服务端拒绝。详情见 [PR #35 人工验收记录](MANUAL_ACCEPTANCE_FINDINGS_PAPER_RELEASE_MANAGEMENT.md)。
 
-该维护已完成随机临时 schema 回归：后端 **221 tests、0 failures、0 errors、3 skipped**，前端 **68 files、224 tests、0 failures**；`mvn test`、`mvn package`、前端 type-check/build/audit 均通过（audit 0 vulnerabilities）。用户人工确认教师发布管理、班级作答/历史、纵向答卷审查、答案显示、撤回不可见、任课范围区分和当前更多菜单均可接受。`MACHINE_BROWSER = NOT_RUN`，因此不把用户人工验收误写为机器浏览器证据。
+该维护已完成随机临时 schema 回归：后端 **221 tests、0 failures、0 errors、3 skipped**，前端 **68 files、224 tests、0 failures**；`mvn test`、`mvn package`、前端 type-check/build/audit 均通过（audit 0 vulnerabilities）。用户人工确认教师发布管理、班级作答/历史、纵向答卷审查、答案显示、撤回不可见、任课范围区分和当前更多菜单均可接受。`MACHINE_BROWSER = NOT_RUN`，因此不把用户人工验收误写为机器浏览器证据。PR #35 于 `2026-08-18T07:30:00Z` 以 ordinary merge 合入 `main`。
 
 ## 9. 论文快速取材
 

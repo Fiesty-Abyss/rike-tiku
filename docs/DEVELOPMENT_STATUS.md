@@ -2,14 +2,14 @@
 
 > 当前事实入口：[FINAL_PROJECT_FACTS.md](FINAL_PROJECT_FACTS.md)。本文件不把历史阶段的测试数字当作当前基线。
 
-更新时间：2026-08-18。PR #33 与 PR #34 已 ordinary merge；PR #34 merge commit 为 `ea784b5a1b6572ea1a2625db347859bd6e410eda`。PR #35 是唯一的冻结后真实闭环维护，已完成用户人工验收和最终自动化回归，待 ordinary merge；合并后回到 `THESIS_AND_DEFENSE_DELIVERY`。
+更新时间：2026-08-18。PR #33、PR #34 与 PR #35 已 ordinary merge；PR #35 merge commit 为 `fde39c53efca316010abf63acf56fda2c631315c`，`mergedAt=2026-08-18T07:30:00Z`。项目已回到 `THESIS_AND_DEFENSE_DELIVERY`，`PRODUCT DEVELOPMENT = FROZEN`。
 
 ## 当前产品事实
 
 - Flyway：V1–V30；业务表：50。V1–V29 均为已发布历史，未修改；V30 仅在发布试卷题目快照上增加附件 JSON，并使学生答题状态可存储 `SUBJECTIVE_PENDING`，不新增表。
 - 专题：15 个单元、45 道原创 `SUBJECTIVE + TOPIC_LEARNING` 大题；物理 6、化学 5、生物 4；计算 14、实验 9、流程 5、材料分析 13、综合 4。题目事实仍在 `ti_mu`，专题单元只编排。
 - 试卷：教师手动组卷可检索和纳入合法范围的专题主观题；随机/规则仍只抽确定性客观题。发布冻结附件、题干、选项、答案、STANDARD 与知识点。学生主观作答保存为 `SUBJECTIVE_PENDING`，不进入 AI 或规则自动正式评分；客观得分不等于整卷最终成绩。
-- PR #35（待 ordinary merge）：教师可查看单张或全局班级发布历史、按任课范围/状态/名称筛选、查看已发生的提交与统计，并撤回 release。撤回只使学生不可见；软删除 `shi_juan` 仅清理“我的试卷”，发布快照与学生作答历史保留。有效 `PUBLISHED`/`CLOSED` release 存在时服务端拒绝软删除。
+- PR #35（已 ordinary merge）：教师可查看单张或全局班级发布历史、按任课范围/状态/名称筛选、查看已发生的提交与统计，并撤回 release。撤回只使学生不可见；软删除 `shi_juan` 仅清理“我的试卷”，发布快照与学生作答历史保留。有效 `PUBLISHED`/`CLOSED` release 存在时服务端拒绝软删除。
 - PR #35 最终回归：后端 **221 tests、0 failures、0 errors、3 skipped**；前端 **68 files、224 tests、0 failures**；`mvn test`、`mvn package`、type-check、build、audit（0 vulnerabilities）通过。用户人工已接受本轮发布历史、软删除、范围区分与答卷审查；`MACHINE_BROWSER = NOT_RUN` 如实保留。
 - UI：题型和专题类型映射为中文，发布质量区域不展示 Java Map/internal enum。打印继续使用浏览器原生 `window.print()` 与 A4 CSS。
 - AI：Provider Core、DeepSeek TEXT、GLM Vision、xAI Vision 历史适配、Web Search 和 Fake/Test Provider 均有工程实现；无当前凭据时真实外部状态是 `BLOCKED_EXTERNAL_PROVIDER`，Fake 不计作真实 PASS。当前题答疑最多 10 轮，AI 不覆盖 STANDARD。
