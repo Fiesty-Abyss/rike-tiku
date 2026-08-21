@@ -7,7 +7,6 @@ declare module 'vue-router' {
   interface RouteMeta {
     requiresAuth?: boolean
     roles?: RoleCode[]
-    allowWhenMustChangePassword?: boolean
     guestOnly?: boolean
     title?: string
     subtitle?: string
@@ -26,12 +25,6 @@ const router = createRouter({
       redirect: '/login',
     },
     { path: '/select-role', name: 'select-role', component: () => import('../views/auth/RoleSelectionView.vue'), meta: { requiresAuth: true } },
-    {
-      path: '/change-initial-password',
-      name: 'change-initial-password',
-      component: () => import('../views/auth/ChangeInitialPasswordView.vue'),
-      meta: { requiresAuth: true, allowWhenMustChangePassword: true },
-    },
     {
       path: '/profile',
       name: 'profile',
@@ -117,10 +110,6 @@ const router = createRouter({
 router.beforeEach(async (to) => {
   const authStore = useAuthStore()
   await authStore.restoreSession()
-
-  if (authStore.mustChangePassword && !to.meta.allowWhenMustChangePassword) {
-    return '/change-initial-password'
-  }
 
   if (to.meta.guestOnly && authStore.isAuthenticated) {
     return authStore.getDefaultHome()
