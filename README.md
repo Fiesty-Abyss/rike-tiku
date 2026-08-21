@@ -512,3 +512,5 @@ Provider 配置与学生业务 API 分离，前端只能提交受控模型 ID。
 ## 演示账号与认证口径
 
 最终演示使用 [账号清单](docs/FINAL_DEMO_ACCOUNTS.md) 和 [数据卫生报告](docs/FINAL_AUTH_DATA_HYGIENE_REPORT.md) 作为唯一说明：203 班教师张生康为 `t2026004`，指定学生使用 `2026203001` 至 `2026203003`。本地默认/管理员重置口令由 `app.account.default-reset-password` 配置（当前本地值为 `a1234567`），新建与重置账户不再进入强制首次改密门禁；用户仍可主动修改密码，管理员密码恢复流程仍保留。
+
+PR #37 已于 `2026-08-21T03:07:23Z` 以 ordinary merge 合入 `main`（merge commit `cb785631c359b88dc4841a9eeed3af14879516cb`）。当前产品事实、测试数字和演示数据边界以 [FINAL_PROJECT_FACTS.md](docs/FINAL_PROJECT_FACTS.md) 为准。

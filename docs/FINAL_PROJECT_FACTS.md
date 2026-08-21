@@ -150,3 +150,7 @@ PR #36（head `d1a76015f25f963d43524a44b9f87e9841545936`）已于 `2026-08-21T02
 - 账户默认口令只由 `app.account.default-reset-password` 管理；当前本地开发配置值为 `a1234567`，数据库只保存 BCrypt 哈希。所有新建/导入/重置账户均写入 `shi_fou_shou_ci_deng_lu=0`，不再强制跳转首次改密页面；用户主动改密与管理员密码恢复保留。
 - 已完成对 `rike_tiku` 与 `rike_tiku_demo` 的 `V30_BROWSER`、`V30_BROWSER_STUDENT`、`V30_BROWSER_TEACHER`、`V30_BROWSER_CLASS` 全字段审计；仅发现并定向清除了本轮浏览器测试班级、两账号、任课范围、试卷/release 快照、提交、逐题答案和高频考点测试关联。Flyway V1–V30、schema、199/200、三位旧教师及其历史均未修改。
 - 详见 [演示账号清单](FINAL_DEMO_ACCOUNTS.md) 与 [数据卫生报告](FINAL_AUTH_DATA_HYGIENE_REPORT.md)。最终回归数字与合并 SHA 仅在本 PR 全部门禁通过后写入。
+
+### PR #37 合并冻结
+
+PR #37 final head `f6456be59313e3bf88c45947f362c0c32cadba87` 已于 `2026-08-21T03:07:23Z` ordinary merge；merge commit 与当前 main 基线均为 `cb785631c359b88dc4841a9eeed3af14879516cb`。最终回归为后端 **224 tests、0 failures、0 errors、3 skipped**，`mvn -DskipTests package` PASS；前端 **68 files、225 tests、0 failures**，type-check/build PASS，`npm audit --omit=dev` 为 0 vulnerabilities。Flyway 保持 V30、正式库 30 success/0 failed、50 business tables；科学审计为 600 strings/0 errors，正式文献与 BibTeX 为 22/22。产品继续处于 `PRODUCT DEVELOPMENT = FROZEN` / `PROJECT PHASE = THESIS_AND_DEFENSE_DELIVERY`。
