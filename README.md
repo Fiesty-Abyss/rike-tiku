@@ -508,3 +508,7 @@ Provider 配置与学生业务 API 分离，前端只能提交受控模型 ID。
 - 正式论文唯一白名单：[22条正式参考文献](docs/THESIS_REFERENCES.md)；正式引用管理：[references.bib](docs/references/references.bib)。扩展工程调研已物理隔离到 [research-only](docs/references/research-only/README.md)，不得作为开题报告或毕业论文正式引用。文献只用于说明研究与设计依据，不代表 RIKE 自身实验结果。
 
 真实 Provider 状态以当前验收记录为准：DeepSeek variant、DeepSeek tutor、GLM Vision、xAI Vision、Web Search 均因没有可安全使用的轮换后凭据而为 `BLOCKED_EXTERNAL_PROVIDER`；Mock/Fake 只用于自动化，不记作真实调用。PR #34 用户人工验收已包含 `PRINT_USER_VERIFIED`；普通合并后的最终 main SHA 由 `FINAL_PROJECT_FACTS.md` 固化。
+
+## 演示账号与认证口径
+
+最终演示使用 [账号清单](docs/FINAL_DEMO_ACCOUNTS.md) 和 [数据卫生报告](docs/FINAL_AUTH_DATA_HYGIENE_REPORT.md) 作为唯一说明：203 班教师张生康为 `t2026004`，指定学生使用 `2026203001` 至 `2026203003`。本地默认/管理员重置口令由 `app.account.default-reset-password` 配置（当前本地值为 `a1234567`），新建与重置账户不再进入强制首次改密门禁；用户仍可主动修改密码，管理员密码恢复流程仍保留。

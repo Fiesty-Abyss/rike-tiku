@@ -42,6 +42,16 @@
 | 视觉上下文 | `ai_shi_jue_shang_xia_wen` | 附件 hash + provider/model/prompt version。 |
 | 最终正式候选 | `ti_mu`、`ti_mu_xuan_xiang`、`ti_mu_jie_xi` 等 | 进入 PENDING 后仍需人工审核。 |
 
+## 演示认证与数据卫生速查
+
+| 事项 | 真实实现 / 事实 | 答辩边界 |
+|---|---|---|
+| 默认/重置密码 | `app.account.default-reset-password` → `AdminDefaultPasswordPolicy` → BCrypt `mi_ma_zhai_yao` | 本地配置为 `a1234567`；不在 API、日志、截图或 GitHub 文档保存哈希/密钥。 |
+| 新增账号 | `StudentManagementService`、`StudentImportConfirmService`、`JiaoShiGuanLiFuWu` | 新建账户的 `shi_fou_shou_ci_deng_lu=0`，不强制首次改密。 |
+| 密码恢复 | `PasswordRecoveryService` | 管理员处理后使用统一默认策略；用户可主动修改密码。 |
+| 兼容旧入口 | 旧 `change-initial-password` 后端兼容端点仍可处理历史标记账户 | 正常登录链路不再注册门禁过滤器，也没有前端强制跳转。 |
+| 203 隔离演示 | `ren_ke_guan_xi`、`ban_ji`、`jiao_shi_dang_an` | 张生康仅 203 班物理、非 ADMIN；199/200 和三位旧核心教师不被清理或重建。 |
+
 ## 论文与答辩可说/不可说
 
 - 可说：系统采用模块化单体；客观题确定性判分；主观题 `SUBJECTIVE_PENDING` 不自动评分；AI 解释/生成候选与 STANDARD 隔离；Provider 有统一切换层。

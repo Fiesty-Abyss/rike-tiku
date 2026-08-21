@@ -22,7 +22,6 @@ function readableError(error: unknown, fallback: string) {
   const messages: Record<string, string> = {
     IMPORT_VALIDATION_FAILED: '文件存在无效行，请修正后重新预检查。',
     IMPORT_CONFLICT: '导入数据与当前数据库状态冲突，整批未导入。请重新预检查后再确认。',
-    MUST_CHANGE_PASSWORD: '请先修改初始密码后再使用导入功能。',
   }
   return messages[apiError.code || ''] || apiError.message || fallback
 }

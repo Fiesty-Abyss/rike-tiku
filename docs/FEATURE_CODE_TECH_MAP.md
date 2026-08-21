@@ -49,3 +49,11 @@
 ## 权威边界
 
 `ti_mu.zheng_que_da_an` 和 `ti_mu_jie_xi` 的 PUBLISHED STANDARD 由题库状态机维护。AI 错因、对话、视觉上下文和候选内容均是辅助事实，不能覆盖正式答案、STANDARD、规则判分或自动发布门禁。
+
+## 最终认证口径（PR #37）
+
+| 角色/功能 | 前端/API | 后端 | 关键事实 | 验证 |
+|---|---|---|---|---|
+| 普通登录 | `auth/postLoginRoute.ts`、`router/index.ts` | `SecurityConfig`、`RenZhengFuWu` | 不再按 `mustChangePassword` 强制跳转；角色路由照常选择 | `postLoginRoute.spec.ts`、`auth.spec.ts`、认证集成回归 |
+| 学生创建/导入/重置 | 管理员学生管理和 Excel 导入 API | `StudentManagementService`、`StudentImportConfirmService` | 统一 `AdminDefaultPasswordPolicy`、BCrypt、`shi_fou_shou_ci_deng_lu=0` | `FinalDemoImportWorkbooksIntegrationTest`、学生管理回归 |
+| 教师创建/重置与恢复 | 管理员教师管理/密码恢复 API | `JiaoShiGuanLiFuWu`、`PasswordRecoveryService` | 默认策略相同；保留主动改密与管理员恢复 | 教师/密码恢复回归 |
