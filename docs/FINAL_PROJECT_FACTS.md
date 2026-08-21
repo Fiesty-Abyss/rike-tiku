@@ -1,6 +1,6 @@
 # RIKE 最终项目事实包
 
-> 本文件是论文、答辩和后续维护的当前事实入口，不是开发日志。历史时间线中的旧测试数、旧 Flyway 版本或旧表数只能解释当时阶段，不能覆盖本文件。最后一次事实刷新：2026-08-18，PR #35 已 ordinary merge；产品开发永久冻结。
+> 本文件是论文、答辩和后续维护的当前事实入口，不是开发日志。历史时间线中的旧测试数、旧 Flyway 版本或旧表数只能解释当时阶段，不能覆盖本文件。最后一次事实刷新：2026-08-21，PR #38 已 ordinary merge；产品开发永久冻结。
 
 ## 1. 项目身份与运行边界
 
@@ -23,6 +23,8 @@
 | PR #34 merge | `ea784b5a1b6572ea1a2625db347859bd6e410eda`，`mergedAt=2026-08-18T01:24:08Z`。 |
 | PR #35 | 冻结后真实教学闭环维护；base `f95effcc1ea681530b4be6d01de724f4f999d9f6`，final head `e1f90dc756baae02d6b501eeef967d511e0731ab`，已 ordinary merge。覆盖任课范围、私有题隔离、release 管理、撤回、历史答卷与试卷软删除；不新增 Flyway 或表。 |
 | PR #35 merge | `fde39c53efca316010abf63acf56fda2c631315c`，`mergedAt=2026-08-18T07:30:00Z`。这是产品代码最终合并基线；随后的 docs-only 事实提交不改变产品行为。 |
+| PR #36 / PR #37 | 最终演示资料与数据卫生维护；均已 ordinary merge。PR #37 merge commit 为 `cb785631c359b88dc4841a9eeed3af14879516cb`。 |
+| PR #38 | 初始密码门禁语义恢复与操作日志 CSV 删除；base `b3fea4e39b794e3b89412a7089a81cba867c7a10`，final head `1636e2dc493fcd5a8c5d8c4be9f60751975e8445`，ordinary merge commit `4da94b79fc682c8756cfab12dd73c40fbbe87e8b`，`mergedAt=2026-08-21T06:54:58Z`。后端 224 tests（0/0/3）、前端 68 files / 225 tests（0 failures）、type-check、build、audit、科学审计和 22 条文献审计均通过。 |
 | 当前产品阶段 | `THESIS_AND_DEFENSE_DELIVERY`；`PRODUCT DEVELOPMENT = FROZEN`；`NO OPEN PRODUCT DEVELOPMENT PR`。仅处理学校模板、论文、答辩材料、真实 BLOCKER 或老师明确要求。 |
 
 ## 3. 已实现、已验证与边界

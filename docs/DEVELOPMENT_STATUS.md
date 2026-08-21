@@ -2,7 +2,7 @@
 
 > 当前事实入口：[FINAL_PROJECT_FACTS.md](FINAL_PROJECT_FACTS.md)。本文件不把历史阶段的测试数字当作当前基线。
 
-更新时间：2026-08-21。PR #33、PR #34、PR #35 与 PR #36 已 ordinary merge；PR #36 merge commit 为 `ac6e4679e8688bec5ed63a284aa962b3ca6cb618`，`mergedAt=2026-08-21T02:21:22Z`。项目已回到 `THESIS_AND_DEFENSE_DELIVERY`，`PRODUCT DEVELOPMENT = FROZEN`。
+更新时间：2026-08-21。PR #33 至 PR #38 已 ordinary merge；PR #38 merge commit 为 `4da94b79fc682c8756cfab12dd73c40fbbe87e8b`，`mergedAt=2026-08-21T06:54:58Z`。项目已回到 `THESIS_AND_DEFENSE_DELIVERY`，`PRODUCT DEVELOPMENT = FROZEN`。
 
 ## 当前产品事实
 
