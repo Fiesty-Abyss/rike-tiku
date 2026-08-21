@@ -54,6 +54,6 @@
 
 | 角色/功能 | 前端/API | 后端 | 关键事实 | 验证 |
 |---|---|---|---|---|
-| 初始密码登录 | `auth/postLoginRoute.ts`、`router/index.ts`、`ChangeInitialPasswordView.vue` | `SecurityConfig`、`ChuShiMiMaMenJinGuoLvQi`、`RenZhengFuWu` | `mustChangePassword=true` 优先跳转；JWT 后端门禁阻止普通业务，改密接口允许 | `postLoginRoute.spec.ts`、`auth.spec.ts`、认证集成回归 |
+| 初始密码登录 | `auth/postLoginRoute.ts`、`router/index.ts`、`ChangeInitialPasswordView.vue` | `SecurityConfig`、`ChuShiMiMaMenJinGuoLvQi`、`RenZhengFuWu` | `mustChangePassword=true` 优先跳转；由 first-login 标记或 BCrypt 匹配配置默认密码触发；JWT 后端门禁阻止普通业务，改密接口允许且不能改回默认密码 | `postLoginRoute.spec.ts`、`auth.spec.ts`、认证集成回归 |
 | 学生创建/导入/重置 | 管理员学生管理和 Excel 导入 API | `StudentManagementService`、`StudentImportConfirmService` | 统一 `AdminDefaultPasswordPolicy`、BCrypt、`shi_fou_shou_ci_deng_lu=1`，首次登录必须改密 | `FinalDemoImportWorkbooksIntegrationTest`、学生管理回归 |
 | 教师创建/重置与恢复 | 管理员教师管理/密码恢复 API | `JiaoShiGuanLiFuWu`、`PasswordRecoveryService` | 默认策略相同；恢复默认密码再次进入首次改密状态 | 教师/密码恢复回归 |
