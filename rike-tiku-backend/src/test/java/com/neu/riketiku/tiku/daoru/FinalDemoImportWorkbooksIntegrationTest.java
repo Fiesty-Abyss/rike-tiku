@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
@@ -29,6 +30,7 @@ class FinalDemoImportWorkbooksIntegrationTest extends AdminQuestionIntegrationTe
     @Autowired private StudentImportConfirmService studentConfirm;
     @Autowired private QuestionImportService questionImport;
     @Autowired private JdbcTemplate jdbc;
+    @Autowired private PasswordEncoder passwordEncoder;
 
     @DynamicPropertySource
     static void importProperties(DynamicPropertyRegistry registry) {
@@ -42,11 +44,21 @@ class FinalDemoImportWorkbooksIntegrationTest extends AdminQuestionIntegrationTe
 
         MockMultipartFile students = workbook("学生导入_203班_演示.xlsx");
         var studentPreview = studentImport.preview(students);
-        assertThat(studentPreview.totalCount()).isEqualTo(2);
+        assertThat(studentPreview.totalCount()).isEqualTo(1);
         assertThat(studentPreview.invalidCount()).isZero();
         var studentConfirmResult = studentConfirm.confirm(students);
-        assertThat(studentConfirmResult.importedCount()).isEqualTo(2);
-        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM xue_sheng_dang_an WHERE xue_hao IN ('S20360001','S20360002')", Integer.class)).isEqualTo(2);
+        assertThat(studentConfirmResult.importedCount()).isEqualTo(1);
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM xue_sheng_dang_an WHERE xue_hao='2026203004'", Integer.class)).isEqualTo(1);
+        assertThat(jdbc.queryForObject("SELECT yong_hu_ming FROM yong_hu WHERE yong_hu_ming='2026203004'", String.class)).isEqualTo("2026203004");
+        assertThat(jdbc.queryForObject("SELECT shi_fou_shou_ci_deng_lu FROM yong_hu WHERE yong_hu_ming='2026203004'", Boolean.class)).isFalse();
+        assertThat(jdbc.queryForObject("""
+                SELECT c.ban_ji_bian_ma FROM xue_sheng_dang_an s
+                JOIN ban_ji_xue_sheng r ON r.xue_sheng_id=s.id AND r.zhuang_tai='ACTIVE'
+                JOIN ban_ji c ON c.id=r.ban_ji_id
+                WHERE s.xue_hao='2026203004'
+                """, String.class)).isEqualTo("CLASS_203");
+        String passwordHash = jdbc.queryForObject("SELECT mi_ma_zhai_yao FROM yong_hu WHERE yong_hu_ming='2026203004'", String.class);
+        assertThat(passwordEncoder.matches("a1234567", passwordHash)).isTrue();
 
         String reviewer = "final_demo_import_" + UUID.randomUUID().toString().substring(0, 8);
         jdbc.update("INSERT INTO yong_hu(yong_hu_ming,mi_ma_zhai_yao,zhang_hao_zhuang_tai,shi_fou_shou_ci_deng_lu) VALUES (?,?,'ENABLED',0)",

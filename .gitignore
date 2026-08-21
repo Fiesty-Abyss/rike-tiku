@@ -34,5 +34,12 @@ Thumbs.db
 # Codex task-local inspection files
 .codex_work/
 
+# Reproducible local inspection and browser-profile artifacts
+.tmp-*
+outputs/
+docs/demo-import/*.png
+docs/demo-import/*.inspect.ndjson
+docs/evidence/final-demo-cleanup/
+
 # Local original contains a real development-password literal; publish only the sanitized copy.
 docs/集成大模型智能答疑的在线题库实训管理系统_项目总体设计与数据字典及任务交接说明_V3.0.docx

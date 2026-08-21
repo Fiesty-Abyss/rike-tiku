@@ -24,7 +24,6 @@ function readableError(error:unknown, fallback:string) {
     IMPORT_ALREADY_CONFIRMED: '该文件已经成功导入，不能重复确认。',
     IMPORT_VALIDATION_FAILED: '存在无效或重复题目，整批不能确认入库。',
     ATTACHMENT_OBJECT_MISSING: '存在未找到的附件对象，请补齐对象文件后重新检查。',
-    MUST_CHANGE_PASSWORD: '请先修改初始密码后再使用导入功能。',
   }
   return messages[api.code || ''] || api.message || fallback
 }
