@@ -2,7 +2,7 @@
 
 > 当前事实入口：[FINAL_PROJECT_FACTS.md](FINAL_PROJECT_FACTS.md)。本文件不把历史阶段的测试数字当作当前基线。
 
-更新时间：2026-08-18。PR #33、PR #34 与 PR #35 已 ordinary merge；PR #35 merge commit 为 `fde39c53efca316010abf63acf56fda2c631315c`，`mergedAt=2026-08-18T07:30:00Z`。项目已回到 `THESIS_AND_DEFENSE_DELIVERY`，`PRODUCT DEVELOPMENT = FROZEN`。
+更新时间：2026-08-21。PR #33、PR #34、PR #35 与 PR #36 已 ordinary merge；PR #36 merge commit 为 `ac6e4679e8688bec5ed63a284aa962b3ca6cb618`，`mergedAt=2026-08-21T02:21:22Z`。项目已回到 `THESIS_AND_DEFENSE_DELIVERY`，`PRODUCT DEVELOPMENT = FROZEN`。
 
 ## 当前产品事实
 
@@ -30,9 +30,9 @@
 
 本轮打印修复后的 backend/frontend 全量、type-check、build、audit、Flyway、科学审计和文献审计将以 merge 前最终 HEAD 的实际输出为准；实际数字见 [最终事实包](FINAL_PROJECT_FACTS.md)。不继续扩产品功能。
 
-## final-demo-cleanup 收口范围（待本轮最终回归/PR 结论更新）
+## PR #36 final-demo-cleanup（已 ordinary merge）
 
 - 保持正式 199/200 与张锡鹏、吴雪莉、谢亚坤的已核验事实；新增 `CLASS_203`、张生康（仅物理）和三名 203 主班级学生，用于演示教师范围隔离。
 - 新增公共只读统计接口 `/api/v1/public/portal-stats`，首页三项数值按 `ke_mu`/`ti_mu` 的公开 PUBLISHED 业务口径实时读取；不新增 Flyway，表数仍为 50。
 - 提交四份真实模板演示工作簿，且由 `FinalDemoImportWorkbooksIntegrationTest` 在一次性 schema 验证 Preview/Confirm；演示库本身保持尚未导入这些工作簿。
-- 进行中的最终门禁、清理与 PR 状态以 [最终项目事实包](FINAL_PROJECT_FACTS.md) 和本轮最终回归报告为准；不得把本段中的中间状态当作合并完成事实。
+- 最终门禁、清理与可追溯回归见 [最终项目事实包](FINAL_PROJECT_FACTS.md) 和 [最终回归报告](FINAL_CLEANUP_REGRESSION_REPORT.md)。PR #36 合入后的产品开发重新冻结，不再主动扩展功能。

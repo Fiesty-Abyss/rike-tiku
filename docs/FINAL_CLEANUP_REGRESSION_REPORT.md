@@ -1,6 +1,6 @@
-# 最终演示收口回归报告（候选分支）
+# 最终演示收口回归报告
 
-日期：2026-08-21；分支：`feat/final-demo-cleanup`。本文件记录合并前的真实候选结果，不把它写成已合并 `main` 事实。
+日期：2026-08-21；PR #36 head：`d1a76015f25f963d43524a44b9f87e9841545936`。该候选已以 ordinary merge 合入 main（merge commit `ac6e4679e8688bec5ed63a284aa962b3ca6cb618`；`mergedAt=2026-08-21T02:21:22Z`）。本报告的测试均在 merge 前最终 HEAD 上执行。
 
 ## 数据保全与新增演示范围
 
