@@ -50,7 +50,7 @@ class FinalDemoImportWorkbooksIntegrationTest extends AdminQuestionIntegrationTe
         assertThat(studentConfirmResult.importedCount()).isEqualTo(1);
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM xue_sheng_dang_an WHERE xue_hao='2026203004'", Integer.class)).isEqualTo(1);
         assertThat(jdbc.queryForObject("SELECT yong_hu_ming FROM yong_hu WHERE yong_hu_ming='2026203004'", String.class)).isEqualTo("2026203004");
-        assertThat(jdbc.queryForObject("SELECT shi_fou_shou_ci_deng_lu FROM yong_hu WHERE yong_hu_ming='2026203004'", Boolean.class)).isFalse();
+        assertThat(jdbc.queryForObject("SELECT shi_fou_shou_ci_deng_lu FROM yong_hu WHERE yong_hu_ming='2026203004'", Boolean.class)).isTrue();
         assertThat(jdbc.queryForObject("""
                 SELECT c.ban_ji_bian_ma FROM xue_sheng_dang_an s
                 JOIN ban_ji_xue_sheng r ON r.xue_sheng_id=s.id AND r.zhuang_tai='ACTIVE'

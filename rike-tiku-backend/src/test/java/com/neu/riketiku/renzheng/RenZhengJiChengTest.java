@@ -123,7 +123,7 @@ class RenZhengJiChengTest {
         assertThat(get("/api/v1/admin/questions?page=1&size=10", null).status()).isEqualTo(401);
         assertThat(get("/api/v1/admin/questions?page=1&size=10", studentToken).status()).isEqualTo(403);
         assertThat(get("/api/v1/admin/questions?page=1&size=10", teacherToken).status()).isEqualTo(403);
-        assertThat(get("/api/v1/admin/questions?page=1&size=10", initialAdminToken).status()).isEqualTo(200);
+        assertError(get("/api/v1/admin/questions?page=1&size=10", initialAdminToken), 403, "MUST_CHANGE_PASSWORD");
         assertThat(get("/api/v1/admin/questions?page=1&size=10", adminToken).status()).isEqualTo(200);
     }
 
@@ -138,7 +138,7 @@ class RenZhengJiChengTest {
         assertError(uploadPath("/api/v1/admin/question-import/preview", invalidWorkbook, "questions.xlsx", null), 401, "UNAUTHENTICATED");
         assertError(uploadPath("/api/v1/admin/question-import/preview", invalidWorkbook, "questions.xlsx", studentToken), 403, "ACCESS_DENIED");
         assertError(uploadPath("/api/v1/admin/question-import/preview", invalidWorkbook, "questions.xlsx", teacherToken), 403, "ACCESS_DENIED");
-        assertError(uploadPath("/api/v1/admin/question-import/preview", invalidWorkbook, "questions.xlsx", initialAdminToken), 400, "WORKBOOK_INVALID");
+        assertError(uploadPath("/api/v1/admin/question-import/preview", invalidWorkbook, "questions.xlsx", initialAdminToken), 403, "MUST_CHANGE_PASSWORD");
         assertError(uploadPath("/api/v1/admin/question-import/preview", invalidWorkbook, "questions.xlsx", adminToken), 400, "WORKBOOK_INVALID");
     }
 
@@ -150,7 +150,7 @@ class RenZhengJiChengTest {
 
         assertError(get("/api/v1/admin/operation-logs?page=1&size=10", null), 401, "UNAUTHENTICATED");
         assertError(get("/api/v1/admin/operation-logs?page=1&size=10", studentToken), 403, "ACCESS_DENIED");
-        assertThat(get("/api/v1/admin/operation-logs?page=1&size=10", initialAdminToken).status()).isEqualTo(200);
+        assertError(get("/api/v1/admin/operation-logs?page=1&size=10", initialAdminToken), 403, "MUST_CHANGE_PASSWORD");
         assertThat(get("/api/v1/admin/operation-logs?page=1&size=10", adminToken).status()).isEqualTo(200);
     }
 
@@ -168,12 +168,12 @@ class RenZhengJiChengTest {
         assertError(get("/api/v1/student/practice-options", null), 401, "UNAUTHENTICATED");
         assertError(get("/api/v1/student/practice-options", teacherToken), 403, "ACCESS_DENIED");
         assertError(get("/api/v1/student/practice-options", adminToken), 403, "ACCESS_DENIED");
-        assertThat(get("/api/v1/student/practice-options", initialStudentToken).status()).isEqualTo(200);
+        assertError(get("/api/v1/student/practice-options", initialStudentToken), 403, "MUST_CHANGE_PASSWORD");
         assertThat(get("/api/v1/student/practice-options", studentToken).status()).isEqualTo(200);
         assertError(get("/api/v1/student/ai/analyses/999999", null), 401, "UNAUTHENTICATED");
         assertError(get("/api/v1/student/ai/analyses/999999", teacherToken), 403, "ACCESS_DENIED");
         assertError(get("/api/v1/student/ai/analyses/999999", adminToken), 403, "ACCESS_DENIED");
-        assertError(get("/api/v1/student/ai/analyses/999999", initialStudentToken), 404, "STUDENT_AI_RESOURCE_NOT_FOUND");
+        assertError(get("/api/v1/student/ai/analyses/999999", initialStudentToken), 403, "MUST_CHANGE_PASSWORD");
         assertError(get("/api/v1/student/ai/analyses/999999", studentToken), 404, "STUDENT_AI_RESOURCE_NOT_FOUND");
     }
 
@@ -318,7 +318,7 @@ class RenZhengJiChengTest {
     }
 
     @Test
-    void historicalFirstLoginFlagMustNotBlockNormalBusinessAccess() throws Exception {
+    void firstLoginGateMustBlockNormalBusinessUntilInitialPasswordChanges() throws Exception {
         long userId = insertUser("first_gate", "InitialPass1", true, "ENABLED", "STUDENT");
         insertStudentProfile(userId, "学生甲");
         TestResponse login = login("first_gate", "InitialPass1", "STUDENT");
@@ -327,7 +327,7 @@ class RenZhengJiChengTest {
         String accessToken = token(login);
 
         assertThat(get("/api/v1/auth/me", accessToken).status()).isEqualTo(200);
-        assertThat(get("/api/v1/profile", accessToken).status()).isEqualTo(200);
+        assertError(get("/api/v1/profile", accessToken), 403, "MUST_CHANGE_PASSWORD");
 
         TestResponse changed = changePassword(
                 accessToken, "InitialPass1", "ChangedPass2", "ChangedPass2");
@@ -394,7 +394,7 @@ class RenZhengJiChengTest {
         assertError(get("/api/v1/admin/classes", null), 401, "UNAUTHENTICATED");
         assertError(get("/api/v1/admin/classes", studentToken), 403, "ACCESS_DENIED");
         assertError(get("/api/v1/admin/classes", teacherToken), 403, "ACCESS_DENIED");
-        assertThat(get("/api/v1/admin/classes", firstAdminToken).status()).isEqualTo(200);
+        assertError(get("/api/v1/admin/classes", firstAdminToken), 403, "MUST_CHANGE_PASSWORD");
 
         TestResponse created = json("POST", "/api/v1/admin/classes", """
                 {"classCode":" G1-A ","className":" 一班 ","grade":" 高一 ","enrollmentYear":2025}
@@ -446,7 +446,7 @@ class RenZhengJiChengTest {
         assertError(get("/api/v1/admin/teachers", null), 401, "UNAUTHENTICATED");
         assertError(get("/api/v1/admin/teachers", studentToken), 403, "ACCESS_DENIED");
         assertError(get("/api/v1/admin/teachers", teacherToken), 403, "ACCESS_DENIED");
-        assertThat(get("/api/v1/admin/teachers", firstAdminToken).status()).isEqualTo(200);
+        assertError(get("/api/v1/admin/teachers", firstAdminToken), 403, "MUST_CHANGE_PASSWORD");
         TestResponse created = json("POST", "/api/v1/admin/teachers", """
                 {"employeeNumber":"T-API-01","name":"教师接口甲","username":"teacher_created","initialPassword":"TeacherPass1","accountStatus":"ENABLED"}
                 """, adminToken);
@@ -486,7 +486,7 @@ class RenZhengJiChengTest {
         assertThat(get("/api/v1/admin/student-import/template", null).status()).isEqualTo(401);
         assertThat(get("/api/v1/admin/student-import/template", studentToken).status()).isEqualTo(403);
         assertThat(get("/api/v1/admin/student-import/template", teacherToken).status()).isEqualTo(403);
-        assertThat(get("/api/v1/admin/student-import/template", firstAdminToken).status()).isEqualTo(200);
+        assertError(get("/api/v1/admin/student-import/template", firstAdminToken), 403, "MUST_CHANGE_PASSWORD");
         byte[] template = getBytes("/api/v1/admin/student-import/template", adminToken).body();
         try (XSSFWorkbook workbook = new XSSFWorkbook(new java.io.ByteArrayInputStream(template))) {
             assertThat(workbook.getSheet("学生导入")).isNotNull();
@@ -501,7 +501,7 @@ class RenZhengJiChengTest {
         assertError(upload(valid, "student-import-valid.xlsx", null), 401, "UNAUTHENTICATED");
         assertThat(upload(valid, "student-import-valid.xlsx", studentToken).status()).isEqualTo(403);
         assertThat(upload(valid, "student-import-valid.xlsx", teacherToken).status()).isEqualTo(403);
-        assertThat(upload(valid, "student-import-valid.xlsx", firstAdminToken).status()).isEqualTo(200);
+        assertError(upload(valid, "student-import-valid.xlsx", firstAdminToken), 403, "MUST_CHANGE_PASSWORD");
         TestResponse validPreview = upload(valid, "student-import-valid.xlsx", adminToken);
         assertThat(validPreview.status()).isEqualTo(200);
         assertThat(validPreview.body()).contains("\"validCount\":2", "explicit_user", "\"passwordWillGenerate\":true", "\"accountStatus\":\"ENABLED\"");
@@ -545,13 +545,13 @@ class RenZhengJiChengTest {
         assertThat(uploadPath("/api/v1/admin/student-import/confirm", workbook, "confirm.xlsx", null).status()).isEqualTo(401);
         assertThat(uploadPath("/api/v1/admin/student-import/confirm", workbook, "confirm.xlsx", studentToken).status()).isEqualTo(403);
         assertThat(uploadPath("/api/v1/admin/student-import/confirm", workbook, "confirm.xlsx", teacherToken).status()).isEqualTo(403);
-        TestResponse response = uploadPath("/api/v1/admin/student-import/confirm", workbook, "confirm.xlsx", initialAdminToken);
+        TestResponse response = uploadPath("/api/v1/admin/student-import/confirm", workbook, "confirm.xlsx", adminToken);
         assertThat(response.status()).isEqualTo(200);
-        assertThat(response.body()).contains("\"importedCount\":2", "CustomPass1", "\"mustChangePassword\":false");
+        assertThat(response.body()).contains("\"importedCount\":2", "CustomPass1", "\"mustChangePassword\":true");
         assertThat(jdbcTemplate.queryForObject("SELECT COUNT(*) FROM yong_hu WHERE yong_hu_ming IN ('20260101','confirm_two')", Integer.class)).isEqualTo(2);
         assertThat(jdbcTemplate.queryForObject("SELECT COUNT(*) FROM xue_sheng_dang_an WHERE xue_hao IN ('20260101','20260102')", Integer.class)).isEqualTo(2);
         assertThat(jdbcTemplate.queryForObject("SELECT COUNT(*) FROM ban_ji_xue_sheng WHERE zhuang_tai='ACTIVE'", Integer.class)).isGreaterThanOrEqualTo(2);
-        assertThat(jdbcTemplate.queryForObject("SELECT shi_fou_shou_ci_deng_lu FROM yong_hu WHERE yong_hu_ming='20260101'", Boolean.class)).isFalse();
+        assertThat(jdbcTemplate.queryForObject("SELECT shi_fou_shou_ci_deng_lu FROM yong_hu WHERE yong_hu_ming='20260101'", Boolean.class)).isTrue();
         assertThat(PASSWORD_ENCODER.matches("CustomPass1", jdbcTemplate.queryForObject("SELECT mi_ma_zhai_yao FROM yong_hu WHERE yong_hu_ming='confirm_two'", String.class))).isTrue();
         assertThat(uploadPath("/api/v1/admin/student-import/confirm", workbook, "confirm.xlsx", adminToken).status()).isEqualTo(400);
     }

@@ -79,7 +79,7 @@ public class JiaoShiGuanLiFuWu {
         validatePassword(password);
         try {
             YongHu user = new YongHu(); user.setYongHuMing(username); user.setMiMaZhaiYao(passwordEncoder.encode(password));
-            user.setZhangHaoZhuangTai(request.accountStatus()); user.setShiFouShouCiDengLu(false); userMapper.insert(user);
+            user.setZhangHaoZhuangTai(request.accountStatus()); user.setShiFouShouCiDengLu(true); userMapper.insert(user);
             jdbcTemplate.update("INSERT INTO yong_hu_jiao_se(yong_hu_id,jiao_se_id,zhuang_tai) VALUES (?,?,'ACTIVE')", user.getId(), roleId);
             jdbcTemplate.update("INSERT INTO jiao_shi_dang_an(yong_hu_id,gong_hao,xing_ming,xian_shi_zhi_wu,zhuang_tai) VALUES (?,?,?,?, 'ACTIVE')",
                     user.getId(), employeeNumber, trim(request.name()), emptyToNull(request.displayPosition()));
@@ -123,10 +123,10 @@ public class JiaoShiGuanLiFuWu {
         JiaoShiXiangYing teacher = findTeacher(teacherId);
         String password = defaultPasswordPolicy.password();
         jdbcTemplate.update("""
-                UPDATE yong_hu SET mi_ma_zhai_yao=?,shi_fou_shou_ci_deng_lu=0,mi_ma_xiu_gai_shi_jian=NULL
+                UPDATE yong_hu SET mi_ma_zhai_yao=?,shi_fou_shou_ci_deng_lu=1,mi_ma_xiu_gai_shi_jian=NULL
                 WHERE yong_hu_ming=? AND yi_shan_chu=0
                 """, passwordEncoder.encode(password), teacher.username());
-        return new JiaoShiMiMaChongZhiXiangYing(1, password, false);
+        return new JiaoShiMiMaChongZhiXiangYing(1, password, true);
     }
 
     @Transactional
@@ -142,11 +142,11 @@ public class JiaoShiGuanLiFuWu {
         String password = defaultPasswordPolicy.password();
         for (JiaoShiXiangYing teacher : teachers) {
             jdbcTemplate.update("""
-                    UPDATE yong_hu SET mi_ma_zhai_yao=?,shi_fou_shou_ci_deng_lu=0,mi_ma_xiu_gai_shi_jian=NULL
+                    UPDATE yong_hu SET mi_ma_zhai_yao=?,shi_fou_shou_ci_deng_lu=1,mi_ma_xiu_gai_shi_jian=NULL
                     WHERE yong_hu_ming=? AND yi_shan_chu=0
                     """, passwordEncoder.encode(password), teacher.username());
         }
-        return new JiaoShiMiMaChongZhiXiangYing(teachers.size(), password, false);
+        return new JiaoShiMiMaChongZhiXiangYing(teachers.size(), password, true);
     }
 
     @Transactional(readOnly = true)
