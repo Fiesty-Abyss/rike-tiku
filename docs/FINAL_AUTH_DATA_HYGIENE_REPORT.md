@@ -19,11 +19,12 @@
 - `MACHINE_API_SMOKE`：使用受控 203 学生账号完成默认口令登录（`mustChangePassword=true`）→ 普通业务被 `MUST_CHANGE_PASSWORD` 拒绝 → 初始密码修改成功 → 旧口令失效、新口令登录成功；随后该账号已恢复为默认口令且首次改密状态，供本地演示使用。该记录不是用户人工浏览器验收。
 - PR #38 于 `2026-08-21T06:54:58Z` 以 ordinary merge commit `4da94b79fc682c8756cfab12dd73c40fbbe87e8b` 合入 `main`；该合并不修改 Flyway、表结构或 199/200/203 教学关系。
 
-## 默认密码实值兜底（后续认证补丁）
+## PR #39 默认密码实值兜底（已 ordinary merge）
 
 - `mustChangePassword = shi_fou_shou_ci_deng_lu || BCrypt.matches(app.account.default-reset-password)`；因此即使历史 flag 为 `0`，仍在使用默认密码的账号也不能进入正常业务。
 - `/auth/me` 与 JWT 在同一口径下返回门禁状态；`/change-initial-password` 对上述两种状态均可执行。
 - 初始改密与主动改密均禁止把新密码设置为配置中的系统默认密码，受控返回 `400 PASSWORD_MUST_NOT_BE_DEFAULT`；不比较或硬编码某个明文默认值。
+- PR #39 于 `2026-08-21T07:22:27Z` 以 ordinary merge commit `8e824718dde9aa4f54ab99fa52735f6eb6d46dbc` 合入 `main`；final head 为 `e3153632139ca0e9757b5e505409ecc85a0552c6`。最终回归为后端 225 tests（0 failures、0 errors、3 skipped）、前端 68 files / 225 tests（0 failures）；type-check、build、audit、科学审计与 22 条文献审计通过。该补丁不修改 Flyway、表结构或 199/200/203 教学关系。
 
 ## V30 浏览器测试业务数据
 
