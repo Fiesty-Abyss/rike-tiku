@@ -8,6 +8,9 @@
 | Java 25、Spring Boot 4.1、Vue 3、MySQL 8.4 | POM、package.json、本机命令输出 | 已核验 |
 | Flyway V1–V30、50 张业务表 | 迁移目录、随机测试库、正式 `rike_tiku`；V30 纯结构快照为当前、V29 仅保留历史查阅 | 已核验 |
 | 既有 V1–V25 未修改 | Git blob hash 与迁移校验 | 已核验 |
+| 公共门户内容规模采用实时统计 | 候选分支 `PortalView.vue`、`publicPortal.ts`、`PortalStatsController/Service` 与 `PortalStatsServiceIntegrationTest`；只统计 ACTIVE 学科、PUBLISHED GLOBAL 可练习客观题和 PUBLISHED GLOBAL 专题主观题 | 候选已专项核验；待合并后冻结为主线事实 |
+| 203 班权限隔离演示 | 候选分支 `TeacherScopeIsolationIntegrationTest`；唯一 `teachingAssignmentId`、203 私有题可见、199 私有题/发布范围拒绝 | 候选已专项核验；待合并后冻结为主线事实 |
+| 四份 Excel 演示资料 | `docs/demo-import/`、`FinalDemoImportWorkbooksIntegrationTest`；随机 V1→V30 schema Preview/Confirm，题目进入 PENDING | 候选已专项核验；待合并后冻结为主线事实 |
 | Demo 题量 378 | DemoDataService validate 输出 | 已核验 |
 | 答疑最多 10 轮 | V15、`StudentAiService.MAX_ROUNDS`、集成测试 | 已核验 |
 | 标准/深度思考映射 | DeepSeek Provider request 测试 | 已核验 |
