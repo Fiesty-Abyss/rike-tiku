@@ -21,12 +21,13 @@ vi.mock('../api/auth', async (importOriginal) => ({
 const student = { id: 1, username: 'student', roles: ['STUDENT'] as const, mustChangePassword: false, displayName: null, studentNumber: null, teacherNumber: null }
 const loginResponse = { accessToken: 'new-token', tokenType: 'Bearer', expiresIn: 7200, mustChangePassword: false, user: { id: 1, username: 'student', roles: ['STUDENT'] as const } }
 
-beforeEach(() => {
+beforeEach(async () => {
   localStorage.clear()
   setActivePinia(createPinia())
   authApi.login.mockReset()
   authApi.fetchCurrentUser.mockReset()
   authApi.changeInitialPassword.mockReset()
+  await router.replace('/')
 })
 
 describe('认证状态', () => {
@@ -114,7 +115,7 @@ describe('路由守卫', () => {
   it('管理员可访问班级、单学生管理、学生导入和教师管理页面', async () => { authenticated(['ADMIN']); await router.push('/admin/classes'); expect(router.currentRoute.value.path).toBe('/admin/classes'); await router.push('/admin/students'); expect(router.currentRoute.value.path).toBe('/admin/students'); await router.push('/admin/students/import'); expect(router.currentRoute.value.path).toBe('/admin/students/import'); await router.push('/admin/teachers'); expect(router.currentRoute.value.path).toBe('/admin/teachers') })
   it.each(['STUDENT', 'TEACHER', 'ADMIN'] as const)('%s 均可访问统一个人中心', async (role) => { authenticated([role]); await router.push('/profile'); expect(router.currentRoute.value.path).toBe('/profile') })
   it('多角色用户可访问多个工作台', async () => { authenticated(['STUDENT', 'TEACHER']); await router.push('/teacher'); expect(router.currentRoute.value.path).toBe('/teacher'); await router.push('/teacher/scopes/12'); expect(router.currentRoute.value.path).toBe('/teacher/scopes/12'); await router.push('/student'); expect(router.currentRoute.value.path).toBe('/student') })
-  it('历史首次改密标记不再拦截正常学生路由', async () => { authenticated(['STUDENT'], true); await router.push('/login/student'); expect(router.currentRoute.value.path).toBe('/student') })
+  it('首次改密标记只允许进入初始密码修改页', async () => { authenticated(['STUDENT'], true); await router.push('/profile'); expect(router.currentRoute.value.path).toBe('/change-initial-password'); await router.push('/change-initial-password'); expect(router.currentRoute.value.path).toBe('/change-initial-password') })
   it('已登录访问登录页跳转真实最高角色工作台', async () => { authenticated(['STUDENT', 'ADMIN']); await router.push('/login/student'); expect(router.currentRoute.value.path).toBe('/admin') })
 })
 

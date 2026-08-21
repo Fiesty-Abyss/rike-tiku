@@ -99,7 +99,7 @@ public class StudentManagementService {
         try {
             jdbc.update("""
                     INSERT INTO yong_hu(yong_hu_ming,mi_ma_zhai_yao,zhang_hao_zhuang_tai,shi_fou_shou_ci_deng_lu)
-                    VALUES (?,?,'ENABLED',0)
+                    VALUES (?,?,'ENABLED',1)
                     """, username, passwordEncoder.encode(password));
             Long userId = jdbc.queryForObject("SELECT LAST_INSERT_ID()", Long.class);
             jdbc.update("INSERT INTO yong_hu_jiao_se(yong_hu_id,jiao_se_id,zhuang_tai) VALUES (?,?,'ACTIVE')", userId, roleId);
@@ -178,10 +178,10 @@ public class StudentManagementService {
         StudentSummaryResponse student = findStudent(studentId);
         String password = defaultPasswordPolicy.password();
         jdbc.update("""
-                UPDATE yong_hu SET mi_ma_zhai_yao=?,shi_fou_shou_ci_deng_lu=0,mi_ma_xiu_gai_shi_jian=NULL
+                UPDATE yong_hu SET mi_ma_zhai_yao=?,shi_fou_shou_ci_deng_lu=1,mi_ma_xiu_gai_shi_jian=NULL
                 WHERE yong_hu_ming=?
                 """, passwordEncoder.encode(password), student.username());
-        return new PasswordRecoveryResponse(1, password, false);
+        return new PasswordRecoveryResponse(1, password, true);
     }
 
     @Transactional
@@ -197,11 +197,11 @@ public class StudentManagementService {
         String password = defaultPasswordPolicy.password();
         for (StudentSummaryResponse student : students) {
             jdbc.update("""
-                    UPDATE yong_hu SET mi_ma_zhai_yao=?,shi_fou_shou_ci_deng_lu=0,mi_ma_xiu_gai_shi_jian=NULL
+                    UPDATE yong_hu SET mi_ma_zhai_yao=?,shi_fou_shou_ci_deng_lu=1,mi_ma_xiu_gai_shi_jian=NULL
                     WHERE yong_hu_ming=?
                     """, passwordEncoder.encode(password), student.username());
         }
-        return new PasswordRecoveryResponse(students.size(), password, false);
+        return new PasswordRecoveryResponse(students.size(), password, true);
     }
 
     private StudentSummaryResponse findStudent(Long studentId) {

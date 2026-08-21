@@ -22,6 +22,10 @@ const pinia = createPinia()
 const authStore = useAuthStore(pinia)
 
 setAuthenticationErrorHandler((error) => {
+  if (error.code === 'MUST_CHANGE_PASSWORD') {
+    void router.replace('/change-initial-password')
+    return
+  }
   if (error.status === 401 || error.code === 'TOKEN_EXPIRED' || error.code === 'TOKEN_INVALID') {
     authStore.logout()
     void router.replace('/login')
