@@ -49,7 +49,7 @@
 | 默认/重置密码 | `app.account.default-reset-password` → `AdminDefaultPasswordPolicy` → BCrypt `mi_ma_zhai_yao` | 本地配置为 `a1234567`；不在 API、日志、截图或 GitHub 文档保存哈希/密钥。 |
 | 新增账号 | `StudentManagementService`、`StudentImportConfirmService`、`JiaoShiGuanLiFuWu` | 新建账户写入 `shi_fou_shou_ci_deng_lu=1`；首次登录必须改密。 |
 | 密码恢复 | `PasswordRecoveryService` | 管理员处理后使用统一默认策略并重新进入首次改密状态；用户主动改密仍可用。 |
-| 初始密码门禁 | `ChuShiMiMaMenJinGuoLvQi`、`SecurityConfig`、`router/index.ts`、`ChangeInitialPasswordView.vue` | JWT 后强制门禁返回 `MUST_CHANGE_PASSWORD`；只允许身份确认和改密接口，前端同步跳转。 |
+| 初始密码门禁 | `RenZhengFuWu`、`ChuShiMiMaMenJinGuoLvQi`、`SecurityConfig`、`router/index.ts`、`ChangeInitialPasswordView.vue` | `shi_fou_shou_ci_deng_lu=1` 或 BCrypt 仍匹配配置默认密码均触发 JWT 后门禁；只允许身份确认和改密接口，前端同步跳转，且不能将新密码设回系统默认密码。 |
 | 203 隔离演示 | `ren_ke_guan_xi`、`ban_ji`、`jiao_shi_dang_an` | 张生康仅 203 班物理、非 ADMIN；199/200 和三位旧核心教师不被清理或重建。 |
 
 ## 论文与答辩可说/不可说

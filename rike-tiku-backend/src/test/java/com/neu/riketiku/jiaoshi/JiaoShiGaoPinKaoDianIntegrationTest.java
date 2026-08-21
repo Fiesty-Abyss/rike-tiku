@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class JiaoShiGaoPinKaoDianIntegrationTest extends AdminQuestionIntegrationTestSupport {
@@ -22,12 +23,14 @@ class JiaoShiGaoPinKaoDianIntegrationTest extends AdminQuestionIntegrationTestSu
 
     @Autowired private DemoDataService demo;
     @Autowired private JdbcTemplate jdbc;
+    @Autowired private PasswordEncoder passwordEncoder;
     @LocalServerPort private int port;
 
     @Test
     void teacherAndStudentHighFrequencyPermissionsAreSeparated() throws Exception {
         demo.seed();
         try {
+            useNonDefaultPasswords("demo_physics_admin", "demo_199_01");
             long physics199 = scope("DEMO_T_PHYSICS", "DEMO_CLASS_199", 1);
             long biology199 = scope("DEMO_T_BIOLOGY", "DEMO_CLASS_199", 3);
             String physicsToken = login("demo_physics_admin", "TEACHER");
@@ -71,7 +74,7 @@ class JiaoShiGaoPinKaoDianIntegrationTest extends AdminQuestionIntegrationTestSu
         String challengeId = JsonPath.read(challenge.body(), "$.challengeId");
         String captchaCode = JsonPath.read(challenge.body(), "$.testCode");
         HttpResponse<String> response = post("/api/v1/auth/login", null, "{\"username\":\"" + username
-                + "\",\"password\":\"a1234567\",\"expectedRole\":\"" + role + "\",\"challengeId\":\""
+                + "\",\"password\":\"HighFreqPass1\",\"expectedRole\":\"" + role + "\",\"challengeId\":\""
                 + challengeId + "\",\"captchaCode\":\"" + captchaCode + "\"}");
         assertThat(response.statusCode()).isEqualTo(200);
         return JsonPath.read(response.body(), "$.accessToken");
@@ -96,5 +99,12 @@ class JiaoShiGaoPinKaoDianIntegrationTest extends AdminQuestionIntegrationTestSu
                 .header("Content-Type", "application/json").header("Authorization", "Bearer " + token);
         return http.send(request.PUT(HttpRequest.BodyPublishers.ofString(body, StandardCharsets.UTF_8)).build(),
                 HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+    }
+
+    private void useNonDefaultPasswords(String... usernames) {
+        for (String username : usernames) {
+            jdbc.update("UPDATE yong_hu SET mi_ma_zhai_yao=?,shi_fou_shou_ci_deng_lu=0 WHERE yong_hu_ming=?",
+                    passwordEncoder.encode("HighFreqPass1"), username);
+        }
     }
 }
