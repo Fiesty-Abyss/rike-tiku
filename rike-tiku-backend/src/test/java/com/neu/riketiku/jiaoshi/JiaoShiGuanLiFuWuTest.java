@@ -93,10 +93,10 @@ class JiaoShiGuanLiFuWuTest extends AdminQuestionIntegrationTestSupport {
 
         assertThat(response.initialPassword()).isEqualTo("a1234567");
         assertThat(response.resetCount()).isEqualTo(1);
-        assertThat(response.mustChangePassword()).isTrue();
+        assertThat(response.mustChangePassword()).isFalse();
         assertThat(passwordEncoder.matches("OldPassword1", hash)).isFalse();
         assertThat(passwordEncoder.matches(response.initialPassword(), hash)).isTrue();
-        assertThat(jdbc.queryForObject("SELECT shi_fou_shou_ci_deng_lu FROM yong_hu WHERE id=?", Boolean.class, userId)).isTrue();
+        assertThat(jdbc.queryForObject("SELECT shi_fou_shou_ci_deng_lu FROM yong_hu WHERE id=?", Boolean.class, userId)).isFalse();
         String audit = jdbc.queryForObject("""
                 SELECT CONCAT(cao_zuo_lei_xing,'|',COALESCE(zhai_yao,'')) FROM guan_li_cao_zuo_ri_zhi
                 WHERE mo_kuai='TEACHER' AND ye_wu_dui_xiang_id=? ORDER BY id DESC LIMIT 1
@@ -118,7 +118,7 @@ class JiaoShiGuanLiFuWuTest extends AdminQuestionIntegrationTestSupport {
 
         assertThat(response.resetCount()).isEqualTo(2);
         assertThat(response.initialPassword()).isEqualTo("a1234567");
-        assertThat(response.mustChangePassword()).isTrue();
+        assertThat(response.mustChangePassword()).isFalse();
         assertThat(hashes).hasSize(2).doesNotHaveDuplicates();
         assertThat(hashes).allMatch(hash -> passwordEncoder.matches(response.initialPassword(), hash));
         String audit = jdbc.queryForObject("""

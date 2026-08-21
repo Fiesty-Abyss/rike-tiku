@@ -143,3 +143,10 @@ PR #35 仅补齐教师试卷发布后的管理闭环，不新增迁移、表或�
 # 最终演示收口（2026-08-21，PR #36 已 ordinary merge）
 
 PR #36（head `d1a76015f25f963d43524a44b9f87e9841545936`）已于 `2026-08-21T02:21:22Z` 以 ordinary merge 合入 main；merge commit 为 `ac6e4679e8688bec5ed63a284aa962b3ca6cb618`。它保留 199/200 与张锡鹏、谢亚坤、吴雪莉的既有教学事实，新增 203 班、张生康（203班物理）和三名指定学生；四份可重复 Preview/Confirm 的演示 Excel 位于 [demo-import](demo-import/README.md)。公共门户不再写死 3/360/18，而是调用受限的实时统计接口；正式库当前返回 3/360/47，Demo 库返回 3/360/18。完整的保全、导入、回归和风险证据见 [FINAL_CLEANUP_REGRESSION_REPORT](FINAL_CLEANUP_REGRESSION_REPORT.md)。
+
+## 最终认证与数据卫生口径（待 PR #37 合并后冻结 SHA）
+
+- 203 演示账号统一为张生康 `t2026004`（工号 `T2026004`，仅 `TEACHER`）及张鸿敏、李胡张博、赵雪尧 `2026203001`、`2026203002`、`2026203003`；三位旧核心教师和 199/200 的已存在教学关系不修改。
+- 账户默认口令只由 `app.account.default-reset-password` 管理；当前本地开发配置值为 `a1234567`，数据库只保存 BCrypt 哈希。所有新建/导入/重置账户均写入 `shi_fou_shou_ci_deng_lu=0`，不再强制跳转首次改密页面；用户主动改密与管理员密码恢复保留。
+- 已完成对 `rike_tiku` 与 `rike_tiku_demo` 的 `V30_BROWSER`、`V30_BROWSER_STUDENT`、`V30_BROWSER_TEACHER`、`V30_BROWSER_CLASS` 全字段审计；仅发现并定向清除了本轮浏览器测试班级、两账号、任课范围、试卷/release 快照、提交、逐题答案和高频考点测试关联。Flyway V1–V30、schema、199/200、三位旧教师及其历史均未修改。
+- 详见 [演示账号清单](FINAL_DEMO_ACCOUNTS.md) 与 [数据卫生报告](FINAL_AUTH_DATA_HYGIENE_REPORT.md)。最终回归数字与合并 SHA 仅在本 PR 全部门禁通过后写入。

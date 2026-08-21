@@ -3,7 +3,6 @@ package com.neu.riketiku.jiaoshi;
 import com.neu.riketiku.guanlicaozuorizhi.GuanLiCaoZuoRiZhiFuWu;
 import com.neu.riketiku.jiaoshi.dto.*;
 import com.neu.riketiku.renzheng.RenZhengYeWuYiChang;
-import com.neu.riketiku.xueshengdaoru.StudentInitialPasswordGenerator;
 import com.neu.riketiku.zhanghao.AdminDefaultPasswordPolicy;
 import com.neu.riketiku.zhanghao.entity.YongHu;
 import com.neu.riketiku.zhanghao.mapper.YongHuMapper;
@@ -27,16 +26,15 @@ public class JiaoShiGuanLiFuWu {
     private static final Set<String> SUBJECT_CODES = Set.of("PHYSICS", "CHEMISTRY", "BIOLOGY");
     private final JdbcTemplate jdbcTemplate;
     private final YongHuMapper userMapper;
-    private final StudentInitialPasswordGenerator passwordGenerator;
     private final PasswordEncoder passwordEncoder;
     private final GuanLiCaoZuoRiZhiFuWu auditLog;
     private final AdminDefaultPasswordPolicy defaultPasswordPolicy;
 
     public JiaoShiGuanLiFuWu(JdbcTemplate jdbcTemplate, YongHuMapper userMapper,
-            StudentInitialPasswordGenerator passwordGenerator, PasswordEncoder passwordEncoder,
+            PasswordEncoder passwordEncoder,
             GuanLiCaoZuoRiZhiFuWu auditLog, AdminDefaultPasswordPolicy defaultPasswordPolicy) {
         this.jdbcTemplate = jdbcTemplate; this.userMapper = userMapper;
-        this.passwordGenerator = passwordGenerator; this.passwordEncoder = passwordEncoder;
+        this.passwordEncoder = passwordEncoder;
         this.auditLog = auditLog;
         this.defaultPasswordPolicy = defaultPasswordPolicy;
     }
@@ -77,11 +75,11 @@ public class JiaoShiGuanLiFuWu {
         if (exists("SELECT COUNT(*) FROM yong_hu WHERE yong_hu_ming=?", username)) fail("USERNAME_EXISTS", "用户名已存在", HttpStatus.CONFLICT);
         Long roleId = jdbcTemplate.query("SELECT id FROM jiao_se WHERE jiao_se_dai_ma='TEACHER' AND zhuang_tai='ACTIVE' AND yi_shan_chu=0", rs -> rs.next() ? rs.getLong(1) : null);
         if (roleId == null) fail("TEACHER_ROLE_UNAVAILABLE", "TEACHER角色不存在或已停用", HttpStatus.CONFLICT);
-        String password = request.initialPassword() == null || request.initialPassword().isBlank() ? passwordGenerator.generate() : request.initialPassword();
+        String password = request.initialPassword() == null || request.initialPassword().isBlank() ? defaultPasswordPolicy.password() : request.initialPassword();
         validatePassword(password);
         try {
             YongHu user = new YongHu(); user.setYongHuMing(username); user.setMiMaZhaiYao(passwordEncoder.encode(password));
-            user.setZhangHaoZhuangTai(request.accountStatus()); user.setShiFouShouCiDengLu(true); userMapper.insert(user);
+            user.setZhangHaoZhuangTai(request.accountStatus()); user.setShiFouShouCiDengLu(false); userMapper.insert(user);
             jdbcTemplate.update("INSERT INTO yong_hu_jiao_se(yong_hu_id,jiao_se_id,zhuang_tai) VALUES (?,?,'ACTIVE')", user.getId(), roleId);
             jdbcTemplate.update("INSERT INTO jiao_shi_dang_an(yong_hu_id,gong_hao,xing_ming,xian_shi_zhi_wu,zhuang_tai) VALUES (?,?,?,?, 'ACTIVE')",
                     user.getId(), employeeNumber, trim(request.name()), emptyToNull(request.displayPosition()));
@@ -125,10 +123,10 @@ public class JiaoShiGuanLiFuWu {
         JiaoShiXiangYing teacher = findTeacher(teacherId);
         String password = defaultPasswordPolicy.password();
         jdbcTemplate.update("""
-                UPDATE yong_hu SET mi_ma_zhai_yao=?,shi_fou_shou_ci_deng_lu=1,mi_ma_xiu_gai_shi_jian=NULL
+                UPDATE yong_hu SET mi_ma_zhai_yao=?,shi_fou_shou_ci_deng_lu=0,mi_ma_xiu_gai_shi_jian=NULL
                 WHERE yong_hu_ming=? AND yi_shan_chu=0
                 """, passwordEncoder.encode(password), teacher.username());
-        return new JiaoShiMiMaChongZhiXiangYing(1, password, true);
+        return new JiaoShiMiMaChongZhiXiangYing(1, password, false);
     }
 
     @Transactional
@@ -144,11 +142,11 @@ public class JiaoShiGuanLiFuWu {
         String password = defaultPasswordPolicy.password();
         for (JiaoShiXiangYing teacher : teachers) {
             jdbcTemplate.update("""
-                    UPDATE yong_hu SET mi_ma_zhai_yao=?,shi_fou_shou_ci_deng_lu=1,mi_ma_xiu_gai_shi_jian=NULL
+                    UPDATE yong_hu SET mi_ma_zhai_yao=?,shi_fou_shou_ci_deng_lu=0,mi_ma_xiu_gai_shi_jian=NULL
                     WHERE yong_hu_ming=? AND yi_shan_chu=0
                     """, passwordEncoder.encode(password), teacher.username());
         }
-        return new JiaoShiMiMaChongZhiXiangYing(teachers.size(), password, true);
+        return new JiaoShiMiMaChongZhiXiangYing(teachers.size(), password, false);
     }
 
     @Transactional(readOnly = true)

@@ -59,7 +59,7 @@ class StudentManagementIntegrationTest extends AdminQuestionIntegrationTestSuppo
         long activeClass = createClass("STU-CREATE-A", "创建班", "高三", "ACTIVE");
         long disabledClass = createClass("STU-CREATE-D", "停用班", "高三", "DISABLED");
         var created = service.create(new StudentCreateRequest("S-CREATE-01", "创建学生", "student_create_01", "高三", activeClass));
-        assertThat(created.initialPassword()).hasSize(12).isNotEqualTo("a1234567");
+        assertThat(created.initialPassword()).isEqualTo("a1234567");
 
         assertCode(() -> service.create(new StudentCreateRequest("S-CREATE-01", "重复学号", "student_create_02", "高三", activeClass)), "STUDENT_NUMBER_EXISTS");
         assertCode(() -> service.create(new StudentCreateRequest("S-CREATE-02", "重复用户名", "student_create_01", "高三", activeClass)), "USERNAME_EXISTS");
@@ -75,7 +75,7 @@ class StudentManagementIntegrationTest extends AdminQuestionIntegrationTestSuppo
         long classId = createClass("STU-EDIT", "编辑班", "高二", "ACTIVE");
         var created = service.create(new StudentCreateRequest("S-EDIT-01", "编辑前", "student_edit_01", "高二", classId));
         long studentId = created.student().student().id();
-        completeInitialPassword("student_edit_01", created.initialPassword(), "StudentEditPass2");
+        changePassword("student_edit_01", created.initialPassword(), "StudentEditPass2");
 
         var disabled = service.update(studentId, new StudentUpdateRequest("编辑后", "高三", "DISABLED", "ACTIVE"));
         assertThat(disabled.student().name()).isEqualTo("编辑后");
@@ -107,25 +107,25 @@ class StudentManagementIntegrationTest extends AdminQuestionIntegrationTestSuppo
     }
 
     @Test
-    void passwordResetInvalidatesOldPasswordAndRequiresInitialChange() throws Exception {
+    void passwordResetInvalidatesOldPasswordWithoutBlockingNormalLogin() throws Exception {
         long classId = createClass("STU-RESET", "重置班", "高三", "ACTIVE");
         var created = service.create(new StudentCreateRequest("S-RESET", "重置学生", "student_reset", "高三", classId));
-        completeInitialPassword("student_reset", created.initialPassword(), "StudentOldPass2");
+        changePassword("student_reset", created.initialPassword(), "StudentOldPass2");
         long studentId = created.student().student().id();
 
         var reset = service.resetPassword(studentId);
         String resetPassword = reset.initialPassword();
         assertThat(reset.resetCount()).isEqualTo(1);
-        assertThat(reset.mustChangePassword()).isTrue();
+        assertThat(reset.mustChangePassword()).isFalse();
         assertThat(resetPassword).isEqualTo("a1234567").doesNotContain("StudentOldPass2");
         assertThat(login("student_reset", "StudentOldPass2").statusCode()).isEqualTo(401);
         HttpResponse<String> login = login("student_reset", resetPassword);
         assertThat(login.statusCode()).isEqualTo(200);
-        assertThat((Boolean) JsonPath.read(login.body(), "$.mustChangePassword")).isTrue();
+        assertThat((Boolean) JsonPath.read(login.body(), "$.mustChangePassword")).isFalse();
         String digest = jdbc.queryForObject("SELECT mi_ma_zhai_yao FROM yong_hu WHERE yong_hu_ming='student_reset'", String.class);
         assertThat(digest).doesNotContain(resetPassword);
         assertThat(passwordEncoder.matches(resetPassword, digest)).isTrue();
-        completeInitialPassword("student_reset", resetPassword, "StudentRecovered2");
+        changePassword("student_reset", resetPassword, "StudentRecovered2");
         assertThat((Boolean) JsonPath.read(login("student_reset", "StudentRecovered2").body(), "$.mustChangePassword")).isFalse();
     }
 
@@ -144,7 +144,7 @@ class StudentManagementIntegrationTest extends AdminQuestionIntegrationTestSuppo
                 """, String.class, firstId, secondId);
         assertThat(response.resetCount()).isEqualTo(2);
         assertThat(response.initialPassword()).isEqualTo("a1234567");
-        assertThat(response.mustChangePassword()).isTrue();
+        assertThat(response.mustChangePassword()).isFalse();
         assertThat(hashes).hasSize(2).doesNotHaveDuplicates();
         assertThat(hashes).allMatch(hash -> passwordEncoder.matches(response.initialPassword(), hash));
         String audit = jdbc.queryForObject("""
@@ -181,7 +181,7 @@ class StudentManagementIntegrationTest extends AdminQuestionIntegrationTestSuppo
         assertThat(response.headers().firstValue("Cache-Control")).hasValueSatisfying(value -> assertThat(value).contains("no-store"));
         assertThat(response.headers().firstValue("Pragma")).contains("no-cache");
         assertThat((Integer) JsonPath.read(response.body(), "$.resetCount")).isEqualTo(1);
-        assertThat((Boolean) JsonPath.read(response.body(), "$.mustChangePassword")).isTrue();
+        assertThat((Boolean) JsonPath.read(response.body(), "$.mustChangePassword")).isFalse();
     }
 
     @Test
@@ -202,23 +202,23 @@ class StudentManagementIntegrationTest extends AdminQuestionIntegrationTestSuppo
         assertThat(response.headers().firstValue("Cache-Control")).hasValueSatisfying(value -> assertThat(value).contains("no-store"));
         assertThat(response.headers().firstValue("Pragma")).contains("no-cache");
         assertThat((Integer) JsonPath.read(response.body(), "$.resetCount")).isEqualTo(1);
-        assertThat((Boolean) JsonPath.read(response.body(), "$.mustChangePassword")).isTrue();
+        assertThat((Boolean) JsonPath.read(response.body(), "$.mustChangePassword")).isFalse();
     }
 
     @Test
-    void teacherSinglePasswordRecoveryInvalidatesOldPasswordAndRequiresChange() throws Exception {
+    void teacherSinglePasswordRecoveryInvalidatesOldPasswordWithoutBlockingNormalLogin() throws Exception {
         String suffix = Long.toString(System.nanoTime());
         var created = teacherService.create(new JiaoShiChuangJianQingQiu(
                 "T-SINGLE-" + suffix, "单人恢复教师", "teacher_single_" + suffix, null, "TeacherInitial1", "ENABLED"));
         String username = created.teacher().username();
-        completeInitialPassword(username, "TeacherInitial1", "TeacherOldPass2", "TEACHER");
+        changePassword(username, "TeacherInitial1", "TeacherOldPass2", "TEACHER");
 
         var reset = teacherService.resetPassword(created.teacher().id());
         assertThat(login(username, "TeacherOldPass2", "TEACHER").statusCode()).isEqualTo(401);
         HttpResponse<String> recovered = login(username, reset.initialPassword(), "TEACHER");
         assertThat(recovered.statusCode()).isEqualTo(200);
-        assertThat((Boolean) JsonPath.read(recovered.body(), "$.mustChangePassword")).isTrue();
-        completeInitialPassword(username, reset.initialPassword(), "TeacherRecovered2", "TEACHER");
+        assertThat((Boolean) JsonPath.read(recovered.body(), "$.mustChangePassword")).isFalse();
+        changePassword(username, reset.initialPassword(), "TeacherRecovered2", "TEACHER");
         assertThat((Boolean) JsonPath.read(login(username, "TeacherRecovered2", "TEACHER").body(), "$.mustChangePassword")).isFalse();
     }
 
@@ -236,14 +236,14 @@ class StudentManagementIntegrationTest extends AdminQuestionIntegrationTestSuppo
         return jdbc.queryForObject("SELECT LAST_INSERT_ID()", Long.class);
     }
 
-    private void completeInitialPassword(String username, String oldPassword, String newPassword) throws Exception {
-        completeInitialPassword(username, oldPassword, newPassword, "STUDENT");
+    private void changePassword(String username, String oldPassword, String newPassword) throws Exception {
+        changePassword(username, oldPassword, newPassword, "STUDENT");
     }
 
-    private void completeInitialPassword(String username, String oldPassword, String newPassword, String expectedRole) throws Exception {
+    private void changePassword(String username, String oldPassword, String newPassword, String expectedRole) throws Exception {
         HttpResponse<String> login = login(username, oldPassword, expectedRole);
         String accessToken = JsonPath.read(login.body(), "$.accessToken");
-        HttpRequest request = HttpRequest.newBuilder(uri("/api/v1/auth/change-initial-password"))
+        HttpRequest request = HttpRequest.newBuilder(uri("/api/v1/auth/change-password"))
                 .header("Authorization", "Bearer " + accessToken)
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString("{\"oldPassword\":\"" + oldPassword
