@@ -1,4 +1,4 @@
-import { mount, RouterLinkStub } from '@vue/test-utils'
+import { flushPromises, mount, RouterLinkStub } from '@vue/test-utils'
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { describe, expect, it, vi } from 'vitest'
@@ -23,6 +23,8 @@ vi.mock('gsap', () => {
   } }
 })
 vi.mock('gsap/ScrollTrigger', () => ({ ScrollTrigger: { create: vi.fn(), refresh: vi.fn() } }))
+const { fetchPortalStats } = vi.hoisted(() => ({ fetchPortalStats: vi.fn() }))
+vi.mock('../api/publicPortal', () => ({ fetchPortalStats }))
 
 import PortalView from './PortalView.vue'
 
@@ -37,7 +39,8 @@ function mountPortal() {
 }
 
 describe('公共门户首页', () => {
-  it('只展示事实型系统信息、三科学科和真实题量', () => {
+  it('展示事实型系统信息、三科学科和动态题量', async () => {
+    fetchPortalStats.mockResolvedValue({ subjectCount: 3, automaticPracticeQuestionCount: 360, topicQuestionCount: 47 })
     const text = mountPortal().text()
     expect(mountPortal().find('#portal-title').attributes('aria-label')).toBe('RIKE 理科学习辅助系统')
     expect(text).toContain('高中物理、化学、生物练习与学习管理')
@@ -47,8 +50,21 @@ describe('公共门户首页', () => {
     expect(text).toContain('力与运动')
     expect(text).toContain('电磁与场')
     expect(text).toContain('波与光学')
-    expect(text).toContain('自动练习题360')
-    expect(text).toContain('专题综合题18')
+    await flushPromises()
+    const loaded = mountPortal()
+    await flushPromises()
+    expect(loaded.text()).toContain('自动练习题360')
+    expect(loaded.text()).toContain('专题综合题47')
+  })
+
+  it('在统计接口失败时显示占位符，不回退为旧的硬编码题量', async () => {
+    fetchPortalStats.mockRejectedValue(new Error('offline'))
+    const wrapper = mountPortal()
+    await flushPromises()
+    expect(wrapper.text()).toContain('自动练习题—')
+    expect(wrapper.text()).toContain('专题综合题—')
+    expect(wrapper.text()).not.toContain('自动练习题360')
+    expect(wrapper.text()).not.toContain('专题综合题18')
   })
 
   it('移除设计自述、宣传口号和独立 AI 规划章节', () => {

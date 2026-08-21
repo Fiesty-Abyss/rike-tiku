@@ -40,7 +40,7 @@ public class SecurityConfig {
                         .authenticationEntryPoint(authenticationEntryPoint)
                         .accessDeniedHandler(accessDeniedHandler))
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/api/v1/health", "/api/v1/auth/login", "/api/v1/auth/captcha-challenge", "/api/v1/auth/password-recovery-requests", "/v3/api-docs/**").permitAll()
+                        .requestMatchers("/api/v1/health", "/api/v1/auth/login", "/api/v1/auth/captcha-challenge", "/api/v1/auth/password-recovery-requests", "/api/v1/public/portal-stats", "/v3/api-docs/**").permitAll()
                         .requestMatchers("/api/v1/test/student").hasRole("STUDENT")
                         .requestMatchers("/api/v1/test/teacher").hasRole("TEACHER")
                         .requestMatchers("/api/v1/test/admin").hasRole("ADMIN")
