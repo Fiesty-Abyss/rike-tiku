@@ -67,7 +67,7 @@
 
 | 业务作用 | 主要表 | 约束与保留边界 |
 |---|---|---|
-| 账号默认/重置密码 | `yong_hu` | 只保存 BCrypt `mi_ma_zhai_yao`；`shi_fou_shou_ci_deng_lu=0` 表示不强制首次改密。 |
+| 账号默认/重置密码 | `yong_hu` | 只保存 BCrypt `mi_ma_zhai_yao`；管理员分配或恢复默认密码时 `shi_fou_shou_ci_deng_lu=1`，完成首次改密后为 `0`。 |
 | 203 教师范围 | `yong_hu`、`yong_hu_jiao_se`、`jiao_shi_dang_an`、`ren_ke_guan_xi`、`ban_ji`、`ke_mu` | 张生康为 `TEACHER`，仅 `CLASS_203` 的物理 ACTIVE 任课；不影响 199/200。 |
 | 203 学生归属 | `yong_hu`、`xue_sheng_dang_an`、`ban_ji_xue_sheng`、`ban_ji` | 学号/用户名统一，学生主班级通过现有关系保存。 |
 | V30 浏览器测试清理 | 上述根表及 `shi_juan*`、`gao_pin_kao_dian*` | 只清理有明确 `V30_BROWSER*` 根标识且关系审计无外部引用的数据；不删除任何 Flyway、结构或稳定教学历史。 |

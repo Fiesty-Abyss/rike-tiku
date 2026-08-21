@@ -75,14 +75,6 @@ public class GuanLiCaoZuoRiZhiFuWu {
             FROM guan_li_cao_zuo_ri_zhi l LEFT JOIN yong_hu u ON u.id=l.cao_zuo_ren_yong_hu_id WHERE l.id=?
             """,this::mapItem,id).stream().findFirst().orElseThrow(()->new RenZhengYeWuYiChang("OPERATION_LOG_NOT_FOUND","日志不存在",org.springframework.http.HttpStatus.NOT_FOUND));}
 
-    @Transactional(readOnly = true)
-    public String csv(String module,String action,String result,Long operatorId,Long objectId,String keyword,LocalDateTime start,LocalDateTime end){
-        var records=page(1,10000,module,action,result,operatorId,objectId,keyword,start,end,"ASC").records();
-        StringBuilder csv=new StringBuilder("id,operator,module,action,result,objectId,createdAt,summary,errorCode\r\n");
-        for(var item:records)csv.append(item.id()).append(',').append(escape(item.operatorUsername())).append(',').append(escape(item.module())).append(',').append(escape(item.action())).append(',').append(escape(item.result())).append(',').append(item.businessObjectId()==null?"":item.businessObjectId()).append(',').append(item.createdAt()).append(',').append(escape(item.summary())).append(',').append(escape(item.errorCode())).append("\r\n");
-        return csv.toString();
-    }
-
     /** Deliberately not audited: otherwise each deletion would create an undeletable replacement row. */
     @Transactional
     public void delete(long id) {
@@ -120,7 +112,5 @@ public class GuanLiCaoZuoRiZhiFuWu {
     private String errorCode(RuntimeException exception) {
         return exception instanceof RenZhengYeWuYiChang business ? business.getCode() : "INTERNAL_ERROR";
     }
-
-    private String escape(String value){if(value==null)return "";return '"'+value.replace("\"","\"\"").replace("\r"," ").replace("\n"," ")+'"';}
 
 }
