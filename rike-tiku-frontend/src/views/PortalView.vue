@@ -2,6 +2,7 @@
 import { onBeforeUnmount, onMounted, ref } from 'vue'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { fetchPortalStats, type PortalStats } from '../api/publicPortal'
 import aquaWorld from '../assets/aqua/rike-aqua-world.webp'
 import physicsVisual from '../assets/aqua/physics-field-lab.webp'
 import chemistryVisual from '../assets/aqua/chemistry-equilibrium-lab.webp'
@@ -15,12 +16,22 @@ const heroOptic = ref<HTMLElement>()
 const physicsChapter = ref<HTMLElement>()
 const physicsPin = ref<HTMLElement>()
 const loopScene = ref<HTMLElement>()
+const portalStats = ref<PortalStats>()
 
 let context: gsap.Context | undefined
 let motion: gsap.MatchMedia | undefined
 let pointerHandler: ((event: PointerEvent) => void) | undefined
 
+async function loadPortalStats() {
+  try {
+    portalStats.value = await fetchPortalStats()
+  } catch {
+    portalStats.value = undefined
+  }
+}
+
 onMounted(() => {
+  void loadPortalStats()
   if (!root.value) return
   document.documentElement.classList.add('aqua-motion-ready')
   motion = gsap.matchMedia()
@@ -286,9 +297,9 @@ onBeforeUnmount(() => {
           </ol>
         </div>
         <dl class="portal-facts" aria-label="平台内容规模" data-aqua-reveal>
-          <div><dt>学科</dt><dd>3</dd></div>
-          <div><dt>自动练习题</dt><dd>360</dd></div>
-          <div><dt>专题综合题</dt><dd>18</dd></div>
+          <div><dt>学科</dt><dd>{{ portalStats?.subjectCount ?? '—' }}</dd></div>
+          <div><dt>自动练习题</dt><dd>{{ portalStats?.automaticPracticeQuestionCount ?? '—' }}</dd></div>
+          <div><dt>专题综合题</dt><dd>{{ portalStats?.topicQuestionCount ?? '—' }}</dd></div>
         </dl>
       </section>
 
