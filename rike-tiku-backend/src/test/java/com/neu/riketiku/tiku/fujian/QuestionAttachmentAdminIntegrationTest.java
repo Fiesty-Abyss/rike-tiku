@@ -32,7 +32,7 @@ import org.springframework.test.context.DynamicPropertySource;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class QuestionAttachmentAdminIntegrationTest extends AdminQuestionIntegrationTestSupport {
-    private static final String PASSWORD = "a1234567";
+    private static final String PASSWORD = "AttachmentPass1";
     private static final Path STORAGE_ROOT = Path.of(System.getProperty("java.io.tmpdir"),
             "rike-tiku-admin-attachment-" + UUID.randomUUID());
     private static final String USERNAME = "admin_attachment_upload";

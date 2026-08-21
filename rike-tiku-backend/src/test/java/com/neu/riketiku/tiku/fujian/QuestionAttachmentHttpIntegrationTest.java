@@ -30,7 +30,7 @@ import tools.jackson.databind.node.JsonNodeFactory;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class QuestionAttachmentHttpIntegrationTest extends AdminQuestionIntegrationTestSupport {
-    private static final String PASSWORD = "a1234567";
+    private static final String PASSWORD = "AttachmentPass1";
     private static final Path STORAGE_ROOT = Path.of(System.getProperty("java.io.tmpdir"),
             "rike-tiku-attachment-http-" + UUID.randomUUID());
 

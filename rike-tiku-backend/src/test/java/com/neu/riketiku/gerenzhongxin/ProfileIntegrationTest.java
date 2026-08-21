@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class ProfileIntegrationTest extends AdminQuestionIntegrationTestSupport {
@@ -28,12 +29,14 @@ class ProfileIntegrationTest extends AdminQuestionIntegrationTestSupport {
 
     @Autowired private DemoDataService demo;
     @Autowired private JdbcTemplate jdbc;
+    @Autowired private PasswordEncoder passwordEncoder;
     @LocalServerPort private int port;
 
     @Test
     void allRolesReadOnlyTheirOwnBusinessProfiles() throws Exception {
         demo.seed();
         try {
+            useNonDefaultPasswords("demo_student", "demo_teacher", "demo_admin", "demo_physics_admin");
             String student = get("/api/v1/profile", login("demo_student", "STUDENT")).body();
             assertThat(student).contains("demo_student", "STUDENT", "演示学生", "DEMO_S001", "高三理综演示班")
                     .doesNotContain("mi_ma_zhai_yao", "passwordHash", "accessToken");
@@ -60,6 +63,7 @@ class ProfileIntegrationTest extends AdminQuestionIntegrationTestSupport {
     void introductionCanBeTrimmedClearedAndCannotMutateAccountFacts() throws Exception {
         demo.seed();
         try {
+            useNonDefaultPasswords("demo_student");
             String token = login("demo_student", "STUDENT");
             HttpResponse<String> updated = put("/api/v1/profile", """
                     {"introduction":"  喜欢用受力图检查思路。  ","username":"changed","roles":["ADMIN"]}
@@ -87,6 +91,7 @@ class ProfileIntegrationTest extends AdminQuestionIntegrationTestSupport {
     void pngAndJpegAvatarPersistDeleteAndStayIsolated() throws Exception {
         demo.seed();
         try {
+            useNonDefaultPasswords("demo_student", "demo_199_01");
             String studentToken = login("demo_student", "STUDENT");
             String otherToken = login("demo_199_01", "STUDENT");
 
@@ -116,6 +121,7 @@ class ProfileIntegrationTest extends AdminQuestionIntegrationTestSupport {
     void invalidMimeContentAndOversizedAvatarAreRejected() throws Exception {
         demo.seed();
         try {
+            useNonDefaultPasswords("demo_admin");
             String token = login("demo_admin", "ADMIN");
             assertThat(upload(image("png"), "avatar.txt", "text/plain", token).body())
                     .contains("AVATAR_TYPE_INVALID", "头像仅支持PNG或JPEG图片");
@@ -137,7 +143,7 @@ class ProfileIntegrationTest extends AdminQuestionIntegrationTestSupport {
     private String login(String username, String role) throws Exception {
         HttpResponse<String> challenge = get("/api/v1/auth/captcha-challenge", null);
         String body = """
-                {"username":"%s","password":"a1234567","expectedRole":"%s","challengeId":"%s","captchaCode":"%s"}
+                {"username":"%s","password":"ProfilePass1","expectedRole":"%s","challengeId":"%s","captchaCode":"%s"}
                 """.formatted(username, role, JsonPath.read(challenge.body(), "$.challengeId"),
                 JsonPath.read(challenge.body(), "$.testCode"));
         HttpResponse<String> response = post("/api/v1/auth/login", body, null);
@@ -204,5 +210,12 @@ class ProfileIntegrationTest extends AdminQuestionIntegrationTestSupport {
 
     private void authorize(HttpRequest.Builder builder, String token) {
         if (token != null) builder.header("Authorization", "Bearer " + token);
+    }
+
+    private void useNonDefaultPasswords(String... usernames) {
+        for (String username : usernames) {
+            jdbc.update("UPDATE yong_hu SET mi_ma_zhai_yao=?,shi_fou_shou_ci_deng_lu=0 WHERE yong_hu_ming=?",
+                    passwordEncoder.encode("ProfilePass1"), username);
+        }
     }
 }
