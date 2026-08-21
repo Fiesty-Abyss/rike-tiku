@@ -436,7 +436,7 @@ Provider 配置与学生业务 API 分离，前端只能提交受控模型 ID。
 
 可用于第 5 章知识支架和第 6 章受控生成；近年高频只由有年份、合法来源、非 Demo/AI 的真题统计，样本不足时不让 AI 猜测。[教育部普通高中课程方案和课程标准](http://www.moe.gov.cn/srcsite/A26/s8001/202006/t20200603_462199.html)。
 
-## 16. 操作日志检索与导出
+## 16. 操作日志检索
 
 [![操作日志分页检索](docs/evidence/thesis-final/35-operation-log-search.png)](docs/evidence/thesis-final/35-operation-log-search.png)
 
@@ -451,7 +451,7 @@ Provider 配置与学生业务 API 分离，前端只能提交受控模型 ID。
 | 路由 / Vue / API | [`OperationLogsView.vue`](rike-tiku-frontend/src/views/admin/OperationLogsView.vue) · [`operationLogs.ts`](rike-tiku-frontend/src/api/admin/operationLogs.ts) |
 | Controller / Service | [`GuanLiCaoZuoRiZhiController.java`](rike-tiku-backend/src/main/java/com/neu/riketiku/guanlicaozuorizhi/GuanLiCaoZuoRiZhiController.java) · [`GuanLiCaoZuoRiZhiFuWu.java`](rike-tiku-backend/src/main/java/com/neu/riketiku/guanlicaozuorizhi/GuanLiCaoZuoRiZhiFuWu.java) |
 | 表 / Flyway | `guan_li_cao_zuo_ri_zhi` · [`V11`](rike-tiku-backend/src/main/resources/db/migration/V11__create_admin_operation_log.sql) |
-| 测试 / 技术 | [`GuanLiCaoZuoRiZhiIntegrationTest.java`](rike-tiku-backend/src/test/java/com/neu/riketiku/guanlicaozuorizhi/GuanLiCaoZuoRiZhiIntegrationTest.java) · append-only、分页、CSV |
+| 测试 / 技术 | [`GuanLiCaoZuoRiZhiIntegrationTest.java`](rike-tiku-backend/src/test/java/com/neu/riketiku/guanlicaozuorizhi/GuanLiCaoZuoRiZhiIntegrationTest.java) · 分页、筛选、详情与定向删除 |
 
 ### 论文写作提示与参考
 
@@ -511,6 +511,6 @@ Provider 配置与学生业务 API 分离，前端只能提交受控模型 ID。
 
 ## 演示账号与认证口径
 
-最终演示使用 [账号清单](docs/FINAL_DEMO_ACCOUNTS.md) 和 [数据卫生报告](docs/FINAL_AUTH_DATA_HYGIENE_REPORT.md) 作为唯一说明：203 班教师张生康为 `t2026004`，指定学生使用 `2026203001` 至 `2026203003`。本地默认/管理员重置口令由 `app.account.default-reset-password` 配置（当前本地值为 `a1234567`），新建与重置账户不再进入强制首次改密门禁；用户仍可主动修改密码，管理员密码恢复流程仍保留。
+最终演示使用 [账号清单](docs/FINAL_DEMO_ACCOUNTS.md) 和 [数据卫生报告](docs/FINAL_AUTH_DATA_HYGIENE_REPORT.md) 作为唯一说明：203 班教师张生康为 `t2026004`，指定学生使用 `2026203001` 至 `2026203003`。本地默认/管理员重置口令由 `app.account.default-reset-password` 配置（当前本地值为 `a1234567`）；管理员新建、导入或恢复账户后，用户必须先修改初始密码才能进入正常业务，用户主动改密与管理员密码恢复流程继续保留。
 
 PR #37 已于 `2026-08-21T03:07:23Z` 以 ordinary merge 合入 `main`（merge commit `cb785631c359b88dc4841a9eeed3af14879516cb`）。当前产品事实、测试数字和演示数据边界以 [FINAL_PROJECT_FACTS.md](docs/FINAL_PROJECT_FACTS.md) 为准。
