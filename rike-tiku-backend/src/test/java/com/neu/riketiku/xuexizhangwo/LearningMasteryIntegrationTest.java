@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class LearningMasteryIntegrationTest extends AdminQuestionIntegrationTestSupport {
@@ -24,11 +25,13 @@ class LearningMasteryIntegrationTest extends AdminQuestionIntegrationTestSupport
 
     @Autowired private DemoDataService demo;
     @Autowired private JdbcTemplate jdbc;
+    @Autowired private PasswordEncoder passwordEncoder;
     @LocalServerPort private int port;
 
     @Test
     void noDataInsufficientSubjectAndStudentIsolationWork() throws Exception {
         demo.seed();
+        useNonDefaultPasswords();
         try {
             long student = student("DEMO_199_01");
             long otherStudent = student("DEMO_199_02");
@@ -74,6 +77,7 @@ class LearningMasteryIntegrationTest extends AdminQuestionIntegrationTestSupport
     @Test
     void masteryLevelsWrongStatesAndRecommendationPriorityAreDeterministic() throws Exception {
         demo.seed();
+        useNonDefaultPasswords();
         try {
             long student = student("DEMO_199_01");
             long weakPoint = point(1, 0);
@@ -124,6 +128,7 @@ class LearningMasteryIntegrationTest extends AdminQuestionIntegrationTestSupport
     @Test
     void unsubmittedAnswersAreIgnoredAndNewCompletedFactsAppearImmediately() throws Exception {
         demo.seed();
+        useNonDefaultPasswords();
         try {
             long student = student("DEMO_199_03");
             long point = point(1, 0);
@@ -151,6 +156,7 @@ class LearningMasteryIntegrationTest extends AdminQuestionIntegrationTestSupport
     @Test
     void teacherOnlyReadsOwnActiveScopeClassAndSubject() throws Exception {
         demo.seed();
+        useNonDefaultPasswords();
         try {
             long student = student("DEMO_199_01");
             long physicsPoint = point(1, 0);
@@ -183,6 +189,7 @@ class LearningMasteryIntegrationTest extends AdminQuestionIntegrationTestSupport
     @Test
     void activePointWithHistoryRemainsInMasteryButCannotRecommendWhenFewerThanFiveQuestions() throws Exception {
         demo.seed();
+        useNonDefaultPasswords();
         try {
             long student = student("DEMO_199_01");
             long sourcePoint = point(1, 0);
@@ -214,6 +221,7 @@ class LearningMasteryIntegrationTest extends AdminQuestionIntegrationTestSupport
     @Test
     void allMasteredPointsKeepGoodPerformanceMessageWithoutReinforcementRecommendation() throws Exception {
         demo.seed();
+        useNonDefaultPasswords();
         try {
             long student = student("DEMO_199_02");
             long masteredPoint = point(1, 0);
@@ -326,7 +334,7 @@ class LearningMasteryIntegrationTest extends AdminQuestionIntegrationTestSupport
         String challengeId = JsonPath.read(challenge.body(), "$.challengeId");
         String captchaCode = JsonPath.read(challenge.body(), "$.testCode");
         HttpResponse<String> response = post("/api/v1/auth/login", null, "{\"username\":\"" + username
-                + "\",\"password\":\"a1234567\",\"expectedRole\":\"" + role + "\",\"challengeId\":\""
+                + "\",\"password\":\"MasteryPass1\",\"expectedRole\":\"" + role + "\",\"challengeId\":\""
                 + challengeId + "\",\"captchaCode\":\"" + captchaCode + "\"}");
         assertThat(response.statusCode()).isEqualTo(200);
         return JsonPath.read(response.body(), "$.accessToken");
@@ -345,4 +353,6 @@ class LearningMasteryIntegrationTest extends AdminQuestionIntegrationTestSupport
         return http.send(request.POST(HttpRequest.BodyPublishers.ofString(body, StandardCharsets.UTF_8)).build(),
                 HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
     }
+
+    private void useNonDefaultPasswords(){ for(String username: new String[]{"demo_199_01","demo_199_02","demo_199_03","demo_physics_admin","demo_biology_teacher"}) jdbc.update("UPDATE yong_hu SET mi_ma_zhai_yao=?,shi_fou_shou_ci_deng_lu=0 WHERE yong_hu_ming=?",passwordEncoder.encode("MasteryPass1"),username); }
 }

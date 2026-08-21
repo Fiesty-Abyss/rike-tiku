@@ -35,7 +35,7 @@ import org.springframework.test.context.DynamicPropertySource;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class QuestionImportAttachmentHttpIntegrationTest extends AdminQuestionIntegrationTestSupport {
-    private static final String PASSWORD = "a1234567";
+    private static final String PASSWORD = "ImportPass1";
     private static final Path SOURCE_ROOT = Path.of(System.getProperty("java.io.tmpdir"),
             "rike-tiku-import-attachment-source-" + UUID.randomUUID());
     private static final Path STORAGE_ROOT = Path.of(System.getProperty("java.io.tmpdir"),

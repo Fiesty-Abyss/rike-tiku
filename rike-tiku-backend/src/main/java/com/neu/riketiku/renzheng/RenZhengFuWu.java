@@ -7,6 +7,7 @@ import com.neu.riketiku.renzheng.dto.DengLuXiangYing;
 import com.neu.riketiku.renzheng.dto.YongHuZhaiYaoXiangYing;
 import com.neu.riketiku.renzheng.dto.TuXingYanZhengMaTiaoZhanXiangYing;
 import com.neu.riketiku.renzheng.dto.ZhuDongMiMaXiuGaiQingQiu;
+import com.neu.riketiku.zhanghao.AdminDefaultPasswordPolicy;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.http.HttpStatus;
@@ -20,16 +21,19 @@ public class RenZhengFuWu {
     private final PasswordEncoder passwordEncoder;
     private final JwtLingPaiFuWu jwtService;
     private final TuXingYanZhengMaFuWu captchaService;
+    private final AdminDefaultPasswordPolicy defaultPasswordPolicy;
 
     public RenZhengFuWu(
             RenZhengShuJuCangKu repository,
             PasswordEncoder passwordEncoder,
             JwtLingPaiFuWu jwtService,
-            TuXingYanZhengMaFuWu captchaService) {
+            TuXingYanZhengMaFuWu captchaService,
+            AdminDefaultPasswordPolicy defaultPasswordPolicy) {
         this.repository = repository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
         this.captchaService = captchaService;
+        this.defaultPasswordPolicy = defaultPasswordPolicy;
     }
 
     public TuXingYanZhengMaTiaoZhanXiangYing tuXingYanZhengMaTiaoZhan(String previousChallengeId) {
@@ -61,7 +65,7 @@ public class RenZhengFuWu {
             throw new RenZhengYeWuYiChang(
                     "LOGIN_STATE_UPDATE_FAILED", "登录状态更新失败", HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return createLoginResponse(user, roles, user.shiFouShouCiDengLu());
+        return createLoginResponse(user, roles, mustChangePassword(user));
     }
 
     @Transactional(readOnly = true)
@@ -77,7 +81,7 @@ public class RenZhengFuWu {
         }
         DangAnXianShiShuJu profile = repository.chaZhaoDangAn(user.id());
         return new DangQianYongHuXiangYing(
-                user.id(), user.yongHuMing(), roles, user.shiFouShouCiDengLu(),
+                user.id(), user.yongHuMing(), roles, mustChangePassword(user),
                 profile.xingMing(), profile.xueHao(), profile.gongHao());
     }
 
@@ -89,7 +93,7 @@ public class RenZhengFuWu {
                 .orElseThrow(() -> new RenZhengYeWuYiChang(
                         "ACCOUNT_UNAVAILABLE", "当前账号不可用", HttpStatus.UNAUTHORIZED));
         validateAccountStatus(user);
-        if (!user.shiFouShouCiDengLu()) {
+        if (!mustChangePassword(user)) {
             throw new RenZhengYeWuYiChang(
                     "INITIAL_PASSWORD_ALREADY_CHANGED", "初始密码已经修改", HttpStatus.CONFLICT);
         }
@@ -166,10 +170,19 @@ public class RenZhengFuWu {
                     "PASSWORD_POLICY_VIOLATION", "新密码必须为8至64位并同时包含字母和数字",
                     HttpStatus.BAD_REQUEST);
         }
+        if (newPassword.equals(defaultPasswordPolicy.password())) {
+            throw new RenZhengYeWuYiChang(
+                    "PASSWORD_MUST_NOT_BE_DEFAULT", "新密码不能使用系统默认密码", HttpStatus.BAD_REQUEST);
+        }
         if (passwordEncoder.matches(newPassword, currentHash)) {
             throw new RenZhengYeWuYiChang(
                     "PASSWORD_UNCHANGED", "新密码不能与旧密码相同", HttpStatus.BAD_REQUEST);
         }
+    }
+
+    private boolean mustChangePassword(YongHuRenZhengShuJu user) {
+        return user.shiFouShouCiDengLu()
+                || passwordEncoder.matches(defaultPasswordPolicy.password(), user.miMaZhaiYao());
     }
 
     private DengLuXiangYing createLoginResponse(
