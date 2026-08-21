@@ -31,7 +31,7 @@ public class PaperController {
     @GetMapping("/questions")
     public List<PaperDtos.QuestionOption> questions(@AuthenticationPrincipal RenZhengYongHu user,
             @RequestParam long subjectId, @RequestParam(required = false) Long knowledgePointId,
-            @RequestParam(required = false) Long teachingScopeId, @RequestParam(required = false) String questionType, @RequestParam(required = false) Integer difficulty,
+            @RequestParam long teachingScopeId, @RequestParam(required = false) String questionType, @RequestParam(required = false) Integer difficulty,
             @RequestParam(required = false) String keyword) {
         return service.questions(user.id(), subjectId, teachingScopeId, knowledgePointId, questionType, difficulty, keyword);
     }

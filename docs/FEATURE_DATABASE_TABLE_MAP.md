@@ -2,6 +2,12 @@
 
 > 这是从业务功能进入数据库的导航，不替代精确 DDL：[数据库结构参考](DATABASE_SCHEMA_REFERENCE.md) 解释字段与约束，[V30 纯结构快照](../database/schema_snapshot_v30.sql) 是最终结构原文。所有表名链接到结构参考的对应小节。
 
+## 公共门户动态统计
+
+| 功能 | 业务作用 | 主要表 | 关系与口径 |
+|---|---|---|---|
+| 首页三项实时统计 | 向未登录访问者展示有效学科、可自主练习题和专题主观题的公开总量。 | [`ke_mu`](DATABASE_SCHEMA_REFERENCE.md#ke_mu)、[`ti_mu`](DATABASE_SCHEMA_REFERENCE.md#ti_mu) | `PortalStatsService` 只做实时 COUNT：学科为 ACTIVE/未删除；练习题为 GLOBAL、PUBLISHED、未删除、`ONLINE_PRACTICE`、可自动判分且为三种客观题；专题题为 GLOBAL、PUBLISHED、未删除、`SUBJECTIVE + TOPIC_LEARNING` 且不自动判分。私有题、PENDING、DRAFT 与内部审核数据不会进入公共接口。 |
+
 ## 认证、账号与教学组织
 
 | 功能 | 业务作用 | 主要表（点击看结构） | 关系与边界 |

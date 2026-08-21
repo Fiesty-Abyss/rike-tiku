@@ -4,6 +4,14 @@
 
 > PR #33 的最终路由、截图、前端 API、Controller、Service、表和 Flyway 逐项索引见 [FEATURE_SCREENSHOT_CODE_INDEX](FEATURE_SCREENSHOT_CODE_INDEX.md)。当前数据库基线为 Flyway V30、50 张业务表；V30 只扩展发布附件快照和主观题待处理状态，不新增表。
 
+## 最终演示收口增量（203 班与动态门户）
+
+| 角色 | 功能 | 页面 / API | 前端 | 后端 | 数据库 | 关键规则 | 测试 |
+|---|---|---|---|---|---|---|---|
+| PUBLIC | 门户实时统计 | `GET /api/v1/public/portal-stats` | `PortalView.vue`、`api/publicPortal.ts` | `portal/PortalStatsController`、`PortalStatsService` | `ke_mu`、`ti_mu` | 只计 ACTIVE 学科、GLOBAL + PUBLISHED + 可确定性判分的 ONLINE_PRACTICE 题，以及 GLOBAL + PUBLISHED + SUBJECTIVE + TOPIC_LEARNING 专题题；不泄露私有题、草稿或审核状态。 | `PortalStatsServiceIntegrationTest`、`PortalView.spec.ts` |
+| ADMIN | 203 班演示导入 | `/admin/students/import`、`/admin/questions/import` | 既有学生/题目导入页面 | `StudentImportService`、`StudentImportConfirmService`、`QuestionImportService` | `ban_ji`、`ban_ji_xue_sheng`、`dao_ru_pi_ci`、`ti_mu*` | Preview 不写库；Confirm 重新解析；题目始终先 PENDING。 | `FinalDemoImportWorkbooksIntegrationTest` |
+| TEACHER | 203 独立教学范围 | 既有教师工作台、组卷和发布接口 | `TeacherScopeWorkspaceView.vue`、`TeacherPaperBuilderView.vue` | 既有 scope / Paper services | `jiao_shi_dang_an`、`ren_ke_guan_xi`、`ban_ji` | 张生康仅 `CLASS_203 + PHYSICS`；同科不同班靠唯一 `teachingAssignmentId` 隔离，不能借 199/200 scope 查询或发布。 | 既有 scope、私有题和试卷范围集成测试；最终数据审计。 |
+
 路径均核对当前代码。前端路由集中于 `src/router/index.ts`；后端 API 统一以 `/api/v1` 为前缀。
 
 | 角色 | 功能 | 前端路由 | Vue View / Component | 前端 API | Backend Controller | Backend Service | 主要表 | 核心技术 | 主要测试 |

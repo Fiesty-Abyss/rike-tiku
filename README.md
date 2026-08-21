@@ -1,11 +1,11 @@
 # RIKE 理科学习辅助系统
 
-> **最终产品基线（2026-08-18）：PR [#33](https://github.com/Fiesty-Abyss/rike-tiku/pull/33)、PR [#34](https://github.com/Fiesty-Abyss/rike-tiku/pull/34) 与 PR [#35](https://github.com/Fiesty-Abyss/rike-tiku/pull/35) 均已 ordinary merge；PR #35 merge commit 为 `fde39c5`。Flyway V30、50 张业务表；`PRODUCT DEVELOPMENT = FROZEN`，项目进入 `THESIS_AND_DEFENSE_DELIVERY`。**
+> **主线冻结基线（2026-08-18）：PR [#33](https://github.com/Fiesty-Abyss/rike-tiku/pull/33)、PR [#34](https://github.com/Fiesty-Abyss/rike-tiku/pull/34) 与 PR [#35](https://github.com/Fiesty-Abyss/rike-tiku/pull/35) 均已 ordinary merge；PR #35 merge commit 为 `fde39c5`。Flyway V30、50 张业务表。当前 `feat/final-demo-cleanup` 是中期答辩后的最终演示收口候选，尚未合并；合并前不把候选状态写成主线事实。**
 
 面向高中物理、化学、生物的 Spring Boot 大模型题库系统。正式判分与 STANDARD 始终由确定性业务事实控制；AI 只承担解释、答疑和待人工审核的候选生成。
 
 - [最终项目事实包](docs/FINAL_PROJECT_FACTS.md) · [最终截图证据目录](docs/FINAL_SCREENSHOT_EVIDENCE_CATALOG.md) · [功能—截图—代码—表快速索引](docs/FEATURE_SCREENSHOT_CODE_INDEX.md) · [功能技术地图](docs/FEATURE_CODE_TECH_MAP.md)
-- [功能—数据库表地图](docs/FEATURE_DATABASE_TABLE_MAP.md) · [Excel 精确导入指南](docs/EXCEL_IMPORT_GUIDE.md) · [学生模板](docs/templates/student-import-template.xlsx) · [题目模板](docs/templates/question-import-template.xlsx) · [Excel 模板/导入页截图](docs/FINAL_SCREENSHOT_EVIDENCE_CATALOG.md#excel-模板与导入页面资料)
+- [功能—数据库表地图](docs/FEATURE_DATABASE_TABLE_MAP.md) · [Excel 精确导入指南](docs/EXCEL_IMPORT_GUIDE.md) · [学生模板](docs/templates/student-import-template.xlsx) · [题目模板](docs/templates/question-import-template.xlsx) · [203 班演示导入资料](docs/demo-import/README.md) · [Excel 模板/导入页截图](docs/FINAL_SCREENSHOT_EVIDENCE_CATALOG.md#excel-模板与导入页面资料)
 - [V30 数据库参考](docs/DATABASE_SCHEMA_REFERENCE.md) · [V30 纯结构快照](database/schema_snapshot_v30.sql) · [V29 历史快照](database/schema_snapshot_v29.sql) · [SQL 示例](docs/SQL_EXAMPLES.md)
 - [论文写作中心](docs/THESIS_WRITING_HUB.md) · [论文初稿](docs/thesis/RIKE_THESIS_DRAFT.md) · [事实核对表](docs/thesis/RIKE_THESIS_FACT_CHECK.md) · [答辩提纲](docs/thesis/RIKE_DEFENSE_OUTLINE.md) · [正式参考文献 22 条](docs/THESIS_REFERENCES.md)
 
@@ -36,19 +36,19 @@
 
 ### 设计思路
 
-门户承担产品定位和角色入口，不读取业务数据，也不把认证逻辑复制到展示页。首屏先说明系统服务对象，再由独立认证流程处理身份与权限。
+门户承担产品定位和角色入口，不复制认证逻辑。内容规模数字由受限只读统计接口实时查询：只统计有效学科、可被自主练习抽取的正式 GLOBAL 客观题，以及正式 GLOBAL 专题主观题；接口失败时显示 `—`，不会退回旧的硬编码数字。
 
 <details>
 <summary>实现与数据库映射</summary>
 
 - 前端路由：[`/` 路由定义](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-frontend/src/router/index.ts)
 - Vue 页面或组件：[`PortalView.vue`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-frontend/src/views/PortalView.vue)
-- TypeScript API：无网络 API；入口与权限跳转由 [`router/index.ts`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-frontend/src/router/index.ts) 控制
-- 后端 Controller：无；公共门户是静态 SPA 路由
-- 后端 Service：无；不读取业务事实
-- 主要数据库表：无
-- Flyway：无
-- 主要技术：Vue 3、Vue Router、响应式 CSS、GSAP
+- TypeScript API：[`publicPortal.ts`](rike-tiku-frontend/src/api/publicPortal.ts)；入口与权限跳转由 [`router/index.ts`](rike-tiku-frontend/src/router/index.ts) 控制
+- 后端 Controller：[`PortalStatsController.java`](rike-tiku-backend/src/main/java/com/neu/riketiku/portal/PortalStatsController.java)
+- 后端 Service：[`PortalStatsService.java`](rike-tiku-backend/src/main/java/com/neu/riketiku/portal/PortalStatsService.java)
+- 主要数据库表：`ke_mu`、`ti_mu`（仅业务可见字段的 COUNT，不返回题目或用户数据）
+- Flyway：沿用 V1/V2/V20/V26 的既有字段，无新增迁移
+- 主要技术：Vue 3、Vue Router、Axios、Spring MVC、受限 COUNT 查询、响应式 CSS、GSAP
 
 </details>
 
