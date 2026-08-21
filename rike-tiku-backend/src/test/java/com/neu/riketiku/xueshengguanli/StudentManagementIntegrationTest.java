@@ -60,6 +60,7 @@ class StudentManagementIntegrationTest extends AdminQuestionIntegrationTestSuppo
         long disabledClass = createClass("STU-CREATE-D", "停用班", "高三", "DISABLED");
         var created = service.create(new StudentCreateRequest("S-CREATE-01", "创建学生", "student_create_01", "高三", activeClass));
         assertThat(created.initialPassword()).isEqualTo("a1234567");
+        assertThat(jdbc.queryForObject("SELECT shi_fou_shou_ci_deng_lu FROM yong_hu WHERE yong_hu_ming='student_create_01'", Boolean.class)).isTrue();
 
         assertCode(() -> service.create(new StudentCreateRequest("S-CREATE-01", "重复学号", "student_create_02", "高三", activeClass)), "STUDENT_NUMBER_EXISTS");
         assertCode(() -> service.create(new StudentCreateRequest("S-CREATE-02", "重复用户名", "student_create_01", "高三", activeClass)), "USERNAME_EXISTS");
@@ -107,7 +108,7 @@ class StudentManagementIntegrationTest extends AdminQuestionIntegrationTestSuppo
     }
 
     @Test
-    void passwordResetInvalidatesOldPasswordWithoutBlockingNormalLogin() throws Exception {
+    void passwordResetInvalidatesOldPasswordAndRequiresInitialPasswordChange() throws Exception {
         long classId = createClass("STU-RESET", "重置班", "高三", "ACTIVE");
         var created = service.create(new StudentCreateRequest("S-RESET", "重置学生", "student_reset", "高三", classId));
         changePassword("student_reset", created.initialPassword(), "StudentOldPass2");
@@ -116,12 +117,12 @@ class StudentManagementIntegrationTest extends AdminQuestionIntegrationTestSuppo
         var reset = service.resetPassword(studentId);
         String resetPassword = reset.initialPassword();
         assertThat(reset.resetCount()).isEqualTo(1);
-        assertThat(reset.mustChangePassword()).isFalse();
+        assertThat(reset.mustChangePassword()).isTrue();
         assertThat(resetPassword).isEqualTo("a1234567").doesNotContain("StudentOldPass2");
         assertThat(login("student_reset", "StudentOldPass2").statusCode()).isEqualTo(401);
         HttpResponse<String> login = login("student_reset", resetPassword);
         assertThat(login.statusCode()).isEqualTo(200);
-        assertThat((Boolean) JsonPath.read(login.body(), "$.mustChangePassword")).isFalse();
+        assertThat((Boolean) JsonPath.read(login.body(), "$.mustChangePassword")).isTrue();
         String digest = jdbc.queryForObject("SELECT mi_ma_zhai_yao FROM yong_hu WHERE yong_hu_ming='student_reset'", String.class);
         assertThat(digest).doesNotContain(resetPassword);
         assertThat(passwordEncoder.matches(resetPassword, digest)).isTrue();
@@ -144,7 +145,7 @@ class StudentManagementIntegrationTest extends AdminQuestionIntegrationTestSuppo
                 """, String.class, firstId, secondId);
         assertThat(response.resetCount()).isEqualTo(2);
         assertThat(response.initialPassword()).isEqualTo("a1234567");
-        assertThat(response.mustChangePassword()).isFalse();
+        assertThat(response.mustChangePassword()).isTrue();
         assertThat(hashes).hasSize(2).doesNotHaveDuplicates();
         assertThat(hashes).allMatch(hash -> passwordEncoder.matches(response.initialPassword(), hash));
         String audit = jdbc.queryForObject("""
@@ -181,7 +182,7 @@ class StudentManagementIntegrationTest extends AdminQuestionIntegrationTestSuppo
         assertThat(response.headers().firstValue("Cache-Control")).hasValueSatisfying(value -> assertThat(value).contains("no-store"));
         assertThat(response.headers().firstValue("Pragma")).contains("no-cache");
         assertThat((Integer) JsonPath.read(response.body(), "$.resetCount")).isEqualTo(1);
-        assertThat((Boolean) JsonPath.read(response.body(), "$.mustChangePassword")).isFalse();
+        assertThat((Boolean) JsonPath.read(response.body(), "$.mustChangePassword")).isTrue();
     }
 
     @Test
@@ -202,11 +203,11 @@ class StudentManagementIntegrationTest extends AdminQuestionIntegrationTestSuppo
         assertThat(response.headers().firstValue("Cache-Control")).hasValueSatisfying(value -> assertThat(value).contains("no-store"));
         assertThat(response.headers().firstValue("Pragma")).contains("no-cache");
         assertThat((Integer) JsonPath.read(response.body(), "$.resetCount")).isEqualTo(1);
-        assertThat((Boolean) JsonPath.read(response.body(), "$.mustChangePassword")).isFalse();
+        assertThat((Boolean) JsonPath.read(response.body(), "$.mustChangePassword")).isTrue();
     }
 
     @Test
-    void teacherSinglePasswordRecoveryInvalidatesOldPasswordWithoutBlockingNormalLogin() throws Exception {
+    void teacherSinglePasswordRecoveryInvalidatesOldPasswordAndRequiresInitialPasswordChange() throws Exception {
         String suffix = Long.toString(System.nanoTime());
         var created = teacherService.create(new JiaoShiChuangJianQingQiu(
                 "T-SINGLE-" + suffix, "单人恢复教师", "teacher_single_" + suffix, null, "TeacherInitial1", "ENABLED"));
@@ -217,7 +218,7 @@ class StudentManagementIntegrationTest extends AdminQuestionIntegrationTestSuppo
         assertThat(login(username, "TeacherOldPass2", "TEACHER").statusCode()).isEqualTo(401);
         HttpResponse<String> recovered = login(username, reset.initialPassword(), "TEACHER");
         assertThat(recovered.statusCode()).isEqualTo(200);
-        assertThat((Boolean) JsonPath.read(recovered.body(), "$.mustChangePassword")).isFalse();
+        assertThat((Boolean) JsonPath.read(recovered.body(), "$.mustChangePassword")).isTrue();
         changePassword(username, reset.initialPassword(), "TeacherRecovered2", "TEACHER");
         assertThat((Boolean) JsonPath.read(login(username, "TeacherRecovered2", "TEACHER").body(), "$.mustChangePassword")).isFalse();
     }

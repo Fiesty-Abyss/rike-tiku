@@ -6,4 +6,3 @@ export interface OperationLogQuery { page:number; size:number; module?:string; a
 export const fetchOperationLogs=(query:OperationLogQuery)=>http.get<OperationLogPage>('/admin/operation-logs',{params:query}).then(response=>response.data)
 export const fetchOperationLog=(id:number)=>http.get<OperationLogItem>(`/admin/operation-logs/${id}`).then(response=>response.data)
 export const deleteOperationLog=(id:number)=>http.delete(`/admin/operation-logs/${id}`)
-export const exportOperationLogs=(query:Omit<OperationLogQuery,'page'|'size'|'sort'>)=>http.get<Blob>('/admin/operation-logs/export.csv',{params:query,responseType:'blob'}).then(response=>response.data)

@@ -41,3 +41,10 @@
 
 - 范围仅限最终演示账号口径、取消强制首次改密门禁、已授权的 V30 浏览器测试业务数据定向清理、演示学生工作簿与事实文档；不修改 Flyway、表结构、题库业务规则或 199/200 教学事实。
 - 203 固定账号、默认口令策略、真实数据审计范围和兼容性边界见 [FINAL_DEMO_ACCOUNTS.md](FINAL_DEMO_ACCOUNTS.md) 与 [FINAL_AUTH_DATA_HYGIENE_REPORT.md](FINAL_AUTH_DATA_HYGIENE_REPORT.md)。PR #37 于 `2026-08-21T03:07:23Z` 以 merge commit `cb785631c359b88dc4841a9eeed3af14879516cb` 合入 main；最终为后端 224 tests（0/0/3）、前端 68 files/225 tests（0 failures）、type-check/build/audit PASS。
+
+## PR #38 restore-initial-password-gate（merge 前门禁通过）
+
+- 纠正 PR #37 的认证语义：管理员创建学生/教师、学生 Excel 导入、管理员恢复密码和密码恢复申请处理后均进入首次改密状态；默认口令策略仍为统一配置，不恢复随机口令。
+- JWT 后端门禁与前端改密路由同时恢复，保证手工改 URL 不能绕过；普通改密接口继续可用。
+- 删除管理员操作日志 CSV 的 UI、TS API、Controller endpoint 和 Service 生成方法；保留日志管理的其他能力。
+- 无 Flyway、表结构或 199/200/203 教学数据改动。merge 前最终回归：后端 **224 tests、0 failures、0 errors、3 skipped**；前端 **68 files、225 tests、0 failures**；type-check、build、audit（0 vulnerabilities）、科学审计、22 条文献审计和 V1→V30 随机 schema 通过。正式库只读复核为 V30、30 success、0 failed、50 业务表。

@@ -10,7 +10,7 @@ describe('登录后导航', () => {
     expect(resolvePostLoginPath(false, 2, '/teacher')).toBe('/select-role')
   })
 
-  it('历史首次改密标记不再改变登录后的正常路由', () => {
-    expect(resolvePostLoginPath(true, 2, '/student')).toBe('/select-role')
+  it('首次改密状态优先进入初始密码修改页', () => {
+    expect(resolvePostLoginPath(true, 2, '/student')).toBe('/change-initial-password')
   })
 })
