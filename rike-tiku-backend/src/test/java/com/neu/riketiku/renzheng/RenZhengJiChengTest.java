@@ -48,6 +48,7 @@ class RenZhengJiChengTest {
     private static final String TEST_URL =
             "jdbc:mysql://" + DATABASE_HOST + ":" + DATABASE_PORT + "/" + SCHEMA + JDBC_OPTIONS;
     private static final BCryptPasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder(4);
+    private static final String DEFAULT_PASSWORD = "a1234567";
 
     static {
         try (Connection connection = DriverManager.getConnection(ADMIN_URL, DATABASE_USERNAME, DATABASE_PASSWORD);
@@ -333,6 +334,38 @@ class RenZhengJiChengTest {
                 accessToken, "InitialPass1", "ChangedPass2", "ChangedPass2");
         String changedToken = token(changed);
         assertThat(get("/api/v1/profile", changedToken).status()).isEqualTo(200);
+    }
+
+    @Test
+    void defaultPasswordMustTriggerGateEvenWhenFirstLoginFlagDrifted() throws Exception {
+        insertUser("default_flag_true", DEFAULT_PASSWORD, true, "ENABLED", "STUDENT");
+        insertUser("custom_flag_true", "CustomPass1", true, "ENABLED", "STUDENT");
+        long defaultFlagFalse = insertUser("default_flag_false", DEFAULT_PASSWORD, false, "ENABLED", "STUDENT");
+        insertUser("custom_flag_false", "CustomPass2", false, "ENABLED", "STUDENT");
+
+        assertThat((Boolean) JsonPath.read(login("default_flag_true", DEFAULT_PASSWORD, "STUDENT").body(), "$.mustChangePassword")).isTrue();
+        assertThat((Boolean) JsonPath.read(login("custom_flag_true", "CustomPass1", "STUDENT").body(), "$.mustChangePassword")).isTrue();
+        TestResponse driftedLogin = login("default_flag_false", DEFAULT_PASSWORD, "STUDENT");
+        assertThat((Boolean) JsonPath.read(driftedLogin.body(), "$.mustChangePassword")).isTrue();
+        String driftedToken = token(driftedLogin);
+        assertError(get("/api/v1/test/student", driftedToken), 403, "MUST_CHANGE_PASSWORD");
+        assertThat((Boolean) JsonPath.read(get("/api/v1/auth/me", driftedToken).body(), "$.mustChangePassword")).isTrue();
+        assertThat((Boolean) JsonPath.read(login("custom_flag_false", "CustomPass2", "STUDENT").body(), "$.mustChangePassword")).isFalse();
+
+        assertError(changePassword(driftedToken, DEFAULT_PASSWORD, DEFAULT_PASSWORD, DEFAULT_PASSWORD),
+                400, "PASSWORD_MUST_NOT_BE_DEFAULT");
+        TestResponse changed = changePassword(driftedToken, DEFAULT_PASSWORD, "Abcd12345", "Abcd12345");
+        assertThat(changed.status()).isEqualTo(200);
+        assertThat((Boolean) JsonPath.read(changed.body(), "$.mustChangePassword")).isFalse();
+        assertThat(jdbcTemplate.queryForObject("SELECT shi_fou_shou_ci_deng_lu FROM yong_hu WHERE id=?", Boolean.class, defaultFlagFalse)).isFalse();
+        assertThat(PASSWORD_ENCODER.matches(DEFAULT_PASSWORD, passwordHash(defaultFlagFalse))).isFalse();
+        String changedToken = token(changed);
+        assertThat(get("/api/v1/test/student", changedToken).status()).isEqualTo(200);
+
+        String ordinaryToken = token(login("custom_flag_false", "CustomPass2", "STUDENT"));
+        assertError(post("/api/v1/auth/change-password", """
+                {"oldPassword":"CustomPass2","newPassword":"a1234567","confirmPassword":"a1234567"}
+                """, ordinaryToken), 400, "PASSWORD_MUST_NOT_BE_DEFAULT");
     }
 
     @Test

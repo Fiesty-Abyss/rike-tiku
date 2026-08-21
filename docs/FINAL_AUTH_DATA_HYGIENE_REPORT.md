@@ -19,6 +19,12 @@
 - `MACHINE_API_SMOKE`：使用受控 203 学生账号完成默认口令登录（`mustChangePassword=true`）→ 普通业务被 `MUST_CHANGE_PASSWORD` 拒绝 → 初始密码修改成功 → 旧口令失效、新口令登录成功；随后该账号已恢复为默认口令且首次改密状态，供本地演示使用。该记录不是用户人工浏览器验收。
 - PR #38 于 `2026-08-21T06:54:58Z` 以 ordinary merge commit `4da94b79fc682c8756cfab12dd73c40fbbe87e8b` 合入 `main`；该合并不修改 Flyway、表结构或 199/200/203 教学关系。
 
+## 默认密码实值兜底（后续认证补丁）
+
+- `mustChangePassword = shi_fou_shou_ci_deng_lu || BCrypt.matches(app.account.default-reset-password)`；因此即使历史 flag 为 `0`，仍在使用默认密码的账号也不能进入正常业务。
+- `/auth/me` 与 JWT 在同一口径下返回门禁状态；`/change-initial-password` 对上述两种状态均可执行。
+- 初始改密与主动改密均禁止把新密码设置为配置中的系统默认密码，受控返回 `400 PASSWORD_MUST_NOT_BE_DEFAULT`；不比较或硬编码某个明文默认值。
+
 ## V30 浏览器测试业务数据
 
 删除前文本全字段审计在正式库发现：`V30_BROWSER_CLASS`、`V30_BROWSER_T`、`V30_BROWSER_S`、`V30_BROWSER_STUDENT`、`V30_BROWSER_TEACHER`。经引用检查确认只关联一名机器学生、测试教师、两份测试卷、两次发布、两次提交、四条逐题答案、一个任课关系及十条测试高频考点关系；未关联真实学生。

@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class SiXinIntegrationTest extends AdminQuestionIntegrationTestSupport {
@@ -22,11 +23,13 @@ class SiXinIntegrationTest extends AdminQuestionIntegrationTestSupport {
 
     @Autowired private DemoDataService demo;
     @Autowired private JdbcTemplate jdbc;
+    @Autowired private PasswordEncoder passwordEncoder;
     @LocalServerPort private int port;
 
     @Test
     void twoWayMessagingUnreadReadAndParticipantIsolationWork() throws Exception {
         demo.seed();
+        useNonDefaultPasswords();
         try {
             long physics199 = scope("DEMO_T_PHYSICS", "DEMO_CLASS_199", 1);
             long physics200 = scope("DEMO_T_PHYSICS", "DEMO_CLASS_200", 1);
@@ -90,6 +93,7 @@ class SiXinIntegrationTest extends AdminQuestionIntegrationTestSupport {
     @Test
     void inactiveTeachingAndStudentTransferKeepHistoryButBlockSending() throws Exception {
         demo.seed();
+        useNonDefaultPasswords();
         try {
             long physics199 = scope("DEMO_T_PHYSICS", "DEMO_CLASS_199", 1);
             long chemistry200 = scope("DEMO_T_CHEMISTRY", "DEMO_CLASS_200", 2);
@@ -129,6 +133,7 @@ class SiXinIntegrationTest extends AdminQuestionIntegrationTestSupport {
     @Test
     void senderCanRecallWithinFiveMinutesAndEachParticipantCanHideOnlyForSelf() throws Exception {
         demo.seed();
+        useNonDefaultPasswords();
         try {
             long physics199=scope("DEMO_T_PHYSICS","DEMO_CLASS_199",1);
             String studentToken=login("demo_199_01","STUDENT");String teacherToken=login("demo_physics_admin","TEACHER");
@@ -164,7 +169,7 @@ class SiXinIntegrationTest extends AdminQuestionIntegrationTestSupport {
         String challengeId = JsonPath.read(challenge.body(), "$.challengeId");
         String captchaCode = JsonPath.read(challenge.body(), "$.testCode");
         HttpResponse<String> response = post("/api/v1/auth/login", null, "{\"username\":\"" + username
-                + "\",\"password\":\"a1234567\",\"expectedRole\":\"" + role + "\",\"challengeId\":\""
+                + "\",\"password\":\"MessagesPass1\",\"expectedRole\":\"" + role + "\",\"challengeId\":\""
                 + challengeId + "\",\"captchaCode\":\"" + captchaCode + "\"}");
         assertThat(response.statusCode()).isEqualTo(200);
         return JsonPath.read(response.body(), "$.accessToken");
@@ -183,5 +188,6 @@ class SiXinIntegrationTest extends AdminQuestionIntegrationTestSupport {
         return http.send(request.POST(HttpRequest.BodyPublishers.ofString(body, StandardCharsets.UTF_8)).build(),
                 HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
     }
+    private void useNonDefaultPasswords(){ for(String username: new String[]{"demo_199_01","demo_199_02","demo_200_01","demo_physics_admin","demo_admin"}) jdbc.update("UPDATE yong_hu SET mi_ma_zhai_yao=?,shi_fou_shou_ci_deng_lu=0 WHERE yong_hu_ming=?",passwordEncoder.encode("MessagesPass1"),username); }
     private HttpResponse<String> delete(String path,String token)throws Exception{HttpRequest.Builder request=HttpRequest.newBuilder().uri(URI.create("http://localhost:"+port+path)).DELETE();if(token!=null)request.header("Authorization","Bearer "+token);return http.send(request.build(),HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));}
 }
