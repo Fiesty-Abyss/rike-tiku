@@ -90,8 +90,6 @@ async function confirmImport() {
 <template>
   <section class="admin-page question-import-page">
     <div class="page-heading"><div><h1>MVP30 题库 Excel 导入</h1><p>上传后先逐行预检查；确认时重新解析原始文件，成功题目统一进入待审核。</p></div><el-button @click="router.push('/admin/questions')">返回题库审核</el-button></div>
-    <el-alert title="安全边界：页面不会保存原始 Excel、附件内容或预检查结果到浏览器存储；附件仅按正文对象标识精确匹配。" type="info" :closable="false" show-icon />
-    <section class="import-stage"><h2>格式说明与经典题流程</h2><p>下载 19 列模板 → 填写真实来源、答案、STANDARD 与知识点 → Preview → 修正错误 → Confirm → PENDING → 人工审核 → PUBLISHED。版权不明的题不能进入公开正式库。</p><div class="stage-actions"><a href="/docs/templates/question-import-template.xlsx" download>下载题目模板</a><a href="https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/docs/EXCEL_IMPORT_GUIDE.md" target="_blank" rel="noopener">完整格式说明</a></div><h3>AI 如何使用新题</h3><p>Excel 导入不会重新训练 AI。PENDING 不进入正式练习；PUBLISHED 后才可被练习抽取。学生做题后，AI 只读取冻结题干、选项、学生答案、STANDARD 和知识点；图片仅在 GLM Vision 成功解析时加入受控视觉上下文。候选生成仍进入 PENDING 人工审核。</p><h3>图片如何追加</h3><p>先完成草稿创建，再在附件界面上传真实 PNG/JPEG；不要在 Excel 中放任意外部 URL。</p></section>
     <section class="import-stage"><h2>1. 选择文件</h2><p>每次仅导入一份学科 Excel。仅支持 .xlsx，最大 10MB；重新选择会清除当前预览。</p>
       <el-upload ref="uploadRef" drag :auto-upload="false" :limit="1" accept=".xlsx" :on-change="onFileChange" :on-remove="clear" :before-upload="validateFile"><div class="upload-copy"><strong>拖拽题库 Excel 到这里，或点击选择</strong><span>请选择“待审核_清洗版.xlsx”原文件</span></div></el-upload>
       <el-alert v-if="fileError" :title="fileError" type="error" :closable="false" show-icon class="inline-alert" />

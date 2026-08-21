@@ -131,3 +131,15 @@ PR #35 仅补齐教师试卷发布后的管理闭环，不新增迁移、表或�
 | 教师组卷与发布 | [混合试卷证据](FINAL_SCREENSHOT_EVIDENCE_CATALOG.md#v30-机器浏览器证据) | `shi_juan*`、V27/V30；主观题不自动评分 |
 | 管理员与 Excel | [Excel 图和导入页](FINAL_SCREENSHOT_EVIDENCE_CATALOG.md#excel-模板与导入页面资料) | [Excel 导入指南](EXCEL_IMPORT_GUIDE.md)、导入/审核表 |
 | 测试与答辩 | [事实核验](thesis/RIKE_THESIS_FACT_CHECK.md)、[答辩提纲](thesis/RIKE_DEFENSE_OUTLINE.md) | [开发状态](DEVELOPMENT_STATUS.md)、[引用使用矩阵](thesis/RIKE_REFERENCE_USAGE_MATRIX.md) |
+
+## 10. 最终演示数据与门户实时统计（final-demo-cleanup）
+
+- 稳定教学事实：正式 `rike_tiku` 的 199班、200班及张锡鹏（物理、兼 ADMIN）、吴雪莉（化学）、谢亚坤（生物）的既有 ACTIVE 任课关系只读核验后保留，未删除、迁移或重建。
+- 新增隔离范围：`CLASS_203`（203班，高三，ACTIVE）与张生康（`TEACHER`，非 ADMIN）仅建立 `PHYSICS` 的 ACTIVE 任课关系；203 班已有张鸿敏、李胡张博、赵雪尧三名主班级学生。选择物理的原因是当前正式库中 PUBLISHED 自主练习题 120 道、专题题 20 道，足以完整演示工作台、题库、组卷、发布和教学分析。
+- 演示导入资料：[四份真实模板工作簿](demo-import/README.md)。学生文件与三份单学科题库文件在一次性 schema 中完成 Preview/Confirm；它们未 Confirm 到 `rike_tiku_demo`，保留现场首次导入路径。三科题目均为 RIKE 项目原创，导入后仍必须经历 `PENDING → 人工审核`。
+- 公共门户不再写死 `3 / 360 / 18`。`GET /api/v1/public/portal-stats` 只读统计 ACTIVE 学科、GLOBAL + PUBLISHED 的可自动判分练习题和 GLOBAL + PUBLISHED 的专题主观题；接口只开放该精确路径。失败时前端显示 `—`，绝不回退到旧常量。
+- 当前只读口径样本：`rike_tiku = 3 / 360 / 47`，`rike_tiku_demo = 3 / 360 / 18`。数字随数据库发布、停用或软删除即时变化，不是论文或业务规则中的固定承诺。
+- 代码速查：[答辩代码—业务速查图](DEFENSE_CODE_BUSINESS_QUICK_MAP.md)；数据库关系见 [功能—数据库表地图](FEATURE_DATABASE_TABLE_MAP.md)。
+# 最终演示收口候选补充（2026-08-21）
+
+`feat/final-demo-cleanup` 在合并前保持候选状态。它保留 199/200 与张锡鹏、谢亚坤、吴雪莉的既有教学事实，新增 203 班、张生康（203班物理）和三名指定学生；四份可重复 Preview/Confirm 的演示 Excel 位于 [demo-import](demo-import/README.md)。公共门户不再写死 3/360/18，而是调用受限的实时统计接口；正式库当前返回 3/360/47，Demo 库返回 3/360/18。完整的保全、导入、回归和风险证据见 [FINAL_CLEANUP_REGRESSION_REPORT](FINAL_CLEANUP_REGRESSION_REPORT.md)。

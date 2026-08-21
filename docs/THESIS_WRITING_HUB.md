@@ -32,6 +32,11 @@
 
 ## 当前事实
 
+> 2026-08-21 的 `feat/final-demo-cleanup` 为答辩演示收口候选，尚未合并到 `main`。后续论文应在其完整回归、PR 合并和最终事实冻结后，以合并后的 `main` 为唯一依据；不得把候选工作簿或 203 班数据提前写成已合并产品事实。
+
+- 候选收口包含：203 班物理教学范围、教师张生康、三名指定 203 学生、4 份可 Preview/Confirm 的匿名演示 Excel，以及公共门户的实时内容规模统计。说明和演示顺序见 [demo-import/README](demo-import/README.md)，代码/数据库映射见 [功能技术地图](FEATURE_CODE_TECH_MAP.md) 与 [功能—数据库表地图](FEATURE_DATABASE_TABLE_MAP.md)。
+- 答辩中如需解释 AI 代码、Prompt、Provider、存储和缓存边界，优先使用 [答辩代码—业务速查](DEFENSE_CODE_BUSINESS_QUICK_MAP.md)；它明确记录 `MAX_ROUNDS=10`、STANDARD 保护、人工审核、`reasoning_content` 不展示/不持久化，以及 Redis 未使用的真实边界。
+
 - PR #33、PR #34、PR #35 已 ordinary merge；PR #35 是冻结后唯一真实教学闭环维护，merge commit 为 `fde39c53efca316010abf63acf56fda2c631315c`。论文写作以当前 `main` 的最终事实为准，详情见 `MANUAL_ACCEPTANCE_FINDINGS_PAPER_RELEASE_MANAGEMENT.md`。
 - Flyway V1–V30，50 张业务表；V1–V29 已发布迁移未修改。V30 只新增发布题附件快照 JSON，并扩展主观题待处理状态的字段长度。
 - 专题学习仍由统一 `ti_mu` 事实和专题单元编排关系组成：正式库 15 个单元、45 道 `SUBJECTIVE + TOPIC_LEARNING` 原创大题，物理 6 / 化学 5 / 生物 4；主观题可手动组卷但不自动评分。

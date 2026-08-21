@@ -98,6 +98,10 @@ V30-01–14、V30-17–18 为 `THESIS_READY + MACHINE_BROWSER_VERIFIED`，环境
 
 ## Excel 模板与导入页面资料
 
+### 候选收口说明（2026-08-21）
+
+本轮未把旧的门户静态截图改标为动态统计截图。公共门户的动态统计由 `PortalView.vue → publicPortal.ts → GET /api/v1/public/portal-stats → PortalStatsController/Service → ke_mu/ti_mu` 交付，证据为 `PortalView.spec.ts`、`PortalStatsServiceIntegrationTest` 与 [最终回归报告](FINAL_CLEANUP_REGRESSION_REPORT.md)。因此历史门户图只能证明 UI，不可证明统计数字；新的可用于答辩的 Excel 工作簿见 [demo-import](demo-import/README.md)，并以 Preview/Confirm 集成测试证明格式和导入链路。
+
 这些图补足“模板本身”和“实际导入页面”的可离线阅读资料。模板图由仓库内真实 `.xlsx` 文件原样渲染，未填真实学生、密码或 Token；页面图是已存档的匿名原始证据。模板没有业务 API，导入页面才调用 API。
 
 | 图 | 状态、数据与页面 | 代码 / API / 表 / Flyway / 测试 | 论文/PPT 用途、证明与边界 |
