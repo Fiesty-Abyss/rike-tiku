@@ -1,6 +1,6 @@
 # RIKE 理科学习辅助系统
 
-> **主线冻结基线（2026-08-18）：PR [#33](https://github.com/Fiesty-Abyss/rike-tiku/pull/33)、PR [#34](https://github.com/Fiesty-Abyss/rike-tiku/pull/34) 与 PR [#35](https://github.com/Fiesty-Abyss/rike-tiku/pull/35) 均已 ordinary merge；PR #35 merge commit 为 `fde39c5`。Flyway V30、50 张业务表。当前 `feat/final-demo-cleanup` 是中期答辩后的最终演示收口候选，尚未合并；合并前不把候选状态写成主线事实。**
+> **最终冻结基线（2026-08-21）：PR [#33](https://github.com/Fiesty-Abyss/rike-tiku/pull/33)、PR [#34](https://github.com/Fiesty-Abyss/rike-tiku/pull/34)、PR [#35](https://github.com/Fiesty-Abyss/rike-tiku/pull/35) 与 PR [#36](https://github.com/Fiesty-Abyss/rike-tiku/pull/36) 均已 ordinary merge；PR #36 merge commit 为 `ac6e467`。Flyway V30、50 张业务表；`PRODUCT DEVELOPMENT = FROZEN`，项目进入 `THESIS_AND_DEFENSE_DELIVERY`。**
 
 面向高中物理、化学、生物的 Spring Boot 大模型题库系统。正式判分与 STANDARD 始终由确定性业务事实控制；AI 只承担解释、答疑和待人工审核的候选生成。
 

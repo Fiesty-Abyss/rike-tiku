@@ -140,6 +140,6 @@ PR #35 仅补齐教师试卷发布后的管理闭环，不新增迁移、表或�
 - 公共门户不再写死 `3 / 360 / 18`。`GET /api/v1/public/portal-stats` 只读统计 ACTIVE 学科、GLOBAL + PUBLISHED 的可自动判分练习题和 GLOBAL + PUBLISHED 的专题主观题；接口只开放该精确路径。失败时前端显示 `—`，绝不回退到旧常量。
 - 当前只读口径样本：`rike_tiku = 3 / 360 / 47`，`rike_tiku_demo = 3 / 360 / 18`。数字随数据库发布、停用或软删除即时变化，不是论文或业务规则中的固定承诺。
 - 代码速查：[答辩代码—业务速查图](DEFENSE_CODE_BUSINESS_QUICK_MAP.md)；数据库关系见 [功能—数据库表地图](FEATURE_DATABASE_TABLE_MAP.md)。
-# 最终演示收口候选补充（2026-08-21）
+# 最终演示收口（2026-08-21，PR #36 已 ordinary merge）
 
-`feat/final-demo-cleanup` 在合并前保持候选状态。它保留 199/200 与张锡鹏、谢亚坤、吴雪莉的既有教学事实，新增 203 班、张生康（203班物理）和三名指定学生；四份可重复 Preview/Confirm 的演示 Excel 位于 [demo-import](demo-import/README.md)。公共门户不再写死 3/360/18，而是调用受限的实时统计接口；正式库当前返回 3/360/47，Demo 库返回 3/360/18。完整的保全、导入、回归和风险证据见 [FINAL_CLEANUP_REGRESSION_REPORT](FINAL_CLEANUP_REGRESSION_REPORT.md)。
+PR #36（head `d1a76015f25f963d43524a44b9f87e9841545936`）已于 `2026-08-21T02:21:22Z` 以 ordinary merge 合入 main；merge commit 为 `ac6e4679e8688bec5ed63a284aa962b3ca6cb618`。它保留 199/200 与张锡鹏、谢亚坤、吴雪莉的既有教学事实，新增 203 班、张生康（203班物理）和三名指定学生；四份可重复 Preview/Confirm 的演示 Excel 位于 [demo-import](demo-import/README.md)。公共门户不再写死 3/360/18，而是调用受限的实时统计接口；正式库当前返回 3/360/47，Demo 库返回 3/360/18。完整的保全、导入、回归和风险证据见 [FINAL_CLEANUP_REGRESSION_REPORT](FINAL_CLEANUP_REGRESSION_REPORT.md)。
