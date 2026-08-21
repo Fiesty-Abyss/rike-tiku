@@ -17,4 +17,4 @@
 
 ## 最终状态
 
-`USER_MERGE_AUTHORIZATION = GRANTED_CONDITIONALLY`：仅在完整回归、文献/科学审计、正式库 V30/50 表核验、PR 可合并和工作区清洁全部通过后 ordinary merge。合并时间和 SHA 在 merge 后由最终事实文件写入。
+`USER_MERGE_AUTHORIZATION = GRANTED_CONDITIONALLY` 的全部门禁已满足。PR #37 于 `2026-08-21T03:07:23Z` ordinary merge，merge commit `cb785631c359b88dc4841a9eeed3af14879516cb`；最终 main 已复核。该记录仍区分受控机器登录验证与用户逐页人工验收，不虚构后者。
