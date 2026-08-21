@@ -8,7 +8,7 @@
 - 管理员新建学生、教师与学生 Excel 空密码导入统一使用 `AdminDefaultPasswordPolicy`；显式 Excel 密码仍被尊重。
 - 默认密码、新建账号和管理员恢复均写入 BCrypt；管理员分配初始密码或恢复默认密码时写入 `shi_fou_shou_ci_deng_lu=1`。登录成功后只能访问身份确认和改密接口；修改成功写回 `0` 后才可进入正常业务。主动改密与管理员密码恢复保留。
 
-## PR #38 认证语义冻结（merge 前门禁通过）
+## PR #38 认证语义冻结（已 ordinary merge）
 
 - 不比较明文默认密码；门禁只依据正式业务字段 `shi_fou_shou_ci_deng_lu`，因此部署环境可安全覆盖默认口令配置。
 - `ChuShiMiMaMenJinGuoLvQi` 位于 JWT 身份识别之后，对普通学生、教师、管理员业务端点统一返回 `403 MUST_CHANGE_PASSWORD`；`/api/v1/auth/me`、`/api/v1/auth/change-initial-password` 与 `/api/v1/auth/change-password` 继续可访问。
@@ -17,6 +17,7 @@
 - merge 前回归：后端 224 tests、0 failures、0 errors、3 skipped；前端 68 files、225 tests、0 failures；type-check、build、`npm audit --omit=dev`（0 vulnerabilities）、科学审计（600 strings、0 errors）与正式 22 条文献审计均通过。
 - 正式 `rike_tiku` 只读复核：Flyway V30、30 条成功迁移、0 failed migration、50 张业务表、`V30_BROWSER*` 账号标记为 0；随机临时测试 schema 已删除，仅保留 `rike_tiku` 与 `rike_tiku_demo`。
 - `MACHINE_API_SMOKE`：使用受控 203 学生账号完成默认口令登录（`mustChangePassword=true`）→ 普通业务被 `MUST_CHANGE_PASSWORD` 拒绝 → 初始密码修改成功 → 旧口令失效、新口令登录成功；随后该账号已恢复为默认口令且首次改密状态，供本地演示使用。该记录不是用户人工浏览器验收。
+- PR #38 于 `2026-08-21T06:54:58Z` 以 ordinary merge commit `4da94b79fc682c8756cfab12dd73c40fbbe87e8b` 合入 `main`；该合并不修改 Flyway、表结构或 199/200/203 教学关系。
 
 ## V30 浏览器测试业务数据
 
