@@ -1,6 +1,6 @@
 # RIKE 最终项目事实包
 
-> 本文件是论文、答辩和后续维护的当前事实入口，不是开发日志。历史时间线中的旧测试数、旧 Flyway 版本或旧表数只能解释当时阶段，不能覆盖本文件。最后一次事实刷新：2026-08-21，PR #38 已 ordinary merge；产品开发永久冻结。
+> 本文件是论文、答辩和后续维护的当前事实入口，不是开发日志。历史时间线中的旧测试数、旧 Flyway 版本或旧表数只能解释当时阶段，不能覆盖本文件。最后一次事实刷新：2026-08-21，PR #39 已 ordinary merge；产品开发永久冻结。
 
 ## 1. 项目身份与运行边界
 
@@ -25,6 +25,7 @@
 | PR #35 merge | `fde39c53efca316010abf63acf56fda2c631315c`，`mergedAt=2026-08-18T07:30:00Z`。这是产品代码最终合并基线；随后的 docs-only 事实提交不改变产品行为。 |
 | PR #36 / PR #37 | 最终演示资料与数据卫生维护；均已 ordinary merge。PR #37 merge commit 为 `cb785631c359b88dc4841a9eeed3af14879516cb`。 |
 | PR #38 | 初始密码门禁语义恢复与操作日志 CSV 删除；base `b3fea4e39b794e3b89412a7089a81cba867c7a10`，final head `1636e2dc493fcd5a8c5d8c4be9f60751975e8445`，ordinary merge commit `4da94b79fc682c8756cfab12dd73c40fbbe87e8b`，`mergedAt=2026-08-21T06:54:58Z`。后端 224 tests（0/0/3）、前端 68 files / 225 tests（0 failures）、type-check、build、audit、科学审计和 22 条文献审计均通过。 |
+| PR #39 | 默认密码实值门禁补丁；base `237d37709ccc4d5fdff5f219fc5468113e81c0fc`，final head `e3153632139ca0e9757b5e505409ecc85a0552c6`，ordinary merge commit `8e824718dde9aa4f54ab99fa52735f6eb6d46dbc`，`mergedAt=2026-08-21T07:22:27Z`。认证门禁采用 `firstLogin || BCrypt.matches(configuredDefaultPassword)`，初始/主动改密均禁止重设为系统默认口令；操作日志 CSV 导出保持移除。后端 225 tests（0/0/3）、前端 68 files / 225 tests（0 failures）、type-check、build、audit、科学审计和 22 条文献审计均通过；无 Flyway、表结构或 199/200/203 教学数据改动。 |
 | 当前产品阶段 | `THESIS_AND_DEFENSE_DELIVERY`；`PRODUCT DEVELOPMENT = FROZEN`；`NO OPEN PRODUCT DEVELOPMENT PR`。仅处理学校模板、论文、答辩材料、真实 BLOCKER 或老师明确要求。 |
 
 ## 3. 已实现、已验证与边界

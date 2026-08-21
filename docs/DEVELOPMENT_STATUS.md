@@ -2,7 +2,7 @@
 
 > 当前事实入口：[FINAL_PROJECT_FACTS.md](FINAL_PROJECT_FACTS.md)。本文件不把历史阶段的测试数字当作当前基线。
 
-更新时间：2026-08-21。PR #33 至 PR #38 已 ordinary merge；PR #38 merge commit 为 `4da94b79fc682c8756cfab12dd73c40fbbe87e8b`，`mergedAt=2026-08-21T06:54:58Z`。项目已回到 `THESIS_AND_DEFENSE_DELIVERY`，`PRODUCT DEVELOPMENT = FROZEN`。
+更新时间：2026-08-21。PR #33 至 PR #39 已 ordinary merge；PR #39 merge commit 为 `8e824718dde9aa4f54ab99fa52735f6eb6d46dbc`，`mergedAt=2026-08-21T07:22:27Z`。项目已回到 `THESIS_AND_DEFENSE_DELIVERY`，`PRODUCT DEVELOPMENT = FROZEN`。
 
 ## 当前产品事实
 
@@ -48,3 +48,10 @@
 - JWT 后端门禁与前端改密路由同时恢复，保证手工改 URL 不能绕过；普通改密接口继续可用。
 - 删除管理员操作日志 CSV 的 UI、TS API、Controller endpoint 和 Service 生成方法；保留日志管理的其他能力。
 - 无 Flyway、表结构或 199/200/203 教学数据改动。merge 前最终回归：后端 **224 tests、0 failures、0 errors、3 skipped**；前端 **68 files、225 tests、0 failures**；type-check、build、audit（0 vulnerabilities）、科学审计、22 条文献审计和 V1→V30 随机 schema 通过。正式库只读复核为 V30、30 success、0 failed、50 业务表。
+
+## PR #39 default-password-detection（已 ordinary merge）
+
+- 默认密码门禁以 `shi_fou_shou_ci_deng_lu || BCrypt.matches(app.account.default-reset-password)` 为唯一权限口径；因此 flag 漂移为 `0` 的默认密码账号仍必须改密。登录响应、JWT、`/auth/me` 与后端门禁保持同一结果。
+- 初始改密和主动改密均拒绝把新密码设置为配置的系统默认密码，受控返回 `PASSWORD_MUST_NOT_BE_DEFAULT`；不硬编码明文默认值。
+- 操作日志 CSV 导出继续保持完全移除，列表、筛选、排序、分页、详情、刷新和删除不受影响。
+- PR #39 于 `2026-08-21T07:22:27Z` 以 ordinary merge commit `8e824718dde9aa4f54ab99fa52735f6eb6d46dbc` 合入 main。最终回归：后端 **225 tests、0 failures、0 errors、3 skipped**；前端 **68 files、225 tests、0 failures**；type-check、build、audit（0 vulnerabilities）、科学审计和 22 条文献审计通过；正式库只读复核为 V30、30 success、0 failed、50 业务表。
