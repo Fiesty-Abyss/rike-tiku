@@ -32,7 +32,7 @@
 
 ## 当前事实
 
-> 2026-08-21 的 `feat/final-demo-cleanup` 已通过 PR #36 ordinary merge 合入 `main`（merge commit `ac6e467`）。后续论文、答辩与学校模板排版必须以该 main 为唯一事实源。
+> 2026-08-21 的 PR #38 已通过 ordinary merge 合入 `main`（merge commit `4da94b7`）。后续论文、答辩与学校模板排版必须以该 main 为唯一事实源；初始密码安全语义以 `FINAL_AUTH_DATA_HYGIENE_REPORT.md` 为准。
 
 - 最终演示收口包含：203 班物理教学范围、教师张生康、三名指定 203 学生、4 份可 Preview/Confirm 的匿名演示 Excel，以及公共门户的实时内容规模统计。说明和演示顺序见 [demo-import/README](demo-import/README.md)，代码/数据库映射见 [功能技术地图](FEATURE_CODE_TECH_MAP.md) 与 [功能—数据库表地图](FEATURE_DATABASE_TABLE_MAP.md)。
 - 答辩中如需解释 AI 代码、Prompt、Provider、存储和缓存边界，优先使用 [答辩代码—业务速查](DEFENSE_CODE_BUSINESS_QUICK_MAP.md)；它明确记录 `MAX_ROUNDS=10`、STANDARD 保护、人工审核、`reasoning_content` 不展示/不持久化，以及 Redis 未使用的真实边界。
