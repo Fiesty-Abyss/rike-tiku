@@ -62,3 +62,12 @@
 - 功能到页面/API/测试： [FEATURE_CODE_TECH_MAP.md](FEATURE_CODE_TECH_MAP.md)。
 - 功能到截图/论文图注： [FINAL_SCREENSHOT_EVIDENCE_CATALOG.md](FINAL_SCREENSHOT_EVIDENCE_CATALOG.md)。
 - 只读 SQL 查询样例： [SQL_EXAMPLES.md](SQL_EXAMPLES.md)。严禁把查询示例理解为可安全执行的修改脚本。
+
+## 认证与演示数据卫生（PR #37）
+
+| 业务作用 | 主要表 | 约束与保留边界 |
+|---|---|---|
+| 账号默认/重置密码 | `yong_hu` | 只保存 BCrypt `mi_ma_zhai_yao`；`shi_fou_shou_ci_deng_lu=0` 表示不强制首次改密。 |
+| 203 教师范围 | `yong_hu`、`yong_hu_jiao_se`、`jiao_shi_dang_an`、`ren_ke_guan_xi`、`ban_ji`、`ke_mu` | 张生康为 `TEACHER`，仅 `CLASS_203` 的物理 ACTIVE 任课；不影响 199/200。 |
+| 203 学生归属 | `yong_hu`、`xue_sheng_dang_an`、`ban_ji_xue_sheng`、`ban_ji` | 学号/用户名统一，学生主班级通过现有关系保存。 |
+| V30 浏览器测试清理 | 上述根表及 `shi_juan*`、`gao_pin_kao_dian*` | 只清理有明确 `V30_BROWSER*` 根标识且关系审计无外部引用的数据；不删除任何 Flyway、结构或稳定教学历史。 |

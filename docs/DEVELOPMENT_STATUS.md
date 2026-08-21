@@ -36,3 +36,8 @@
 - 新增公共只读统计接口 `/api/v1/public/portal-stats`，首页三项数值按 `ke_mu`/`ti_mu` 的公开 PUBLISHED 业务口径实时读取；不新增 Flyway，表数仍为 50。
 - 提交四份真实模板演示工作簿，且由 `FinalDemoImportWorkbooksIntegrationTest` 在一次性 schema 验证 Preview/Confirm；演示库本身保持尚未导入这些工作簿。
 - 最终门禁、清理与可追溯回归见 [最终项目事实包](FINAL_PROJECT_FACTS.md) 和 [最终回归报告](FINAL_CLEANUP_REGRESSION_REPORT.md)。PR #36 合入后的产品开发重新冻结，不再主动扩展功能。
+
+## PR #37 final-auth-data-hygiene（进行中）
+
+- 范围仅限最终演示账号口径、取消强制首次改密门禁、已授权的 V30 浏览器测试业务数据定向清理、演示学生工作簿与事实文档；不修改 Flyway、表结构、题库业务规则或 199/200 教学事实。
+- 203 固定账号、默认口令策略、真实数据审计范围和兼容性边界见 [FINAL_DEMO_ACCOUNTS.md](FINAL_DEMO_ACCOUNTS.md) 与 [FINAL_AUTH_DATA_HYGIENE_REPORT.md](FINAL_AUTH_DATA_HYGIENE_REPORT.md)。PR 合并后会将本节状态和最终实际回归数字冻结到 `main`。
