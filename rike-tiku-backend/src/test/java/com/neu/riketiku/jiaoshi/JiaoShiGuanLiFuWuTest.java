@@ -30,11 +30,12 @@ class JiaoShiGuanLiFuWuTest extends AdminQuestionIntegrationTestSupport {
     void createTeacherShouldWriteUserRoleProfileAndReturnInitialPasswordOnce() {
         String suffix = suffix();
         JiaoShiChuangJianXiangYing response = service.create(new JiaoShiChuangJianQingQiu("T" + suffix, "教师甲", "teacher_" + suffix, "物理教师", null, "ENABLED"));
-        assertThat(response.initialPassword()).matches("(?=.*[A-Za-z])(?=.*[0-9]).{8,64}");
+        assertThat(response.initialPassword()).isEqualTo("a1234567");
         Long userId = jdbc.queryForObject("SELECT yong_hu_id FROM jiao_shi_dang_an WHERE id=?", Long.class, response.teacher().id());
         String hash = jdbc.queryForObject("SELECT mi_ma_zhai_yao FROM yong_hu WHERE id=?", String.class, userId);
         assertThat(hash).doesNotContain(response.initialPassword());
         assertThat(passwordEncoder.matches(response.initialPassword(), hash)).isTrue();
+        assertThat(jdbc.queryForObject("SELECT shi_fou_shou_ci_deng_lu FROM yong_hu WHERE id=?", Boolean.class, userId)).isTrue();
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM yong_hu_jiao_se ur JOIN jiao_se r ON r.id=ur.jiao_se_id WHERE ur.yong_hu_id=? AND r.jiao_se_dai_ma='TEACHER' AND ur.zhuang_tai='ACTIVE'", Integer.class, userId)).isEqualTo(1);
         assertThatThrownBy(() -> service.create(new JiaoShiChuangJianQingQiu("T" + suffix, "教师乙", "other_" + suffix, null, "Password1", "ENABLED"))).isInstanceOf(RenZhengYeWuYiChang.class).hasMessage("工号已存在");
     }
@@ -93,10 +94,10 @@ class JiaoShiGuanLiFuWuTest extends AdminQuestionIntegrationTestSupport {
 
         assertThat(response.initialPassword()).isEqualTo("a1234567");
         assertThat(response.resetCount()).isEqualTo(1);
-        assertThat(response.mustChangePassword()).isFalse();
+        assertThat(response.mustChangePassword()).isTrue();
         assertThat(passwordEncoder.matches("OldPassword1", hash)).isFalse();
         assertThat(passwordEncoder.matches(response.initialPassword(), hash)).isTrue();
-        assertThat(jdbc.queryForObject("SELECT shi_fou_shou_ci_deng_lu FROM yong_hu WHERE id=?", Boolean.class, userId)).isFalse();
+        assertThat(jdbc.queryForObject("SELECT shi_fou_shou_ci_deng_lu FROM yong_hu WHERE id=?", Boolean.class, userId)).isTrue();
         String audit = jdbc.queryForObject("""
                 SELECT CONCAT(cao_zuo_lei_xing,'|',COALESCE(zhai_yao,'')) FROM guan_li_cao_zuo_ri_zhi
                 WHERE mo_kuai='TEACHER' AND ye_wu_dui_xiang_id=? ORDER BY id DESC LIMIT 1
@@ -118,7 +119,7 @@ class JiaoShiGuanLiFuWuTest extends AdminQuestionIntegrationTestSupport {
 
         assertThat(response.resetCount()).isEqualTo(2);
         assertThat(response.initialPassword()).isEqualTo("a1234567");
-        assertThat(response.mustChangePassword()).isFalse();
+        assertThat(response.mustChangePassword()).isTrue();
         assertThat(hashes).hasSize(2).doesNotHaveDuplicates();
         assertThat(hashes).allMatch(hash -> passwordEncoder.matches(response.initialPassword(), hash));
         String audit = jdbc.queryForObject("""

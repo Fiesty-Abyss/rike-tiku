@@ -48,7 +48,7 @@ public class PasswordRecoveryService {
         return audit.audited("PASSWORD_RECOVERY","RESOLVE",requestId,"管理员恢复账号默认密码",()->{
             RequestRow row=lock(requestId); if(!"PENDING".equals(row.status())) conflict();
             String hash=encoder.encode(policy.password());
-            jdbc.update("UPDATE yong_hu SET mi_ma_zhai_yao=?,shi_fou_shou_ci_deng_lu=0,mi_ma_xiu_gai_shi_jian=NULL WHERE id=?",hash,row.userId());
+            jdbc.update("UPDATE yong_hu SET mi_ma_zhai_yao=?,shi_fou_shou_ci_deng_lu=1,mi_ma_xiu_gai_shi_jian=NULL WHERE id=?",hash,row.userId());
             jdbc.update("UPDATE mi_ma_chong_zhi_shen_qing SET zhuang_tai='RESOLVED',chu_li_ren_id=?,chu_li_shi_jian=CURRENT_TIMESTAMP(3),chu_li_jie_guo='DEFAULT_PASSWORD_RESTORED' WHERE id=?",adminId,requestId);
             return new PasswordRecoveryDtos.Resolution(requestId,"RESOLVED");
         });

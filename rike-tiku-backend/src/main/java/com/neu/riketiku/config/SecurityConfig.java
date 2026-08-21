@@ -3,6 +3,7 @@ package com.neu.riketiku.config;
 import java.util.Arrays;
 import java.util.List;
 
+import com.neu.riketiku.renzheng.ChuShiMiMaMenJinGuoLvQi;
 import com.neu.riketiku.renzheng.JwtRenZhengGuoLvQi;
 import com.neu.riketiku.renzheng.QuanXianBuZuChuLiQi;
 import com.neu.riketiku.renzheng.WeiRenZhengChuLiQi;
@@ -26,6 +27,7 @@ public class SecurityConfig {
     SecurityFilterChain securityFilterChain(
             HttpSecurity http,
             JwtRenZhengGuoLvQi jwtFilter,
+            ChuShiMiMaMenJinGuoLvQi initialPasswordGateFilter,
             WeiRenZhengChuLiQi authenticationEntryPoint,
             QuanXianBuZuChuLiQi accessDeniedHandler) throws Exception {
         http
@@ -55,7 +57,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/teacher/**").hasRole("TEACHER")
                         .requestMatchers("/api/v1/messages/**").hasAnyRole("STUDENT", "TEACHER")
                         .anyRequest().authenticated())
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(initialPasswordGateFilter, JwtRenZhengGuoLvQi.class);
         return http.build();
     }
 

@@ -69,7 +69,7 @@ public class StudentImportConfirmService {
                 user.setYongHuMing(row.username());
                 user.setMiMaZhaiYao(passwordEncoder.encode(password));
                 user.setZhangHaoZhuangTai(row.accountStatus());
-                user.setShiFouShouCiDengLu(false);
+                user.setShiFouShouCiDengLu(true);
                 userMapper.insert(user);
                 jdbcTemplate.update("INSERT INTO yong_hu_jiao_se(yong_hu_id,jiao_se_id,zhuang_tai) VALUES (?,?, 'ACTIVE')", user.getId(), roleId);
                 jdbcTemplate.update("INSERT INTO xue_sheng_dang_an(yong_hu_id,xue_hao,xing_ming,nian_ji,zhuang_tai) VALUES (?,?,?,?, 'ACTIVE')",
@@ -80,7 +80,7 @@ public class StudentImportConfirmService {
                 relation.setJiaRuShiJian(LocalDateTime.now()); relation.setZhuangTai("ACTIVE");
                 classStudentMapper.insert(relation);
                 accounts.add(new StudentImportAccountResponse(row.studentNumber(), row.name(), row.classCode(), row.username(),
-                        password, row.accountStatus(), false));
+                        password, row.accountStatus(), true));
             }
         } catch (DataIntegrityViolationException exception) {
             fail("IMPORT_CONFLICT", "导入数据与当前数据库状态冲突，整批未导入");

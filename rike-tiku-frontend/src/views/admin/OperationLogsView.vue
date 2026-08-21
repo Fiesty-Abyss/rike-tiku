@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, reactive, ref } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { deleteOperationLog, exportOperationLogs, fetchOperationLog, fetchOperationLogs, type OperationLogItem } from '../../api/admin/operationLogs'
+import { deleteOperationLog, fetchOperationLog, fetchOperationLogs, type OperationLogItem } from '../../api/admin/operationLogs'
 import type { ApiError } from '../../api/http'
 
 const loading = ref(false)
@@ -17,7 +17,6 @@ function query(){return {page:filters.page,size:filters.size,module:filters.modu
 async function load() { loading.value = true; try { const data = await fetchOperationLogs(query()); records.value = data.records; total.value = data.total } catch (error) { ElMessage.error(readableError(error)) } finally { loading.value = false } }
 function reset() { Object.assign(filters, { page: 1, size: 20, module: '', action: '', result: '',operatorId:undefined,objectId:undefined,keyword:'',range:[],sort:'DESC' }); void load() }
 async function show(id:number){try{detail.value=await fetchOperationLog(id);detailVisible.value=true}catch(error){ElMessage.error(readableError(error))}}
-async function download(){try{const {page:_p,size:_s,sort:_o,...params}=query();const blob=await exportOperationLogs(params);const url=URL.createObjectURL(blob);const link=document.createElement('a');link.href=url;link.download='operation-logs.csv';link.click();URL.revokeObjectURL(url)}catch(error){ElMessage.error(readableError(error))}}
 async function remove(){if(!detail.value)return;try{await ElMessageBox.confirm('确定删除这条操作日志吗？','删除操作日志',{type:'warning'});await deleteOperationLog(detail.value.id);detailVisible.value=false;ElMessage.success('操作日志已删除。');await load()}catch(error:any){if(error!=='cancel'&&error!=='close')ElMessage.error(readableError(error))}}
 onMounted(load)
 </script>
@@ -34,7 +33,7 @@ onMounted(load)
       <el-form-item label="关键词"><el-input v-model="filters.keyword" clearable placeholder="摘要或错误码" /></el-form-item>
       <el-form-item label="时间"><el-date-picker v-model="filters.range" type="datetimerange" value-format="YYYY-MM-DDTHH:mm:ss" start-placeholder="开始" end-placeholder="结束" /></el-form-item>
       <el-form-item label="排序"><el-select v-model="filters.sort"><el-option label="最新优先" value="DESC"/><el-option label="最早优先" value="ASC"/></el-select></el-form-item>
-      <el-form-item><el-button type="primary" native-type="submit">查询</el-button><el-button @click="reset">重置</el-button><el-button @click="download">导出 CSV</el-button></el-form-item>
+      <el-form-item><el-button type="primary" native-type="submit">查询</el-button><el-button @click="reset">重置</el-button></el-form-item>
     </el-form>
     <el-table v-loading="loading" :data="records" class="data-table" empty-text="暂无操作日志。">
       <el-table-column prop="createdAt" label="时间" min-width="180" /><el-table-column prop="operatorUsername" label="操作者" min-width="150" /><el-table-column prop="module" label="模块" min-width="150" /><el-table-column prop="action" label="动作" min-width="180" /><el-table-column prop="businessObjectId" label="业务对象 ID" min-width="120" /><el-table-column label="结果" min-width="90"><template #default="{ row }"><el-tag :type="row.result === 'SUCCESS' ? 'success' : 'danger'">{{ resultLabel(row.result) }}</el-tag></template></el-table-column><el-table-column prop="summary" label="摘要" min-width="280" /><el-table-column prop="errorCode" label="错误码" min-width="160" /><el-table-column label="详情" fixed="right" width="80"><template #default="{row}"><el-button link type="primary" @click="show(row.id)">查看</el-button></template></el-table-column>
