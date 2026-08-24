@@ -1,6 +1,6 @@
 # RIKE 论文事实核对表
 
-更新时间：2026-08-17
+更新时间：2026-08-24
 
 | 论文陈述 | 可核验依据 | 状态 |
 |---|---|---|
@@ -22,9 +22,9 @@
 | AI 科学文本不使用未过滤 v-html | `AiScientificContent` 源码与测试 | 已核验 |
 | 本轮点名后端专项 | 新颖度 3/3、候选生成集成 7/7、学生变式集成 4/4；使用随机临时 schema | 已执行 |
 | 本轮学生前端专项 | 5 files、12 tests，0 failures；type-check/build 通过 | 已执行 |
-| 后端最终全量 | PR34 打印修补后的实际 `mvn test`/`mvn package` 结果见 `FINAL_PROJECT_FACTS.md` | 本轮重跑中 |
-| 前端最终全量 | PR34 打印修补后的实际测试、type-check、build、audit 结果见 `FINAL_PROJECT_FACTS.md` | 本轮重跑中 |
-| 专题内容与科学审计 | 15 单元 / 45 题、计算 14 / 实验 9 / 流程 5 / 材料分析 13 / 综合 4；600 strings、117 database rows、`SCIENTIFIC_CONTENT_ERRORS=0` | 已执行 |
+| 后端最终全量 | PR #40 候选 `mvn clean test`：227 tests、0 failures、0 errors、3 skipped；package PASS | 已执行 |
+| 前端最终全量 | PR #40 候选：68 files / 231 tests、0 failures；type-check/build/audit PASS，0 vulnerabilities | 已执行 |
+| 专题内容与科学审计 | 15 单元 / 45 题、计算 14 / 实验 9 / 流程 5 / 材料分析 13 / 综合 4；600 strings、107 formal database rows、`SCIENTIFIC_CONTENT_ERRORS=0` | 已执行 |
 | 最终两项用户反馈 | 忘记密码弹窗不再展示内部安全实现说明；教师列表按真实角色表显示 TEACHER / ADMIN，授权、撤销、重新授权、最后管理员与当前管理员保护均有回归测试 | 已执行 |
 | 机器浏览器 | 正式 `rike_tiku`：历史 V30 为 11 pages / 56 assertions，0 console/page/failed-request error，0 overflow；PR34 另补学生/答案预览 `window.print` handler hook | `MACHINE_BROWSER_VERIFIED`；不等同真人验收或 OS 对话框 |
 | 正式库迁移与本轮内容 | Flyway 从 V29 正常升级至 V30；`shi_juan_fa_bu_ti_mu.fu_jian_kuai_zhao` 冻结受控附件元数据，学生主观题保存为 `SUBJECTIVE_PENDING`；15 单元、45 关系 | 已核验；不新增表 |
@@ -33,6 +33,7 @@
 | 真实 DeepSeek/GLM/xAI/Search 本轮 smoke | 没有可安全使用的轮换后凭据，未消费真实 Provider | BLOCKED_EXTERNAL_PROVIDER；历史结果不外推为本轮 PASS |
 | PR #34 用户打印复验、问卷或学习成效提升 | PR34-MA-001 已 `PRINT_USER_VERIFIED`，仅证明系统打印窗口打开；仍无问卷或课堂效果数据 | 禁止声称学习成效提升 |
 | PR #35 教师发布历史与试卷库软删除 | `PaperService`、`PaperAssignmentService`、随机临时 schema 集成测试；后端 221 tests、前端 68 files/224 tests；release 历史与学生提交不物理删除 | 已 ordinary merge（`fde39c53efca316010abf63acf56fda2c631315c`）；`USER_MANUAL_ACCEPTANCE` 与自动化验证完成，`MACHINE_BROWSER = NOT_RUN`，不将其写成课堂效果证据 |
+| PR #40 学生试卷提交与教师同步 | `StudentPapersView → PaperAssignmentStudentController → PaperAssignmentService → ObjectiveAnswerGrader → MySQL → 学生/教师重新读取`；混合卷 20/30 与主观 pending 集成测试；真实 Demo 浏览器 8/8 | 候选门禁已通过；`MACHINE_BROWSER_VERIFIED`，不是用户人工验收或教学效果证据 |
 
 论文中的“有效”只指指定测试或约束得到验证，不等同于教学效果经真实学生群体实验证明。
 
