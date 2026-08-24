@@ -17,7 +17,6 @@ const errorText=(error:unknown,fallback:string)=>(error as ApiError).message||fa
 function apply(index:number,item:AiModelConfig){Object.assign(forms[index],item,{apiKey:'',apiKeyConfigured:item.apiKeyConfigured})}
 const formIndex=(usage:string,provider?:string)=>usage==='VISION'?(provider==='XAI'?2:1):({TEXT:0,SEARCH:3} as Record<string,number>)[usage]
 const usageTitle=(usage:string,provider:string)=>usage==='VISION'?(provider==='XAI'?'xAI 视觉理解':'GLM 视觉理解'):({TEXT:'DeepSeek 文本推理',SEARCH:'智谱联网搜索'} as Record<string,string>)[usage]
-const usageKicker=(usage:string)=>({TEXT:'TEXT BRAIN',VISION:'VISION EYES',SEARCH:'SEARCH SOURCES'} as Record<string,string>)[usage]
 const operationKey=(form:Form)=>`${form.usage}:${form.provider}`
 async function load(){loading.value=true;try{const page=await fetchAiModels();for(const item of page.records){const index=formIndex(item.usage,item.provider);if(index!==undefined)apply(index,item)}}catch(e){ElMessage.error(errorText(e,'AI 模型配置加载失败。'))}finally{loading.value=false}}
 async function save(form:Form){const key=operationKey(form);saving.value=key;try{const body:SaveAiModelConfig={provider:form.provider,model:form.model,baseUrl:form.baseUrl,apiKey:form.apiKey?.trim()||undefined,usage:form.usage,enabled:form.enabled,defaultConfig:form.defaultConfig,timeoutMillis:form.timeoutMillis,maxTokens:form.maxTokens,retryCount:form.retryCount};const item=form.id?await updateAiModel(form.id,body):await createAiModel(body);apply(formIndex(form.usage,form.provider),item);if(form.usage==='VISION'&&form.defaultConfig)forms.filter(item=>item.usage==='VISION'&&item.provider!==form.provider).forEach(item=>item.defaultConfig=false);ElMessage.success('模型配置已保存并立即生效。')}catch(e){ElMessage.error(errorText(e,'AI 模型配置保存失败。'))}finally{saving.value=undefined}}
@@ -29,13 +28,13 @@ onMounted(load)
 
 <template>
   <section class="admin-page ai-model-page" v-loading="loading">
-    <div class="page-heading"><div><span class="page-kicker">AI PROVIDERS</span><h1>AI 模型管理</h1><p>统一管理文本推理、视觉理解与联网搜索。密钥只保存在服务端 MySQL；页面加载、接口响应和调用日志均不回显完整值。</p></div></div>
+    <div class="page-heading"><div><h1>AI 模型管理</h1></div></div>
     <div class="ai-model-grid">
       <article v-for="form in forms" :key="`${form.usage}:${form.provider}`" class="ai-model-card">
-        <header><div><span>{{ usageKicker(form.usage) }}</span><h2>{{ usageTitle(form.usage,form.provider) }}</h2></div><el-switch v-model="form.enabled" inline-prompt active-text="启用" inactive-text="停用" /></header>
+        <header><div><h2>{{ usageTitle(form.usage,form.provider) }}</h2></div><el-switch v-model="form.enabled" inline-prompt active-text="启用" inactive-text="停用" /></header>
         <el-form label-position="top" @submit.prevent="save(form)">
           <div class="ai-model-fields"><el-form-item label="Base URL"><el-input v-model="form.baseUrl" /></el-form-item><el-form-item label="模型 / 引擎"><el-select v-if="form.usage!=='VISION'||form.provider==='GLM'" v-model="form.model"><template v-if="form.usage==='TEXT'"><el-option label="deepseek-v4-flash" value="deepseek-v4-flash" /><el-option label="deepseek-v4-pro" value="deepseek-v4-pro" /></template><el-option v-else-if="form.usage==='VISION'" label="glm-4.6v-flash" value="glm-4.6v-flash" /><template v-else><el-option label="search_std" value="search_std" /><el-option label="search_pro" value="search_pro" /><el-option label="search_pro_sogou" value="search_pro_sogou" /><el-option label="search_pro_quark" value="search_pro_quark" /></template></el-select><el-input v-else v-model="form.model" placeholder="管理员从 xAI 官方模型列表确认后填写" /></el-form-item></div>
-          <el-form-item v-if="form.usage==='VISION'"><el-switch v-model="form.defaultConfig" active-text="当前视觉 Provider（不会隐式切换）" /></el-form-item>
+          <el-form-item v-if="form.usage==='VISION'"><el-switch v-model="form.defaultConfig" active-text="设为当前视觉模型" /></el-form-item>
           <el-form-item label="API Key"><el-input v-model="form.apiKey" type="password" show-password autocomplete="new-password" :placeholder="form.apiKeyConfigured?'•••••••• 已配置；留空保持不变':'输入 API Key'" /></el-form-item>
           <div class="ai-number-fields"><el-form-item label="超时（ms）"><el-input-number v-model="form.timeoutMillis" :min="1000" :max="120000" :step="1000" /></el-form-item><el-form-item label="重试"><el-input-number v-model="form.retryCount" :min="0" :max="1" /></el-form-item><el-form-item label="最大输出 Token"><el-input-number v-model="form.maxTokens" :min="64" :max="8192" :step="64" /></el-form-item></div>
           <div class="ai-model-status"><div><span>最近测试</span><strong>{{ statusLabel(form.lastTestStatus) }}</strong><small v-if="form.lastTestAt">{{ form.lastTestLatencyMillis }} ms · {{ new Date(form.lastTestAt).toLocaleString() }}</small></div><el-tag :type="form.apiKeyConfigured?'success':'info'">{{ form.apiKeyConfigured?'Key 已配置':'Key 未配置' }}</el-tag></div>

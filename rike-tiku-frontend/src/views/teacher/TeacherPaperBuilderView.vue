@@ -151,7 +151,7 @@ async function assessWithAi() {
     aiQuality.value = await requestAiPaperQuality(publishPaperId.value);
   } catch (error: any) {
     ElMessage.warning(
-      error.message || "当前 AI Provider 不可用，确定性质量建议仍可使用。",
+      error.message || "AI 质量建议暂不可用，请稍后重试。",
     );
   } finally {
     aiQualityLoading.value = false;
@@ -164,7 +164,7 @@ async function publish() {
       teachingScopeId: publishForm.teachingScopeId,
       deadline: new Date(publishForm.deadline).toISOString().slice(0, 19),
     });
-    ElMessage.success("试卷已发布，题干、选项、分值和 STANDARD 已冻结。");
+    ElMessage.success("试卷已发布到班级。");
     publishVisible.value = false;
     await load();
   } catch (error: any) {
@@ -183,7 +183,7 @@ function stopStatsPolling(){window.clearInterval(statsRefreshTimer);statsRefresh
 function startStatsPolling(){stopStatsPolling();statsRefreshTimer=window.setInterval(()=>void refreshStats(true),5000)}
 async function openStats(row:any){selectedReleaseId.value=row.id ?? row.releaseId;selectedSubmission.value=null;statsVisible.value=true;await refreshStats();startStatsPolling()}
 async function openSubmission(row:any){if(row.status!=='SUBMITTED')return;selectedSubmission.value=await fetchTeacherSubmission(selectedReleaseId.value,row.studentId);answerVisible.value=true;}
-async function deleteSavedPaper(row:any){try{await ElMessageBox.confirm(`确认从试卷库删除“${row.name}”？\n\n删除后该试卷不再出现在“已保存试卷”中。\n\n如果存在已经撤回的历史班级发布，学生作答、统计和冻结快照仍会保留。`,'确认删除试卷',{confirmButtonText:'确认删除',cancelButtonText:'取消',type:'warning'});await deletePaper(row.id);await load();ElMessage.success('试卷已从试卷库删除，历史发布和作答仍已保留。')}catch(error:any){if(error!=='cancel')ElMessage.error(error.message||'删除失败')}}
+async function deleteSavedPaper(row:any){try{await ElMessageBox.confirm(`确认从试卷库删除“${row.name}”？\n\n删除后该试卷不再出现在“已保存试卷”中。\n\n已撤回的发布和学生作答仍会保留。`,'确认删除试卷',{confirmButtonText:'确认删除',cancelButtonText:'取消',type:'warning'});await deletePaper(row.id);await load();ElMessage.success('试卷已从试卷库删除，历史发布和作答仍已保留。')}catch(error:any){if(error!=='cancel')ElMessage.error(error.message||'删除失败')}}
 async function cancelRelease(row:any){try{await ElMessageBox.confirm('撤回后，该班学生将不再看到这份试卷；已经产生的作答和统计记录仍保留供教师查看。','确认撤回这次班级发布？',{confirmButtonText:'确认撤回',cancelButtonText:'取消',type:'warning'});await cancelPaperRelease(row.id ?? row.releaseId);const paperId=row.paperId ?? publishPaperId.value;const current=await fetchPaperReleases(paperId);releases.value=current;if(releaseHistoryVisible.value)await loadReleaseHistory();const hasActive=current.some((item:any)=>item.status==='PUBLISHED'||item.status==='CLOSED'||item.status==='EXPIRED');if(hasActive){ElMessage.success('已撤回该班发布。该试卷仍发布在其他班级，因此继续保留在试卷库中。');return;}try{await ElMessageBox.confirm('发布已撤回。\n\n是否同时从“已保存试卷”中删除这张试卷？\n\n删除只会清理教师试卷库，历史发布、学生作答和统计数据仍会保留。','发布已撤回',{confirmButtonText:'删除试卷',cancelButtonText:'仅撤回',type:'warning'});await deletePaper(paperId);await load();ElMessage.success('已撤回发布并从试卷库删除，历史记录仍已保留。')}catch(choice:any){if(choice==='cancel')ElMessage.success('已撤回发布，试卷仍保留在试卷库中。');else throw choice}}catch(error:any){if(error!=='cancel')ElMessage.error(error.message||'撤回失败')}}
 function handlePaperCommand(command:string,row:any){if(command==='releases')void openReleases(row);else if(command==='delete')void deleteSavedPaper(row)}
 watch(
@@ -205,9 +205,7 @@ onBeforeUnmount(stopStatsPolling);
   <main class="paper-builder">
     <div class="heading">
       <div>
-        <p>TEACHER PAPER STUDIO</p>
         <h1>组卷与打印</h1>
-        <span>仅使用本人任教学科内已发布题目；AI 建议不修改 STANDARD。</span>
       </div>
       <el-segmented
         v-model="mode"
@@ -343,7 +341,7 @@ onBeforeUnmount(stopStatsPolling);
         </div>
         <el-alert
           v-if="mode !== 'MANUAL'"
-          title="随机与规则组卷默认只抽取可确定性判分的客观题；主观大题请在手动组卷中选择。"
+          title="随机与规则组卷仅包含客观题；主观大题请使用手动组卷。"
           type="info"
           :closable="false"
       /></template>
@@ -386,14 +384,14 @@ onBeforeUnmount(stopStatsPolling);
     >
     <el-dialog
       v-model="publishVisible"
-      title="发布冻结试卷"
+      title="发布试卷"
       width="min(560px, calc(100vw - 24px))"
       ><el-alert
-        title="发布后题干、选项、分值和 STANDARD 全部冻结。"
+        title="发布后试卷内容不能修改。"
         type="info"
         :closable="false"
       /><el-form label-position="top"
-        ><el-form-item label="本人 ACTIVE 任课班级"
+        ><el-form-item label="发布班级"
           ><el-select v-model="publishForm.teachingScopeId"
             ><el-option
               v-for="scope in scopes.filter(

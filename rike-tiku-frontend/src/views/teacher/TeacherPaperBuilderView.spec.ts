@@ -44,7 +44,7 @@ describe('教师组卷', () => {
     expect(wrapper.text()).toContain('题篮')
     ;(wrapper.vm as any).mode = 'RANDOM'
     await flushPromises()
-    expect(wrapper.text()).toContain('随机与规则组卷默认只抽取可确定性判分的客观题')
+    expect(wrapper.text()).toContain('随机与规则组卷仅包含客观题')
     expect(wrapper.text()).toContain('学生版')
     expect(wrapper.text()).toContain('答案解析版')
   })

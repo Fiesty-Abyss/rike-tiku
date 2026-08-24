@@ -107,7 +107,7 @@ async function submit() {
   loading.value = true
   try {
     const session = await createPracticeSession({ ...availabilityParams(), count: form.count })
-    ElMessage.success('练习已创建，题目集合已冻结。')
+    ElMessage.success('练习已创建。')
     await router.push(`/student/practice/${session.id}`)
   } catch (error) {
     ElMessage.error(message(error))

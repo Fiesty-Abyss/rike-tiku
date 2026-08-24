@@ -10,7 +10,6 @@ declare module 'vue-router' {
     allowWhenMustChangePassword?: boolean
     guestOnly?: boolean
     title?: string
-    subtitle?: string
   }
 }
 
@@ -97,17 +96,17 @@ const router = createRouter({
       component: () => import('../layouts/AdminLayout.vue'),
       meta: { requiresAuth: true, roles: ['ADMIN'] },
       children: [
-        { path: '', name: 'admin-home', component: () => import('../views/AdminHomeView.vue'), meta: { title: '系统总览', subtitle: '教学组织、账号、题库与安全状态' } },
-        { path: 'classes', name: 'admin-classes', component: () => import('../views/admin/ClassesView.vue'), meta: { title: '教学组织', subtitle: '班级结构与在读状态' } },
-        { path: 'teachers', name: 'admin-teachers', component: () => import('../views/admin/TeachersView.vue'), meta: { title: '教师与任课', subtitle: '教师账号与班级科目范围' } },
-        { path: 'questions', name: 'admin-questions', component: () => import('../views/admin/QuestionsView.vue'), meta: { title: '题库管理', subtitle: '新增、审核、发布与批量导入' } },
-        { path: 'questions/import', name: 'admin-question-import', component: () => import('../views/admin/QuestionImportView.vue'), meta: { title: '批量导入题目', subtitle: '预览、校验与确认入库' } },
-        { path: 'ai-models', name: 'admin-ai-models', component: () => import('../views/admin/AdminAiModelsView.vue'), meta: { title: 'AI 模型管理', subtitle: 'Provider、模型与连接状态' } },
-        { path: 'ai-generation', name: 'admin-ai-generation', component: () => import('../views/admin/AiQuestionGenerationView.vue'), meta: { title: 'AI 候选题', subtitle: '变式生成、重复提示与人工质量审核' } },
-        { path: 'password-recovery', name: 'admin-password-recovery', component: () => import('../views/admin/PasswordRecoveryRequestsView.vue'), meta: { title: '密码恢复通知', subtitle: '核验匿名请求并安全恢复默认密码' } },
-        { path: 'students', name: 'admin-students', component: () => import('../views/admin/StudentsView.vue'), meta: { title: '学生管理', subtitle: '账号、档案与班级归属' } },
-        { path: 'students/import', name: 'admin-student-import', component: () => import('../views/admin/StudentImportView.vue'), meta: { title: '批量导入学生', subtitle: 'Excel 预览、确认与一次性密码' } },
-        { path: 'operation-logs', name: 'admin-operation-logs', component: () => import('../views/admin/OperationLogsView.vue'), meta: { title: '安全审计', subtitle: '管理员高风险操作事实' } },
+        { path: '', name: 'admin-home', component: () => import('../views/AdminHomeView.vue'), meta: { title: '系统总览' } },
+        { path: 'classes', name: 'admin-classes', component: () => import('../views/admin/ClassesView.vue'), meta: { title: '班级管理' } },
+        { path: 'teachers', name: 'admin-teachers', component: () => import('../views/admin/TeachersView.vue'), meta: { title: '教师与任课关系' } },
+        { path: 'questions', name: 'admin-questions', component: () => import('../views/admin/QuestionsView.vue'), meta: { title: '题库审核发布' } },
+        { path: 'questions/import', name: 'admin-question-import', component: () => import('../views/admin/QuestionImportView.vue'), meta: { title: '题库 Excel 导入' } },
+        { path: 'ai-models', name: 'admin-ai-models', component: () => import('../views/admin/AdminAiModelsView.vue'), meta: { title: 'AI 模型管理' } },
+        { path: 'ai-generation', name: 'admin-ai-generation', component: () => import('../views/admin/AiQuestionGenerationView.vue'), meta: { title: 'AI 候选题' } },
+        { path: 'password-recovery', name: 'admin-password-recovery', component: () => import('../views/admin/PasswordRecoveryRequestsView.vue'), meta: { title: '密码恢复通知' } },
+        { path: 'students', name: 'admin-students', component: () => import('../views/admin/StudentsView.vue'), meta: { title: '学生管理' } },
+        { path: 'students/import', name: 'admin-student-import', component: () => import('../views/admin/StudentImportView.vue'), meta: { title: '学生 Excel 导入' } },
+        { path: 'operation-logs', name: 'admin-operation-logs', component: () => import('../views/admin/OperationLogsView.vue'), meta: { title: '管理员操作日志' } },
       ],
     },
     { path: '/:pathMatch(.*)*', redirect: '/login' },
