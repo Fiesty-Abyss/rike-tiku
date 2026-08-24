@@ -46,3 +46,4 @@ BLOCKER=0；HIGH=0；MEDIUM=0。外部真实 Provider 状态仍以 `AI_FINAL_EXP
 - 前端：68 files / 231 tests，0 failures；type-check/build/audit PASS，0 vulnerabilities。覆盖未完成题号提示、禁止无效请求、自动保存串行、服务端错误反馈、重新加载结果、逐题得分、教师手动/定时刷新和操作菜单。
 - 数据：随机 schema V1→V30 PASS；正式库与 Demo 均为 V30、30 success、0 failed、50 表，未新增迁移；科学审计 600 strings/107 formal rows/0 errors；参考文献 22/22。
 - 浏览器：真实 `rike_tiku_demo` 发布完成学生提交、学生结果、任务列表、教师轮询同步和教师答卷，8/8 assertions，0 console/page/failed request/overflow。证据为 `MACHINE_BROWSER_VERIFIED`，不等同真人验收。
+- Git：PR #40 final head `7fbdbb6f8fe9f73ba736f3a47166fa5000856d30` 已于 `2026-08-24T02:37:02Z` ordinary merge；merge commit `e44aee35c66e39ad44fb7a8f9582a45e229ff674`。
