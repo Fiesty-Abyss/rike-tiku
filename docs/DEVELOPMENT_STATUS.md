@@ -2,7 +2,7 @@
 
 > 当前事实入口：[FINAL_PROJECT_FACTS.md](FINAL_PROJECT_FACTS.md)。本文件不把历史阶段的测试数字当作当前基线。
 
-更新时间：2026-08-21。PR #33 至 PR #39 已 ordinary merge；PR #39 merge commit 为 `8e824718dde9aa4f54ab99fa52735f6eb6d46dbc`，`mergedAt=2026-08-21T07:22:27Z`。项目已回到 `THESIS_AND_DEFENSE_DELIVERY`，`PRODUCT DEVELOPMENT = FROZEN`。
+更新时间：2026-08-24。PR #33 至 PR #39 已 ordinary merge；PR #40 是冻结后真实人工操作发现的试卷提交闭环修复，当前完整门禁已通过并等待 ordinary merge。
 
 ## 当前产品事实
 
@@ -55,3 +55,11 @@
 - 初始改密和主动改密均拒绝把新密码设置为配置的系统默认密码，受控返回 `PASSWORD_MUST_NOT_BE_DEFAULT`；不硬编码明文默认值。
 - 操作日志 CSV 导出继续保持完全移除，列表、筛选、排序、分页、详情、刷新和删除不受影响。
 - PR #39 于 `2026-08-21T07:22:27Z` 以 ordinary merge commit `8e824718dde9aa4f54ab99fa52735f6eb6d46dbc` 合入 main。最终回归：后端 **225 tests、0 failures、0 errors、3 skipped**；前端 **68 files、225 tests、0 failures**；type-check、build、audit（0 vulnerabilities）、科学审计和 22 条文献审计通过；正式库只读复核为 V30、30 success、0 failed、50 业务表。
+
+## PR #40 paper-submission-grading-sync（merge 前门禁通过）
+
+- 真实根因是学生端缺少题型化客观题完整性提示、自动保存与正式提交没有串行边界，以及教师作答统计只在打开时读取一次；后端共享 `ObjectiveAnswerGrader` 判分链本身已存在且继续复用。
+- 学生提交成功后重新读取服务器结果，显示已提交、客观得分、学生答案、正确答案、本题得分与 STANDARD；主观题仍为 `SUBJECTIVE_PENDING`。
+- 教师作答情况支持手动刷新和弹窗开启期间 5 秒只读轮询；试卷行操作收口为学生版、答案版、发布到班级和“更多操作（发布管理/删除试卷）”。
+- 回归：后端 **227 tests、0 failures、0 errors、3 skipped**；前端 **68 files、231 tests、0 failures**；package、type-check、build、audit（0 vulnerabilities）通过。正式库/Demo 均 V30、30 success、0 failed、50 表；无 V31。
+- 真实 Demo 机器浏览器为 8/8 assertions，0 console/page/failed-request/overflow；证据见 [paper-submission-sync](evidence/paper-submission-sync/README.md)，不冒充用户人工验收。

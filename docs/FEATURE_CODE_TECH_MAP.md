@@ -50,6 +50,10 @@
 
 `ti_mu.zheng_que_da_an` 和 `ti_mu_jie_xi` 的 PUBLISHED STANDARD 由题库状态机维护。AI 错因、对话、视觉上下文和候选内容均是辅助事实，不能覆盖正式答案、STANDARD、规则判分或自动发布门禁。
 
+## PR #40 试卷提交闭环映射
+
+`StudentPapersView.vue → api/student/papers.ts → PaperAssignmentStudentController → PaperAssignmentService → ObjectiveAnswerGrader → shi_juan_xue_sheng_da_ti / shi_juan_ti_jiao` 是唯一正式提交和判分链。前端只校验客观题是否填写并显示后端返回事实，不自行算分。教师端 `TeacherPaperBuilderView.vue` 调用既有 stats/submissions 接口，手动刷新或每 5 秒只读轮询同一 MySQL 提交事实；关闭弹窗即停止。证据与浏览器脚本见 [`docs/evidence/paper-submission-sync`](evidence/paper-submission-sync/README.md) 和 `scripts/paper-submission-sync-browser.cjs`。
+
 ## 最终认证口径（PR #38，merge 前门禁通过）
 
 | 角色/功能 | 前端/API | 后端 | 关键事实 | 验证 |
