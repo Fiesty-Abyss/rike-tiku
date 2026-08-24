@@ -283,16 +283,16 @@ onBeforeUnmount(() => {
       <section ref="loopScene" class="portal-loop" data-portal-scene="learning-loop" aria-labelledby="loop-title">
         <header data-aqua-reveal>
           <p class="portal-scene-index">04 / LEARNING LOOP</p>
-          <h2 id="loop-title">一次练习，形成可复验的反馈闭环。</h2>
-          <p>练习事实冻结后，判分、错题和标准解析保持同一条链路。</p>
+          <h2 id="loop-title">一次练习，形成完整的学习反馈。</h2>
+          <p>完成练习后，可查看判分、错题和标准解析。</p>
         </header>
         <div class="portal-loop-rail">
           <span class="portal-loop-track" aria-hidden="true"><i class="portal-loop-progress"></i></span>
           <ol>
             <li class="portal-loop-step"><b>01</b><h3>练习</h3><p>按学科与知识点创建题组。</p></li>
             <li class="portal-loop-step"><b>02</b><h3>判分</h3><p>固定答案规则即时判断。</p></li>
-            <li class="portal-loop-step"><b>03</b><h3>错题</h3><p>错误事实进入本人记录。</p></li>
-            <li class="portal-loop-step"><b>04</b><h3>标准解析</h3><p>查看冻结答案与逐项说明。</p></li>
+            <li class="portal-loop-step"><b>03</b><h3>错题</h3><p>错题自动加入个人记录。</p></li>
+            <li class="portal-loop-step"><b>04</b><h3>标准解析</h3><p>查看正确答案与逐项说明。</p></li>
             <li class="portal-loop-step"><b>05</b><h3>再练习</h3><p>回到同一知识点验证掌握。</p></li>
           </ol>
         </div>

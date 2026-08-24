@@ -85,6 +85,7 @@ a:focus-visible, button:focus-visible, [role="button"]:focus-visible, .el-button
 .admin-menu .el-menu-item.is-active { position: relative; background: oklch(57% 0.085 218 / .28); }
 .admin-menu .el-menu-item.is-active::before { position: absolute; inset: .7rem auto .7rem 0; width: 2px; content: ""; background: oklch(82% 0.1 213); box-shadow: 0 0 .8rem oklch(82% 0.1 213); }
 .admin-topbar { position: sticky; top: 0; z-index: 20; min-height: 4.7rem; height: auto; padding: .75rem var(--space-5); }
+.admin-topbar--user-only { justify-content: flex-end; }
 .admin-context { display: grid !important; gap: .1rem !important; }
 .admin-context strong { font: 700 1rem/1.25 var(--font-display); }
 .admin-context span { color: var(--ink-muted); font-size: .76rem; }
@@ -464,6 +465,7 @@ a:focus-visible, button:focus-visible, [role="button"]:focus-visible, .el-button
 .student-main { width: min(var(--content-max), calc(100% - 2.5rem)); margin: clamp(2.5rem, 5vw, 4.8rem) auto 6rem; }
 
 .student-dashboard-title { display: grid; grid-template-columns: 1.1fr .9fr; gap: 2rem; align-items: end; margin-bottom: 3rem; padding-bottom: 1.8rem; border-bottom: 1px solid color-mix(in oklch, var(--brand), transparent 72%); }
+.student-dashboard-title--compact { grid-template-columns: 1fr; }
 .student-dashboard-title h1 { max-width: 14ch; margin: 0; font-size: clamp(2.7rem, 5.8vw, 5.8rem); font-weight: 620; line-height: .98; letter-spacing: -.055em; }
 .student-dashboard-title p { max-width: 35rem; margin: 0; justify-self: end; }
 .subject-cards { display: grid; grid-template-columns: 1.08fr .96fr .96fr; gap: 1rem; }
