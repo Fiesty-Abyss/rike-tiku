@@ -79,6 +79,88 @@ class PaperAssignmentIntegrationTest extends AdminQuestionIntegrationTestSupport
 
     @Test
     @Transactional
+    void mixedPaperSubmissionGradesAllObjectiveTypesAndSynchronizesTeacherFacts() {
+        demo.seed();
+        long teacherUser = id("SELECT id FROM yong_hu WHERE yong_hu_ming='demo_physics_admin'");
+        long studentUser = id("SELECT id FROM yong_hu WHERE yong_hu_ming='demo_199_01'");
+        long studentId = id("SELECT id FROM xue_sheng_dang_an WHERE yong_hu_id=" + studentUser);
+        long subject = id("SELECT id FROM ke_mu WHERE ke_mu_dai_ma='PHYSICS'");
+        long scope = id("SELECT r.id FROM ren_ke_guan_xi r JOIN ban_ji b ON b.id=r.ban_ji_id JOIN jiao_shi_dang_an j ON j.id=r.jiao_shi_id WHERE b.ban_ji_bian_ma='DEMO_CLASS_199' AND j.yong_hu_id=" + teacherUser + " AND r.ke_mu_id=" + subject);
+        long single = question(subject, "SINGLE_CHOICE", "ONLINE_PRACTICE");
+        long multiple = question(subject, "MULTIPLE_CHOICE", "ONLINE_PRACTICE");
+        long fill = question(subject, "FILL_BLANK", "ONLINE_PRACTICE");
+        long subjective = question(subject, "SUBJECTIVE", "TOPIC_LEARNING");
+        var paper = papers.save(teacherUser, new PaperDtos.Save(subject, "混合试卷判分同步测试", "MANUAL", List.of(
+                new PaperDtos.ItemInput(single, new BigDecimal("10")),
+                new PaperDtos.ItemInput(multiple, new BigDecimal("10")),
+                new PaperDtos.ItemInput(fill, new BigDecimal("10")),
+                new PaperDtos.ItemInput(subjective, new BigDecimal("20")))));
+        var release = assignments.publish(teacherUser, paper.id(), new PaperAssignmentDtos.Publish(scope, LocalDateTime.now().plusHours(2)));
+        var before = assignments.classStats(teacherUser, release.id());
+        assertThat(before.submitted()).isZero();
+
+        var detail = assignments.studentDetail(studentUser, release.id());
+        var byType = detail.questions().stream().collect(java.util.stream.Collectors.toMap(PaperAssignmentDtos.Question::type, question -> question));
+        JsonNode singleAnswer = correctAnswer(byType.get("SINGLE_CHOICE").itemId()).path("optionLabels").get(0);
+        JsonNode multipleCorrect = correctAnswer(byType.get("MULTIPLE_CHOICE").itemId()).path("optionLabels");
+        var multipleReversed = mapper.createArrayNode();
+        for (int index = multipleCorrect.size() - 1; index >= 0; index--) multipleReversed.add(multipleCorrect.get(index).asText());
+        var wrongFill = mapper.createArrayNode();
+        for (int index = 0; index < byType.get("FILL_BLANK").answerSlots(); index++) wrongFill.add("故意错误答案" + index);
+        var request = new PaperAssignmentDtos.Submit(List.of(
+                new PaperAssignmentDtos.DraftAnswer(byType.get("SINGLE_CHOICE").itemId(), singleAnswer),
+                new PaperAssignmentDtos.DraftAnswer(byType.get("MULTIPLE_CHOICE").itemId(), multipleReversed),
+                new PaperAssignmentDtos.DraftAnswer(byType.get("FILL_BLANK").itemId(), wrongFill),
+                new PaperAssignmentDtos.DraftAnswer(byType.get("SUBJECTIVE").itemId(), mapper.readTree("\"学生分步骤作答\""))));
+
+        var result = assignments.submit(studentUser, release.id(), request);
+        assertThat(result.objectiveScore()).isEqualByComparingTo("20");
+        assertThat(result.objectiveTotal()).isEqualByComparingTo("30");
+        assertThat(result.correctCount()).isEqualTo(2);
+        assertThat(result.objectiveCount()).isEqualTo(3);
+        assertThat(result.subjectivePendingCount()).isEqualTo(1);
+        assertThat(assignments.submit(studentUser, release.id(), request)).isEqualTo(result);
+        assertThat(id("SELECT COUNT(*) FROM shi_juan_xue_sheng_da_ti a JOIN shi_juan_fa_bu_ti_mu i ON i.id=a.shi_juan_fa_bu_ti_mu_id WHERE a.shi_juan_ti_jiao_id=" + result.submissionId() + " AND i.ti_mu_lei_xing IN ('SINGLE_CHOICE','MULTIPLE_CHOICE') AND a.zhuang_tai='GRADED' AND a.shi_fou_zheng_que=1 AND a.de_fen=10")).isEqualTo(2);
+        assertThat(id("SELECT COUNT(*) FROM shi_juan_xue_sheng_da_ti a JOIN shi_juan_fa_bu_ti_mu i ON i.id=a.shi_juan_fa_bu_ti_mu_id WHERE a.shi_juan_ti_jiao_id=" + result.submissionId() + " AND i.ti_mu_lei_xing='FILL_BLANK' AND a.zhuang_tai='GRADED' AND a.shi_fou_zheng_que=0 AND a.de_fen=0")).isEqualTo(1);
+        assertThat(id("SELECT COUNT(*) FROM shi_juan_xue_sheng_da_ti a JOIN shi_juan_fa_bu_ti_mu i ON i.id=a.shi_juan_fa_bu_ti_mu_id WHERE a.shi_juan_ti_jiao_id=" + result.submissionId() + " AND i.ti_mu_lei_xing='SUBJECTIVE' AND a.zhuang_tai='SUBJECTIVE_PENDING' AND a.shi_fou_zheng_que IS NULL AND a.de_fen IS NULL")).isEqualTo(1);
+        var submission = assignments.submissions(teacherUser, release.id()).stream().filter(row -> row.studentId().equals(studentId)).findFirst().orElseThrow();
+        assertThat(submission.status()).isEqualTo("SUBMITTED");
+        assertThat(submission.objectiveScore()).isEqualByComparingTo("20");
+        assertThat(submission.objectiveTotal()).isEqualByComparingTo("30");
+        assertThat(submission.submittedAt()).isNotNull();
+        assertThat(submission.subjectivePendingCount()).isEqualTo(1);
+        var after = assignments.classStats(teacherUser, release.id());
+        assertThat(after.submitted()).isEqualTo(1);
+        assertThat(after.unsubmitted()).isEqualTo(after.assigned() - 1);
+        var teacherDetail = assignments.teacherSubmission(teacherUser, release.id(), studentId);
+        assertThat(teacherDetail.answersVisible()).isTrue();
+        assertThat(teacherDetail.questions()).extracting(PaperAssignmentDtos.Question::awardedScore)
+                .containsExactly(new BigDecimal("10.00"), new BigDecimal("10.00"), new BigDecimal("0.00"), null);
+    }
+
+    @Test
+    @Transactional
+    void incompleteObjectiveAnswerRejectsTheWholePaperWithoutPartialSubmission() {
+        demo.seed();
+        long teacherUser = id("SELECT id FROM yong_hu WHERE yong_hu_ming='demo_physics_admin'");
+        long studentUser = id("SELECT id FROM yong_hu WHERE yong_hu_ming='demo_199_01'");
+        long subject = id("SELECT id FROM ke_mu WHERE ke_mu_dai_ma='PHYSICS'");
+        long scope = id("SELECT r.id FROM ren_ke_guan_xi r JOIN ban_ji b ON b.id=r.ban_ji_id JOIN jiao_shi_dang_an j ON j.id=r.jiao_shi_id WHERE b.ban_ji_bian_ma='DEMO_CLASS_199' AND j.yong_hu_id=" + teacherUser + " AND r.ke_mu_id=" + subject);
+        long single = question(subject, "SINGLE_CHOICE", "ONLINE_PRACTICE");
+        long multiple = question(subject, "MULTIPLE_CHOICE", "ONLINE_PRACTICE");
+        var paper = papers.save(teacherUser, new PaperDtos.Save(subject, "客观题完整性门禁测试", "MANUAL", List.of(
+                new PaperDtos.ItemInput(single, BigDecimal.TEN), new PaperDtos.ItemInput(multiple, BigDecimal.TEN))));
+        var release = assignments.publish(teacherUser, paper.id(), new PaperAssignmentDtos.Publish(scope, LocalDateTime.now().plusHours(2)));
+        var detail = assignments.studentDetail(studentUser, release.id());
+        JsonNode answer = correctAnswer(detail.questions().getFirst().itemId()).path("optionLabels").get(0);
+        assertThatThrownBy(() -> assignments.submit(studentUser, release.id(), new PaperAssignmentDtos.Submit(List.of(
+                new PaperAssignmentDtos.DraftAnswer(detail.questions().getFirst().itemId(), answer)))))
+                .isInstanceOfSatisfying(RenZhengYeWuYiChang.class, error -> assertThat(error.getCode()).isEqualTo("PAPER_ANSWER_INCOMPLETE"));
+        assertThat(id("SELECT COUNT(*) FROM shi_juan_ti_jiao WHERE shi_juan_fa_bu_id=" + release.id() + " AND zhuang_tai='SUBMITTED'")).isZero();
+    }
+
+    @Test
+    @Transactional
     void studentProfileIsRestrictedToTheCurrentTeachersActiveClassAndSubjectScope() {
         demo.seed();
         long physicsTeacher=id("SELECT id FROM yong_hu WHERE yong_hu_ming='demo_physics_admin'");
@@ -191,6 +273,14 @@ class PaperAssignmentIntegrationTest extends AdminQuestionIntegrationTestSupport
         assignments.submit(studentUser,release.id(),new PaperAssignmentDtos.Submit(List.of(new PaperAssignmentDtos.DraftAnswer(
                 detail.questions().getFirst().itemId(),mapper.readTree(answer).path("optionLabels").get(0)))));
         return release;
+    }
+
+    private long question(long subject, String type, String usageMode) {
+        return id("SELECT id FROM ti_mu WHERE ke_mu_id=" + subject + " AND ti_mu_lei_xing='" + type + "' AND shi_yong_mo_shi='" + usageMode + "' AND zhuang_tai='PUBLISHED' AND yi_shan_chu=0 ORDER BY id LIMIT 1");
+    }
+
+    private JsonNode correctAnswer(long itemId) {
+        return mapper.readTree(jdbc.queryForObject("SELECT CAST(zheng_que_da_an_kuai_zhao AS CHAR) FROM shi_juan_fa_bu_ti_mu WHERE id=?", String.class, itemId));
     }
 
     private long id(String sql) { return jdbc.queryForObject(sql, Long.class); }
