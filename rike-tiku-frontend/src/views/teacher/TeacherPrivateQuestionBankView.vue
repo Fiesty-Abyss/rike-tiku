@@ -293,11 +293,6 @@ onMounted(load);
         ><el-button type="primary" @click="openCreate">新建私有题</el-button>
       </div>
     </header>
-    <el-alert
-      title="AI 候选题需要教师预览、编辑后再发布私有范围或提交管理员审核；AI 不可用不影响手动建题。"
-      type="info"
-      :closable="false"
-    />
     <el-table v-loading="loading" :data="rows" class="data-table"
       ><el-table-column prop="className" label="班级" /><el-table-column
         prop="subjectName"

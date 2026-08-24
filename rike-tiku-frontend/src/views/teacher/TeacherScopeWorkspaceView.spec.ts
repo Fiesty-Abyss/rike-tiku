@@ -95,7 +95,7 @@ describe('教师班级学习情况', () => {
 
     const select = wrapper.find('.knowledge-select')
     expect(select.attributes('data-value')).toBeUndefined()
-    expect(select.attributes('data-placeholder')).toBe('请选择当前科目 ACTIVE 知识点')
+    expect(select.attributes('data-placeholder')).toBe('请选择当前学科的启用知识点')
     expect(wrapper.text()).toContain('力学>运动和力>牛顿运动定律')
   })
 })

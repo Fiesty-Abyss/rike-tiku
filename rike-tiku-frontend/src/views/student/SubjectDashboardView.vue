@@ -83,14 +83,14 @@ onMounted(() => void load())
     <div class="student-page-heading">
       <div>
         <h1>{{ subject.name }}学习工作台</h1>
-        <p>围绕本学科建立练习与错题复习入口，数据来自已发布的可自动判分题目。</p>
+        <p>开始练习、查看错题并巩固本学科知识点。</p>
       </div>
       <el-button @click="router.push('/student')">返回三科主页</el-button>
     </div>
     <div class="subject-action-grid">
       <article>
         <h2>随机练习</h2>
-        <p>默认抽取本学科5题，题目在创建后立即冻结。</p>
+        <p>默认抽取本学科 5 道题。</p>
         <el-button type="primary" :loading="loading" @click="randomPractice">开始5题随机练习</el-button>
       </article>
       <article>
@@ -116,7 +116,7 @@ onMounted(() => void load())
       <div class="section-title-row">
         <div>
           <h2>学习掌握</h2>
-          <p>根据本人已提交练习的实际判分、练习次数和当前错题状态实时计算。</p>
+          <p>根据练习与错题记录更新。</p>
         </div>
       </div>
       <div class="mastery-overview">
@@ -140,7 +140,6 @@ onMounted(() => void load())
       <div class="section-title-row">
         <div>
           <h2>知识点掌握</h2>
-          <p>同一道题关联多个知识点时，会计入每个关联知识点。</p>
         </div>
       </div>
       <el-table :data="learningSummary.knowledgePoints" :row-class-name="rowClassName" class="data-table" empty-text="当前学科暂无有效知识点。">
@@ -155,7 +154,7 @@ onMounted(() => void load())
       <div class="section-title-row">
         <div>
           <h2>推荐练习</h2>
-          <p>按活动错题、正确率和练习样本量的固定规则排序，最多显示三项。</p>
+          <p>优先推荐需要巩固的知识点。</p>
         </div>
       </div>
       <el-alert v-if="learningSummary.recommendationMessage" :title="learningSummary.recommendationMessage" type="success" :closable="false" show-icon />
@@ -173,7 +172,7 @@ onMounted(() => void load())
       <div class="section-title-row">
         <div>
           <h2>高频考点</h2>
-          <p>内容来自当前学生有效主班级对应的 ACTIVE 任课关系。</p>
+          <p>查看任课老师整理的重点内容。</p>
         </div>
       </div>
       <el-empty v-if="!highFrequencyPoints.length" description="当前学科暂无高频考点。" />

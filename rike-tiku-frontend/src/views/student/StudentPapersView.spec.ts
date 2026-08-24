@@ -18,12 +18,12 @@ const stubs={ScientificText:{props:['content'],template:'<span>{{content}}</span
 describe('学生冻结试卷',()=>{
   beforeEach(()=>{vi.clearAllMocks();api.list.mockResolvedValue([]);api.draft.mockResolvedValue(undefined);ui.confirm.mockResolvedValue(true)})
 
-  it('作答前隐藏 STANDARD 并显示确定性判分边界',async()=>{
+  it('作答前隐藏 STANDARD 且不展示内部判分说明',async()=>{
     api.detail.mockResolvedValue({release:{id:7,paperName:'199班物理',subjectName:'物理',className:'199班',submissionStatus:'NOT_STARTED'},answersVisible:false,questions:[baseQuestion]})
     const wrapper=mount(StudentPapersView,{global:{stubs:{...stubs,AnswerDisplay:true}}})
     await flushPromises()
     expect(wrapper.text()).toContain('199班物理')
-    expect(wrapper.text()).toContain('确定性规则判分')
+    expect(wrapper.text()).not.toContain('确定性规则判分')
     expect(wrapper.find('.standard').exists()).toBe(false)
   })
 
@@ -41,13 +41,13 @@ describe('学生冻结试卷',()=>{
     expect(wrapper.text()).toContain('本题得分 10 / 10')
   })
 
-  it('主观大题保留输入区并明确不自动评分',async()=>{
+  it('主观大题保留输入区并提示等待教师处理',async()=>{
     api.detail.mockResolvedValue({release:{id:7,paperName:'混合试卷',subjectName:'物理',className:'199班',submissionStatus:'NOT_STARTED'},answersVisible:false,
       questions:[{...baseQuestion,type:'SUBJECTIVE',stem:'请完成分步计算',options:[],stemAttachments:[],analysisAttachments:[]}]})
     const wrapper=mount(StudentPapersView,{global:{stubs:{...stubs,AnswerDisplay:true}}})
     await flushPromises()
     expect(wrapper.text()).toContain('主观大题')
-    expect(wrapper.text()).toContain('系统不进行 AI 或规则自动评分')
+    expect(wrapper.text()).toContain('主观大题提交后等待教师处理')
     expect(wrapper.text()).not.toContain('SINGLE_CHOICE')
   })
 

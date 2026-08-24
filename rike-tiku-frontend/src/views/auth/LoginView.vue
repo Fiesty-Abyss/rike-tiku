@@ -62,14 +62,14 @@ async function handleLogin(payload: {
         <p class="school-mark">RIKE AQUA FUTURE</p>
         <h1>进入你的<br />科学工作台</h1>
         <p class="auth-product-truth">高中理科学习与教学管理</p>
-        <p>物理的场与波、化学的变化、生物的生命系统，共用一套可复验的学习事实。</p>
+        <p>从物理、化学和生物出发，开始今天的学习。</p>
         <div class="subject-line" aria-label="支持学科"><span>FIELD</span><span>EQUILIBRIUM</span><span>LIFE</span></div>
       </div>
       <div class="auth-optic" aria-hidden="true"><i></i><b></b></div>
     </section>
     <section class="auth-panel aero-glass-heavy" aria-labelledby="login-title">
       <RouterLink class="auth-home-link" to="/">返回首页</RouterLink>
-      <AquaBrand class="auth-brand" subtitle="安全登录入口" />
+      <AquaBrand class="auth-brand" subtitle="账号登录" />
       <h2 id="login-title">欢迎登录</h2>
       <p class="auth-description">输入账号、密码和图形验证码后登录。</p>
       <LoginForm ref="loginForm" :loading="loading" :error-message="errorMessage" @submit="handleLogin" />

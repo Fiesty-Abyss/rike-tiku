@@ -68,7 +68,7 @@ async function logout() {
       <div class="student-page-heading">
         <div>
           <h2>我的任教范围</h2>
-          <p>仅展示当前教师档案关联的班级、科目三元任课关系。</p>
+          <p>选择班级和学科，进入教学工作台。</p>
         </div>
         <div class="teacher-heading-actions">
           <el-button type="primary" @click="router.push('/teacher/ai-generation')">AI 变式题生成与审核</el-button>

@@ -33,7 +33,10 @@ const thinkingMode = ref<'STANDARD'|'DEEP'>('STANDARD')
 const webSearch = ref(false)
 const webSearchAvailable = ref(false)
 
-const safeError = (error:unknown, fallback:string) => (error as ApiError).message || fallback
+const safeError = (error:unknown, fallback:string) => {
+  const message = (error as ApiError).message || ''
+  return /STANDARD|Provider|MySQL|JWT|后端|服务端|不受影响|真实事实|受控|内部/i.test(message) ? fallback : message || fallback
+}
 const questionTypeLabel = (value:string) => ({ SINGLE_CHOICE:'单选题', MULTIPLE_CHOICE:'多选题', FILL_BLANK:'填空题', SUBJECTIVE:'主观题' } as Record<string,string>)[value] || value
 const asQuestionType = (value:string) => value as QuestionType
 const errorTypeLabel = (value?:string) => ({
@@ -56,7 +59,7 @@ async function generate() {
   try { analysis.value = await generateAiAnalysis(props.answerFactId) }
   catch (error) {
     analysisUnavailable.value = true
-    ElMessage.warning(safeError(error, 'AI 暂不可用，标准解析仍可正常查看。'))
+    ElMessage.warning(safeError(error, 'AI 暂不可用，请稍后重试。'))
   } finally { analysisLoading.value = false }
 }
 
@@ -98,7 +101,7 @@ async function send() {
     draft.value = ''
     await nextTick()
     messageList.value?.scrollTo({ top: messageList.value.scrollHeight, behavior: 'smooth' })
-  } catch (error) { ElMessage.warning(safeError(error, '发送失败，学习记录和标准解析不受影响。')) }
+  } catch (error) { ElMessage.warning(safeError(error, '发送失败，请稍后重试。')) }
   finally { sending.value = false }
 }
 
@@ -110,7 +113,7 @@ onMounted(() => void loadAnalysis())
 <template>
   <section class="student-ai-panel" aria-label="AI 学习辅助">
     <div class="student-ai-heading">
-      <div><span class="student-ai-label">{{ cardMode ? 'AI 零基础讲解' : topicMode ? 'AI 专题讲解' : 'AI 辅助分析' }}</span><p>{{ cardMode ? '从名词、符号和适用条件开始讲解；不覆盖已经人工审核的卡片事实。' : topicMode ? '基于题干、STANDARD 与知识点讲解；不提交、不评分、不修改 STANDARD。' : '基于本次正式答案提供个性化提示，不替代标准解析与正式判分。' }}</p></div>
+      <div><span class="student-ai-label">{{ cardMode ? 'AI 零基础讲解' : topicMode ? 'AI 专题讲解' : 'AI 辅助分析' }}</span><p>{{ cardMode ? '从名词、符号和适用条件开始讲解。' : topicMode ? '围绕题干、解析和知识点进行讲解。' : '结合本次作答提供针对性提示。' }}</p></div>
       <el-button type="primary" plain @click="openTutor">{{ cardMode ? '从零开始讲解' : topicMode ? '当前专题答疑' : '当前题目答疑' }}</el-button>
     </div>
     <template v-if="!topicMode && !cardMode && wrong">
@@ -122,7 +125,7 @@ onMounted(() => void loadAnalysis())
         <div class="student-ai-columns"><div><h4>常见误区</h4><ul><li v-for="item in analysis.commonMistakes" :key="item"><AiScientificContent :content="item" /></li></ul></div><div><h4>复习建议</h4><ul><li v-for="item in analysis.reviewSuggestions" :key="item"><AiScientificContent :content="item" /></li></ul></div></div>
       </div>
       <div v-else class="student-ai-state">
-        <p>{{ analysisUnavailable || analysis?.status === 'FAILED' ? 'AI 暂不可用，标准解析仍然有效。' : '尚未生成本题的个性化错因分析。' }}</p>
+        <p>{{ analysisUnavailable || analysis?.status === 'FAILED' ? 'AI 暂不可用，请稍后重试。' : '尚未生成本题的个性化错因分析。' }}</p>
         <el-button type="primary" :loading="analysisLoading" @click="generate">{{ analysisUnavailable || analysis?.status === 'FAILED' ? '重试生成' : '生成 AI 错因分析' }}</el-button>
       </div>
     </template>
@@ -136,12 +139,12 @@ onMounted(() => void loadAnalysis())
           <el-collapse-transition><div v-show="!compactQuestion" class="context-body"><p><b>题型：</b>{{ questionTypeLabel(questionContext.questionType) }}</p><p><b>题干：</b>{{ questionContext.stem }}</p><p v-if="questionContext.options?.length"><b>选项：</b>{{ optionText }}</p><div class="context-answer"><b>学生答案：</b><AnswerDisplay :question-type="asQuestionType(questionContext.questionType)" :value="questionContext.studentAnswer" :options="questionContext.options" /></div><div v-if="questionContext.submitted" class="context-answer"><b>正确答案：</b><AnswerDisplay :question-type="asQuestionType(questionContext.questionType)" :value="questionContext.correctAnswer" :options="questionContext.options" /></div></div></el-collapse-transition>
           <button type="button" class="mobile-context-toggle" :aria-expanded="mobileQuestionExpanded" @click="mobileQuestionExpanded=!mobileQuestionExpanded">查看当前题目与选项</button><div v-show="mobileQuestionExpanded" class="mobile-context-body"><p>{{ questionContext.stem }}</p><p>{{ optionText }}</p></div>
         </section>
-        <p class="student-ai-chat-note"><strong>已绑定{{ cardMode ? '当前知识卡片' : topicMode ? '当前专题' : '当前题目' }}</strong><br>仅围绕当前学习上下文，最多 10 轮；已审核事实、STANDARD 答案与解析不会被 AI 修改。</p>
+        <p class="student-ai-chat-note"><strong>{{ cardMode ? '当前知识卡片' : topicMode ? '当前专题' : '当前题目' }}答疑</strong><br>本次答疑最多 10 轮，请围绕当前内容提问。</p>
         <div v-if="!conversation" class="student-ai-controls">
           <label>回答模型<select v-model="selectedModelId"><option v-for="item in modelOptions" :key="item.id" :value="item.id" :disabled="!item.available">{{ item.displayName }}{{ item.available ? '' : '（管理员尚未启用）' }}</option></select></label>
           <fieldset><legend>回答方式</legend><label><input v-model="thinkingMode" type="radio" value="STANDARD">标准回答</label><label><input v-model="thinkingMode" type="radio" value="DEEP">深度思考</label></fieldset>
-          <label><input v-model="webSearch" type="checkbox" :disabled="!webSearchAvailable"> 联网搜索</label><small>{{ webSearchAvailable ? '开启后本轮可能更慢，并产生一次额外搜索调用。' : '管理员尚未配置联网搜索。' }}</small>
-          <p v-if="chatLoading" class="student-ai-loading-hint">正在生成，真实模型可能需要几十秒</p><el-button type="primary" :loading="chatLoading" :disabled="chatLoading || !selectedModelId" @click="startConversation">开始答疑</el-button>
+          <label><input v-model="webSearch" type="checkbox" :disabled="!webSearchAvailable"> 联网搜索</label><small>{{ webSearchAvailable ? '开启后回答可能更慢。' : '管理员尚未配置联网搜索。' }}</small>
+          <p v-if="chatLoading" class="student-ai-loading-hint">正在生成，可能需要几十秒</p><el-button type="primary" :loading="chatLoading" :disabled="chatLoading || !selectedModelId" @click="startConversation">开始答疑</el-button>
         </div>
         <div ref="messageList" class="student-ai-messages" aria-live="polite">
           <div v-if="!conversation?.messages.length" class="student-ai-empty">可以问：为什么这一步要这样推导？</div>

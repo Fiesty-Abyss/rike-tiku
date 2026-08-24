@@ -68,7 +68,7 @@ onMounted(loadClasses)
 
 <template>
   <section class="admin-page">
-    <div class="page-heading"><div><h1>班级管理</h1><p>维护班级基础信息与可用状态。班级编码创建后不可修改。</p></div><el-button type="primary" @click="openCreate">创建班级</el-button></div>
+    <div class="page-heading"><div><h1>班级管理</h1></div><el-button type="primary" @click="openCreate">创建班级</el-button></div>
     <el-form class="filter-panel" :inline="true" @submit.prevent="filters.page = 1; loadClasses()">
       <el-form-item label="班级编码"><el-input v-model="filters.code" clearable placeholder="支持包含匹配" /></el-form-item>
       <el-form-item label="班级名称"><el-input v-model="filters.name" clearable placeholder="支持包含匹配" /></el-form-item>
