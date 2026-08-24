@@ -1,6 +1,6 @@
 # RIKE 最终项目事实包
 
-> 本文件是论文、答辩和后续维护的当前事实入口，不是开发日志。历史时间线中的旧测试数、旧 Flyway 版本或旧表数只能解释当时阶段，不能覆盖本文件。最后一次事实刷新：2026-08-21，PR #39 已 ordinary merge；产品开发永久冻结。
+> 本文件是论文、答辩和后续维护的当前事实入口，不是开发日志。历史时间线中的旧测试数、旧 Flyway 版本或旧表数只能解释当时阶段，不能覆盖本文件。最后一次事实刷新：2026-08-24；PR #40 为真实试卷提交闭环修复候选，最终门禁已通过，待 ordinary merge 后冻结精确 merge commit。
 
 ## 1. 项目身份与运行边界
 
@@ -26,6 +26,7 @@
 | PR #36 / PR #37 | 最终演示资料与数据卫生维护；均已 ordinary merge。PR #37 merge commit 为 `cb785631c359b88dc4841a9eeed3af14879516cb`。 |
 | PR #38 | 初始密码门禁语义恢复与操作日志 CSV 删除；base `b3fea4e39b794e3b89412a7089a81cba867c7a10`，final head `1636e2dc493fcd5a8c5d8c4be9f60751975e8445`，ordinary merge commit `4da94b79fc682c8756cfab12dd73c40fbbe87e8b`，`mergedAt=2026-08-21T06:54:58Z`。后端 224 tests（0/0/3）、前端 68 files / 225 tests（0 failures）、type-check、build、audit、科学审计和 22 条文献审计均通过。 |
 | PR #39 | 默认密码实值门禁补丁；base `237d37709ccc4d5fdff5f219fc5468113e81c0fc`，final head `e3153632139ca0e9757b5e505409ecc85a0552c6`，ordinary merge commit `8e824718dde9aa4f54ab99fa52735f6eb6d46dbc`，`mergedAt=2026-08-21T07:22:27Z`。认证门禁采用 `firstLogin || BCrypt.matches(configuredDefaultPassword)`，初始/主动改密均禁止重设为系统默认口令；操作日志 CSV 导出保持移除。后端 225 tests（0/0/3）、前端 68 files / 225 tests（0 failures）、type-check、build、audit、科学审计和 22 条文献审计均通过；无 Flyway、表结构或 199/200/203 教学数据改动。 |
+| PR #40 | 真实 Demo 发现的试卷提交、反馈和教师同步修复；base `fa4735af5852848751637529d1d02723f26351bf`，候选功能提交 `da8f1fb`。学生端对客观题做题型化完整性检查，串行处理草稿保存与正式提交，并重新读取服务端判分事实；教师作答弹窗提供手动刷新和 5 秒只读轮询；试卷行改为三个直接操作加“更多操作（发布管理/删除试卷）”。无生产后端判分改写、无 Flyway、无表结构变化。 |
 | 当前产品阶段 | `THESIS_AND_DEFENSE_DELIVERY`；`PRODUCT DEVELOPMENT = FROZEN`；`NO OPEN PRODUCT DEVELOPMENT PR`。仅处理学校模板、论文、答辩材料、真实 BLOCKER 或老师明确要求。 |
 
 ## 3. 已实现、已验证与边界
@@ -101,13 +102,20 @@ AI 只能解释、对话、生成候选和给质量建议；候选需人工审�
 
 PR #35 merge 前最终回归：后端 `mvn test` 与 `mvn package` 均为 **221 tests、0 failures、0 errors、3 skipped、BUILD SUCCESS**；前端单 worker `npm test -- --run --maxWorkers=1` 为 **68 files、224 tests、0 failures**；`npm run type-check`、`npm run build` 与 `npm audit --omit=dev` 通过，audit 为 **0 vulnerabilities**（构建仅保留既有 >500 kB chunk warning）。随机临时 schema 已从 V1 完整迁移至 V30；科学审计为 **600 strings、0 live database rows、0 errors**，其中 0 行表示本次不读取正式库，不可与历史正式库 117 行审计混写；正式文献/BibTeX 各 **22** 且一一对应。不得沿用 215、217、220（前端）或 222 等旧基线。
 
-正式数据库 `rike_tiku` 的本轮只读复核状态为 `FORMAL_DB_LIVE_RECHECK = LOCAL_NOT_VERIFIED`：本机没有可安全使用的数据库凭据，本轮没有猜测、输出或硬编码密码，也没有修改正式库。历史 V30/30 success/0 failed/50 表的已存档核验仍可查，但不得误写为本次 live recheck。
+PR #40 候选的最终回归为：后端 **227 tests、0 failures、0 errors、3 skipped**，package PASS；前端 **68 files、231 tests、0 failures**，type-check/build PASS，audit **0 vulnerabilities**。随机临时 schema 完整执行 V1→V30；正式 `rike_tiku` 与 `rike_tiku_demo` 均只读核验为 V30、30 success、0 failed、50 业务表，项目 schema 仅这两个。科学审计为 **600 strings、107 formal database rows、0 errors**；正式文献/BibTeX 为 **22/22**。
 
 现有 V30 机器浏览器证据为 11 页面、56 断言、0 console/page/非预期失败请求/横向溢出，属于 `MACHINE_BROWSER_VERIFIED`，不等同用户逐页验收。PR34-MA-001 增加两个独立 Chromium handler 断言：student preview=1、answer preview=1、0 console/page/failed request；受控路由响应仅证明处理器，不能证明 OS 打印对话框。
 
 - PR #33：用户完成最终页面审查并条件授权 ordinary merge；两项反馈修复后 PR #33 已合并。历史记录见 [PR #33 人工验收](MANUAL_ACCEPTANCE_FINDINGS_PR33.md)。
 - PR #34：用户已审查专题、主观组卷、发布、作答、STANDARD、附件和题型中文化；唯一新增 finding 为 [PR34-MA-001](MANUAL_ACCEPTANCE_FINDINGS_PR34.md)，现为 `FIXED`。代码点击链为 `PRINT_HANDLER_MACHINE_VERIFIED`；用户真实 Chrome 已确认系统打印窗口打开（`PRINT_USER_VERIFIED` / `OS_PRINT_DIALOG_USER_VERIFIED`），未声称已实际打印纸张。
 - 已知限制：真实外部 Provider 依赖运行时凭据，因此本轮可为 `BLOCKED_EXTERNAL_PROVIDER`；主观题不做 AI/规则自动正式评分；headless 浏览器不能证明 OS 级打印窗口。
+
+### PR #40 试卷提交闭环候选
+
+- 学生提交始终携带当前发布项 `itemId` 的完整内存答案；未完成客观题在前端显示具体题号并定位，后端 `PAPER_ANSWER_INCOMPLETE` 门禁继续保留。
+- 正式得分仍由 `PaperAssignmentService → ObjectiveAnswerGrader → shi_juan_xue_sheng_da_ti / shi_juan_ti_jiao` 生成，前端不自行计算分数。单选、多选和填空写入 `GRADED`；主观题只写入 `SUBJECTIVE_PENDING`。
+- 学生提交后重新读取详情与任务列表；教师 stats/submissions 从同一 MySQL 事实读取，并在作答弹窗打开时每 5 秒只读刷新，关闭后停止。
+- 真实 Demo 机器浏览器证据为 8/8 断言、0 console/page/failed request/overflow，见 [试卷提交同步证据](evidence/paper-submission-sync/README.md)。该证据不等同用户人工验收。
 
 ## 8. 离线资料入口
 

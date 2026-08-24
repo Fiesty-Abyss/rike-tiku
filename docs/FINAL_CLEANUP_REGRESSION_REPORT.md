@@ -39,3 +39,10 @@ BLOCKER=0；HIGH=0；MEDIUM=0。外部真实 Provider 状态仍以 `AI_FINAL_EXP
 ## PR #37 认证与数据卫生追加门禁
 
 本次维护不增加迁移、不改动 50 张业务表。测试完成前的数据库审计已确认：正式库和演示库中的活跃演示账号均为非强制首次改密状态；203 指定账户按统一编号存在；全库字段扫描与关系审计后，仅定向删除 `V30_BROWSER*` 浏览器测试根数据及其已验证无外部引用的派生事实。清理清单、保留边界和本机受安全策略限制而未物理删除的纯临时目录见 [FINAL_AUTH_DATA_HYGIENE_REPORT.md](FINAL_AUTH_DATA_HYGIENE_REPORT.md)。本节的最终测试数字只以 PR #37 完整回归输出为准。
+
+## PR #40 试卷提交闭环回归追加（2026-08-24）
+
+- 后端：227 tests，0 failures，0 errors，3 skipped；package PASS。混合卷专项固定验证单选正确、多选逆序正确、填空错误和主观答案，结果为 20/30、2/3、1 道 `SUBJECTIVE_PENDING`；重复提交幂等，客观题缺失整卷拒绝且不落部分提交。
+- 前端：68 files / 231 tests，0 failures；type-check/build/audit PASS，0 vulnerabilities。覆盖未完成题号提示、禁止无效请求、自动保存串行、服务端错误反馈、重新加载结果、逐题得分、教师手动/定时刷新和操作菜单。
+- 数据：随机 schema V1→V30 PASS；正式库与 Demo 均为 V30、30 success、0 failed、50 表，未新增迁移；科学审计 600 strings/107 formal rows/0 errors；参考文献 22/22。
+- 浏览器：真实 `rike_tiku_demo` 发布完成学生提交、学生结果、任务列表、教师轮询同步和教师答卷，8/8 assertions，0 console/page/failed request/overflow。证据为 `MACHINE_BROWSER_VERIFIED`，不等同真人验收。
