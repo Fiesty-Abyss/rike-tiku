@@ -1,0 +1,38 @@
+{
+  "generatedAt": "2026-08-24T02:23:13.485Z",
+  "database": "rike_tiku_demo",
+  "evidenceType": "MACHINE_BROWSER_VERIFIED",
+  "consoleErrors": [],
+  "pageErrors": [],
+  "failedRequests": [],
+  "submitBody": {
+    "answers": [
+      {
+        "itemId": 1,
+        "answer": "A"
+      },
+      {
+        "itemId": 2,
+        "answer": "A"
+      },
+      {
+        "itemId": 3,
+        "answer": [
+          "A",
+          "B"
+        ]
+      }
+    ]
+  },
+  "assertions": {
+    "teacherStatsOpened": true,
+    "studentQuestionCount": true,
+    "studentResult": true,
+    "submitUsesItemIds": true,
+    "studentListUpdated": true,
+    "teacherPollingUpdated": true,
+    "teacherSubmissionReadable": true,
+    "noOverflow": true
+  },
+  "failures": []
+}
