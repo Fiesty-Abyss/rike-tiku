@@ -120,6 +120,42 @@ PR #35 没有新增可提交的本地浏览器截图，因而本目录不虚构 
 
 对应实现为 `TeacherPaperBuilderView.vue`、`api/teacher/papers.ts`、`PaperController`、`PaperAssignmentTeacherController`、`PaperService` 与 `PaperAssignmentService`；核心表为 `shi_juan`、`shi_juan_fa_bu`、`shi_juan_fa_bu_ti_mu`、`shi_juan_ti_jiao`、`shi_juan_xue_sheng_da_ti`，迁移仍是 V27/V30。自动化覆盖见 `PaperAssignmentIntegrationTest`、`PaperServiceIntegrationTest` 和 `TeacherPaperBuilderView.spec.ts`。该文字记录可证明用户已接受相应界面，不可替代截图或机器浏览器视觉证据。
 
+## PR #40 试卷提交与教师同步证据
+
+### FIG-PAPER-SUBMIT-RESULT-01
+
+- **截图文件**：[学生提交后的逐题结果](evidence/paper-submission-sync/student-submitted-result.png)
+- **推荐论文图名**：图6-x 学生试卷客观题判分结果界面
+- **推荐 PPT 图名**：试卷提交：后端判分事实回读
+- **页面路由 / 角色**：`/student/papers/{releaseId}`；STUDENT
+- **状态 / 时间 / Git**：`THESIS_READY + MACHINE_BROWSER_VERIFIED`；2026-08-24；`fix/paper-submission-grading-sync@da8f1fb`
+- **可见内容**：已提交状态、学生答案、正确/错误、本题得分、正确答案、STANDARD；输入控件已冻结。
+- **截图数据**：`rike_tiku_demo` 的 199班物理 release 1；3 道客观题（2 单选、1 多选），总分 30；浏览器使用提交接口返回和随后详情查询，不使用前端伪造分数。学生从该 release 的未提交 Demo 名单动态选择，证据不固定真实个人身份。
+- **数据库来源 / 主要字段**：`shi_juan_fa_bu`；`shi_juan_fa_bu_ti_mu.id/ti_mu_lei_xing_kuai_zhao/fen_zhi/zheng_que_da_an_kuai_zhao`；`shi_juan_ti_jiao.zhuang_tai/ke_guan_de_fen/ke_guan_zong_fen/ti_jiao_shi_jian`；`shi_juan_xue_sheng_da_ti.ti_jiao_da_an/zhuang_tai/shi_fou_zheng_que/de_fen`。
+- **前端 / API**：`StudentPapersView.vue`、`api/student/papers.ts`、`QuestionContent`、`AnswerDisplay`、`StandardAnalysis`；`POST /api/v1/student/papers/{releaseId}/submit`、`GET /api/v1/student/papers/{releaseId}`。
+- **后端**：`PaperAssignmentStudentController`、`PaperAssignmentService`、共享 `ObjectiveAnswerGrader`、`PaperAssignmentDtos`。
+- **Flyway / 测试**：V27、V30；`PaperAssignmentIntegrationTest`、`StudentPapersView.spec.ts`、`scripts/paper-submission-sync-browser.cjs`。
+- **证明什么**：证明浏览器当前答案按 release itemId 提交，经后端确定性判分写库，再由学生端重新读取逐题结果。
+- **论文位置 / 图注**：第5章学生试卷作答与判分。图注：**学生提交试卷后，系统从后端提交事实呈现客观题判分、本题得分和 STANDARD。**
+- **不能声称**：不能证明主观题自动评分、真实学生长期学习成效、AI 判分准确率或用户真人验收。
+
+### FIG-PAPER-TEACHER-SYNC-02
+
+- **截图文件**：[教师同步后的已提交答卷](evidence/paper-submission-sync/teacher-submission-synced.png)
+- **推荐论文图名**：图6-x 教师查看学生已提交答卷界面
+- **推荐 PPT 图名**：教师同步：同一 MySQL 提交事实
+- **页面路由 / 角色**：`/teacher/papers`，发布管理 → 作答情况 → 查看答卷；TEACHER
+- **状态 / 时间 / Git**：`THESIS_READY + MACHINE_BROWSER_VERIFIED`；2026-08-24；`fix/paper-submission-grading-sync@da8f1fb`
+- **可见内容**：学生提交状态、客观得分、提交时间、查看答卷入口，以及纵向的题干、选项、学生答案、正确答案、得分与 STANDARD。
+- **截图数据**：与上一图同一 `rike_tiku_demo` release；教师在学生提交前已打开作答弹窗，提交后由 5 秒轮询重新请求 stats/submissions 并出现已提交记录。
+- **数据库来源 / 主要字段**：同上一图；班级人数来自 release 班级成员，已提交数只统计 `shi_juan_ti_jiao.zhuang_tai='SUBMITTED'`。
+- **前端 / API**：`TeacherPaperBuilderView.vue`、`api/teacher/papers.ts`、`QuestionContent`、`AnswerDisplay`、`StandardAnalysis`；`GET /api/v1/teacher/papers/releases/{releaseId}/stats`、`submissions`、`students/{studentId}/submission`。
+- **后端**：`PaperAssignmentTeacherController`、`PaperAssignmentService`、`PaperAssignmentDtos`。
+- **Flyway / 测试**：V27、V30；`PaperAssignmentIntegrationTest`、`TeacherPaperBuilderView.spec.ts`、机器浏览器 8/8 assertions。
+- **证明什么**：证明教师端不依赖前端学生状态，而是通过两个只读 GET 重新读取同一数据库提交事实；关闭弹窗后轮询停止。
+- **论文位置 / 图注**：第5章教师发布与作答管理。图注：**教师作答情况从同一提交事实同步学生状态、客观得分和已提交答卷。**
+- **不能声称**：不能证明 WebSocket 实时推送、主观题已批阅、课堂成绩提升或用户真人验收。
+
 ## 截图数据只读查询说明
 
 以下 SQL 只用于受控本地或匿名 Demo 环境的核对；不得写入、重置或暴露个人信息。
