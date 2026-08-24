@@ -179,7 +179,7 @@ onMounted(() => void load())
         </section>
         <section class="workspace-card">
           <div class="section-title-row">
-            <div><h2>高频考点</h2><p>只维护当前教师、当前班级和当前科目的考点。</p></div>
+            <div><h2>高频考点</h2><p>管理本班本学科的重点内容。</p></div>
             <el-button type="primary" @click="openCreate">新增高频考点</el-button>
           </div>
           <el-table :data="activePoints" class="data-table" empty-text="当前学科暂无高频考点。">
@@ -195,7 +195,7 @@ onMounted(() => void load())
     </section>
     <el-dialog v-model="dialogVisible" :title="editing ? '编辑高频考点' : '新增高频考点'" width="min(680px, calc(100vw - 32px))" destroy-on-close>
       <el-form ref="formRef" :model="form" :rules="rules" label-position="top">
-        <el-form-item label="知识点" prop="knowledgePointId"><el-select v-model="form.knowledgePointId" filterable clearable placeholder="请选择当前科目 ACTIVE 知识点" :disabled="Boolean(editing)"><el-option v-for="point in workspace.knowledgePoints" :key="point.id" :label="point.path" :value="point.id" /></el-select></el-form-item>
+        <el-form-item label="知识点" prop="knowledgePointId"><el-select v-model="form.knowledgePointId" filterable clearable placeholder="请选择当前学科的启用知识点" :disabled="Boolean(editing)"><el-option v-for="point in workspace.knowledgePoints" :key="point.id" :label="point.path" :value="point.id" /></el-select></el-form-item>
         <el-form-item label="标题" prop="title"><el-input v-model="form.title" maxlength="200" show-word-limit /></el-form-item>
         <el-form-item label="正文" prop="content"><el-input v-model="form.content" type="textarea" :rows="4" /></el-form-item>
         <el-form-item label="记忆口诀"><el-input v-model="form.memoryTrick" maxlength="500" /></el-form-item>

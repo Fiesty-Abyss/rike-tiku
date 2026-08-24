@@ -78,9 +78,8 @@ async function logout() {
     <section class="student-main">
       <router-view />
       <section v-if="$route.path === '/student'" class="student-dashboard">
-        <div class="student-dashboard-title">
+        <div class="student-dashboard-title student-dashboard-title--compact">
           <h1>选择一门学科，开始今天的练习</h1>
-          <p>系统不会展示虚构的学习统计；请从真实可用的知识点、练习与错题记录开始。</p>
         </div>
         <div class="subject-cards">
           <article

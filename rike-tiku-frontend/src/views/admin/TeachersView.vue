@@ -389,12 +389,7 @@ onMounted(loadTeachers);
 <template>
   <section class="admin-page">
     <div class="page-heading">
-      <div>
-        <h1>教师与任课关系</h1>
-        <p>
-          管理员创建教师账号，并以教师、班级、科目三元关系授予后续数据范围。
-        </p>
-      </div>
+      <div><h1>教师与任课关系</h1></div>
       <div>
         <el-button
           :disabled="selectedTeachers.length === 0"
@@ -631,7 +626,7 @@ onMounted(loadTeachers);
           <div class="section-title-row teacher-assignment-heading">
             <div>
               <h2>任课关系</h2>
-              <p>结束或停用后保留原记录，不提供物理删除。</p>
+              <p>可为教师新增、结束或停用任课关系。</p>
             </div>
             <el-button type="primary" @click="openAssignment"
               >添加任课关系</el-button
@@ -699,13 +694,13 @@ onMounted(loadTeachers);
     >
     <el-dialog
       v-model="assignmentDialog"
-      title="添加三元任课关系"
+      title="添加任课关系"
       width="min(520px, calc(100vw - 32px))"
       destroy-on-close
       ><el-alert
         type="info"
         :closable="false"
-        title="班级与科目均来自后端真实数据；相同教师、班级、科目不可重复创建。"
+        title="请选择班级和科目；重复的任课关系不能创建。"
       /><el-form
         ref="assignmentRef"
         :model="assignment"

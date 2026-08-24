@@ -24,10 +24,9 @@ async function select(role: typeof roles.value[number]) {
     <img class="role-selection-world" :src="aquaWorld" width="1586" height="992" loading="eager" decoding="async" alt="RIKE 清水科学世界中的多角色入口" />
     <span class="role-selection-light" aria-hidden="true"></span>
     <section class="role-select aero-glass-heavy">
-      <AquaBrand class="role-select-brand" subtitle="多角色权限入口" />
-      <p class="role-select-kicker">ACCESS ORBIT</p>
+      <AquaBrand class="role-select-brand" subtitle="选择身份" />
       <h1>选择本次进入的身份</h1>
-      <p>只显示账号实际拥有的角色；切换入口不会改变后端权限事实。</p>
+      <p>请选择本次进入系统使用的身份。</p>
       <div class="role-choices">
         <el-button
           v-for="role in roles"
@@ -35,7 +34,6 @@ async function select(role: typeof roles.value[number]) {
           size="large"
           @click="select(role)"
         >
-          <span class="role-choice-code">{{ role }}</span>
           <span>{{ formatEnum(role) }}工作台</span>
           <i aria-hidden="true">进入</i>
         </el-button>

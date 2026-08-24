@@ -16,6 +16,7 @@ const fileError = ref('')
 
 const canConfirm = computed(() => Boolean(selectedFile.value && preview.value && preview.value.invalidCount === 0 && preview.value.validCount > 0 && !confirming.value))
 const selectedFileSize = computed(() => selectedFile.value ? `${(selectedFile.value.size / 1024 / 1024).toFixed(2)} MB` : '')
+const accountStatusLabel=(value:string)=>({ENABLED:'启用',DISABLED:'停用',LOCKED:'锁定'} as Record<string,string>)[value]||value
 
 function readableError(error: unknown, fallback: string) {
   const apiError = error as ApiError
@@ -67,7 +68,7 @@ async function runPreview() {
 async function confirmImport() {
   if (!selectedFile.value || !canConfirm.value) return
   try {
-    await ElMessageBox.confirm('确认后会重新上传原始 Excel，并在一个事务中导入整批学生。初始密码仅在成功后显示一次，请妥善发放。', '确认导入学生', { type: 'warning', confirmButtonText: '确认导入', cancelButtonText: '返回检查' })
+    await ElMessageBox.confirm('确认导入当前文件中的全部有效学生？初始密码仅在成功后显示一次，请妥善保存。', '确认导入学生', { type: 'warning', confirmButtonText: '确认导入', cancelButtonText: '返回检查' })
   } catch { return }
   confirming.value = true
   try { result.value = await confirmStudentImport(selectedFile.value); ElMessage.success(`已成功导入 ${result.value.importedCount} 名学生。`) } catch (error) { ElMessage.error(readableError(error, '导入失败，文件与预检查结果已保留。')) } finally { confirming.value = false }
@@ -82,9 +83,8 @@ async function downloadAccounts() {
 
 <template>
   <section class="admin-page student-import-page">
-    <div class="page-heading"><div><h1>学生 Excel 导入</h1><p>预检查通过后才可确认入库；导入为整批事务，账号初始密码只显示一次。</p></div><el-button :loading="templateDownloading" @click="downloadTemplate">下载导入模板</el-button></div>
+    <div class="page-heading"><div><h1>学生 Excel 导入</h1><p>预检查通过后可确认导入，账号初始密码仅显示一次。</p></div><el-button :loading="templateDownloading" @click="downloadTemplate">下载导入模板</el-button></div>
     <el-steps :active="result ? 4 : preview ? 3 : selectedFile ? 2 : 1" simple class="import-steps"><el-step title="下载模板" /><el-step title="选择文件" /><el-step title="预检查" /><el-step title="确认导入" /><el-step title="发放账号" /></el-steps>
-    <el-alert title="安全提示：Excel 中的明文密码不会在预览中展示；确认导入后生成的初始密码不会保存到浏览器存储。" type="info" :closable="false" show-icon />
     <section class="import-stage"><h2>1. 选择 Excel 文件</h2><p>仅支持单个 .xlsx 文件，大小不超过 5MB。重新选择文件会清除旧预览和账号结果。</p>
       <el-upload ref="uploadRef" drag :auto-upload="false" :limit="1" accept=".xlsx" :on-change="onFileChange" :on-remove="removeFile" :before-upload="validateFile">
         <div class="upload-copy"><strong>拖拽 Excel 到这里，或点击选择文件</strong><span>请选择管理员下载的学生批量导入模板</span></div>
@@ -96,12 +96,12 @@ async function downloadAccounts() {
     <section v-if="preview" class="import-stage"><div class="section-title-row"><div><h2>2. 预检查结果</h2><p>请修正全部无效行后再确认导入。</p></div><el-button :loading="previewing" @click="runPreview">重新预检查</el-button></div>
       <div class="preview-summary"><div><span>总行数</span><strong>{{ preview.totalCount }}</strong></div><div class="success"><span>有效行</span><strong>{{ preview.validCount }}</strong></div><div :class="{ danger: preview.invalidCount > 0 }"><span>无效行</span><strong>{{ preview.invalidCount }}</strong></div></div>
       <el-alert v-if="preview.invalidCount > 0" title="当前存在无效行，确认导入已禁用。请修正 Excel 后重新选择并预检查。" type="warning" :closable="false" show-icon />
-      <el-table :data="preview.rows" class="data-table import-table" max-height="460" empty-text="Excel 未包含可检查的数据行。"><el-table-column prop="rowNumber" label="Excel行" width="84" /><el-table-column prop="studentNumber" label="学号" min-width="120" /><el-table-column prop="name" label="姓名" min-width="100" /><el-table-column prop="classCode" label="班级" min-width="120" /><el-table-column prop="grade" label="年级" min-width="90" /><el-table-column prop="username" label="用户名" min-width="120" /><el-table-column prop="accountStatus" label="账号状态" min-width="100" /><el-table-column label="提供密码" min-width="100"><template #default="{ row }">{{ row.passwordProvided ? '是' : row.passwordWillGenerate ? '否，将生成' : '否' }}</template></el-table-column><el-table-column label="行状态" min-width="100"><template #default="{ row }"><el-tag :type="row.status === 'VALID' ? 'success' : 'danger'">{{ row.status === 'VALID' ? '有效' : '无效' }}</el-tag></template></el-table-column><el-table-column label="字段错误" min-width="260"><template #default="{ row }"><span v-if="!row.errors?.length">—</span><ul v-else class="error-list"><li v-for="error in row.errors" :key="`${error.field}-${error.code}`"><strong>{{ error.code }}</strong>：{{ error.message }}</li></ul></template></el-table-column></el-table>
-      <div class="stage-actions confirm-area"><el-button type="primary" :disabled="!canConfirm" :loading="confirming" @click="confirmImport">确认入库</el-button><span>确认时会重新上传当前原始 Excel，不会提交预览 JSON。</span></div>
+      <el-table :data="preview.rows" class="data-table import-table" max-height="460" empty-text="Excel 未包含可检查的数据行。"><el-table-column prop="rowNumber" label="Excel行" width="84" /><el-table-column prop="studentNumber" label="学号" min-width="120" /><el-table-column prop="name" label="姓名" min-width="100" /><el-table-column prop="classCode" label="班级" min-width="120" /><el-table-column prop="grade" label="年级" min-width="90" /><el-table-column prop="username" label="用户名" min-width="120" /><el-table-column label="账号状态" min-width="100"><template #default="{ row }">{{ accountStatusLabel(row.accountStatus) }}</template></el-table-column><el-table-column label="提供密码" min-width="100"><template #default="{ row }">{{ row.passwordProvided ? '是' : row.passwordWillGenerate ? '否，将生成' : '否' }}</template></el-table-column><el-table-column label="行状态" min-width="100"><template #default="{ row }"><el-tag :type="row.status === 'VALID' ? 'success' : 'danger'">{{ row.status === 'VALID' ? '有效' : '无效' }}</el-tag></template></el-table-column><el-table-column label="字段错误" min-width="260"><template #default="{ row }"><span v-if="!row.errors?.length">—</span><ul v-else class="error-list"><li v-for="error in row.errors" :key="`${error.field}-${error.code}`">{{ error.message }}</li></ul></template></el-table-column></el-table>
+      <div class="stage-actions confirm-area"><el-button type="primary" :disabled="!canConfirm" :loading="confirming" @click="confirmImport">确认入库</el-button><span>确认后将重新校验当前文件并导入。</span></div>
     </section>
-    <section v-if="result" class="import-stage sensitive-result"><div class="section-title-row"><div><h2>3. 账号发放结果</h2><p>请立即安全发放初始密码；刷新页面或点击清空后不能恢复。</p></div><div><el-button @click="downloadAccounts">下载账号发放 Excel</el-button><el-button type="danger" plain @click="clearSensitiveResult">清空敏感结果</el-button></div></div>
+    <section v-if="result" class="import-stage sensitive-result"><div class="section-title-row"><div><h2>3. 账号发放结果</h2><p>请立即保存并发放初始密码；刷新页面或点击清空后不能恢复。</p></div><div><el-button @click="downloadAccounts">下载账号发放 Excel</el-button><el-button type="danger" plain @click="clearSensitiveResult">清空敏感结果</el-button></div></div>
       <el-alert :title="`本次已导入 ${result.importedCount}/${result.totalCount} 名学生。所有账号首次登录后必须修改初始密码。`" type="success" :closable="false" show-icon />
-      <el-table :data="result.accounts" class="data-table" max-height="420"><el-table-column prop="studentNumber" label="学号" min-width="120" /><el-table-column prop="name" label="姓名" min-width="100" /><el-table-column prop="classCode" label="班级" min-width="120" /><el-table-column prop="username" label="用户名" min-width="120" /><el-table-column prop="initialPassword" label="初始密码" min-width="150" /><el-table-column prop="accountStatus" label="账号状态" min-width="105" /><el-table-column label="首次登录" min-width="170"><template #default="{ row }">{{ row.mustChangePassword ? '必须修改初始密码' : '无需修改' }}</template></el-table-column></el-table>
+      <el-table :data="result.accounts" class="data-table" max-height="420"><el-table-column prop="studentNumber" label="学号" min-width="120" /><el-table-column prop="name" label="姓名" min-width="100" /><el-table-column prop="classCode" label="班级" min-width="120" /><el-table-column prop="username" label="用户名" min-width="120" /><el-table-column prop="initialPassword" label="初始密码" min-width="150" /><el-table-column label="账号状态" min-width="105"><template #default="{ row }">{{ accountStatusLabel(row.accountStatus) }}</template></el-table-column><el-table-column label="首次登录" min-width="170"><template #default="{ row }">{{ row.mustChangePassword ? '必须修改初始密码' : '无需修改' }}</template></el-table-column></el-table>
     </section>
   </section>
 </template>

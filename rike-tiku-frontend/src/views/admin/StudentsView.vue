@@ -240,7 +240,7 @@ onMounted(async () => {
 <template>
   <section class="admin-page">
     <div class="page-heading">
-      <div><h1>学生管理</h1><p>管理单个学生账号、档案、主班级历史和初始密码。</p></div>
+      <div><h1>学生管理</h1></div>
       <div><el-button :disabled="selectedStudents.length === 0" @click="resetSelectedPasswords">批量恢复默认密码</el-button><el-button @click="$router.push('/admin/students/import')">Excel 批量导入</el-button><el-button type="primary" @click="openCreate">新增学生</el-button></div>
     </div>
     <el-alert v-if="initialPassword" class="inline-alert" type="warning" :closable="false" show-icon>
