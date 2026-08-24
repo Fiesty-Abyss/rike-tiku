@@ -15,7 +15,7 @@ describe('教师 AI 候选共享工作区',()=>{
   beforeEach(()=>vi.clearAllMocks())
   it('完成母题加载、生成、候选查看和 APPROVE/REJECT 质量评价',async()=>{
     const api=client();const wrapper=mount(AiQuestionGenerationWorkspace,{props:{mode:'TEACHER',client:api},global:{stubs,directives:{loading:()=>undefined}}});await flushPromises()
-    expect(api.fetchMothers).toHaveBeenCalledOnce();expect(api.fetchTasks).toHaveBeenCalledOnce();expect(wrapper.text()).toContain('本人任教学科','疑似相似','使用视觉','教师授权学科候选题');expect(wrapper.text()).not.toContain('AI 模型管理','生成任务1')
+    expect(api.fetchMothers).toHaveBeenCalledOnce();expect(api.fetchTasks).toHaveBeenCalledOnce();expect(wrapper.text()).toContain('仅显示已发布母题','疑似相似','教师授权学科候选题');expect(wrapper.text()).not.toContain('AI 模型管理','deepseek-v4-flash','Provider','使用视觉','技术结构')
     const vm=wrapper.vm as unknown as {form:{motherQuestionId?:number;knowledgePointIds:number[]};review:{reviewResult:string;reviewMinutes:number;reviewComment?:string};changeMother:()=>Promise<void>;generate:()=>Promise<void>;submitReview:()=>Promise<void>}
     vm.form.motherQuestionId=1;await vm.changeMother();vm.form.knowledgePointIds=[11];await vm.generate()
     expect(api.fetchKnowledgePoints).toHaveBeenCalledWith(1);expect(api.createTask).toHaveBeenCalledWith(expect.objectContaining({motherQuestionId:1,knowledgePointIds:[11]}))

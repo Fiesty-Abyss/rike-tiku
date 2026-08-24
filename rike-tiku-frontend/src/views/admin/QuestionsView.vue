@@ -486,12 +486,7 @@ onMounted(async () => {
 <template>
   <section class="admin-page question-page">
     <div class="page-heading">
-      <div>
-        <h1>题库审核发布</h1>
-        <p>
-          草稿、审核与发布由后端状态机控制；版权与来源必须在发布时通过复核。
-        </p>
-      </div>
+      <div><h1>题库审核发布</h1></div>
       <div>
         <el-button @click="router.push('/admin/questions/import')"
           >批量导入题目</el-button
@@ -885,7 +880,7 @@ onMounted(async () => {
           ><el-form-item label="来源地址"
             ><el-input
               v-model="source.sourceAddress"
-              placeholder="URL 或受控相对路径" /></el-form-item
+              placeholder="来源链接或文件路径" /></el-form-item
           ><el-form-item label="权利状态"
             ><el-select v-model="source.rightsStatus"
               ><el-option

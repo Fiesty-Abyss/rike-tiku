@@ -205,7 +205,7 @@ function formatDate(value: string | null) {
                   {{ scope.className }} · {{ scope.subjectName }}
                 </li>
               </ul>
-              <p v-else>当前没有 ACTIVE 任课关系。</p>
+              <p v-else>当前没有可用的任课关系。</p>
             </div>
           </template>
         </section>
@@ -234,7 +234,6 @@ function formatDate(value: string | null) {
           <div class="profile-section-heading">
             <div>
               <h2>账号安全</h2>
-              <p>修改密码继续使用现有安全流程，不会建立第二套账号机制。</p>
             </div>
             <el-button type="primary" plain @click="passwordVisible = true">修改密码</el-button>
           </div>

@@ -75,7 +75,7 @@ onMounted(() => void load())
       </section>
       <section class="workspace-card">
         <div class="section-title-row">
-          <div><h2>{{ isTeacher ? '可联系学生' : '联系老师' }}</h2><p>{{ isTeacher ? '也可从班级学科工作台的学生名单发起私信。' : '名单由当前主班级的 ACTIVE 任课关系自动生成。' }}</p></div>
+          <div><h2>{{ isTeacher ? '可联系学生' : '联系老师' }}</h2><p>{{ isTeacher ? '也可从班级学科工作台的学生名单发起私信。' : '可联系当前班级的任课老师。' }}</p></div>
         </div>
         <div v-if="contacts.length" class="contact-list">
           <button v-for="contact in contacts" :key="`${contact.teachingAssignmentId}-${contact.studentId || 0}`" type="button" class="contact-row" @click="openContact(contact)">
