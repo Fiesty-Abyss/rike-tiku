@@ -121,8 +121,7 @@ PR #40 候选的最终回归为：后端 **227 tests、0 failures、0 errors、3
 
 - [最终截图证据目录](FINAL_SCREENSHOT_EVIDENCE_CATALOG.md)：截图、数据、代码、API、表、迁移、测试、论文图注与不应声称的结论。
 - [快速功能—截图—代码索引](FEATURE_SCREENSHOT_CODE_INDEX.md) 与 [功能技术地图](FEATURE_CODE_TECH_MAP.md)。
-- [论文写作中心](THESIS_WRITING_HUB.md)、[论文事实核验](thesis/RIKE_THESIS_FACT_CHECK.md)、[答辩提纲](thesis/RIKE_DEFENSE_OUTLINE.md)、[答辩事实问答](DEFENSE_FACTS_AND_QA.md)。
-- [正式参考文献 22 条](THESIS_REFERENCES.md)、[引用使用矩阵](thesis/RIKE_REFERENCE_USAGE_MATRIX.md)。`research-only` 资料不属于正式论文引用。
+- [答辩事实问答](DEFENSE_FACTS_AND_QA.md)。
 
 ## 8a. PR #35 试卷发布管理维护（已 ordinary merge）
 
@@ -134,14 +133,14 @@ PR #35 仅补齐教师试卷发布后的管理闭环，不新增迁移、表或�
 
 | 论文主题 | 截图/代码入口 | 数据库与文献入口 |
 |---|---|---|
-| 需求分析与总体设计 | [截图目录](FINAL_SCREENSHOT_EVIDENCE_CATALOG.md)、[功能技术地图](FEATURE_CODE_TECH_MAP.md) | [引用使用矩阵](thesis/RIKE_REFERENCE_USAGE_MATRIX.md) |
+| 需求分析与总体设计 | [截图目录](FINAL_SCREENSHOT_EVIDENCE_CATALOG.md)、[功能技术地图](FEATURE_CODE_TECH_MAP.md) | [数据库结构参考](DATABASE_SCHEMA_REFERENCE.md) |
 | 数据库设计 | [数据库结构参考](DATABASE_SCHEMA_REFERENCE.md)、[功能—表地图](FEATURE_DATABASE_TABLE_MAP.md) | [V30 DDL](../database/schema_snapshot_v30.sql) |
 | 学生学习闭环 | [学生/练习/错题截图](FINAL_SCREENSHOT_EVIDENCE_CATALOG.md#pr-33-历史匿名图0142) | `lian_xi_*`、`xue_sheng_da_ti`、`cuo_ti_ji_lu`；见功能—表地图 |
 | AI 边界 | [AI 截图与图注](FINAL_SCREENSHOT_EVIDENCE_CATALOG.md) | [AI 最终实验结果](AI_FINAL_EXPERIMENT_RESULTS.md)、引用矩阵；不得把外部阻塞写成 PASS |
 | 专题学习 | [V30 专题证据](FINAL_SCREENSHOT_EVIDENCE_CATALOG.md#v30-机器浏览器证据) | `ti_mu` 与专题单元关系；V20/V26 |
 | 教师组卷与发布 | [混合试卷证据](FINAL_SCREENSHOT_EVIDENCE_CATALOG.md#v30-机器浏览器证据) | `shi_juan*`、V27/V30；主观题不自动评分 |
 | 管理员与 Excel | [Excel 图和导入页](FINAL_SCREENSHOT_EVIDENCE_CATALOG.md#excel-模板与导入页面资料) | [Excel 导入指南](EXCEL_IMPORT_GUIDE.md)、导入/审核表 |
-| 测试与答辩 | [事实核验](thesis/RIKE_THESIS_FACT_CHECK.md)、[答辩提纲](thesis/RIKE_DEFENSE_OUTLINE.md) | [开发状态](DEVELOPMENT_STATUS.md)、[引用使用矩阵](thesis/RIKE_REFERENCE_USAGE_MATRIX.md) |
+| 测试与答辩 | [最终截图证据目录](FINAL_SCREENSHOT_EVIDENCE_CATALOG.md)、[答辩事实问答](DEFENSE_FACTS_AND_QA.md) | [开发状态](DEVELOPMENT_STATUS.md) |
 
 ## 10. 最终演示数据与门户实时统计（final-demo-cleanup）
 

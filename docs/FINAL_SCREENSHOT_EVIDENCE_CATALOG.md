@@ -49,7 +49,7 @@ V30-01–14、V30-17–18 为 `THESIS_READY + MACHINE_BROWSER_VERIFIED`，环境
 
 ## PR #33 历史匿名图（01–42）
 
-这些图均为 `RAW_EVIDENCE + HISTORICAL`，原始清单见 [thesis-final README](evidence/thesis-final/README.md)。数据均为匿名 `rike_tiku_demo` API，除 09/10 明确为确定性 UI 夹具。截图日期/历史 commit 以相邻 `browser-results-pr33.json` 和 PR #33 提交记录为准；不把 Demo 实体 ID 写成正式库事实。每行均给出页面实际可见范围、追溯代码和可直接使用的客观图注。
+这些图均为 `RAW_EVIDENCE + HISTORICAL`。数据均为匿名 `rike_tiku_demo` API，除 09/10 明确为确定性 UI 夹具。截图日期/历史 commit 以相邻 `browser-results-pr33.json` 和 PR #33 提交记录为准；不把 Demo 实体 ID 写成正式库事实。每行均给出页面实际可见范围、追溯代码和可直接使用的客观图注。
 
 | 图 | 页面/角色/可见内容 | 数据、代码/API、表/Flyway、测试 | 论文图注；可证明 / 不可证明 |
 |---|---|---|---|

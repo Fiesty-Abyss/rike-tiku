@@ -11,4 +11,4 @@
 | 2026-08-17，PR #34 | `fix/topic-learning-paper-polish` | 15/45 专题大题、SUBJECTIVE 手动组卷、中文题型、V30 发布附件快照、主观待处理语义 | 已 ordinary merge，merge commit `ea784b5a1b6572ea1a2625db347859bd6e410eda`；V30、50 表是当前结构基线。 |
 | 2026-08-18，PR #35 | `fix/paper-release-management` | 任课范围唯一选择、私有题隔离、班级发布记录、学生提交查看、撤回、试卷软删除与历史保留 | 已 ordinary merge，merge commit `fde39c53efca316010abf63acf56fda2c631315c`；最终自动化为后端 221（0/0/3）、前端 68 files / 224 tests（0 failures）；用户人工接受，`MACHINE_BROWSER = NOT_RUN`。 |
 
-历史条目不得用于声称当前仍为 V14/V29、35 表、8 轮答疑、旧测试计数或 PR #33 未合并。完整可引用事实见 [最终项目事实包](FINAL_PROJECT_FACTS.md) 和 [论文事实核验](thesis/RIKE_THESIS_FACT_CHECK.md)。
+历史条目不得用于声称当前仍为 V14/V29、35 表、8 轮答疑、旧测试计数或 PR #33 未合并。当前可引用产品事实见 [最终项目事实包](FINAL_PROJECT_FACTS.md)。

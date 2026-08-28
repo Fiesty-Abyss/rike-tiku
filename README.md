@@ -7,7 +7,6 @@
 - [最终项目事实包](docs/FINAL_PROJECT_FACTS.md) · [最终截图证据目录](docs/FINAL_SCREENSHOT_EVIDENCE_CATALOG.md) · [功能—截图—代码—表快速索引](docs/FEATURE_SCREENSHOT_CODE_INDEX.md) · [功能技术地图](docs/FEATURE_CODE_TECH_MAP.md)
 - [功能—数据库表地图](docs/FEATURE_DATABASE_TABLE_MAP.md) · [Excel 精确导入指南](docs/EXCEL_IMPORT_GUIDE.md) · [学生模板](docs/templates/student-import-template.xlsx) · [题目模板](docs/templates/question-import-template.xlsx) · [203 班演示导入资料](docs/demo-import/README.md) · [Excel 模板/导入页截图](docs/FINAL_SCREENSHOT_EVIDENCE_CATALOG.md#excel-模板与导入页面资料)
 - [V30 数据库参考](docs/DATABASE_SCHEMA_REFERENCE.md) · [V30 纯结构快照](database/schema_snapshot_v30.sql) · [V29 历史快照](database/schema_snapshot_v29.sql) · [SQL 示例](docs/SQL_EXAMPLES.md)
-- [论文写作中心](docs/THESIS_WRITING_HUB.md) · [论文初稿](docs/thesis/RIKE_THESIS_DRAFT.md) · [事实核对表](docs/thesis/RIKE_THESIS_FACT_CHECK.md) · [答辩提纲](docs/thesis/RIKE_DEFENSE_OUTLINE.md) · [正式参考文献 22 条](docs/THESIS_REFERENCES.md)
 
 ## Post-merge V30 专题与试卷质量修补（2026-08-17）
 
@@ -148,7 +147,7 @@
 ### 论文与参考
 
 - 可用于论文第 5 章结果反馈和第 6 章 AI/正式事实边界。
-- 正式论文引用：[生成式人工智能的有限能力与教育变革（白名单 [1]）](docs/THESIS_REFERENCES.md#正式参考文献白名单)；[人机协同评价（白名单 [9]）](https://doi.org/10.13927/j.cnki.yuan.20240422.001)。
+- 相关研究背景可参阅[人机协同评价](https://doi.org/10.13927/j.cnki.yuan.20240422.001)。
 
 ## 5. AI 当前题答疑
 
@@ -179,7 +178,7 @@
 ### 论文与参考
 
 - 可用于论文第 2 章智能辅导与个性化反馈、第 6 章受控 Provider 设计。
-- 正式论文引用：[生成式 AI 教育应用及其规制（白名单 [10]）](docs/THESIS_REFERENCES.md#正式参考文献白名单)；[人机协同智能教学（白名单 [18]）](https://doi.org/10.16209/j.cnki.cust.2025.06.015)。
+- 相关研究背景可参阅[人机协同智能教学](https://doi.org/10.16209/j.cnki.cust.2025.06.015)。
 
 ## 6. AI 变式练习
 
@@ -210,7 +209,7 @@
 ### 论文与参考
 
 - 可用于论文第 2 章自动出题、第 6 章结构化生成与第 7 章人工审核。
-- 正式论文引用：[生成式人工智能对高等理科教育的影响（白名单 [11]）](docs/THESIS_REFERENCES.md#正式参考文献白名单)；[AI 支持的人机协同智能教学（白名单 [18]）](https://doi.org/10.16209/j.cnki.cust.2025.06.015)。
+- 相关研究背景可参阅[AI 支持的人机协同智能教学](https://doi.org/10.16209/j.cnki.cust.2025.06.015)。
 
 ## 7. 教师任课工作台
 
@@ -504,8 +503,6 @@ Provider 配置与学生业务 API 分离，前端只能提交受控模型 ID。
 - 技术栈：Java 25、Spring Boot 4.1、Vue 3、TypeScript、MySQL 8.4、Flyway V1–V30。
 - 数据模型：50 张业务表；[字段/约束参考](docs/DATABASE_SCHEMA_REFERENCE.md)、[V29 历史纯结构快照](database/schema_snapshot_v29.sql)、[ER 模块图](database/diagrams/rike_tiku_er.md)。
 - Excel：[学生模板](docs/templates/student-import-template.xlsx)、[题目19列模板](docs/templates/question-import-template.xlsx)、[Preview/Confirm 指南](docs/EXCEL_IMPORT_GUIDE.md)。
-- 论文：[写作资料中心](docs/THESIS_WRITING_HUB.md)、[论文初稿](docs/thesis/RIKE_THESIS_DRAFT.md)、[事实核对表](docs/thesis/RIKE_THESIS_FACT_CHECK.md)、[答辩提纲](docs/thesis/RIKE_DEFENSE_OUTLINE.md)。
-- 正式论文唯一白名单：[22条正式参考文献](docs/THESIS_REFERENCES.md)；正式引用管理：[references.bib](docs/references/references.bib)。扩展工程调研已物理隔离到 [research-only](docs/references/research-only/README.md)，不得作为开题报告或毕业论文正式引用。文献只用于说明研究与设计依据，不代表 RIKE 自身实验结果。
 
 真实 Provider 状态以当前验收记录为准：DeepSeek variant、DeepSeek tutor、GLM Vision、xAI Vision、Web Search 均因没有可安全使用的轮换后凭据而为 `BLOCKED_EXTERNAL_PROVIDER`；Mock/Fake 只用于自动化，不记作真实调用。PR #34 用户人工验收已包含 `PRINT_USER_VERIFIED`；普通合并后的最终 main SHA 由 `FINAL_PROJECT_FACTS.md` 固化。
 

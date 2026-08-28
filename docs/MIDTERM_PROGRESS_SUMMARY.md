@@ -30,4 +30,4 @@ PR #31 后端全量 173 tests（0 failure、0 error、3 skipped），前端全�
 
 ## 代表材料
 
-代表界面与图注见 [论文插图索引](THESIS_FIGURE_INDEX.md)，功能实现位置见 [功能代码技术映射](FEATURE_CODE_TECH_MAP.md)，数据库事实见 [数据库结构参考](DATABASE_SCHEMA_REFERENCE.md)。
+代表界面与图注见 [最终截图证据目录](FINAL_SCREENSHOT_EVIDENCE_CATALOG.md)，功能实现位置见 [功能代码技术映射](FEATURE_CODE_TECH_MAP.md)，数据库事实见 [数据库结构参考](DATABASE_SCHEMA_REFERENCE.md)。
