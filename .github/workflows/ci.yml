@@ -1,0 +1,84 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend:
+    name: Backend (Java 25 + MySQL 8.4)
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.4
+        env:
+          MYSQL_ROOT_PASSWORD: ci-root-password
+          MYSQL_DATABASE: rike_tiku
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -pci-root-password"
+          --health-interval=5s --health-timeout=5s --health-retries=30
+    env:
+      RIKE_TIKU_DB_HOST: 127.0.0.1
+      RIKE_TIKU_DB_PORT: 3306
+      RIKE_TIKU_DB_NAME: rike_tiku
+      RIKE_TIKU_DB_USERNAME: root
+      RIKE_TIKU_DB_PASSWORD: ci-root-password
+      RIKE_TIKU_JWT_SECRET: ci-only-jwt-secret-with-more-than-32-bytes
+    defaults:
+      run:
+        working-directory: rike-tiku-backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '25'
+          cache: maven
+      - name: Test
+        run: mvn -B -ntp verify
+      - name: Upload test reports
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: surefire-reports
+          path: rike-tiku-backend/target/surefire-reports
+
+  frontend:
+    name: Frontend (Node 24)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: rike-tiku-frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: rike-tiku-frontend/package-lock.json
+      - run: npm ci
+      - run: npm run type-check
+      - run: npm test
+      - run: npm run build
+
+  question-pipeline:
+    name: Question pipeline (Python)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Unit tests
+        working-directory: tools/question-pipeline
+        run: python -m unittest test_parser.py

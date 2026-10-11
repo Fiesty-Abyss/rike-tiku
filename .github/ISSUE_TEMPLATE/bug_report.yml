@@ -1,0 +1,45 @@
+name: 问题反馈 / Bug report
+description: 报告一个可复现的缺陷
+labels: [bug]
+body:
+  - type: input
+    id: version
+    attributes:
+      label: 版本
+      description: Release 版本号或提交哈希
+      placeholder: v1.0.0
+    validations:
+      required: true
+  - type: dropdown
+    id: role
+    attributes:
+      label: 涉及角色
+      multiple: true
+      options: [学生, 教师, 管理员, 未登录 / 门户]
+  - type: input
+    id: env
+    attributes:
+      label: 运行环境
+      description: 操作系统、浏览器、Java / Node / MySQL 版本
+      placeholder: Windows 11 / Chrome 140 / Java 25 / Node 24 / MySQL 8.4
+  - type: textarea
+    id: steps
+    attributes:
+      label: 复现步骤
+      placeholder: |
+        1. 使用 demo_student 登录
+        2. 进入“自主练习”……
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: 期望结果与实际结果
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: 日志 / 截图
+      description: 请先去掉数据库密码、JWT、API Key 等敏感信息
+      render: text
