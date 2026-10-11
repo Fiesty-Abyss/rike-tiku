@@ -38,3 +38,6 @@ docs/demo-import/*.png
 docs/demo-import/*.inspect.ndjson
 docs/evidence/final-demo-cleanup/
 
+
+# Local question-bank source data (never committed; see CONTENT_NOTICE.md)
+question-bank/*/

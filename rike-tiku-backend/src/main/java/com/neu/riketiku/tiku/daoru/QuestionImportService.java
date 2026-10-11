@@ -51,7 +51,7 @@ public class QuestionImportService {
 
     public QuestionImportService(JdbcTemplate jdbc,
                                  QuestionAttachmentStorage attachmentStorage,
-                                 @Value("${rike.tiku.question-import.source-root:../题库}") String sourceRoot,
+                                 @Value("${rike.tiku.question-import.source-root:../question-bank}") String sourceRoot,
                                  GuanLiCaoZuoRiZhiFuWu auditLog) {
         this.jdbc = jdbc;
         this.attachmentStorage = attachmentStorage;

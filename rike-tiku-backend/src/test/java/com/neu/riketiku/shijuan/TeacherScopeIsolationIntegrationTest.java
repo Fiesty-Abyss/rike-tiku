@@ -25,7 +25,7 @@ class TeacherScopeIsolationIntegrationTest extends AdminQuestionIntegrationTestS
     @Test
     @Transactional
     void teacher203CannotQueryOrPublishThrough199ScopeAndPrivateQuestionsStaySeparated() {
-        long zhang203 = teacher("张生康203", "T203");
+        long zhang203 = teacher("韩叙川203", "T203");
         long teacher199 = teacher("199范围教师", "T199");
         long class203 = classRoom("CLASS_203_SCOPE", "203班");
         long class199 = classRoom("CLASS_199_SCOPE", "199班");
