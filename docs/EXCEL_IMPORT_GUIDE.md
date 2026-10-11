@@ -11,7 +11,7 @@
 3. 上传后先执行 Preview，逐行修正错误，再 Confirm。
 4. Confirm 成功后仅在当次受控响应中安全交付初始密码；不要截图、复制到仓库或发到非安全渠道。
 
-![学生批量导入页面（匿名受控演示数据）](evidence/docs-final/37-student-import.png)
+![学生批量导入页面（匿名受控演示数据）](screenshots/16-admin-student-import.png)
 
 图：学生批量导入页面。实际模板的 Sheet 名和 7 个表头不可修改；页面截图是历史原始证据，模板文件才是字段的精确事实。
 
@@ -22,7 +22,7 @@
 3. 填写数据库已有的完整知识点路径；图片使用对象标记，来源文件必须位于受控根且存在。
 4. Preview 后再 Confirm；所有题及 STANDARD 均先进入 `PENDING`，必须人工审核才可 `PUBLISHED`。
 
-![题目批量导入页面（匿名受控演示数据）](evidence/docs-final/36-question-import.png)
+![题目批量导入页面（匿名受控演示数据）](screenshots/17-admin-question-import.png)
 
 图：题目导入页面。19 列模板与来源/附件校验由服务端执行，Excel 中的“审核状态”不能绕过状态机。
 
