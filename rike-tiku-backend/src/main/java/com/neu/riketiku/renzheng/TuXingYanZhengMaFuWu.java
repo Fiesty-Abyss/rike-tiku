@@ -21,7 +21,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-/** 本科毕设演示用的一次性图形验证码；仅在内存中保存验证码和值的有效期。 */
+/** 本地演示用的一次性图形验证码；仅在内存中保存验证码和值的有效期。 */
 @Service
 public class TuXingYanZhengMaFuWu {
     private static final String CHARACTERS = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";

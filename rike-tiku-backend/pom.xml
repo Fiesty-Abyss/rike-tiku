@@ -15,7 +15,7 @@
     <artifactId>rike-tiku-backend</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>rike-tiku-backend</name>
-    <description>高中理科在线题库实训管理系统后端基础工程</description>
+    <description>RIKE 理科学习辅助系统后端服务</description>
 
     <properties>
         <java.version>25</java.version>

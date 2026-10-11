@@ -35,7 +35,7 @@
 
 列表、创建和更新响应都不返回 Key，只返回 `apiKeyConfigured`。页面使用掩码表示已配置；更新时 `apiKey` 为空不会替换原 Key，清除必须调用独立 DELETE 接口。前端不持久缓存完整 Key。
 
-本地本科毕设 Demo 模式允许 `ai_mo_xing_pei_zhi.api_mi_yao` 保存 Key。这不代表生产级 KMS。Key 不得进入 Git、V12 调用日志、异常、连接测试响应或学生端。
+本地 Demo 模式允许 `ai_mo_xing_pei_zhi.api_mi_yao` 保存 Key。这不代表生产级 KMS。Key 不得进入 Git、V12 调用日志、异常、连接测试响应或学生端。
 
 ## 连接测试
 
