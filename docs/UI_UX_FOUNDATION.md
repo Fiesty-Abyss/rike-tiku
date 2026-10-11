@@ -62,16 +62,3 @@
 ### Business capabilities retained
 
 视觉重构不得覆盖 `0 / 38`、`AnswerDisplay` 冻结选项、Demo360 逐项标准解析、`StandardAnalysis`、Topic18 分段、ScientificText / KaTeX、`50%` / `0.5` / `1/2` 显式 accepted answers、附件 Blob、`availableCount`、错题即时更新、类似练习、角色切换、权限和 CAPTCHA。
-
-## PR #27 Round 3 历史记录（人工验收未通过）
-
-以下内容只记录第三轮做过什么以及当时的机器证据，不再指导当前视觉实现。用户已明确判定第三轮 Portal、三科学科环境与动态叙事未达到要求；旧 Hero SVG、三张旧 WebP、Split Studio 构图和轻量 reveal 均可由 Round 4 替换。
-
-- Portal 不再使用“Hero + 三张卡片”的模板结构，改为事实 Hero、物理、化学、生物、学习闭环与登录五个 editorial 章节；三科使用同一系列的原创压缩 WebP，系统 Hero 使用原创科学语义 SVG。
-- 页面主背景采用冷灰、雾白、石英中性色；钴蓝、梅紫灰、玉石绿只进入对应学科的图像、标题光线和局部环境。管理员继续保持中性，不增加营销动效。
-- 学生和教师的具体学科工作区继续由 API 返回的稳定 `subjectCode` 驱动整页环境，不以题目 ID 或当前按钮颜色推导。题目、答案和解析仍置于高对比实体表面。
-- GSAP 只承担短 Hero 入场、视口 reveal 和小幅视差；动画以 transform/opacity 为主，组件卸载时 revert，`prefers-reduced-motion` 下内容直接展示，不 pin、不锁滚动、不追踪鼠标。
-- 390px 机器复验无横向溢出；图片均有准确 alt，物理首图预加载，其他学科图 lazy load；长公式由现有科学文本组件在窄屏内部滚动。
-- 结果/错题使用 `AnswerDisplay` 展示冻结选项内容，Topic18 使用 `StandardAnalysis` 按换行安全分段并继续复用 ScientificText/KaTeX；不使用原始 `v-html` 或完整 Markdown HTML 渲染器。
-
-Round 3 机器证据继续保留在 `docs/evidence/pr27-ui-round3/`，不替代用户的真实视觉、CAPTCHA 和浏览器验收。第三轮视觉被拒绝不回退同期已经完成的答案展示、标准解析、Topic 分段和确定性判分修正。

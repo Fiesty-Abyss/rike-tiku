@@ -13,7 +13,7 @@ PR #31 使用随机临时 MySQL 从空库完整执行并校验 14 个迁移和 3
 
 | 表 | 核心绑定与约束 |
 | --- | --- |
-| `ai_mo_xing_pei_zhi` | 唯一绑定 provider/model/用途（TEXT/VISION）；保存启停、默认、超时、0–1 次重试、Token 上限和最近测试元数据。本地项目演示模式允许 `api_mi_yao` 保存 Key，但 API 只返回是否配置，V12/异常/前端均不回显 |
+| `ai_mo_xing_pei_zhi` | 唯一绑定 provider/model/用途（TEXT/VISION）；保存启停、默认、超时、0–1 次重试、Token 上限和最近测试元数据。本地演示模式允许 `api_mi_yao` 保存 Key，但 API 只返回是否配置，V12/异常/前端均不回显 |
 | `ai_sheng_cheng_ren_wu` | 绑定 PUBLISHED 母题与 ADMIN/TEACHER 创建人；保存受控题型、排序知识点 JSON、难度 1–5、变化方式、1–3 数量、唯一 request hash、provider/model、Prompt 版本、视觉使用和 GENERATING/SUCCESS/FAILED 事实 |
 | `ai_hou_xuan_ti_zhi_liang_ping_jia` | 一题一条质量事实；保存变式摘要、NONE/SUSPECTED_DUPLICATE、视觉使用、五项可空 0/1 评价、PENDING/APPROVED/REJECTED、审核人/耗时/评论。候选题本体继续复用 `ti_mu` |
 | `ai_shi_jue_shang_xia_wen` | 唯一绑定题目、附件 SHA 集、provider/model、Prompt 版本；只保存受控视觉 JSON 和 SUCCESS/FAILED 元数据，不保存原图 Base64、Prompt、原始模型响应或 Key |

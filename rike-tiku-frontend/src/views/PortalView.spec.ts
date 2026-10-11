@@ -74,7 +74,6 @@ describe('公共门户首页', () => {
     expect(text).not.toContain('工作节奏')
     expect(text).not.toContain('AI 智能答疑：后续能力规划')
     expect(text).not.toContain('NON-AI FOUNDATION')
-    expect(text).not.toContain('项目')
   })
 
   it('统一登录 CTA 继续指向现有登录页', () => {

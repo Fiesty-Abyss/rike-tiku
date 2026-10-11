@@ -159,7 +159,7 @@ CREATE TABLE `ai_mo_xing_pei_zhi` (
   `provider_dai_ma` varchar(32) NOT NULL COMMENT 'DEEPSEEK/GLM',
   `mo_xing_dai_ma` varchar(128) NOT NULL,
   `api_di_zhi` varchar(500) NOT NULL,
-  `api_mi_yao` varchar(1000) DEFAULT NULL COMMENT '仅本地项目演示模式保存，API与日志禁止回显',
+  `api_mi_yao` varchar(1000) DEFAULT NULL COMMENT '仅本地演示模式保存，API与日志禁止回显',
   `yong_tu` varchar(16) NOT NULL COMMENT 'TEXT/VISION',
   `shi_fou_qi_yong` tinyint(1) NOT NULL DEFAULT '0',
   `shi_fou_mo_ren` tinyint(1) NOT NULL DEFAULT '0',
@@ -181,7 +181,7 @@ CREATE TABLE `ai_mo_xing_pei_zhi` (
   CONSTRAINT `ck_ai_mo_xing_timeout` CHECK ((`chao_shi_hao_miao` between 1000 and 120000)),
   CONSTRAINT `ck_ai_mo_xing_tokens` CHECK ((`zui_da_token` between 64 and 8192)),
   CONSTRAINT `ck_ai_mo_xing_usage` CHECK ((`yong_tu` in (_utf8mb4'TEXT',_utf8mb4'VISION',_utf8mb4'SEARCH')))
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='本地项目演示AI模型配置';
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='本地演示AI模型配置';
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `ai_sheng_cheng_ren_wu`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;

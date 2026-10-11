@@ -1,106 +1,49 @@
 # RIKE 文档索引
 
-本页按用途整理当前文档和历史证据。项目现状以根目录 [README](../README.md) 和 [开发状态](DEVELOPMENT_STATUS.md) 为入口；历史 PR、验收与测试材料保留原始阶段口径。
+本目录收录 RIKE 理科学习辅助系统的设计、接口、数据库与运维文档。快速上手请先看仓库根目录的 [README](../README.md)。
 
-## Project
+## 入门与运行
 
-- [项目首页](../README.md)
-- [开发状态](DEVELOPMENT_STATUS.md)
-- [产品说明](../PRODUCT.md)
-- [跨 AI 项目上下文](AI_PROJECT_CONTEXT.md)
-- [AI 开发交接](AI_HANDOFF.md)
-- [功能、代码、数据库与技术映射](FEATURE_CODE_TECH_MAP.md)
-- [本机正式运行环境](LOCAL_FORMAL_ENVIRONMENT.md)
+- [本地演示环境](DEMO_ENVIRONMENT.md)：演示库初始化、固定演示账号、启动端口与清理方式
+- [Excel 批量导入指南](EXCEL_IMPORT_GUIDE.md)：学生 / 题目导入模板、校验规则与常见错误
+- [导入模板](templates/) 与 [演示导入资料](demo-import/README.md)
+- [AI Provider 配置](AI_PROVIDER_CONFIGURATION.md)：DeepSeek / GLM / xAI 等模型的启用方式与密钥安全边界
 
-## Architecture
+## 设计
 
-- [总体设计](../DESIGN.md)
-- [UI 与交互基础](UI_UX_FOUNDATION.md)
-- [学习掌握度与规则推荐](LEARNING_MASTERY_RULE_RECOMMENDATION.md)
-- [ADR：不引入 Redis](architecture/ADR_REDIS_NOT_ADOPTED.md)
+- [设计系统](DESIGN_SYSTEM.md)：RIKE Aqua Future 视觉方向、动效与可访问性约束
+- [UI / UX 基础](UI_UX_FOUNDATION.md)
+- [掌握度与规则推荐](LEARNING_MASTERY_RULE_RECOMMENDATION.md)
+- [架构决策：暂不引入 Redis](architecture/ADR_REDIS_NOT_ADOPTED.md)
 
-## Database
+## 数据库
 
-- [当前数据库模型 V2](DATABASE_MODEL_V2.md)
-- [题库数据库模型 V1](QUESTION_DATABASE_MODEL_V1.md)
-- [数据库目录说明](../database/README.md)
-- [V14 数据库结构参考](DATABASE_SCHEMA_REFERENCE.md)
-- [V14 纯结构快照](../database/schema_snapshot_v14.sql)
-- [常用脱敏 SQL](SQL_EXAMPLES.md)
+- [数据库结构参考（V30）](DATABASE_SCHEMA_REFERENCE.md) · [结构快照](../database/schema_snapshot_v30.sql) · [ER 图](../database/diagrams/rike_tiku_er.md)
+- [题库数据模型 V1](QUESTION_DATABASE_MODEL_V1.md) · [数据模型 V2](DATABASE_MODEL_V2.md)
+- [SQL 示例](SQL_EXAMPLES.md)
 
-## Authentication
+## 接口与前端
 
-- [后端认证接口](AUTHENTICATION_API.md)
-- [前端认证](FRONTEND_AUTHENTICATION.md)
-- [统一登录与学生三科工作台](UI_AUTH_STUDENT_DASHBOARD.md)
-- [个人中心 API](PERSONAL_CENTER_API.md)
-- [个人中心前端](PERSONAL_CENTER_FRONTEND.md)
+| 模块 | 后端 API | 前端 |
+|---|---|---|
+| 认证 | [AUTHENTICATION_API](AUTHENTICATION_API.md) | [FRONTEND_AUTHENTICATION](FRONTEND_AUTHENTICATION.md) · [UI_AUTH_STUDENT_DASHBOARD](UI_AUTH_STUDENT_DASHBOARD.md) |
+| 学生练习 | [STUDENT_PRACTICE_API](STUDENT_PRACTICE_API.md) | [STUDENT_PRACTICE_FRONTEND](STUDENT_PRACTICE_FRONTEND.md) |
+| AI 学习辅助 | [AI_STUDENT_LEARNING_API](AI_STUDENT_LEARNING_API.md) · [AI_QUESTION_GENERATION_API](AI_QUESTION_GENERATION_API.md) · [AI_MODEL_MANAGEMENT_API](AI_MODEL_MANAGEMENT_API.md) | — |
+| 教师工作台 | [TEACHER_WORKSPACE_HIGH_FREQUENCY_API](TEACHER_WORKSPACE_HIGH_FREQUENCY_API.md) | [TEACHER_WORKSPACE_HIGH_FREQUENCY_FRONTEND](TEACHER_WORKSPACE_HIGH_FREQUENCY_FRONTEND.md) |
+| 师生私信 | [TEACHER_STUDENT_MESSAGING_API](TEACHER_STUDENT_MESSAGING_API.md) | [TEACHER_STUDENT_MESSAGING_FRONTEND](TEACHER_STUDENT_MESSAGING_FRONTEND.md) |
+| 个人中心 | [PERSONAL_CENTER_API](PERSONAL_CENTER_API.md) | [PERSONAL_CENTER_FRONTEND](PERSONAL_CENTER_FRONTEND.md) |
+| 班级管理 | [ADMIN_CLASS_MANAGEMENT_API](ADMIN_CLASS_MANAGEMENT_API.md) | — |
+| 学生管理 | [ADMIN_STUDENT_MANAGEMENT_API](ADMIN_STUDENT_MANAGEMENT_API.md) | [ADMIN_STUDENT_MANAGEMENT_FRONTEND](ADMIN_STUDENT_MANAGEMENT_FRONTEND.md) |
+| 学生导入 | [STUDENT_IMPORT_PREVIEW_API](STUDENT_IMPORT_PREVIEW_API.md) · [STUDENT_IMPORT_CONFIRM_API](STUDENT_IMPORT_CONFIRM_API.md) | [ADMIN_STUDENT_IMPORT_FRONTEND](ADMIN_STUDENT_IMPORT_FRONTEND.md) |
+| 任课分配 | [ADMIN_TEACHER_ASSIGNMENT_API](ADMIN_TEACHER_ASSIGNMENT_API.md) | [ADMIN_TEACHER_ASSIGNMENT_FRONTEND](ADMIN_TEACHER_ASSIGNMENT_FRONTEND.md) |
+| 题目导入 | [ADMIN_QUESTION_IMPORT_API](ADMIN_QUESTION_IMPORT_API.md) | [ADMIN_QUESTION_IMPORT_FRONTEND](ADMIN_QUESTION_IMPORT_FRONTEND.md) |
+| 题目审核 | [ADMIN_QUESTION_REVIEW_API](ADMIN_QUESTION_REVIEW_API.md) | [ADMIN_QUESTION_REVIEW_FRONTEND](ADMIN_QUESTION_REVIEW_FRONTEND.md) |
+| 操作日志 | [ADMIN_OPERATION_LOG_API](ADMIN_OPERATION_LOG_API.md) | — |
 
-## Admin
+## 内容
 
-- [学生管理 API](ADMIN_STUDENT_MANAGEMENT_API.md)
-- [学生管理前端](ADMIN_STUDENT_MANAGEMENT_FRONTEND.md)
-- [学生导入前端](ADMIN_STUDENT_IMPORT_FRONTEND.md)
-- [教师与任课 API](ADMIN_TEACHER_ASSIGNMENT_API.md)
-- [教师与任课前端](ADMIN_TEACHER_ASSIGNMENT_FRONTEND.md)
-- [班级管理 API](ADMIN_CLASS_MANAGEMENT_API.md)
-- [题库审核 API](ADMIN_QUESTION_REVIEW_API.md)
-- [题库审核前端](ADMIN_QUESTION_REVIEW_FRONTEND.md)
-- [题目导入 API](ADMIN_QUESTION_IMPORT_API.md)
-- [题目导入前端](ADMIN_QUESTION_IMPORT_FRONTEND.md)
-- [操作日志 API](ADMIN_OPERATION_LOG_API.md)
-- [Excel 导入指南与模板](EXCEL_IMPORT_GUIDE.md)
+- [题库与内容说明](../CONTENT_NOTICE.md)
+- [高频考点卡片来源说明](content/HIGH_FREQUENCY_POINTS_SOURCE.md) · [专题单元数据](content/topic-units.v2.json)
+- [演示变式题审核记录](DEMO_VARIANT_QUESTION_REVIEW.md)
 
-## Teacher
-
-- [教师工作台与高频考点 API](TEACHER_WORKSPACE_HIGH_FREQUENCY_API.md)
-- [教师工作台与高频考点前端](TEACHER_WORKSPACE_HIGH_FREQUENCY_FRONTEND.md)
-- [师生消息 API](TEACHER_STUDENT_MESSAGING_API.md)
-- [师生消息前端](TEACHER_STUDENT_MESSAGING_FRONTEND.md)
-- [AI 候选题生成与审核 API](AI_QUESTION_GENERATION_API.md)
-
-## Student
-
-- [学生练习 API](STUDENT_PRACTICE_API.md)
-- [学生练习前端](STUDENT_PRACTICE_FRONTEND.md)
-- [学生导入预检查 API](STUDENT_IMPORT_PREVIEW_API.md)
-- [学生导入确认 API](STUDENT_IMPORT_CONFIRM_API.md)
-- [学生 AI 学习 API](AI_STUDENT_LEARNING_API.md)
-
-## AI
-
-- [AI Provider 配置](AI_PROVIDER_CONFIGURATION.md)
-- [学生 AI 学习 API](AI_STUDENT_LEARNING_API.md)
-- [管理员 AI 模型管理 API](AI_MODEL_MANAGEMENT_API.md)
-- [AI 候选题生成与审核 API](AI_QUESTION_GENERATION_API.md)
-- [AI 开发交接](AI_HANDOFF.md)
-
-## Demo
-
-- [本地演示验收环境](DEMO_ENVIRONMENT.md)
-- [Demo360 覆盖说明](DEMO360_COVERAGE.md)
-- [Demo360 覆盖矩阵](DEMO360_COVERAGE_MATRIX.xlsx)
-- [最终非 AI 演示题库历史快照](FINAL_DEMO_QUESTION_BANK.md)
-- [Demo 变式题候选审核历史记录](DEMO_VARIANT_QUESTION_REVIEW.md)
-
-## Test / Acceptance
-
-- [PR #31 最终机器证据](evidence/pr31-final/README.md)
-- [PR #32 真实桌面最终验证](evidence/pr32-desktop-final/README.md)
-- [最终人工验收清单](FINAL_MANUAL_ACCEPTANCE_CHECKLIST.md)
-- [AI 最终实验事实](AI_FINAL_EXPERIMENT_RESULTS.md)
-- [文档实现事实口径](DOCS_IMPLEMENTATION_FACTS.md)
-- [演示事实与问答](DEMO_FACTS_AND_QA.md)
-- [人体工学机器复查](HUMAN_FACTORS_REVIEW.md)
-- [开发时间线](DEVELOPMENT_TIMELINE.md)
-- [中期进展材料草稿](milestone_PROGRESS_SUMMARY.md)
-- [人工验收清单](MANUAL_ACCEPTANCE_CHECKLIST.md)
-- [人工验收问题记录](MANUAL_ACCEPTANCE_FINDINGS.md)
-- [V3.0 非 AI 完工审计](V3_NON_AI_COMPLETION_AUDIT.md)
-
-## Historical Evidence
-
-- [PR #27 机器与视觉证据目录](evidence/)
-- [项目总体设计与交接 V1.0](高中理科学习辅助系统_项目总体设计与交接说明_V1.0.docx)
-- [项目总体设计与交接 V1.1](高中理科学习辅助系统_项目总体设计与交接说明_V1.1.docx)
-- [V3.0 公开脱敏设计文档](集成大模型智能答疑的在线题库实训管理系统_项目总体设计与数据字典及任务交接说明_公开脱敏版_V3.0.docx)
+> 部分模块文档保留了开发阶段的实现记录（例如当时的迁移版本或 PR 编号），以 [CHANGELOG](../CHANGELOG.md) 和代码为准。

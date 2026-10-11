@@ -99,7 +99,7 @@ def question_template():
         "依据波速公式 v=fλ，代入 f=5 Hz、λ=2 m，得到 v=10 m/s。",
         "0", "0", "力学", "力学>机械振动与机械波>波速、波长与频率", "easy",
         "考查波速公式的直接应用。", "待审核", "待审核",
-        "试题文件：解析方案.md\n答案解析文件：来源合规检查.md",
+        "试题文件：README.md\n答案解析文件：PARSING.md",
     ])
     style_header(sheet, 2, len(headers))
     style_body(sheet, 3, 102, len(headers))

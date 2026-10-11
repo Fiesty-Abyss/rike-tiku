@@ -1,144 +1,82 @@
-# 本地演示验收环境
+# 本地演示环境
 
-> 本文描述匿名 `rike_tiku_demo`。PR #32 的本机正式 `rike_tiku` 与 Demo 严格分离；文档截图和可提交证据继续优先使用匿名 Demo。
+演示环境使用独立数据库 `rike_tiku_demo`，与正式库 `rike_tiku` 严格分离。演示数据**不在 Flyway 中**：应用正常启动不会写入任何演示数据，也没有公开的 seed 接口；只有显式执行下面的命令才会初始化。
 
-当前 Demo 结构目标为 Flyway V1–V14、35 张业务表。`reset/create/validate` 由当前后端 `DemoDataService` 校验 V14/35；V14 的 AI 配置、生成、评价与视觉缓存表默认不预置真实 Key 或调用数据。
+## 安全边界
 
-PR #31 机器测试结束后已再次执行 `acceptance-prepare`。当前人工验收基线为 14 个迁移、35 张业务表、三科各 120 道普通题加每科 6 道 Topic18，共 378 道；学习、私信、分析、会话、候选和调用日志等机器记录已清理。随后只在本机 `rike_tiku_demo.ai_mo_xing_pei_zhi` 配置两条启用的演示 Provider，API 只回显 `apiKeyConfigured`。当前状态为 `FINAL_MANUAL_ACCEPTANCE_PENDING`。
+- 默认目标库为 `rike_tiku_demo`；脚本和后端命令都会拒绝 `rike_tiku`、`mysql`、`information_schema`、`performance_schema`、`sys` 以及非法库名。
+- 数据库密码只从环境变量 `RIKE_TIKU_DB_PASSWORD` 读取，不写入仓库、不打印到日志。
+- 所有演示账号初始密码为 `a1234567`（数据库只保存 BCrypt 摘要），首次登录需修改。**请勿在公网环境使用演示数据。**
 
-## 用途与安全边界
-
-本工具只为项目本机人工验收准备可反复重建的数据。演示数据不在 Flyway 中，不会随应用正常启动写入，也没有公开 seed 接口或免认证入口。
-
-默认目标是 `rike_tiku_demo`。脚本和后端命令都会拒绝 `rike_tiku`、`mysql`、`information_schema`、`performance_schema`、`sys` 以及非法数据库名。数据库密码只从当前 PowerShell 的 `RIKE_TIKU_DB_PASSWORD` 读取，不写入仓库、不显示在日志中。
-
-## 准备与执行
-
-在仓库根目录打开 PowerShell，一条命令完成 `reset → seed → validate`：
+## 一键准备（Windows PowerShell）
 
 ```powershell
 $env:RIKE_TIKU_DB_PASSWORD = "你的本机MySQL密码"
-.\scripts\demo-environment.ps1 acceptance-prepare
+.\scripts\demo-environment.ps1 acceptance-prepare   # reset → seed → validate
+.\scripts\demo-environment.ps1 acceptance-backend   # 后端 http://localhost:18081
+.\scripts\demo-environment.ps1 acceptance-frontend  # 构建并预览前端 http://localhost:18080
 ```
 
-- `acceptance-prepare`：仅允许 `rike_tiku_demo`，依次重建、播种并校验最终人工验收数据。
-- `final-acceptance`：`acceptance-prepare` 的兼容入口，并显示前后端启动命令。
-- `create`：保留现有演示库，仅在不存在时创建并执行 V1–V14。
-- `reset`：删除并重建指定演示库，再执行 V1–V14；会清除该演示库的全部已有内容。
-- `seed`：清理旧演示数据后重建固定数据，重复执行结果稳定。
-- `validate`：只读检查 V1–V14/35 张表、验收账号、关系、题库、PHYSICS-S1 图片文件/hash 和学习记录。
-- `clean`：只删除带受控演示标识的数据，保留 Flyway 基础科目和样例。
+其他动作：
 
-## 启动方案 A：IDE 默认端口
+| 动作 | 说明 |
+|---|---|
+| `create` | 演示库不存在时创建并执行全部迁移 |
+| `reset` | 删除并重建演示库，再执行全部迁移（清除该库全部内容） |
+| `seed` | 清理旧演示数据后写入固定数据，可重复执行 |
+| `validate` | 只读校验迁移版本、表数量、账号、关系、题库与附件 |
+| `clean` | 只删除带演示标识的数据，保留 Flyway 基础数据 |
+| `smoke-backend` / `smoke` | 临时暴露验证码测试值，供脚本冒烟测试使用 |
 
-> **重要：直接点击未配置数据库名的 IDEA 默认运行配置会连接 `rike_tiku`，无法使用 demo 账号。**
+## 跨平台方式（Linux / macOS / Windows）
 
-在 IDEA 的 `Run → Edit Configurations → RikeTikuBackendApplication → Environment variables` 保留原有数据库密码和 JWT 配置，并增加：
+先创建空库并构建后端：
 
-```text
-RIKE_TIKU_DB_NAME=rike_tiku_demo
-RIKE_TIKU_DB_PASSWORD=你的本机MySQL密码
-RIKE_TIKU_JWT_SECRET=你原有的本机JWT密钥
+```bash
+mysql -uroot -p -e "CREATE DATABASE rike_tiku_demo DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci"
+cd rike-tiku-backend && mvn -DskipTests package
 ```
 
-不设置端口变量时，后端地址是 `http://localhost:8081`。WebStorm 前端使用默认 `http://localhost:8080`，其 `.env.local` 应为：
+然后以 `DemoEnvironmentCommand` 为入口执行迁移与初始化（`demo.action` 可取 `migrate` / `seed` / `validate` / `clean`）：
 
-```text
-VITE_API_BASE_URL=http://localhost:8081/api/v1
+```bash
+export RIKE_TIKU_DB_NAME=rike_tiku_demo RIKE_TIKU_DB_PASSWORD='你的本机MySQL密码' \
+       RIKE_TIKU_JWT_SECRET="$(openssl rand -hex 32)"
+java -Dloader.main=com.riketiku.demo.DemoEnvironmentCommand \
+     -cp target/rike-tiku-backend-*.jar org.springframework.boot.loader.launch.PropertiesLauncher \
+     --demo.action=seed --server.port=0
 ```
 
-API 地址必须包含 `/api/v1`。然后在 WebStorm 执行 `npm run dev`。
+最后按普通方式启动后端与前端（端口可按需调整，前端地址需与 CORS 设置一致）：
 
-## 启动方案 B：演示端口
-
-IDEA 环境变量：
-
-```text
-RIKE_TIKU_DB_NAME=rike_tiku_demo
-RIKE_TIKU_BACKEND_PORT=18081
-RIKE_TIKU_CORS_ALLOWED_ORIGINS=http://localhost:18080
-RIKE_TIKU_DB_PASSWORD=你的本机MySQL密码
-RIKE_TIKU_JWT_SECRET=你原有的本机JWT密钥
+```bash
+RIKE_TIKU_BACKEND_PORT=18081 RIKE_TIKU_CORS_ALLOWED_ORIGINS=http://localhost:18080 java -jar target/rike-tiku-backend-*.jar
+cd ../rike-tiku-frontend && VITE_API_BASE_URL=http://localhost:18081/api/v1 npm run dev -- --port 18080
 ```
-
-WebStorm 环境变量：
-
-```text
-VITE_API_BASE_URL=http://localhost:18081/api/v1
-```
-
-Vite 启动参数为 `--host localhost --port 18080`。
-
-最终人工验收不使用开发服务器。在执行 `acceptance-prepare` 的原 PowerShell 中启动后端：
-
-```powershell
-.\scripts\demo-environment.ps1 acceptance-backend
-```
-
-另开 PowerShell 启动前端（该动作不读取数据库密码）：
-
-```powershell
-.\scripts\demo-environment.ps1 acceptance-frontend
-```
-
-前端地址为 `http://localhost:18080`，后端地址为 `http://localhost:18081`，CORS 只允许此前端地址。
-
-`acceptance-backend` 明确设置 `RIKE_TIKU_CAPTCHA_EXPOSE_TEST_CODE=false`；浏览器必须识别页面当前图形验证码。`acceptance-frontend` 先用 `VITE_API_BASE_URL=http://localhost:18081/api/v1` 构建，再执行 `vite preview --host localhost --port 18080 --strictPort`，避免最终验收依赖 Vite dev server 的生命周期与 HMR 状态。
-
-机器 smoke 如需读取 `testCode`，必须在单独 PowerShell 临时启动：
-
-```powershell
-.\scripts\demo-environment.ps1 smoke-backend
-```
-
-前端运行时，再在第三个 PowerShell 执行：
-
-```powershell
-.\scripts\demo-environment.ps1 smoke
-```
-
-`smoke-backend` 只供脚本机器 smoke，禁止用于人工浏览器验收。smoke 检查后端健康接口、实际演示数据库、三个角色登录和错误角色入口，不输出 JWT、数据库密码或 JWT 密钥。
 
 ## 固定账号
 
-统一登录入口为 `http://localhost:8080/login`，演示端口方案为 `http://localhost:18080/login`。所有固定账号密码均为 `a1234567`，数据库只保存 BCrypt 摘要，且均不触发首次改密。
+登录入口：`http://localhost:18080/login`（或你配置的前端地址）。所有账号的初始密码均为 `a1234567`；由于它等于系统配置的默认密码，**首次登录会要求先修改密码**（之后用新密码登录，重新执行 `seed` 会恢复初始密码）。
 
-- 原 smoke 账号：`demo_admin`、`demo_teacher`、`demo_student`。
-- 场景教师：`demo_physics_admin`（ADMIN + TEACHER）、`demo_biology_teacher`、`demo_chemistry_teacher`。
-- 199 班学生：`demo_199_01` 至 `demo_199_05`。
-- 200 班学生：`demo_200_01` 至 `demo_200_03`。
+| 账号 | 角色 | 说明 |
+|---|---|---|
+| `demo_admin` | 管理员 | 系统管理、题库审核、AI 模型配置、操作日志 |
+| `demo_physics_admin` | 管理员 + 教师 | 双角色账号，登录时选择本次角色；任教 199 / 200 班物理 |
+| `demo_teacher` | 教师 | 理综演示教师 |
+| `demo_biology_teacher`、`demo_chemistry_teacher` | 教师 | 分别任教 199 / 200 班生物、化学 |
+| `demo_student` | 学生 | 演示学生 |
+| `demo_199_01` ~ `demo_199_05` | 学生 | 199 班 |
+| `demo_200_01` ~ `demo_200_03` | 学生 | 200 班 |
 
-公开 seed 使用匿名教师和学生姓名，姓名不参与权限或唯一性判断。多角色账号认证后选择本次角色，服务端仍依据数据库角色和 `jiao_shi_id + ban_ji_id + ke_mu_id` 授权。
+演示数据中的教师、学生均使用匿名称呼（如“物理教师”“199班学生01”）；授权始终由服务端依据数据库角色与 `教师 + 班级 + 科目` 三元任课关系判断。
 
 ## 固定数据
 
-- 班级：保留 `DEMO_CLASS_01`，新增 ACTIVE 的 `DEMO_CLASS_199 / 199班` 和 `DEMO_CLASS_200 / 200班`。
-- 教师：保留 `DEMO_T001`；新增物理管理员、生物、化学三位场景教师。
-- 学生：保留 `DEMO_S001`；199 班固定 5 名、200 班固定 3 名，每人只有 STUDENT 和一个 ACTIVE 主班级。
-- 任课：保留原三条；新增物理、生物、化学教师各自对 199/200 的两条 ACTIVE 三元关系，共 9 条 ACTIVE。
-- 知识点：覆盖 55 个叶子知识点，其中物理 18、化学 16、生物 21；完整矩阵见 `DEMO360_COVERAGE_MATRIX.xlsx`。
-- 题库：确定性 Demo360，物理、化学、生物各 120 道；三科均覆盖单选、多选、填空和简单、中等、困难三档。另有每科 6 道不评分的 Topic18 专题学习题，总题量 378。`PHYSICS-S1` 额外关联一张确定性原创 PNG，同时用于题干 QUESTION 和 STANDARD_ANALYSIS 图片显示验收。正文使用 `〔图片对象 I001〕` / `〔图片对象 I002〕`，附件表使用 `I001` / `I002` 对象 ID。
-- 科学排版：旧纯文本继续原样显示；需要分数、上下标、化学式或 display equation 的新内容使用显式 `\\(...\\)` / `\\[...\\]`。Demo Topic18 的代表性物理、化学和生物综合题已包含该格式，不改变普通题数量或导入接口。
-- 解析与判分：Demo360 的 246 道选择题在确定性 seed 中生成结论、逐项判断、学科依据和易错点；Topic18 全部为多段 STANDARD 解析。BV-06 复用既有每空 accepted answers，只显式接受 `1/2`、`0.5`、`50%`、`50％`，canonical 仍显示 `1/2`，不启用全局数值推导或 AI 判分。
-- 高频考点：V8 的 `gao_pin_kao_dian` 仅绑定真实 `ren_ke_guan_xi_id`；199/200 班物理、化学、生物六条场景任课关系各预置 2 条，共 12 条 ACTIVE 自编纯文本考点。
-- 私信：V9 的两张表不预置聊天内容；浏览器验收消息可由 `reset` 清理，固定账号和组织关系保持可重复 seed。
-- 个人中心：V10 的简介和头像字段默认均为空，不在固定 seed 写入二进制头像；浏览器验收内容可由 `reset → seed` 完整清理。
+- 班级：`DEMO_CLASS_01`、`DEMO_CLASS_199 / 199班`、`DEMO_CLASS_200 / 200班`
+- 任课：物理、生物、化学教师分别对 199 / 200 班建立任课关系
+- 知识点：55 个叶子知识点（物理 18、化学 16、生物 21）
+- 题库：物理、化学、生物各 120 道客观题（单选 / 多选 / 填空 × 简单 / 中等 / 困难），全部为项目自编并带 STANDARD 解析；另有 15 个专题单元的主观综合题
+- 高频考点：每条场景任课关系预置 2 条自编考点
+- 私信、个人简介与头像默认为空，演示过程中产生的数据可通过 `reset → seed` 完整清理
 
-Demo360 均为项目原创的“项目自编演示题”，不复制网络题、高考真题或教材习题原文；除 `PHYSICS-S1` 的确定性 PNG 验收对象外，其余题目保持无附件。题目均为 `PUBLISHED + ONLINE_PRACTICE` 自动判分题，STANDARD 解析为 `PUBLISHED`。QUESTION、ANSWER、STANDARD_ANALYSIS 三项来源均为 `TEACHER_CREATED + USER_PROVIDED`，并有 SUBMITTED、APPROVED 审核轨迹。
-
-最终 360 题只服务独立演示环境。V3.0 没有规定名为 MVP30 的 Excel 必须整体正式入库；MVP30 原始文件不修改，继续作为结构化导入能力验证素材，仓库中的网络候选题也未因本轮扩充而变为 `PUBLISHED`。
-
-## 清理与重建
-
-```powershell
-.\scripts\demo-environment.ps1 clean
-.\scripts\demo-environment.ps1 reset
-.\scripts\demo-environment.ps1 seed
-```
-
-`clean` 后演示账号、组织、题目和学习记录均被删除；`reset` 是库级重建，只允许对通过安全检查的演示库名执行。MVP30 原始 Excel 和正式 `rike_tiku` 不参与上述流程。
-## 历史 PR #27 验收快照
-
-> 本节为历史阶段快照，当前项目状态请查看 [README](../README.md) 和 [开发状态](DEVELOPMENT_STATUS.md)。
-
-当时分支为 `feat/non-ai-final-closure`，Draft PR #27。Flyway 为 V1–V11、27 张业务表；`reset`、`seed`、`validate`、`clean` 和 `final-acceptance` 继续受数据库名保护。最终人工验收只使用 `rike_tiku_demo`，不向正式 `rike_tiku` 写入题目或其他演示业务数据。该阶段机器口径为后端 133 个测试（0 failure、0 error、1 symbolic-link assumption skipped）、前端 49 文件 170/170、package/type-check/build/audit PASS、`acceptance-prepare → validate → smoke` PASS。第三轮机器浏览器截图见 `evidence/pr27-ui-round3/`；它不替代用户的真实 CAPTCHA 与视觉复验。
+题目来源记录为 `TEACHER_CREATED + USER_PROVIDED`（“RIKE 项目自编演示题”），并带 SUBMITTED、APPROVED 审核轨迹。内容来源说明见 [CONTENT_NOTICE](../CONTENT_NOTICE.md)。

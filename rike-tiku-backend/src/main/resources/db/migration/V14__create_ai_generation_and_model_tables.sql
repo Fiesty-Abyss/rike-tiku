@@ -3,7 +3,7 @@ CREATE TABLE ai_mo_xing_pei_zhi (
     provider_dai_ma VARCHAR(32) NOT NULL COMMENT 'DEEPSEEK/GLM',
     mo_xing_dai_ma VARCHAR(128) NOT NULL,
     api_di_zhi VARCHAR(500) NOT NULL,
-    api_mi_yao VARCHAR(1000) NULL COMMENT '仅本地项目演示模式保存，API与日志禁止回显',
+    api_mi_yao VARCHAR(1000) NULL COMMENT '仅本地演示模式保存，API与日志禁止回显',
     yong_tu VARCHAR(16) NOT NULL COMMENT 'TEXT/VISION',
     shi_fou_qi_yong TINYINT(1) NOT NULL DEFAULT 0,
     shi_fou_mo_ren TINYINT(1) NOT NULL DEFAULT 0,
@@ -25,7 +25,7 @@ CREATE TABLE ai_mo_xing_pei_zhi (
     CONSTRAINT ck_ai_mo_xing_tokens CHECK (zui_da_token BETWEEN 64 AND 8192),
     CONSTRAINT ck_ai_mo_xing_retry CHECK (retry_count BETWEEN 0 AND 1),
     CONSTRAINT ck_ai_mo_xing_test_status CHECK (zui_jin_ce_shi_zhuang_tai IN ('NOT_TESTED','SUCCESS','FAILED'))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='本地项目演示AI模型配置';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='本地演示AI模型配置';
 
 CREATE TABLE ai_sheng_cheng_ren_wu (
     id BIGINT NOT NULL AUTO_INCREMENT,

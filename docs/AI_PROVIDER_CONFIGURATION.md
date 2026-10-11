@@ -29,7 +29,7 @@ V12 `ai_diao_yong_ri_zhi` 只保存 provider、model、用途、可空业务引�
 
 管理员 `/admin/ai-models` 可以维护 TEXT/DEEPSEEK 和 VISION/GLM 配置。运行时优先读取当前启用且标记默认的数据库配置；没有可用数据库配置时回退本页环境/application 默认，二者均不可用时返回受控降级。每次业务调用最多一次索引查询，配置保存、切换或清除后立即生效，不使用 Redis。
 
-`ai_mo_xing_pei_zhi.api_mi_yao` 仅为本地项目演示便利而允许保存 Key，不代表生产级密钥管理。列表与详情 API 只返回 `apiKeyConfigured`，管理员页面只显示掩码；空输入不替换已有 Key，显式“清除 Key”才置空。Key 不进入前端缓存、异常、V12 日志、调用正文或 Git。
+`ai_mo_xing_pei_zhi.api_mi_yao` 仅为本地演示便利而允许保存 Key，不代表生产级密钥管理。列表与详情 API 只返回 `apiKeyConfigured`，管理员页面只显示掩码；空输入不替换已有 Key，显式“清除 Key”才置空。Key 不进入前端缓存、异常、V12 日志、调用正文或 Git。
 
 当前受控组合：
 

@@ -1,6 +1,6 @@
 # Demo 变式题候选审核记录
 
-> 本文为历史阶段快照，当前项目状态请查看 [README](../README.md) 和 [开发状态](DEVELOPMENT_STATUS.md)。
+> 本文为历史阶段快照，当前项目状态请查看 [README](../README.md) 和 [CHANGELOG](../CHANGELOG.md)。
 
 ## 审核口径
 
@@ -67,6 +67,6 @@
 - 答案：单选恰好一个正确选项，多选至少两个正确选项，填空 acceptedAnswers 非空。
 - 内容：逐题复核题干、选项、标准答案、解析、单位、化学符号和知识点。
 - 重复：最终 120 题标准化题干完全重复为 0；新增变式内部及新增变式与 Demo90 之间均无完全重复。检查同时发现并定向改写了 Demo90 历史上的一处重复化学填空题，未批量重写基线。近似候选按人工规则拒绝，不引入 embedding 或向量数据库。
-- 元数据：继续使用现有 `TEACHER_CREATED + USER_PROVIDED` 和“项目自编演示题”，并保留 SUBMITTED、APPROVED 轨迹。
+- 元数据：继续使用现有 `TEACHER_CREATED + USER_PROVIDED` 和“RIKE 项目自编演示题”，并保留 SUBMITTED、APPROVED 轨迹。
 
-开发阶段由 Codex 辅助整理候选不等于系统实现了运行时 AI 出题。运行时 AI Provider、候选题生成、PENDING 和人工审核发布链路仍属于后续能力。
+开发阶段人工整理候选不等于系统实现了运行时 AI 出题。运行时 AI Provider、候选题生成、PENDING 和人工审核发布链路仍属于后续能力。

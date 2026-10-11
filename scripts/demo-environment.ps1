@@ -47,7 +47,7 @@ function Invoke-DemoTool([string]$ToolAction) {
     try {
         $env:RIKE_TIKU_DB_NAME = $Database
         Push-Location $backendRoot
-        & mvn spring-boot:run "-Dspring-boot.run.main-class=com.neu.riketiku.demo.DemoEnvironmentCommand" "-Dspring-boot.run.arguments=--demo.action=$ToolAction --server.port=0 --springdoc.api-docs.enabled=false"
+        & mvn spring-boot:run "-Dspring-boot.run.main-class=com.riketiku.demo.DemoEnvironmentCommand" "-Dspring-boot.run.arguments=--demo.action=$ToolAction --server.port=0 --springdoc.api-docs.enabled=false"
         if ($LASTEXITCODE -ne 0) { throw "演示数据命令失败，退出码: $LASTEXITCODE" }
     } finally {
         Pop-Location
