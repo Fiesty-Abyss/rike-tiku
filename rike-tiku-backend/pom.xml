@@ -11,7 +11,7 @@
         <relativePath/>
     </parent>
 
-    <groupId>com.neu</groupId>
+    <groupId>com.riketiku</groupId>
     <artifactId>rike-tiku-backend</artifactId>
     <version>1.0.0</version>
     <name>rike-tiku-backend</name>
