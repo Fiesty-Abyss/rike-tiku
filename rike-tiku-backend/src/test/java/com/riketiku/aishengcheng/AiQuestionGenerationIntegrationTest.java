@@ -63,7 +63,7 @@ class AiQuestionGenerationIntegrationTest extends AdminQuestionIntegrationTestSu
         provider.answer("{bad");provider.answer("{still-bad");
         assertThatThrownBy(()->service.generate(admin,"ADMIN",request(mother,point,"SCENARIO_TRANSFER",1))).isInstanceOf(RenZhengYeWuYiChang.class);
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM ti_mu WHERE fu_ti_mu_id=?",Integer.class,mother)).isZero();
-        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM ai_sheng_cheng_ren_wu WHERE zhuang_tai='FAILED'",Integer.class)).isEqualTo(1);
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM ai_sheng_cheng_ren_wu WHERE zhuang_tai='FAILED' AND chuang_jian_ren_id=?",Integer.class,admin)).isEqualTo(1);
 
         provider.answer(candidate("电路母题增加电阻条件后的分析",point,"DISTRACTOR_REDESIGN"));
         var first=service.generate(admin,"ADMIN",request(mother,point,"DISTRACTOR_REDESIGN",1));
@@ -200,7 +200,7 @@ class AiQuestionGenerationIntegrationTest extends AdminQuestionIntegrationTestSu
         var request=request(mother,point,"REPRESENTATION_SWITCH",1);
         provider.answer("{bad");provider.answer("{still-bad");
         assertThatThrownBy(()->service.generate(admin,"ADMIN",request)).isInstanceOf(RenZhengYeWuYiChang.class);
-        long failedTask=jdbc.queryForObject("SELECT id FROM ai_sheng_cheng_ren_wu WHERE zhuang_tai='FAILED'",Long.class);
+        long failedTask=jdbc.queryForObject("SELECT id FROM ai_sheng_cheng_ren_wu WHERE zhuang_tai='FAILED' AND chuang_jian_ren_id=?",Long.class,admin);
         provider.answer(candidate("冰面碰撞实验中比较相互作用前后的总动量",point,"REPRESENTATION_SWITCH"));
         var retried=service.generate(admin,"ADMIN",request);
         assertThat(retried.id()).isEqualTo(failedTask);assertThat(retried.status()).isEqualTo("SUCCESS");
