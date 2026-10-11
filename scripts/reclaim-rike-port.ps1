@@ -31,7 +31,7 @@ function Test-RikePortOwner {
     }
 
     return $ProcessName -ieq 'java.exe' -and
-        ($normalizedCommand -match '(?i)com\.neu\.riketiku\.RikeTikuBackendApplication' -or
+        ($normalizedCommand -match '(?i)com\.riketiku\.RikeTikuBackendApplication' -or
          $normalizedCommand -match '(?i)rike-tiku-backend\\target\\rike-tiku-backend-[^\s"]*\.jar')
 }
 

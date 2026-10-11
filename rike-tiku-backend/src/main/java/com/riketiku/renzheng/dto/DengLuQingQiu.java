@@ -1,0 +1,12 @@
+package com.riketiku.renzheng.dto;
+
+import com.riketiku.renzheng.JiaoSeDaiMa;
+import jakarta.validation.constraints.NotBlank;
+
+public record DengLuQingQiu(
+        @NotBlank(message = "用户名不能为空") String username,
+        @NotBlank(message = "密码不能为空") String password,
+        JiaoSeDaiMa expectedRole,
+        String challengeId,
+        String captchaCode) {
+}

@@ -42,7 +42,7 @@ cd rike-tiku-backend && mvn -DskipTests package
 ```bash
 export RIKE_TIKU_DB_NAME=rike_tiku_demo RIKE_TIKU_DB_PASSWORD='你的本机MySQL密码' \
        RIKE_TIKU_JWT_SECRET="$(openssl rand -hex 32)"
-java -Dloader.main=com.neu.riketiku.demo.DemoEnvironmentCommand \
+java -Dloader.main=com.riketiku.demo.DemoEnvironmentCommand \
      -cp target/rike-tiku-backend-*.jar org.springframework.boot.loader.launch.PropertiesLauncher \
      --demo.action=seed --server.port=0
 ```

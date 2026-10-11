@@ -6,7 +6,7 @@ RIKE 是一个学习辅助**软件**。仓库中的源代码按 [MIT License](LI
 
 | 内容 | 位置 | 来源 | 说明 |
 |---|---|---|---|
-| 演示题库（三科各 120 道客观题） | `rike-tiku-backend/src/main/java/com/neu/riketiku/demo/` | 项目自编 | 按高中物理 / 化学 / 生物课程知识点原创编写，未复制教材、教辅或网络题目原文；只在显式执行演示初始化时写入 `rike_tiku_demo` 演示库 |
+| 演示题库（三科各 120 道客观题） | `rike-tiku-backend/src/main/java/com/riketiku/demo/` | 项目自编 | 按高中物理 / 化学 / 生物课程知识点原创编写，未复制教材、教辅或网络题目原文；只在显式执行演示初始化时写入 `rike_tiku_demo` 演示库 |
 | 专题单元主观题（15 单元 / 45 道） | `docs/content/topic-units.v2.json`、`DemoTopicQuestionBank` | 项目自编 | 原创综合题，用于专题学习与组卷演示 |
 | 高频考点知识卡片 | `docs/content/high-frequency-points.v*.json` | 项目自编 | 依据课程标准知识点自行归纳；不含真题原文、题号或统计次数，详见 [来源说明](docs/content/HIGH_FREQUENCY_POINTS_SOURCE.md) |
 | Excel 导入模板与演示文件 | `docs/templates/`、`docs/demo-import/` | 项目自编 | 示例题均为原创，示例学生 / 教师姓名均为虚构 |

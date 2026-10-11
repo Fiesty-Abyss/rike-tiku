@@ -43,8 +43,8 @@
 - 前端路由：[`/` 路由定义](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-frontend/src/router/index.ts)
 - Vue 页面或组件：[`PortalView.vue`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-frontend/src/views/PortalView.vue)
 - TypeScript API：[`publicPortal.ts`](rike-tiku-frontend/src/api/publicPortal.ts)；入口与权限跳转由 [`router/index.ts`](rike-tiku-frontend/src/router/index.ts) 控制
-- 后端 Controller：[`PortalStatsController.java`](rike-tiku-backend/src/main/java/com/neu/riketiku/portal/PortalStatsController.java)
-- 后端 Service：[`PortalStatsService.java`](rike-tiku-backend/src/main/java/com/neu/riketiku/portal/PortalStatsService.java)
+- 后端 Controller：[`PortalStatsController.java`](rike-tiku-backend/src/main/java/com/riketiku/portal/PortalStatsController.java)
+- 后端 Service：[`PortalStatsService.java`](rike-tiku-backend/src/main/java/com/riketiku/portal/PortalStatsService.java)
 - 主要数据库表：`ke_mu`、`ti_mu`（仅业务可见字段的 COUNT，不返回题目或用户数据）
 - Flyway：沿用 V1/V2/V20/V26 的既有字段，无新增迁移
 - 主要技术：Vue 3、Vue Router、Axios、Spring MVC、受限 COUNT 查询、响应式 CSS、GSAP
@@ -74,8 +74,8 @@
 - 前端路由：[`/login`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-frontend/src/router/index.ts)
 - Vue 页面或组件：[`LoginView.vue`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-frontend/src/views/auth/LoginView.vue)、[`PasswordRecoveryDialog.vue`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-frontend/src/components/auth/PasswordRecoveryDialog.vue)
 - TypeScript API：[`auth.ts`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-frontend/src/api/auth.ts)
-- 后端 Controller：[`RenZhengController.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/neu/riketiku/renzheng/RenZhengController.java)、[`PasswordRecoveryController.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/neu/riketiku/zhanghao/PasswordRecoveryController.java)
-- 后端 Service：[`RenZhengFuWu.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/neu/riketiku/renzheng/RenZhengFuWu.java)、[`PasswordRecoveryService.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/neu/riketiku/zhanghao/PasswordRecoveryService.java)
+- 后端 Controller：[`RenZhengController.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/riketiku/renzheng/RenZhengController.java)、[`PasswordRecoveryController.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/riketiku/zhanghao/PasswordRecoveryController.java)
+- 后端 Service：[`RenZhengFuWu.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/riketiku/renzheng/RenZhengFuWu.java)、[`PasswordRecoveryService.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/riketiku/zhanghao/PasswordRecoveryService.java)
 - 主要数据库表：`yong_hu`、`jiao_se`、`yong_hu_jiao_se`、`mi_ma_chong_zhi_shen_qing`
 - Flyway：[`V5`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/resources/db/migration/V5__create_user_role_and_profile_tables.sql)、[`V17`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/resources/db/migration/V17__create_password_recovery_requests.sql)
 - 主要技术：Spring Security、BCrypt、JWT、一次性 CAPTCHA、反账号枚举
@@ -105,8 +105,8 @@
 - 前端路由：`/student/practice/new`、`/student/practice/:id`
 - Vue 页面或组件：[`PracticeNewView.vue`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-frontend/src/views/student/PracticeNewView.vue)、[`PracticeSessionView.vue`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-frontend/src/views/student/PracticeSessionView.vue)
 - TypeScript API：[`student/practice.ts`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-frontend/src/api/student/practice.ts)
-- 后端 Controller：[`StudentPracticeController.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/neu/riketiku/xueshenglianxi/StudentPracticeController.java)
-- 后端 Service：[`StudentPracticeService.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/neu/riketiku/xueshenglianxi/StudentPracticeService.java)、[`ObjectiveAnswerGrader.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/neu/riketiku/xueshenglianxi/ObjectiveAnswerGrader.java)
+- 后端 Controller：[`StudentPracticeController.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/riketiku/xueshenglianxi/StudentPracticeController.java)
+- 后端 Service：[`StudentPracticeService.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/riketiku/xueshenglianxi/StudentPracticeService.java)、[`ObjectiveAnswerGrader.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/riketiku/xueshenglianxi/ObjectiveAnswerGrader.java)
 - 主要数据库表：`ti_mu`、`lian_xi_hui_hua`、`lian_xi_ti_mu`、`xue_sheng_da_ti`
 - Flyway：[`V7`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/resources/db/migration/V7__create_student_practice_and_wrong_question_tables.sql)
 - 主要技术：事务、冻结快照、JSON 结构化答案、确定性判分
@@ -136,8 +136,8 @@
 - 前端路由：`/student/practice/:id/result`
 - Vue 页面或组件：[`PracticeResultView.vue`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-frontend/src/views/student/PracticeResultView.vue)、[`StandardAnalysis.vue`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-frontend/src/components/question/StandardAnalysis.vue)、[`AnswerDisplay.vue`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-frontend/src/components/question/AnswerDisplay.vue)
 - TypeScript API：[`student/practice.ts`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-frontend/src/api/student/practice.ts)
-- 后端 Controller：[`StudentPracticeController.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/neu/riketiku/xueshenglianxi/StudentPracticeController.java)
-- 后端 Service：[`StudentPracticeService.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/neu/riketiku/xueshenglianxi/StudentPracticeService.java)
+- 后端 Controller：[`StudentPracticeController.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/riketiku/xueshenglianxi/StudentPracticeController.java)
+- 后端 Service：[`StudentPracticeService.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/riketiku/xueshenglianxi/StudentPracticeService.java)
 - 主要数据库表：`ti_mu_jie_xi`、`lian_xi_ti_mu`、`xue_sheng_da_ti`、`xue_xi_jie_guo`
 - Flyway：[`V2`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/resources/db/migration/V2__create_question_core_tables.sql)、[`V7`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/resources/db/migration/V7__create_student_practice_and_wrong_question_tables.sql)
 - 主要技术：版本冻结、KaTeX、安全科学文本、确定性 JSON 判分
@@ -167,8 +167,8 @@
 - 前端路由：`/student/practice/:id/result`
 - Vue 页面或组件：[`StudentAiLearningPanel.vue`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-frontend/src/components/student/StudentAiLearningPanel.vue)
 - TypeScript API：[`student/aiLearning.ts`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-frontend/src/api/student/aiLearning.ts)
-- 后端 Controller：[`StudentAiController.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/neu/riketiku/aixuesheng/StudentAiController.java)
-- 后端 Service：[`StudentAiService.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/neu/riketiku/aixuesheng/StudentAiService.java)、[`OfficialWebSearchClient.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/neu/riketiku/ai/search/OfficialWebSearchClient.java)
+- 后端 Controller：[`StudentAiController.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/riketiku/aixuesheng/StudentAiController.java)
+- 后端 Service：[`StudentAiService.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/riketiku/aixuesheng/StudentAiService.java)、[`OfficialWebSearchClient.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/riketiku/ai/search/OfficialWebSearchClient.java)
 - 主要数据库表：`ai_hui_hua`、`ai_xiao_xi`、`ai_mo_xing_pei_zhi`、`ai_diao_yong_ri_zhi`
 - Flyway：[`V13`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/resources/db/migration/V13__create_student_ai_learning_tables.sql)、[`V15`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/resources/db/migration/V15__expand_student_ai_conversation_to_ten_rounds.sql)、[`V16`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/resources/db/migration/V16__add_student_ai_runtime_choices_and_search_usage.sql)
 - 主要技术：DeepSeek Chat Completions、字符预算、Prompt 注入防护、metadata-only 日志、智谱 Web Search
@@ -198,8 +198,8 @@
 - 前端路由：`/student/practice/:id/result`
 - Vue 页面或组件：[`StudentAiVariantPanel.vue`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-frontend/src/components/student/StudentAiVariantPanel.vue)
 - TypeScript API：[`student/aiLearning.ts`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-frontend/src/api/student/aiLearning.ts)
-- 后端 Controller：[`StudentAiVariantController.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/neu/riketiku/aixuesheng/StudentAiVariantController.java)
-- 后端 Service：[`StudentAiVariantService.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/neu/riketiku/aixuesheng/StudentAiVariantService.java)、[`AiQuestionGenerationService.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/neu/riketiku/aishengcheng/AiQuestionGenerationService.java)
+- 后端 Controller：[`StudentAiVariantController.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/riketiku/aixuesheng/StudentAiVariantController.java)
+- 后端 Service：[`StudentAiVariantService.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/riketiku/aixuesheng/StudentAiVariantService.java)、[`AiQuestionGenerationService.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/riketiku/aishengcheng/AiQuestionGenerationService.java)
 - 主要数据库表：`ai_xue_sheng_bian_shi_shi_li`、`ai_sheng_cheng_ren_wu`、`ti_mu`、`ti_mu_shen_he_ji_lu`
 - Flyway：[`V14`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/resources/db/migration/V14__create_ai_generation_and_model_tables.sql)、[`V19`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/resources/db/migration/V19__create_student_ai_variant_instances.sql)
 - 主要技术：结构化生成、严格 Parser、内容 hash、事务、确定性判分、PENDING 人工门禁
@@ -229,8 +229,8 @@
 - 前端路由：`/teacher/scopes/:scopeId`
 - Vue 页面或组件：[`TeacherScopeWorkspaceView.vue`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-frontend/src/views/teacher/TeacherScopeWorkspaceView.vue)
 - TypeScript API：[`teacher.ts`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-frontend/src/api/teacher.ts)
-- 后端 Controller：[`JiaoShiGaoPinKaoDianController.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/neu/riketiku/jiaoshi/JiaoShiGaoPinKaoDianController.java)
-- 后端 Service：[`JiaoShiGaoPinKaoDianFuWu.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/neu/riketiku/jiaoshi/JiaoShiGaoPinKaoDianFuWu.java)
+- 后端 Controller：[`JiaoShiGaoPinKaoDianController.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/riketiku/jiaoshi/JiaoShiGaoPinKaoDianController.java)
+- 后端 Service：[`JiaoShiGaoPinKaoDianFuWu.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/riketiku/jiaoshi/JiaoShiGaoPinKaoDianFuWu.java)
 - 主要数据库表：`jiao_shi_dang_an`、`ban_ji`、`ren_ke_guan_xi`、`gao_pin_kao_dian`
 - Flyway：[`V6`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/resources/db/migration/V6__create_class_and_teaching_relationship_tables.sql)、[`V8`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/resources/db/migration/V8__create_high_frequency_point_table.sql)
 - 主要技术：三元任课授权、ACTIVE scope、事务、聚合查询
@@ -260,8 +260,8 @@
 - 前端路由：`/teacher/papers`
 - Vue 页面或组件：[`TeacherPaperBuilderView.vue`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-frontend/src/views/teacher/TeacherPaperBuilderView.vue)、[`PaperPreviewView.vue`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-frontend/src/views/teacher/PaperPreviewView.vue)
 - TypeScript API：[`teacher/papers.ts`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-frontend/src/api/teacher/papers.ts)
-- 后端 Controller：[`PaperController.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/neu/riketiku/shijuan/PaperController.java)
-- 后端 Service：[`PaperService.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/neu/riketiku/shijuan/PaperService.java)
+- 后端 Controller：[`PaperController.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/riketiku/shijuan/PaperController.java)
+- 后端 Service：[`PaperService.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/riketiku/shijuan/PaperService.java)
 - 主要数据库表：`shi_juan`、`shi_juan_ti_mu`、`ti_mu`、`ti_mu_zhi_shi_dian`
 - Flyway：[`V18`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/resources/db/migration/V18__create_teacher_papers.sql)
 - 主要技术：规则过滤、冻结顺序/分值、唯一约束、CSS `@media print`
@@ -291,8 +291,8 @@ Provider 配置与学生业务 API 分离，前端只能提交受控模型 ID。
 - 前端路由：`/admin/ai-models`
 - Vue 页面或组件：[`AdminAiModelsView.vue`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-frontend/src/views/admin/AdminAiModelsView.vue)
 - TypeScript API：[`admin/aiModels.ts`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-frontend/src/api/admin/aiModels.ts)
-- 后端 Controller：[`AiModelConfigController.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/neu/riketiku/ai/admin/AiModelConfigController.java)
-- 后端 Service：[`AiModelConfigService.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/neu/riketiku/ai/admin/AiModelConfigService.java)、[`AiProviderService.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/neu/riketiku/ai/AiProviderService.java)、[`GlmVisionProvider.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/neu/riketiku/ai/vision/GlmVisionProvider.java)
+- 后端 Controller：[`AiModelConfigController.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/riketiku/ai/admin/AiModelConfigController.java)
+- 后端 Service：[`AiModelConfigService.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/riketiku/ai/admin/AiModelConfigService.java)、[`AiProviderService.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/riketiku/ai/AiProviderService.java)、[`GlmVisionProvider.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/riketiku/ai/vision/GlmVisionProvider.java)
 - 主要数据库表：`ai_mo_xing_pei_zhi`、`ai_diao_yong_ri_zhi`、`ai_shi_jue_shang_xia_wen`
 - Flyway：[`V12`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/resources/db/migration/V12__create_ai_call_log.sql)、[`V14`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/resources/db/migration/V14__create_ai_generation_and_model_tables.sql)、[`V16`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/resources/db/migration/V16__add_student_ai_runtime_choices_and_search_usage.sql)
 - 主要技术：DeepSeek Chat Completions、GLM-4.6V-Flash、智谱 Web Search、超时/重试、安全错误分类、metadata-only 日志
@@ -322,9 +322,9 @@ Provider 配置与学生业务 API 分离，前端只能提交受控模型 ID。
 |---|---|
 | 路由 / Vue | [`/student/wrong-questions` · `WrongQuestionsView.vue`](rike-tiku-frontend/src/views/student/WrongQuestionsView.vue) |
 | TypeScript API | [`student/practice.ts`](rike-tiku-frontend/src/api/student/practice.ts) |
-| Controller / Service | [`StudentPracticeController.java`](rike-tiku-backend/src/main/java/com/neu/riketiku/xueshenglianxi/StudentPracticeController.java) · [`StudentPracticeService.java`](rike-tiku-backend/src/main/java/com/neu/riketiku/xueshenglianxi/StudentPracticeService.java) |
+| Controller / Service | [`StudentPracticeController.java`](rike-tiku-backend/src/main/java/com/riketiku/xueshenglianxi/StudentPracticeController.java) · [`StudentPracticeService.java`](rike-tiku-backend/src/main/java/com/riketiku/xueshenglianxi/StudentPracticeService.java) |
 | 表 / Flyway | `cuo_ti_ji_lu`、`lian_xi_hui_hua`、`xue_sheng_da_ti` · [`V7`](rike-tiku-backend/src/main/resources/db/migration/V7__create_student_practice_and_wrong_question_tables.sql) |
-| 测试 / 技术 | [`StudentPracticeIntegrationTest.java`](rike-tiku-backend/src/test/java/com/neu/riketiku/xueshenglianxi/StudentPracticeIntegrationTest.java) · 软归档、冻结快照、确定性判分 |
+| 测试 / 技术 | [`StudentPracticeIntegrationTest.java`](rike-tiku-backend/src/test/java/com/riketiku/xueshenglianxi/StudentPracticeIntegrationTest.java) · 软归档、冻结快照、确定性判分 |
 
 ### 论文写作提示与参考
 
@@ -343,9 +343,9 @@ Provider 配置与学生业务 API 分离，前端只能提交受控模型 ID。
 | 层次 | 精确实现 |
 |---|---|
 | 路由 / Vue / API | [`TopicLearningView.vue`](rike-tiku-frontend/src/views/student/TopicLearningView.vue) · [`topicLearning.ts`](rike-tiku-frontend/src/api/student/topicLearning.ts) |
-| Controller / Service | [`TopicLearningController.java`](rike-tiku-backend/src/main/java/com/neu/riketiku/zhuantixuexi/TopicLearningController.java) · [`TopicLearningService.java`](rike-tiku-backend/src/main/java/com/neu/riketiku/zhuantixuexi/TopicLearningService.java) |
+| Controller / Service | [`TopicLearningController.java`](rike-tiku-backend/src/main/java/com/riketiku/zhuantixuexi/TopicLearningController.java) · [`TopicLearningService.java`](rike-tiku-backend/src/main/java/com/riketiku/zhuantixuexi/TopicLearningService.java) |
 | 表 / Flyway | `zhuan_ti_xue_xi_dan_yuan`、`zhuan_ti_xue_xi_dan_yuan_ti_mu`、`ti_mu_fu_jian` · [`V26`](rike-tiku-backend/src/main/resources/db/migration/V26__add_topic_units_and_xai_vision_provider.sql) |
-| 测试 / 技术 | [`TopicLearningIntegrationTest.java`](rike-tiku-backend/src/test/java/com/neu/riketiku/zhuantixuexi/TopicLearningIntegrationTest.java) · 应用层范围授权、安全附件、KaTeX |
+| 测试 / 技术 | [`TopicLearningIntegrationTest.java`](rike-tiku-backend/src/test/java/com/riketiku/zhuantixuexi/TopicLearningIntegrationTest.java) · 应用层范围授权、安全附件、KaTeX |
 
 ### 论文写作提示与参考
 
@@ -364,7 +364,7 @@ Provider 配置与学生业务 API 分离，前端只能提交受控模型 ID。
 | 层次 | 精确实现 |
 |---|---|
 | 路由 / Vue / API | [`MessageConversationView.vue`](rike-tiku-frontend/src/views/messages/MessageConversationView.vue) · [`messages.ts`](rike-tiku-frontend/src/api/messages.ts) |
-| Controller / Service | [`SiXinController.java`](rike-tiku-backend/src/main/java/com/neu/riketiku/sixin/SiXinController.java) · [`SiXinFuWu.java`](rike-tiku-backend/src/main/java/com/neu/riketiku/sixin/SiXinFuWu.java) |
+| Controller / Service | [`SiXinController.java`](rike-tiku-backend/src/main/java/com/riketiku/sixin/SiXinController.java) · [`SiXinFuWu.java`](rike-tiku-backend/src/main/java/com/riketiku/sixin/SiXinFuWu.java) |
 | 表 / Flyway | `si_xin_hui_hua`、`si_xin_xiao_xi` · [`V22`](rike-tiku-backend/src/main/resources/db/migration/V22__add_message_recall_and_per_user_hiding.sql) |
 | 测试 / 技术 | [`MessageConversationView.spec.ts`](rike-tiku-frontend/src/views/messages/MessageConversationView.spec.ts) · 软隐藏、服务端时间、幂等冲突 |
 
@@ -385,9 +385,9 @@ Provider 配置与学生业务 API 分离，前端只能提交受控模型 ID。
 | 层次 | 精确实现 |
 |---|---|
 | 路由 / Vue / API | [`TeacherPrivateQuestionBankView.vue`](rike-tiku-frontend/src/views/teacher/TeacherPrivateQuestionBankView.vue) · [`privateQuestions.ts`](rike-tiku-frontend/src/api/teacher/privateQuestions.ts) |
-| Controller / Service | [`TeacherPrivateQuestionController.java`](rike-tiku-backend/src/main/java/com/neu/riketiku/tiku/teacher/TeacherPrivateQuestionController.java) · [`TeacherPrivateQuestionService.java`](rike-tiku-backend/src/main/java/com/neu/riketiku/tiku/teacher/TeacherPrivateQuestionService.java) |
+| Controller / Service | [`TeacherPrivateQuestionController.java`](rike-tiku-backend/src/main/java/com/riketiku/tiku/teacher/TeacherPrivateQuestionController.java) · [`TeacherPrivateQuestionService.java`](rike-tiku-backend/src/main/java/com/riketiku/tiku/teacher/TeacherPrivateQuestionService.java) |
 | 表 / Flyway | `ti_mu`、`ren_ke_guan_xi`、`ti_mu_fu_jian` · [`V20`](rike-tiku-backend/src/main/resources/db/migration/V20__add_scoped_questions_and_topic_categories.sql) |
-| 测试 / 技术 | [`UserTeachingDatabaseModelTest.java`](rike-tiku-backend/src/test/java/com/neu/riketiku/zhanghao/UserTeachingDatabaseModelTest.java) · 服务端范围复核、404 防枚举、安全下载 |
+| 测试 / 技术 | [`UserTeachingDatabaseModelTest.java`](rike-tiku-backend/src/test/java/com/riketiku/zhanghao/UserTeachingDatabaseModelTest.java) · 服务端范围复核、404 防枚举、安全下载 |
 
 ### 论文写作提示与参考
 
@@ -406,9 +406,9 @@ Provider 配置与学生业务 API 分离，前端只能提交受控模型 ID。
 | 层次 | 精确实现 |
 |---|---|
 | 路由 / Vue / API | [`TeacherPaperBuilderView.vue`](rike-tiku-frontend/src/views/teacher/TeacherPaperBuilderView.vue)、[`StudentPapersView.vue`](rike-tiku-frontend/src/views/student/StudentPapersView.vue) · [`teacher/papers.ts`](rike-tiku-frontend/src/api/teacher/papers.ts)、[`student/papers.ts`](rike-tiku-frontend/src/api/student/papers.ts) |
-| Controller / Service | [`PaperAssignmentTeacherController.java`](rike-tiku-backend/src/main/java/com/neu/riketiku/shijuan/PaperAssignmentTeacherController.java) · [`PaperAssignmentStudentController.java`](rike-tiku-backend/src/main/java/com/neu/riketiku/shijuan/PaperAssignmentStudentController.java) · [`PaperAssignmentService.java`](rike-tiku-backend/src/main/java/com/neu/riketiku/shijuan/PaperAssignmentService.java) |
+| Controller / Service | [`PaperAssignmentTeacherController.java`](rike-tiku-backend/src/main/java/com/riketiku/shijuan/PaperAssignmentTeacherController.java) · [`PaperAssignmentStudentController.java`](rike-tiku-backend/src/main/java/com/riketiku/shijuan/PaperAssignmentStudentController.java) · [`PaperAssignmentService.java`](rike-tiku-backend/src/main/java/com/riketiku/shijuan/PaperAssignmentService.java) |
 | 表 / Flyway | `shi_juan_fa_bu`、`shi_juan_fa_bu_ti_mu`、`shi_juan_ti_jiao`、`shi_juan_xue_sheng_da_ti` · [`V27`](rike-tiku-backend/src/main/resources/db/migration/V27__add_paper_publication_and_student_submissions.sql) |
-| 测试 / 技术 | [`PaperAssignmentIntegrationTest.java`](rike-tiku-backend/src/test/java/com/neu/riketiku/shijuan/PaperAssignmentIntegrationTest.java) · 冻结快照、幂等、确定性判分、SQL 聚合 |
+| 测试 / 技术 | [`PaperAssignmentIntegrationTest.java`](rike-tiku-backend/src/test/java/com/riketiku/shijuan/PaperAssignmentIntegrationTest.java) · 冻结快照、幂等、确定性判分、SQL 聚合 |
 
 ### 论文写作提示与参考
 
@@ -427,9 +427,9 @@ Provider 配置与学生业务 API 分离，前端只能提交受控模型 ID。
 | 层次 | 精确实现 |
 |---|---|
 | 路由 / Vue / API | [`StudentKnowledgeCardsView.vue`](rike-tiku-frontend/src/views/student/StudentKnowledgeCardsView.vue) · [`knowledgeCards.ts`](rike-tiku-frontend/src/api/student/knowledgeCards.ts) |
-| Controller / Service | [`KnowledgeCardStudentController.java`](rike-tiku-backend/src/main/java/com/neu/riketiku/zhishikapian/KnowledgeCardStudentController.java) · [`KnowledgeCardService.java`](rike-tiku-backend/src/main/java/com/neu/riketiku/zhishikapian/KnowledgeCardService.java) · [`KnowledgeCardPracticeService.java`](rike-tiku-backend/src/main/java/com/neu/riketiku/zhishikapian/KnowledgeCardPracticeService.java) |
+| Controller / Service | [`KnowledgeCardStudentController.java`](rike-tiku-backend/src/main/java/com/riketiku/zhishikapian/KnowledgeCardStudentController.java) · [`KnowledgeCardService.java`](rike-tiku-backend/src/main/java/com/riketiku/zhishikapian/KnowledgeCardService.java) · [`KnowledgeCardPracticeService.java`](rike-tiku-backend/src/main/java/com/riketiku/zhishikapian/KnowledgeCardPracticeService.java) |
 | 表 / Flyway | `gao_pin_kao_dian`、`gao_pin_kao_dian_shen_he_ji_lu`、`xue_sheng_zhi_shi_ka_pian_zhuang_tai`、`zhi_shi_ka_pian_lian_xi_shi_li` · [`V28`](rike-tiku-backend/src/main/resources/db/migration/V28__complete_reviewed_science_cards.sql)、[`V29`](rike-tiku-backend/src/main/resources/db/migration/V29__add_knowledge_card_practice_instances.sql) |
-| 测试 / 技术 | [`KnowledgeCardIntegrationTest.java`](rike-tiku-backend/src/test/java/com/neu/riketiku/zhishikapian/KnowledgeCardIntegrationTest.java)、[`KnowledgeCardPracticeIntegrationTest.java`](rike-tiku-backend/src/test/java/com/neu/riketiku/zhishikapian/KnowledgeCardPracticeIntegrationTest.java) · KaTeX、人工审核、确定性判分 |
+| 测试 / 技术 | [`KnowledgeCardIntegrationTest.java`](rike-tiku-backend/src/test/java/com/riketiku/zhishikapian/KnowledgeCardIntegrationTest.java)、[`KnowledgeCardPracticeIntegrationTest.java`](rike-tiku-backend/src/test/java/com/riketiku/zhishikapian/KnowledgeCardPracticeIntegrationTest.java) · KaTeX、人工审核、确定性判分 |
 
 ### 论文写作提示与参考
 
@@ -448,9 +448,9 @@ Provider 配置与学生业务 API 分离，前端只能提交受控模型 ID。
 | 层次 | 精确实现 |
 |---|---|
 | 路由 / Vue / API | [`OperationLogsView.vue`](rike-tiku-frontend/src/views/admin/OperationLogsView.vue) · [`operationLogs.ts`](rike-tiku-frontend/src/api/admin/operationLogs.ts) |
-| Controller / Service | [`GuanLiCaoZuoRiZhiController.java`](rike-tiku-backend/src/main/java/com/neu/riketiku/guanlicaozuorizhi/GuanLiCaoZuoRiZhiController.java) · [`GuanLiCaoZuoRiZhiFuWu.java`](rike-tiku-backend/src/main/java/com/neu/riketiku/guanlicaozuorizhi/GuanLiCaoZuoRiZhiFuWu.java) |
+| Controller / Service | [`GuanLiCaoZuoRiZhiController.java`](rike-tiku-backend/src/main/java/com/riketiku/guanlicaozuorizhi/GuanLiCaoZuoRiZhiController.java) · [`GuanLiCaoZuoRiZhiFuWu.java`](rike-tiku-backend/src/main/java/com/riketiku/guanlicaozuorizhi/GuanLiCaoZuoRiZhiFuWu.java) |
 | 表 / Flyway | `guan_li_cao_zuo_ri_zhi` · [`V11`](rike-tiku-backend/src/main/resources/db/migration/V11__create_admin_operation_log.sql) |
-| 测试 / 技术 | [`GuanLiCaoZuoRiZhiIntegrationTest.java`](rike-tiku-backend/src/test/java/com/neu/riketiku/guanlicaozuorizhi/GuanLiCaoZuoRiZhiIntegrationTest.java) · 分页、筛选、详情与定向删除 |
+| 测试 / 技术 | [`GuanLiCaoZuoRiZhiIntegrationTest.java`](rike-tiku-backend/src/test/java/com/riketiku/guanlicaozuorizhi/GuanLiCaoZuoRiZhiIntegrationTest.java) · 分页、筛选、详情与定向删除 |
 
 ### 论文写作提示与参考
 
@@ -469,9 +469,9 @@ Provider 配置与学生业务 API 分离，前端只能提交受控模型 ID。
 | 层次 | 精确实现 |
 |---|---|
 | 路由 / Vue / API | [`StudentImportView.vue`](rike-tiku-frontend/src/views/admin/StudentImportView.vue) · [`admin/studentImport.ts`](rike-tiku-frontend/src/api/admin/studentImport.ts) |
-| Controller / Service | [`StudentImportController.java`](rike-tiku-backend/src/main/java/com/neu/riketiku/xueshengdaoru/StudentImportController.java) · [`StudentImportService.java`](rike-tiku-backend/src/main/java/com/neu/riketiku/xueshengdaoru/StudentImportService.java) |
+| Controller / Service | [`StudentImportController.java`](rike-tiku-backend/src/main/java/com/riketiku/xueshengdaoru/StudentImportController.java) · [`StudentImportService.java`](rike-tiku-backend/src/main/java/com/riketiku/xueshengdaoru/StudentImportService.java) |
 | 表 / Flyway | `dao_ru_pi_ci`、`ti_mu`、`ti_mu_shen_he_ji_lu`、`yong_hu`、`xue_sheng_dang_an` · [`V2`](rike-tiku-backend/src/main/resources/db/migration/V2__create_question_core_tables.sql)、[`V5`](rike-tiku-backend/src/main/resources/db/migration/V5__create_user_role_and_profile_tables.sql) |
-| 测试 / 技术 | [`FinalImportTemplatesIntegrationTest.java`](rike-tiku-backend/src/test/java/com/neu/riketiku/tiku/daoru/FinalImportTemplatesIntegrationTest.java) · Apache POI、SHA-256、Preview/Confirm、事务 |
+| 测试 / 技术 | [`FinalImportTemplatesIntegrationTest.java`](rike-tiku-backend/src/test/java/com/riketiku/tiku/daoru/FinalImportTemplatesIntegrationTest.java) · Apache POI、SHA-256、Preview/Confirm、事务 |
 
 ### 论文写作提示与参考
 
@@ -490,9 +490,9 @@ Provider 配置与学生业务 API 分离，前端只能提交受控模型 ID。
 | 层次 | 精确实现 |
 |---|---|
 | 路由 / Vue / API | [`AdminAiModelsView.vue`](rike-tiku-frontend/src/views/admin/AdminAiModelsView.vue) · [`aiModels.ts`](rike-tiku-frontend/src/api/admin/aiModels.ts) |
-| Controller / Service | [`AiModelConfigController.java`](rike-tiku-backend/src/main/java/com/neu/riketiku/ai/admin/AiModelConfigController.java) · [`AiModelConfigService.java`](rike-tiku-backend/src/main/java/com/neu/riketiku/ai/admin/AiModelConfigService.java) |
+| Controller / Service | [`AiModelConfigController.java`](rike-tiku-backend/src/main/java/com/riketiku/ai/admin/AiModelConfigController.java) · [`AiModelConfigService.java`](rike-tiku-backend/src/main/java/com/riketiku/ai/admin/AiModelConfigService.java) |
 | 表 / Flyway | `ai_mo_xing_pei_zhi`、`ai_diao_yong_ri_zhi`、`ai_shi_jue_shang_xia_wen` · [`V26`](rike-tiku-backend/src/main/resources/db/migration/V26__add_topic_units_and_xai_vision_provider.sql) |
-| 测试 / 技术 | [`GlmVisionProviderTest.java`](rike-tiku-backend/src/test/java/com/neu/riketiku/ai/vision/GlmVisionProviderTest.java)、[`XaiVisionProviderTest.java`](rike-tiku-backend/src/test/java/com/neu/riketiku/ai/vision/XaiVisionProviderTest.java) · OpenAI-compatible 消息、raw Base64、安全错误映射、metadata-only 日志 |
+| 测试 / 技术 | [`GlmVisionProviderTest.java`](rike-tiku-backend/src/test/java/com/riketiku/ai/vision/GlmVisionProviderTest.java)、[`XaiVisionProviderTest.java`](rike-tiku-backend/src/test/java/com/riketiku/ai/vision/XaiVisionProviderTest.java) · OpenAI-compatible 消息、raw Base64、安全错误映射、metadata-only 日志 |
 
 ### 论文写作提示与参考
 

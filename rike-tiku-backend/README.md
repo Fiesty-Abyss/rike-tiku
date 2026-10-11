@@ -50,7 +50,7 @@ mvn test                  # 运行测试（需要可连接的 MySQL 8.4，测试
 3. 确认 Main class 为：
 
    ```text
-   com.neu.riketiku.RikeTikuBackendApplication
+   com.riketiku.RikeTikuBackendApplication
    ```
 
 4. 点击Run。该配置默认继承IDEA进程的父环境变量，无须将密码保存到项目运行配置。
