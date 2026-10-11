@@ -311,7 +311,7 @@ public class AiQuestionGenerationService {
             AiCandidateParser.Candidate c=value.candidate();
             List<QuestionDtos.Option> options=c.options().stream().map(o->new QuestionDtos.Option(o.label(),o.content(),o.correct())).toList();
             List<QuestionDtos.Source> sources=List.of("QUESTION","ANSWER","STANDARD_ANALYSIS").stream()
-                    .map(part->new QuestionDtos.Source(part,"AI_GENERATED","RIKE AI 候选变式题","USER_PROVIDED",null,null,null,null,null,"仅作为本地项目候选内容，人工审核后发布")).toList();
+                    .map(part->new QuestionDtos.Source(part,"AI_GENERATED","RIKE AI 候选变式题","USER_PROVIDED",null,null,null,null,null,"仅作为候选内容，人工审核后发布")).toList();
             long subjectId=jdbc.queryForObject("SELECT ke_mu_id FROM ti_mu WHERE id=(SELECT mu_ti_mu_id FROM ai_sheng_cheng_ren_wu WHERE id=?)",Long.class,taskId);
             boolean subjective="SUBJECTIVE".equals(c.questionType());
             QuestionDtos.Save save=new QuestionDtos.Save(subjectId,c.questionType(),subjective?"TOPIC_LEARNING":"ONLINE_PRACTICE",c.stem(),c.correctAnswer(),c.difficulty(),
