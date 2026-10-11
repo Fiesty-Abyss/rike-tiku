@@ -34,7 +34,7 @@ class FinalDemoImportWorkbooksIntegrationTest extends AdminQuestionIntegrationTe
 
     @DynamicPropertySource
     static void importProperties(DynamicPropertyRegistry registry) {
-        registry.add("rike.tiku.question-import.source-root", () -> REPOSITORY.resolve("题库").toString());
+        registry.add("rike.tiku.question-import.source-root", () -> REPOSITORY.resolve("question-bank").toString());
     }
 
     @Test

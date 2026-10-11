@@ -10,6 +10,7 @@ import java.util.Map;
 import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIf;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -17,6 +18,7 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
+@EnabledIf(value = "com.neu.riketiku.tiku.daoru.LocalSourceBank#present", disabledReason = "本地真题源数据集未放入 question-bank/，跳过")
 class Mvp30WorkbookReadIntegrationTest extends AdminQuestionIntegrationTestSupport {
     @Autowired private QuestionImportService service;
     @Autowired private JdbcTemplate jdbc;
@@ -31,7 +33,7 @@ class Mvp30WorkbookReadIntegrationTest extends AdminQuestionIntegrationTestSuppo
         var errorCodes = new java.util.ArrayList<String>();
         for (String subject : List.of("物理", "化学", "生物")) {
             Map.Entry<String, Expected> entry = Map.entry(subject, expected.get(subject));
-            Path path = Path.of("..", "题库", "理综", "测试结果", entry.getKey(), "待审核_清洗版.xlsx");
+            Path path = Path.of("..", "question-bank", "理综", "测试结果", entry.getKey(), "待审核_清洗版.xlsx");
             byte[] content = Files.readAllBytes(path);
             var preview = service.preview(new MockMultipartFile("file", path.getFileName().toString(),
                     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", content));
@@ -56,7 +58,7 @@ class Mvp30WorkbookReadIntegrationTest extends AdminQuestionIntegrationTestSuppo
         Map<String, Integer> before = businessTableCounts();
         for (String subject : List.of("物理", "化学", "生物")) {
             Map.Entry<String, Expected> entry = Map.entry(subject, expected.get(subject));
-            Path path = Path.of("..", "题库", "理综", "测试结果", entry.getKey(), "待审核_清洗版.xlsx");
+            Path path = Path.of("..", "question-bank", "理综", "测试结果", entry.getKey(), "待审核_清洗版.xlsx");
             seedKnowledgePoints(path, entry.getValue().subjectCode());
             byte[] content = Files.readAllBytes(path);
             var preview = service.preview(new MockMultipartFile("file", path.getFileName().toString(),

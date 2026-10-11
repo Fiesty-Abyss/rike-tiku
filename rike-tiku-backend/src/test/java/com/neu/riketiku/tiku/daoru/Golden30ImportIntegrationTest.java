@@ -21,6 +21,7 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIf;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.mock.web.MockMultipartFile;
@@ -32,15 +33,16 @@ import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
 
 @SpringBootTest
+@EnabledIf(value = "com.neu.riketiku.tiku.daoru.LocalSourceBank#present", disabledReason = "本地真题源数据集未放入 question-bank/，跳过")
 class Golden30ImportIntegrationTest extends AdminQuestionIntegrationTestSupport {
     private static final int GOLDEN_POINT_ORDER = 998;
     private static final Path PROJECT_ROOT = Path.of(System.getProperty("user.dir")).toAbsolutePath().normalize().getParent();
-    private static final Path SOURCE_ROOT = PROJECT_ROOT.resolve("题库");
+    private static final Path SOURCE_ROOT = PROJECT_ROOT.resolve("question-bank");
     private static final Path STORAGE_ROOT = Path.of(System.getProperty("java.io.tmpdir"), "rike-tiku-golden30-storage-" + UUID.randomUUID());
     private static final Map<String, Path> CANDIDATES = Map.of(
-            "物理", PROJECT_ROOT.resolve("题库/理综/测试结果/物理/待审核_清洗版.xlsx"),
-            "化学", PROJECT_ROOT.resolve("题库/理综/测试结果/化学/待审核_清洗版.xlsx"),
-            "生物", PROJECT_ROOT.resolve("题库/理综/测试结果/生物/待审核_清洗版.xlsx"));
+            "物理", PROJECT_ROOT.resolve("question-bank/理综/测试结果/物理/待审核_清洗版.xlsx"),
+            "化学", PROJECT_ROOT.resolve("question-bank/理综/测试结果/化学/待审核_清洗版.xlsx"),
+            "生物", PROJECT_ROOT.resolve("question-bank/理综/测试结果/生物/待审核_清洗版.xlsx"));
     private static final ObjectMapper JSON = new ObjectMapper();
 
     @Autowired private JdbcTemplate jdbc;

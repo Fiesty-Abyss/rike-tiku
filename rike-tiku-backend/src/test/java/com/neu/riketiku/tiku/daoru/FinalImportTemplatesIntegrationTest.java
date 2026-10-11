@@ -27,7 +27,7 @@ class FinalImportTemplatesIntegrationTest extends AdminQuestionIntegrationTestSu
 
     @DynamicPropertySource
     static void templateProperties(DynamicPropertyRegistry registry) {
-        registry.add("rike.tiku.question-import.source-root", () -> REPOSITORY.resolve("题库").toString());
+        registry.add("rike.tiku.question-import.source-root", () -> REPOSITORY.resolve("question-bank").toString());
     }
 
     @Test
