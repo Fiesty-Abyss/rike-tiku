@@ -263,7 +263,7 @@ class QuestionAttachmentAdminIntegrationTest extends AdminQuestionIntegrationTes
     }
 
     private HttpResponse<String> multipart(String method, String path, String field, String fileName, byte[] bytes, String token) throws Exception {
-        String boundary = "----Codex" + UUID.randomUUID();
+        String boundary = "----RikeTest" + UUID.randomUUID();
         byte[] prefix = ("--" + boundary + "\r\nContent-Disposition: form-data; name=\"" + field + "\"; filename=\"" + fileName
                 + "\"\r\nContent-Type: application/octet-stream\r\n\r\n").getBytes(StandardCharsets.UTF_8);
         byte[] suffix = ("\r\n--" + boundary + "--\r\n").getBytes(StandardCharsets.UTF_8);
