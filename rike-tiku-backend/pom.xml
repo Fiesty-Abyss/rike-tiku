@@ -13,7 +13,7 @@
 
     <groupId>com.neu</groupId>
     <artifactId>rike-tiku-backend</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0</version>
     <name>rike-tiku-backend</name>
     <description>RIKE 理科学习辅助系统后端服务</description>
 
