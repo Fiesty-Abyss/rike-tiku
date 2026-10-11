@@ -227,7 +227,7 @@ class PaperAssignmentIntegrationTest extends AdminQuestionIntegrationTestSupport
         jdbc.update("INSERT INTO ban_ji(ban_ji_bian_ma,ban_ji_ming_cheng,nian_ji,ru_xue_nian_fen) VALUES ('TOPIC_SCOPE_OTHER','范围外测试班','高二',2025)");
         long class200 = id("SELECT LAST_INSERT_ID()");
         jdbc.update("INSERT INTO ren_ke_guan_xi(jiao_shi_id,ban_ji_id,ke_mu_id,zhuang_tai,kai_shi_shi_jian) VALUES (?,?,?,'ACTIVE',CURRENT_DATE)", profile200, class200, subject);
-        long privateQuestion = id("SELECT q.id FROM ti_mu q WHERE q.ke_mu_id=" + subject + " AND q.ti_mu_lei_xing='SUBJECTIVE' AND q.shi_yong_mo_shi='TOPIC_LEARNING' ORDER BY q.id LIMIT 1");
+        long privateQuestion = id("SELECT q.id FROM ti_mu q WHERE q.ke_mu_id=" + subject + " AND q.ti_mu_lei_xing='SUBJECTIVE' AND q.shi_yong_mo_shi='TOPIC_LEARNING' AND q.zhuang_tai='PUBLISHED' AND q.yi_shan_chu=0 ORDER BY q.id DESC LIMIT 1");
         jdbc.update("UPDATE ti_mu SET ke_jian_fan_wei='TEACHING_SCOPE_PRIVATE',ren_ke_guan_xi_id=?,chuang_jian_ren_id=? WHERE id=?", scope199, teacher199, privateQuestion);
 
         assertThat(papers.questions(teacher199, subject, null, "SUBJECTIVE", null, null)).extracting(PaperDtos.QuestionOption::id).contains(privateQuestion);
