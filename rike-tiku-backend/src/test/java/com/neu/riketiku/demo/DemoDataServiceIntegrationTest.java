@@ -420,7 +420,7 @@ class DemoDataServiceIntegrationTest extends AdminQuestionIntegrationTestSupport
         String review = Files.readString(Path.of("..", "docs", "DEMO_VARIANT_QUESTION_REVIEW.md"), StandardCharsets.UTF_8);
         assertThat(review)
                 .contains("| 物理 | 18 | 10 | 8 |", "| 化学 | 18 | 9 | 9 |", "| 生物 | 18 | 11 | 7 |",
-                        "| 合计 | 54 | 30 | 24 |", "开发阶段由 Codex 辅助整理候选不等于系统实现了运行时 AI 出题")
+                        "| 合计 | 54 | 30 | 24 |", "开发阶段人工整理候选不等于系统实现了运行时 AI 出题")
                 .doesNotContain("MVP30 已正式入库");
     }
 
