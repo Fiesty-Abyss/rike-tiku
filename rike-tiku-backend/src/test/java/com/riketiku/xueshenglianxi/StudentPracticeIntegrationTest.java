@@ -139,7 +139,7 @@ class StudentPracticeIntegrationTest extends AdminQuestionIntegrationTestSupport
     @Transactional
     void appliesSubjectKnowledgePointDifficultyAndPublishedFilters() {
         long userId = student("filter");
-        long point = jdbc.queryForObject("SELECT id FROM zhi_shi_dian WHERE ke_mu_id=1 AND zhuang_tai='ACTIVE' LIMIT 1", Long.class);
+        long point = activePointOfSubjectOne();
         question("SINGLE_CHOICE", "PUBLISHED", 1, "A");
         question("SINGLE_CHOICE", "PENDING", 1, "A");
         assertThat(service.create(userId, new StudentPracticeDtos.CreateRequest(1L, List.of(point), List.of("SINGLE_CHOICE"), 1, 1)).questions()).hasSize(1);
@@ -500,9 +500,21 @@ class StudentPracticeIntegrationTest extends AdminQuestionIntegrationTestSupport
             jdbc.update("INSERT INTO ti_mu_xuan_xiang(ti_mu_id,xuan_xiang_biao_shi,xuan_xiang_nei_rong,shi_fou_zheng_que,pai_xu) VALUES (?, 'A','选项A',1,1),(?, 'B','选项B',0,2)", id, id);
         }
         jdbc.update("INSERT INTO ti_mu_jie_xi(ti_mu_id,jie_xi_lei_xing,jie_xi_nei_rong,ban_ben_hao,zhuang_tai) VALUES (?,'STANDARD','标准解析',1,?)", id, status);
-        long point = jdbc.queryForObject("SELECT id FROM zhi_shi_dian WHERE ke_mu_id=1 AND zhuang_tai='ACTIVE' LIMIT 1", Long.class);
+        long point = activePointOfSubjectOne();
         jdbc.update("INSERT INTO ti_mu_zhi_shi_dian(ti_mu_id,zhi_shi_dian_id,shi_fou_zhu_yao,pai_xu) VALUES (?,?,1,1)", id, point);
         return id;
+    }
+
+    private long activePointOfSubjectOne() {
+        List<Long> points = jdbc.queryForList(
+                "SELECT id FROM zhi_shi_dian WHERE ke_mu_id=1 AND zhuang_tai='ACTIVE' ORDER BY id LIMIT 1", Long.class);
+        if (!points.isEmpty()) {
+            return points.getFirst();
+        }
+        String suffix = UUID.randomUUID().toString().replace("-", "").substring(0, 12);
+        jdbc.update("INSERT INTO zhi_shi_dian(ke_mu_id,zhi_shi_dian_ming_cheng,wan_zheng_lu_jing,ceng_ji,pai_xu,zhuang_tai) VALUES (1,?,?,1,999,'ACTIVE')",
+                "练习测试知识点" + suffix, "练习测试知识点>" + suffix);
+        return jdbc.queryForObject("SELECT LAST_INSERT_ID()", Long.class);
     }
 
     private int submitFill(long userId, String value) {

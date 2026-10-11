@@ -22,12 +22,14 @@ jobs:
         env:
           MYSQL_ROOT_PASSWORD: ci-root-password
           MYSQL_DATABASE: rike_tiku
+          TZ: Asia/Shanghai
         ports:
           - 3306:3306
         options: >-
           --health-cmd="mysqladmin ping -h 127.0.0.1 -pci-root-password"
           --health-interval=5s --health-timeout=5s --health-retries=30
     env:
+      TZ: Asia/Shanghai
       RIKE_TIKU_DB_HOST: 127.0.0.1
       RIKE_TIKU_DB_PORT: 3306
       RIKE_TIKU_DB_NAME: rike_tiku
