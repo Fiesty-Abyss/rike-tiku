@@ -1,6 +1,15 @@
 # rike-tiku-backend
 
-本工程是项目的 Spring Boot 后端。当前已经具备数据库迁移、题库核心模型、账号与教学组织数据库模型、统一登录、JWT访问令牌、首次改密门禁、三角色鉴权、CORS和健康检查；尚未实现前端登录、用户导入、题库正式业务API或AI功能。
+RIKE 理科学习辅助系统的后端服务：Spring Boot 4.1 + Java 25 + MySQL 8.4 + Flyway。提供统一登录与 JWT 鉴权、三角色（学生 / 教师 / 管理员）业务 API、题库导入与审核、练习判分、组卷与试卷发布、师生私信、操作审计，以及可选的 AI 答疑 / 变式 / 视觉解析能力。
+
+## 构建与测试
+
+```bash
+mvn -DskipTests package   # 构建可执行 jar：target/rike-tiku-backend-<version>.jar
+mvn test                  # 运行测试（需要可连接的 MySQL 8.4，测试会自行创建并清理随机临时库）
+```
+
+测试使用与运行时相同的 `RIKE_TIKU_DB_*` 环境变量连接 MySQL，账号需要 `CREATE` / `DROP` 权限。
 
 ## 本地数据库配置
 
@@ -103,6 +112,15 @@ mvn spring-boot:run
 ```
 
 环境变量只对当前 PowerShell 进程及其子进程生效。关闭终端后需要重新设置。
+
+## 从 Linux / macOS 终端启动
+
+```bash
+export RIKE_TIKU_DB_PASSWORD='你的本机MySQL密码'
+export RIKE_TIKU_JWT_SECRET="$(openssl rand -hex 32)"
+mvn spring-boot:run
+# 或：java -jar target/rike-tiku-backend-*.jar
+```
 
 ## 常见问题
 
