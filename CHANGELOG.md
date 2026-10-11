@@ -26,7 +26,7 @@
 ### 升级说明
 - V14 迁移脚本中 AI 模型配置表的注释文字已调整。**从 0.x 升级的已有数据库**启动前需刷新该迁移的校验和，任选其一：
   - 使用 Flyway CLI / Maven 插件执行 `repair`；或
-  - 执行 `UPDATE flyway_schema_history SET checksum = 1594633839 WHERE version = '14';`
+  - 执行 `UPDATE flyway_schema_history SET checksum = 1958640389 WHERE version = '14';`
   
   新建数据库无需任何操作。
 

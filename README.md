@@ -1,513 +1,304 @@
+<div align="center">
+
 # RIKE 理科学习辅助系统
 
-> **最终冻结基线（2026-08-21）：PR [#33](https://github.com/Fiesty-Abyss/rike-tiku/pull/33) 至 PR [#39](https://github.com/Fiesty-Abyss/rike-tiku/pull/39) 均已 ordinary merge；PR #39 merge commit 为 `8e824718dde9aa4f54ab99fa52735f6eb6d46dbc`。Flyway V30、50 张业务表；`PRODUCT DEVELOPMENT = FROZEN`，项目进入 `THESIS_AND_DEFENSE_DELIVERY`。**
+**面向高中物理、化学、生物的在线题库与学习辅助平台**
 
-面向高中物理、化学、生物的 Spring Boot 大模型题库系统。正式判分与 STANDARD 始终由确定性业务事实控制；AI 只承担解释、答疑和待人工审核的候选生成。
+学生按知识点练习、即时判分、错题复盘；教师在自己的任课范围内组卷、发布、看学情；管理员统一维护账号、班级与题库。<br/>
+AI 只负责讲解、答疑与候选题生成，**正式判分与标准解析始终由人工审核过的题库决定**。
 
-- [最终项目事实包](docs/FINAL_PROJECT_FACTS.md) · [最终截图证据目录](docs/FINAL_SCREENSHOT_EVIDENCE_CATALOG.md) · [功能—截图—代码—表快速索引](docs/FEATURE_SCREENSHOT_CODE_INDEX.md) · [功能技术地图](docs/FEATURE_CODE_TECH_MAP.md)
-- [功能—数据库表地图](docs/FEATURE_DATABASE_TABLE_MAP.md) · [Excel 精确导入指南](docs/EXCEL_IMPORT_GUIDE.md) · [学生模板](docs/templates/student-import-template.xlsx) · [题目模板](docs/templates/question-import-template.xlsx) · [203 班演示导入资料](docs/demo-import/README.md) · [Excel 模板/导入页截图](docs/FINAL_SCREENSHOT_EVIDENCE_CATALOG.md#excel-模板与导入页面资料)
-- [V30 数据库参考](docs/DATABASE_SCHEMA_REFERENCE.md) · [V30 纯结构快照](database/schema_snapshot_v30.sql) · [V29 历史快照](database/schema_snapshot_v29.sql) · [SQL 示例](docs/SQL_EXAMPLES.md)
+[![CI](https://github.com/Fiesty-Abyss/rike-tiku/actions/workflows/ci.yml/badge.svg)](https://github.com/Fiesty-Abyss/rike-tiku/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/Fiesty-Abyss/rike-tiku?color=0b6b72)](https://github.com/Fiesty-Abyss/rike-tiku/releases)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+![Java](https://img.shields.io/badge/Java-25-orange)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.1-6db33f)
+![Vue](https://img.shields.io/badge/Vue-3.5-42b883)
+![MySQL](https://img.shields.io/badge/MySQL-8.4-4479a1)
 
-## Post-merge V30 专题与试卷质量修补（2026-08-17）
+[快速开始](#快速开始) · [功能一览](#功能一览) · [系统架构](#系统架构) · [演示账号](#演示账号) · [文档](docs/README.md) · [更新日志](CHANGELOG.md)
 
-- V30 为已发布试卷题目增加 JSON 附件快照，并将学生逐题作答状态扩展为可保存 `SUBJECTIVE_PENDING`；不新增表，业务表保持 50 张。
-- 15 个专题单元、45 道 `SUBJECTIVE + TOPIC_LEARNING` 原创题按 FOUNDATION / TRANSFER / ADVANCED 编排；题型分布为计算 14、实验 9、流程 5、材料分析 13、综合 4。专题单元只编排既有 `ti_mu`，不建立第二套题库。
-- 教师手动组卷支持筛选和加入主观大题；随机/规则组卷仍只抽确定性客观题。发布快照冻结附件元数据，学生端可显示冻结附件并保存主观作答；主观题不由 AI 或规则自动评分。
-- 当前最终回归：后端 221 tests、0 failures、0 errors、3 skipped；前端 68 个测试文件 / 224 tests；type-check、build、`npm audit --omit=dev` 通过，0 vulnerabilities。完整命令和证据边界见 [最终项目事实包](docs/FINAL_PROJECT_FACTS.md)。
-- 正式 `rike_tiku` 已正常升级至 Flyway V30、50 张业务表、0 failed migration；随机临时 schema 已从 V1 完整迁移至 V30。正式机器浏览器 11 页 / 56 断言通过，0 console/page/failed-request error、0 overflow；证据位于 `docs/evidence/v30-machine-browser/`，不等同用户真人验收。
-- 真实 DeepSeek variant/tutor、GLM Vision、xAI Vision、Web Search 本轮均为 `BLOCKED_EXTERNAL_PROVIDER`；Mock/Fake 不代表真实 PASS。
-- 学校 Word/PPT 模板尚未提供；仓库现有 Markdown 事实稿、截图、数据库与文献入口可直接用于后续套版，不在本轮生成或假设学校模板。
+</div>
 
-## PR #35 教师发布历史收口（已 ordinary merge）
+<p align="center">
+  <img src="docs/screenshots/01-portal.png" alt="RIKE 公共门户" width="100%">
+</p>
 
-- 教师以唯一 `teachingAssignmentId` 选择真实任课范围，界面显示“学科（班级）”；私有题仅能在其绑定任课范围检索与发布。
-- 教师可集中查询全部班级发布记录、查看班级作答统计与已提交答卷；答案采用用户可读格式，题干、选项、答案和 STANDARD 继续复用 KaTeX/mhchem 科学内容渲染。
-- 撤回发布只将 release 标记为 `CANCELLED`，使学生不可见；试卷本体软删除仅隐藏“我的试卷”。两种操作都不删除冻结快照、学生提交或逐题答案。
-- PR #35 已获 `USER_MANUAL_ACCEPTANCE` 并 ordinary merge；本轮未补跑独立机器浏览器，状态如实记录为 `MACHINE_BROWSER = NOT_RUN`，不把用户人工审查误写为机器浏览器结果。
+| 学生：三科工作台 | 学生：练习结果与标准解析 | 教师：任课工作台 |
+|:---:|:---:|:---:|
+| <img src="docs/screenshots/03-student-home.png" alt="学生三科工作台"> | <img src="docs/screenshots/06-practice-result.png" alt="练习结果"> | <img src="docs/screenshots/10-teacher-home.png" alt="教师工作台"> |
+| **管理员：系统总览** | **管理员：题库审核发布** | **管理员：AI 模型管理** |
+| <img src="docs/screenshots/12-admin-home.png" alt="管理员总览"> | <img src="docs/screenshots/13-admin-questions.png" alt="题库审核"> | <img src="docs/screenshots/14-admin-ai-models.png" alt="AI 模型管理"> |
 
-## 1. 公共门户
+> 以上均为本地演示环境（`rike_tiku_demo`）的实机截图，数据为项目自编演示数据。
 
-[![RIKE 公共门户首屏 Hero](docs/evidence/readme-preview/01-portal-hero.png)](docs/evidence/thesis-final/01-portal-desktop.png)
+## 亮点
 
-### 功能说明
+- 🎯 **判分可信**：客观题按人工审核过的标准答案确定性判分，填空题只接受显式列出的等价答案；AI 输出永远不会改写成绩或 STANDARD 解析。
+- 🔐 **权限清晰**：教师的一切数据访问都由服务端按“教师—班级—科目”三元任课关系校验；多角色账号登录时显式选择本次角色。
+- 🧪 **为理科而生**：KaTeX + mhchem 渲染公式与化学式，题干 / 解析图片附件受控存储，结果页展示作答时冻结的选项快照。
+- 🔁 **学习闭环**：练习 → 判分 → 标准解析 → 错题本筛选 / 再做 / 归档 → 知识点掌握度 → 规则推荐，再加专题单元与高频考点卡片。
+- 🤖 **受控 AI**：当前题答疑、错因分析、变式练习、候选题生成；支持 DeepSeek 文本与 GLM / xAI 视觉模型，候选题必须人工审核后才进入题库。
+- 🧾 **可审计**：管理员高风险操作写入操作日志并可检索；导入走 Preview → Confirm 两步，题目统一经过 PENDING → 审核 → 发布。
+- 🛠 **工程完整**：Flyway V1–V30 管理 50 张业务表，后端 227 项、前端 231 项自动化测试，CI 覆盖构建与测试。
 
-公共门户用物理、化学、生物的共同视觉语言介绍系统，并把未登录用户引导到统一登录入口。README 只展示首屏 Hero；点击缩略图可查看完整长页证据。
+## 功能一览
 
-### 设计思路
+### 学生
 
-门户承担产品定位和角色入口，不复制认证逻辑。内容规模数字由受限只读统计接口实时查询：只统计有效学科、可被自主练习抽取的正式 GLOBAL 客观题，以及正式 GLOBAL 专题主观题；接口失败时显示 `—`，不会退回旧的硬编码数字。
+| 功能 | 说明 |
+|---|---|
+| 三科工作台 | 物理 / 化学 / 生物分学科入口，显示可用知识点与掌握情况 |
+| 自主练习 | 按学科、知识点、题型、难度组卷练习，提交后即时判分 |
+| 结果与标准解析 | 逐题对比“你的答案 / 正确答案”，展示冻结选项与分段 STANDARD 解析 |
+| 错题本 | 按学科、知识点、题型、时间筛选，支持再做与软归档 |
+| 专题学习 | 15 个综合题专题单元，按基础 / 迁移 / 进阶编排，可保存主观作答 |
+| 我的试卷 | 在线完成教师发布的试卷，草稿自动保存，提交后查看客观题得分 |
+| 高频考点 | 物理、化学、生物知识卡片：核心知识、公式、适用条件、二级结论、常见误区 |
+| AI 学习辅助 | 当前题答疑、错因分析、变式练习（需管理员启用 AI 模型） |
+| 私信 / 个人中心 | 与任课教师私信（支持撤回与仅本人删除），维护简介、头像与密码 |
+
+<table><tr>
+<td><img src="docs/screenshots/05-practice-session.png" alt="自主练习"></td>
+<td><img src="docs/screenshots/07-wrong-questions.png" alt="错题本"></td>
+<td><img src="docs/screenshots/09-knowledge-cards.png" alt="高频考点"></td>
+</tr></table>
+
+### 教师
+
+| 功能 | 说明 |
+|---|---|
+| 任课工作台 | 只展示本人 ACTIVE 任课范围内的班级、学生与学情统计，不做排名 |
+| 高频考点 | 为任课班级维护考点，学生端同步可见 |
+| 组卷与发布 | 手动或按规则组卷（规则组卷只抽可自动判分题），生成学生版 / 答案版并可打印；发布到本人任课班级 |
+| 作答统计 | 查看班级提交情况、逐题统计与学生画像，弹窗内定时同步新提交 |
+| 班级私有题库 | 在任课范围内新建、导入、编辑并发布只对该班级可见的题目 |
+| AI 候选题审核 | 审核 AI 生成的变式候选题，通过后才进入题库 |
+
+### 管理员
+
+| 功能 | 说明 |
+|---|---|
+| 系统总览 | 账号、班级、题库与待办概况 |
+| 班级 / 学生 / 教师 | 班级管理、学生管理与 Excel 批量导入、教师与任课关系、管理员角色授予 / 撤销 |
+| 题库 | Excel 批量导入（Preview → Confirm）、审核发布、来源与权利信息维护、图片附件 |
+| AI 模型管理 | 配置文本 / 视觉模型、连接测试、启停与默认模型；密钥只回显“是否已配置” |
+| 密码恢复 / 操作日志 | 处理用户密码恢复申请；检索管理员高风险操作日志 |
+
+<table><tr>
+<td><img src="docs/screenshots/11-teacher-papers.png" alt="教师组卷"></td>
+<td><img src="docs/screenshots/17-admin-question-import.png" alt="题库 Excel 导入"></td>
+<td><img src="docs/screenshots/19-portal-mobile.png" alt="移动端门户" width="200"></td>
+</tr></table>
+
+## 适用场景
+
+- **学校 / 年级组的理科日常练习**：老师按班级组卷发布，学生课后在线完成，系统自动统计客观题。
+- **个人或学习小组刷题复盘**：按知识点练习、错题再做，配合知识卡片查漏补缺。
+- **教研题库建设**：通过 Excel 批量导入并逐题审核，沉淀带来源与权利信息的结构化题库。
+- **教学软件 / 课程项目参考**：一套前后端分离、权限与审计完整、带 AI 接入边界设计的 Spring Boot + Vue 实战样例。
+
+## 为什么是 RIKE
+
+| | 通用问卷 / 表单工具 | 直接用 AI 聊天刷题 | RIKE |
+|---|---|---|---|
+| 理科公式与化学式 | 弱 | 依赖模型输出 | KaTeX + mhchem 原生渲染 |
+| 判分依据 | 人工设置 | 模型自行判断，可能出错 | 人工审核的标准答案，确定性判分 |
+| 班级与权限 | 无 | 无 | 三元任课关系 + 服务端鉴权 |
+| 错题与掌握度 | 无 | 需手动整理 | 自动沉淀，支持筛选 / 再做 / 推荐 |
+| AI 的角色 | 无 | 全权 | 讲解与候选生成，不碰正式成绩 |
+| 部署 | SaaS | SaaS | 自托管，数据留在本地 |
+
+## 系统架构
+
+```mermaid
+flowchart LR
+  subgraph Browser["浏览器"]
+    FE["Vue 3 + TypeScript<br/>Vite / Pinia / Vue Router<br/>Element Plus / KaTeX / GSAP"]
+  end
+  subgraph Backend["Spring Boot 4.1 (Java 25)"]
+    SEC["Spring Security<br/>JWT + 图形验证码"]
+    API["REST API /api/v1"]
+    SVC["业务服务<br/>题库 · 练习判分 · 组卷发布<br/>教学组织 · 私信 · 审计"]
+    AI["AI 网关<br/>超时 / 重试 / 调用日志"]
+    STORE["附件存储<br/>（本地受控目录）"]
+  end
+  DB[("MySQL 8.4<br/>Flyway V1–V30")]
+  LLM["DeepSeek（文本）<br/>GLM / xAI（视觉）"]
+
+  FE -- "HTTPS + Bearer JWT" --> SEC --> API --> SVC
+  SVC --> DB
+  SVC --> STORE
+  SVC --> AI -. "可选，默认关闭" .-> LLM
+```
+
+- **鉴权**：JWT 访问令牌 + 一次性图形验证码；角色与任课范围每次请求由服务端重新校验。
+- **数据**：Flyway 是唯一的结构来源，已发布迁移不可修改；演示数据由独立命令写入 `rike_tiku_demo`，不随应用启动写入。
+- **AI 边界**：AI 默认关闭；启用后只返回解释、答疑与 PENDING 状态的候选题，调用记录写入日志表。
+
+| 层 | 技术 |
+|---|---|
+| 前端 | Vue 3.5、TypeScript 6、Vite 8、Pinia、Vue Router、Element Plus、Axios、KaTeX（mhchem）、GSAP、Vitest |
+| 后端 | Spring Boot 4.1、Java 25、Spring Security、MyBatis-Plus、JdbcTemplate、Flyway 12、JJWT、Apache POI、springdoc-openapi |
+| 数据库 | MySQL 8.4（utf8mb4 / utf8mb4_0900_ai_ci） |
+| 工具 | Maven、npm、GitHub Actions、Python（离线题库整理工具） |
+
+## 快速开始
+
+### 环境要求
+
+JDK 25 · Maven 3.9+ · Node.js 22+（推荐 24） · MySQL 8.4
+
+### 1. 创建数据库
+
+```sql
+CREATE DATABASE rike_tiku_demo DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;
+```
+
+### 2. 构建后端并写入演示数据
+
+```bash
+cd rike-tiku-backend
+mvn -DskipTests package
+
+export RIKE_TIKU_DB_NAME=rike_tiku_demo
+export RIKE_TIKU_DB_PASSWORD='你的MySQL密码'
+export RIKE_TIKU_JWT_SECRET="$(openssl rand -hex 32)"   # 至少 32 字节
+
+# 执行 Flyway 迁移并写入演示数据（只会写入名称安全的演示库）
+java -Dloader.main=com.riketiku.demo.DemoEnvironmentCommand \
+     -cp target/rike-tiku-backend-1.0.0.jar org.springframework.boot.loader.launch.PropertiesLauncher \
+     --demo.action=seed --server.port=0
+```
+
+> Windows 可直接使用 `.\scripts\demo-environment.ps1 acceptance-prepare`，详见 [演示环境](docs/DEMO_ENVIRONMENT.md)。
+
+### 3. 启动后端
+
+```bash
+java -jar target/rike-tiku-backend-1.0.0.jar     # http://localhost:8081，健康检查 /api/v1/health
+```
+
+### 4. 启动前端
+
+```bash
+cd ../rike-tiku-frontend
+npm ci
+echo "VITE_API_BASE_URL=http://localhost:8081/api/v1" > .env.local
+npm run dev                                      # http://localhost:8080
+```
+
+打开 `http://localhost:8080`，点击“登录”，使用下方演示账号即可。
+
+### 主要环境变量
+
+| 变量 | 默认值 | 说明 |
+|---|---|---|
+| `RIKE_TIKU_DB_HOST` / `_PORT` / `_NAME` | `localhost` / `3306` / `rike_tiku` | 数据库连接 |
+| `RIKE_TIKU_DB_USERNAME` / `_PASSWORD` | `root` / 空 | 数据库账号 |
+| `RIKE_TIKU_JWT_SECRET` | 空（必填） | JWT 签名密钥，至少 32 字节 |
+| `RIKE_TIKU_BACKEND_PORT` | `8081` | 后端端口 |
+| `RIKE_TIKU_CORS_ALLOWED_ORIGINS` | `http://localhost:8080` | 允许的前端来源 |
+| `RIKE_TIKU_DEFAULT_RESET_PASSWORD` | `a1234567` | 新建 / 导入 / 重置账号的默认密码（使用它登录时会被要求修改） |
+| `RIKE_TIKU_AI_ENABLED` 等 | `false` | AI 相关配置，见 [AI Provider 配置](docs/AI_PROVIDER_CONFIGURATION.md) |
+
+## 演示账号
+
+初始密码均为 `a1234567`，首次登录会要求修改密码。
+
+| 角色 | 账号 |
+|---|---|
+| 管理员 | `demo_admin` |
+| 管理员 + 教师（登录时选择角色） | `demo_physics_admin` |
+| 教师 | `demo_teacher`、`demo_biology_teacher`、`demo_chemistry_teacher` |
+| 学生 | `demo_student`、`demo_199_01` ~ `demo_199_05`、`demo_200_01` ~ `demo_200_03` |
+
+演示题库为三科各 120 道项目自编客观题 + 15 个专题单元，详见 [演示环境](docs/DEMO_ENVIRONMENT.md)。
+
+## 项目结构
+
+```text
+rike-tiku/
+├─ rike-tiku-backend/      # Spring Boot 后端（Flyway 迁移位于 src/main/resources/db/migration）
+├─ rike-tiku-frontend/     # Vue 3 前端
+├─ database/               # 结构快照与 ER 图
+├─ docs/                   # 设计、接口、数据库与运维文档、截图
+├─ question-bank/          # 题目导入的受控来源根（本地题库数据不入库）
+├─ tools/question-pipeline/# 离线题库整理工具（Python）
+└─ scripts/                # 演示环境、模板生成、结构文档生成等脚本
+```
+
+## 测试
+
+```bash
+cd rike-tiku-backend  && mvn verify                                       # 需要可连接的 MySQL 8.4
+cd rike-tiku-frontend && npm run type-check && npm test && npm run build
+cd tools/question-pipeline && python -m unittest test_parser.py
+```
+
+## 常见问题
 
 <details>
-<summary>实现与数据库映射</summary>
+<summary><b>启动报 <code>Access denied ... (using password: NO)</code>？</b></summary>
 
-- 前端路由：[`/` 路由定义](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-frontend/src/router/index.ts)
-- Vue 页面或组件：[`PortalView.vue`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-frontend/src/views/PortalView.vue)
-- TypeScript API：[`publicPortal.ts`](rike-tiku-frontend/src/api/publicPortal.ts)；入口与权限跳转由 [`router/index.ts`](rike-tiku-frontend/src/router/index.ts) 控制
-- 后端 Controller：[`PortalStatsController.java`](rike-tiku-backend/src/main/java/com/riketiku/portal/PortalStatsController.java)
-- 后端 Service：[`PortalStatsService.java`](rike-tiku-backend/src/main/java/com/riketiku/portal/PortalStatsService.java)
-- 主要数据库表：`ke_mu`、`ti_mu`（仅业务可见字段的 COUNT，不返回题目或用户数据）
-- Flyway：沿用 V1/V2/V20/V26 的既有字段，无新增迁移
-- 主要技术：Vue 3、Vue Router、Axios、Spring MVC、受限 COUNT 查询、响应式 CSS、GSAP
-
+后端进程没有拿到 `RIKE_TIKU_DB_PASSWORD`。请在启动后端的同一个终端或 IDE 运行配置中设置环境变量；项目不会自动读取 `.env` 文件。
 </details>
-
-### 论文与参考
-
-- 可用于论文第 3 章总体架构与第 5 章公共入口设计。
-- [Vue Router 官方文档](https://router.vuejs.org/)；[Spring Boot Reference](https://docs.spring.io/spring-boot/reference/)。
-
-## 2. 登录与密码恢复
-
-[![登录、CAPTCHA 与密码恢复入口](docs/evidence/readme-preview/02-login-recovery.png)](docs/evidence/thesis-final/02-login.png)
-
-### 功能说明
-
-用户通过账号、密码和一次性图形验证码登录；忘记密码入口采用统一响应，避免暴露账号是否存在。首次改密门禁同时依据正式首次登录状态和 BCrypt 对系统默认密码的匹配结果，避免历史标记漂移绕过改密。
-
-### 设计思路
-
-认证、验证码和恢复通知共享安全边界，但恢复流程不改变正常登录表单状态。JWT 只用于后续 API 身份验证，README 和日志不展示 Token 或密码摘要。
 
 <details>
-<summary>实现与数据库映射</summary>
+<summary><b>演示账号登录后提示必须修改密码？</b></summary>
 
-- 前端路由：[`/login`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-frontend/src/router/index.ts)
-- Vue 页面或组件：[`LoginView.vue`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-frontend/src/views/auth/LoginView.vue)、[`PasswordRecoveryDialog.vue`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-frontend/src/components/auth/PasswordRecoveryDialog.vue)
-- TypeScript API：[`auth.ts`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-frontend/src/api/auth.ts)
-- 后端 Controller：[`RenZhengController.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/riketiku/renzheng/RenZhengController.java)、[`PasswordRecoveryController.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/riketiku/zhanghao/PasswordRecoveryController.java)
-- 后端 Service：[`RenZhengFuWu.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/riketiku/renzheng/RenZhengFuWu.java)、[`PasswordRecoveryService.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/riketiku/zhanghao/PasswordRecoveryService.java)
-- 主要数据库表：`yong_hu`、`jiao_se`、`yong_hu_jiao_se`、`mi_ma_chong_zhi_shen_qing`
-- Flyway：[`V5`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/resources/db/migration/V5__create_user_role_and_profile_tables.sql)、[`V17`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/resources/db/migration/V17__create_password_recovery_requests.sql)
-- 主要技术：Spring Security、BCrypt、JWT、一次性 CAPTCHA、反账号枚举
-
+这是预期行为：使用系统默认密码登录的账号都必须先改密。改完后用新密码登录即可；重新执行演示 `seed` 会恢复初始密码。
 </details>
-
-### 论文与参考
-
-- 可用于论文第 5 章认证流程和第 7 章安全设计。
-- [Spring Security Reference](https://docs.spring.io/spring-security/reference/)；[OWASP Authentication Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html)。
-
-## 3. 学生自主练习
-
-[![学生自主练习条件与创建流程](docs/evidence/readme-preview/03-student-practice.png)](docs/evidence/thesis-final/04-practice.png)
-
-### 功能说明
-
-学生按学科、知识点、题型、难度和数量创建自主练习。系统只抽取授权范围内的已发布、可自动判分题，并在练习中冻结题干、选项、答案与解析版本。
-
-### 设计思路
-
-冻结快照避免题库后续编辑改变历史答题事实；所有权校验确保学生只能访问本人的练习会话。单选、多选和填空由共享确定性判分器处理，不调用 AI 决定分数。
 
 <details>
-<summary>实现与数据库映射</summary>
+<summary><b>前端能打开但所有请求都失败 / 跨域报错？</b></summary>
 
-- 前端路由：`/student/practice/new`、`/student/practice/:id`
-- Vue 页面或组件：[`PracticeNewView.vue`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-frontend/src/views/student/PracticeNewView.vue)、[`PracticeSessionView.vue`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-frontend/src/views/student/PracticeSessionView.vue)
-- TypeScript API：[`student/practice.ts`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-frontend/src/api/student/practice.ts)
-- 后端 Controller：[`StudentPracticeController.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/riketiku/xueshenglianxi/StudentPracticeController.java)
-- 后端 Service：[`StudentPracticeService.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/riketiku/xueshenglianxi/StudentPracticeService.java)、[`ObjectiveAnswerGrader.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/riketiku/xueshenglianxi/ObjectiveAnswerGrader.java)
-- 主要数据库表：`ti_mu`、`lian_xi_hui_hua`、`lian_xi_ti_mu`、`xue_sheng_da_ti`
-- Flyway：[`V7`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/resources/db/migration/V7__create_student_practice_and_wrong_question_tables.sql)
-- 主要技术：事务、冻结快照、JSON 结构化答案、确定性判分
-
+确认 `VITE_API_BASE_URL` 包含 `/api/v1`，并且后端的 `RIKE_TIKU_CORS_ALLOWED_ORIGINS` 与前端实际地址（含端口）完全一致。
 </details>
-
-### 论文与参考
-
-- 可用于论文第 4 章练习数据模型和第 5 章确定性判分。
-- [MySQL 8.4 事务模型](https://dev.mysql.com/doc/refman/8.4/en/innodb-transaction-model.html)；[Spring Transaction Management](https://docs.spring.io/spring-framework/reference/data-access/transaction.html)。
-
-## 4. STANDARD 与结果
-
-[![练习结果、正确答案与 STANDARD 解析](docs/evidence/readme-preview/04-standard-result.png)](docs/evidence/thesis-final/05-result-standard.png)
-
-### 功能说明
-
-提交后页面对照学生答案与确定性正确答案，并默认展示 STANDARD 解析和知识点。STANDARD 是经过审核、随练习冻结的正式事实，不由 AI 生成结果覆盖。
-
-### 设计思路
-
-把正式答案、解析与 AI 辅助拆开，是系统最重要的可信边界。即使 Provider 未配置或调用失败，分数、正确答案和 STANDARD 仍完整可用。
 
 <details>
-<summary>实现与数据库映射</summary>
+<summary><b>不配置 AI 能用吗？</b></summary>
 
-- 前端路由：`/student/practice/:id/result`
-- Vue 页面或组件：[`PracticeResultView.vue`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-frontend/src/views/student/PracticeResultView.vue)、[`StandardAnalysis.vue`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-frontend/src/components/question/StandardAnalysis.vue)、[`AnswerDisplay.vue`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-frontend/src/components/question/AnswerDisplay.vue)
-- TypeScript API：[`student/practice.ts`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-frontend/src/api/student/practice.ts)
-- 后端 Controller：[`StudentPracticeController.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/riketiku/xueshenglianxi/StudentPracticeController.java)
-- 后端 Service：[`StudentPracticeService.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/riketiku/xueshenglianxi/StudentPracticeService.java)
-- 主要数据库表：`ti_mu_jie_xi`、`lian_xi_ti_mu`、`xue_sheng_da_ti`、`xue_xi_jie_guo`
-- Flyway：[`V2`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/resources/db/migration/V2__create_question_core_tables.sql)、[`V7`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/resources/db/migration/V7__create_student_practice_and_wrong_question_tables.sql)
-- 主要技术：版本冻结、KaTeX、安全科学文本、确定性 JSON 判分
-
+可以。AI 默认关闭，练习、判分、组卷、管理等全部核心功能都不依赖 AI。需要时在“AI 模型管理”中配置 DeepSeek / GLM / xAI 并启用。
 </details>
-
-### 论文与参考
-
-- 可用于论文第 5 章结果反馈和第 6 章 AI/正式事实边界。
-- 相关研究背景可参阅[人机协同评价](https://doi.org/10.13927/j.cnki.yuan.20240422.001)。
-
-## 5. AI 当前题答疑
-
-[![绑定当前题与 STANDARD 的 AI 答疑](docs/evidence/readme-preview/05-ai-question-tutor.png)](docs/evidence/thesis-final/08-student-ai-chat.png)
-
-### 功能说明
-
-学生可以围绕当前已提交题目开启有限会话，并选择管理员开放的模型、标准/深度思考和受控联网搜索。会话绑定冻结题干、学生答案、STANDARD 与知识点，最多 10 轮。
-
-### 设计思路
-
-模型只能读取当前学生有权访问的事实，不能选择任意 endpoint，也不能改写 STANDARD。搜索结果被标记为不可信补充上下文；最终页面不展示或保存 `reasoning_content`。
 
 <details>
-<summary>实现与数据库映射</summary>
+<summary><b>能用 MariaDB 或 MySQL 5.7 吗？</b></summary>
 
-- 前端路由：`/student/practice/:id/result`
-- Vue 页面或组件：[`StudentAiLearningPanel.vue`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-frontend/src/components/student/StudentAiLearningPanel.vue)
-- TypeScript API：[`student/aiLearning.ts`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-frontend/src/api/student/aiLearning.ts)
-- 后端 Controller：[`StudentAiController.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/riketiku/aixuesheng/StudentAiController.java)
-- 后端 Service：[`StudentAiService.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/riketiku/aixuesheng/StudentAiService.java)、[`OfficialWebSearchClient.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/riketiku/ai/search/OfficialWebSearchClient.java)
-- 主要数据库表：`ai_hui_hua`、`ai_xiao_xi`、`ai_mo_xing_pei_zhi`、`ai_diao_yong_ri_zhi`
-- Flyway：[`V13`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/resources/db/migration/V13__create_student_ai_learning_tables.sql)、[`V15`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/resources/db/migration/V15__expand_student_ai_conversation_to_ten_rounds.sql)、[`V16`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/resources/db/migration/V16__add_student_ai_runtime_choices_and_search_usage.sql)
-- 主要技术：DeepSeek Chat Completions、字符预算、Prompt 注入防护、metadata-only 日志、智谱 Web Search
-
+不建议。迁移脚本使用了 MySQL 8 的 CHECK 约束变更、`utf8mb4_0900_ai_ci` 排序规则等特性，MariaDB 无法执行全部迁移。请使用 MySQL 8.4。
 </details>
-
-### 论文与参考
-
-- 可用于论文第 2 章智能辅导与个性化反馈、第 6 章受控 Provider 设计。
-- 相关研究背景可参阅[人机协同智能教学](https://doi.org/10.16209/j.cnki.cust.2025.06.015)。
-
-## 6. AI 变式练习
-
-[![结构化 AI 变式练习](docs/evidence/readme-preview/06-ai-variant.png)](docs/evidence/thesis-final/09-student-ai-variant.png)
-
-### 功能说明
-
-学生可以基于已提交题目生成一题结构化变式，选择目标难度并完成单选、多选或填空作答。正确答案与解析在作答前隐藏；提交人工审核后仍保持 `PENDING`。
-
-### 设计思路
-
-生成结果必须通过共享 Parser 和确定性判分器，不能直接成为正式题库 STANDARD。母题、生成任务、实例和审核事实分开保存，使换题与失败均可追踪。
 
 <details>
-<summary>实现与数据库映射</summary>
+<summary><b>从 0.x 升级后启动报 Flyway 校验和不一致？</b></summary>
 
-- 前端路由：`/student/practice/:id/result`
-- Vue 页面或组件：[`StudentAiVariantPanel.vue`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-frontend/src/components/student/StudentAiVariantPanel.vue)
-- TypeScript API：[`student/aiLearning.ts`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-frontend/src/api/student/aiLearning.ts)
-- 后端 Controller：[`StudentAiVariantController.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/riketiku/aixuesheng/StudentAiVariantController.java)
-- 后端 Service：[`StudentAiVariantService.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/riketiku/aixuesheng/StudentAiVariantService.java)、[`AiQuestionGenerationService.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/riketiku/aishengcheng/AiQuestionGenerationService.java)
-- 主要数据库表：`ai_xue_sheng_bian_shi_shi_li`、`ai_sheng_cheng_ren_wu`、`ti_mu`、`ti_mu_shen_he_ji_lu`
-- Flyway：[`V14`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/resources/db/migration/V14__create_ai_generation_and_model_tables.sql)、[`V19`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/resources/db/migration/V19__create_student_ai_variant_instances.sql)
-- 主要技术：结构化生成、严格 Parser、内容 hash、事务、确定性判分、PENDING 人工门禁
-
+1.0.0 调整了 V14 迁移中的注释文字，已有数据库需要刷新一次校验和，见 [CHANGELOG 升级说明](CHANGELOG.md#100---2026-10-11)。
 </details>
-
-### 论文与参考
-
-- 可用于论文第 2 章自动出题、第 6 章结构化生成与第 7 章人工审核。
-- 相关研究背景可参阅[AI 支持的人机协同智能教学](https://doi.org/10.16209/j.cnki.cust.2025.06.015)。
-
-## 7. 教师任课工作台
-
-[![教师 ACTIVE 任课范围工作台](docs/evidence/readme-preview/07-teacher-workspace.png)](docs/evidence/thesis-final/11-teacher-workspace.png)
-
-### 功能说明
-
-教师工作台只展示本人 ACTIVE 任课关系关联的班级、科目和学生学习信息，并提供考点、组卷、消息和候选审核入口。不同班级与学科通过明确的任课范围隔离。
-
-### 设计思路
-
-权限基点不是前端选择项，而是服务端再次验证的“教师—班级—科目”三元关系。统计和内容查询都从同一范围出发，避免横向越权。
 
 <details>
-<summary>实现与数据库映射</summary>
+<summary><b>仓库里的题目可以随便用吗？</b></summary>
 
-- 前端路由：`/teacher/scopes/:scopeId`
-- Vue 页面或组件：[`TeacherScopeWorkspaceView.vue`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-frontend/src/views/teacher/TeacherScopeWorkspaceView.vue)
-- TypeScript API：[`teacher.ts`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-frontend/src/api/teacher.ts)
-- 后端 Controller：[`JiaoShiGaoPinKaoDianController.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/riketiku/jiaoshi/JiaoShiGaoPinKaoDianController.java)
-- 后端 Service：[`JiaoShiGaoPinKaoDianFuWu.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/riketiku/jiaoshi/JiaoShiGaoPinKaoDianFuWu.java)
-- 主要数据库表：`jiao_shi_dang_an`、`ban_ji`、`ren_ke_guan_xi`、`gao_pin_kao_dian`
-- Flyway：[`V6`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/resources/db/migration/V6__create_class_and_teaching_relationship_tables.sql)、[`V8`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/resources/db/migration/V8__create_high_frequency_point_table.sql)
-- 主要技术：三元任课授权、ACTIVE scope、事务、聚合查询
-
+代码按 MIT 开源；演示题目为项目自编。内容来源与使用边界见 [CONTENT_NOTICE](CONTENT_NOTICE.md)。如有侵权请联系删除。
 </details>
 
-### 论文与参考
+## 路线图
 
-- 可用于论文第 4 章组织模型和第 7 章应用层权限隔离。
-- [MySQL 8.4 Foreign Key Constraints](https://dev.mysql.com/doc/refman/8.4/en/create-table-foreign-keys.html)；[Spring Method Security](https://docs.spring.io/spring-security/reference/servlet/authorization/method-security.html)。
+- [ ] Docker Compose 一键部署（MySQL + 后端 + 前端）
+- [ ] 主观题教师在线批改与评语
+- [ ] 学情报表导出（班级 / 个人，PDF / Excel）
+- [ ] 题目相似度检测与去重提示
+- [ ] 更多 AI Provider 适配与本地模型支持
+- [ ] 英文界面（i18n）
 
-## 8. 教师组卷
+## 参考资料
 
-[![教师手动与规则组卷](docs/evidence/readme-preview/08-teacher-paper-builder.png)](docs/evidence/thesis-final/13-teacher-paper-builder.png)
+- Corbett, A. T., & Anderson, J. R. (1995). *Knowledge tracing: Modeling the acquisition of procedural knowledge.* User Modeling and User-Adapted Interaction. [doi:10.1007/BF01099821](https://doi.org/10.1007/BF01099821)
+- Cepeda, N. J., et al. (2006). *Distributed practice in verbal recall tasks: A review and quantitative synthesis.* Psychological Bulletin. [doi:10.1037/0033-2909.132.3.354](https://doi.org/10.1037/0033-2909.132.3.354)
+- Roediger, H. L., & Karpicke, J. D. (2006). *Test-enhanced learning.* Psychological Science. [doi:10.1111/j.1467-9280.2006.01693.x](https://doi.org/10.1111/j.1467-9280.2006.01693.x)
+- Dunlosky, J., et al. (2013). *Improving students' learning with effective learning techniques.* Psychological Science in the Public Interest. [doi:10.1177/1529100612453266](https://doi.org/10.1177/1529100612453266)
+- 教育部.《普通高中课程方案和语文等学科课程标准（2017年版2020年修订）》. [moe.gov.cn](http://www.moe.gov.cn/srcsite/A26/s8001/202006/t20200603_462199.html)
+- [Spring Boot 官方文档](https://docs.spring.io/spring-boot/index.html) · [Vue 3 中文文档](https://cn.vuejs.org/guide/introduction.html) · [Flyway 文档](https://documentation.red-gate.com/flyway) · [MySQL 8.4 参考手册](https://dev.mysql.com/doc/refman/8.4/en/) · [KaTeX 支持的函数](https://katex.org/docs/supported.html) · [RFC 7519: JSON Web Token](https://www.rfc-editor.org/rfc/rfc7519)
 
-### 功能说明
+## 参与贡献与许可
 
-教师可从本人任教学科的已发布题中手动组卷，也可按题型、难度、知识点和数量进行规则组卷。保存后冻结题序和分值，并分别生成学生版与答案解析版。
+欢迎提交 Issue 与 PR，请先阅读 [贡献指南](CONTRIBUTING.md)；安全问题请按 [安全策略](SECURITY.md) 私下报告。
 
-### 设计思路
-
-组卷只消费正式 `PUBLISHED` 题目，试卷题目关系通过唯一约束保证顺序和题目不重复。打印采用浏览器 A4 样式，不额外引入 PDF 服务。
-
-<details>
-<summary>实现与数据库映射</summary>
-
-- 前端路由：`/teacher/papers`
-- Vue 页面或组件：[`TeacherPaperBuilderView.vue`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-frontend/src/views/teacher/TeacherPaperBuilderView.vue)、[`PaperPreviewView.vue`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-frontend/src/views/teacher/PaperPreviewView.vue)
-- TypeScript API：[`teacher/papers.ts`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-frontend/src/api/teacher/papers.ts)
-- 后端 Controller：[`PaperController.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/riketiku/shijuan/PaperController.java)
-- 后端 Service：[`PaperService.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/riketiku/shijuan/PaperService.java)
-- 主要数据库表：`shi_juan`、`shi_juan_ti_mu`、`ti_mu`、`ti_mu_zhi_shi_dian`
-- Flyway：[`V18`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/resources/db/migration/V18__create_teacher_papers.sql)
-- 主要技术：规则过滤、冻结顺序/分值、唯一约束、CSS `@media print`
-
-</details>
-
-### 论文与参考
-
-- 可用于论文第 5 章教师组卷工作流和第 4 章试卷关系模型。
-- [MySQL 8.4 CHECK Constraints](https://dev.mysql.com/doc/refman/8.4/en/create-table-check-constraints.html)；[MDN Printing](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_media_queries/Printing)。
-
-## 9. 管理员 AI 模型配置
-
-[![管理员 DeepSeek、GLM 与 Web Search 配置](docs/evidence/readme-preview/09-admin-ai-models.png)](docs/evidence/thesis-final/17-admin-ai-models.png)
-
-### 功能说明
-
-管理员分别管理 TEXT、VISION 和 SEARCH 用途的受控配置。页面只显示 Key 是否已配置；连接测试返回安全状态、延迟和时间，不回显 Key、Base64、Prompt 或 Provider 原始响应。
-
-### 设计思路
-
-Provider 配置与学生业务 API 分离，前端只能提交受控模型 ID。DeepSeek 负责文本能力，GLM-4.6V-Flash负责视觉上下文，智谱 Web Search 提供结构化来源；未配置时确定性主链仍可运行。
-
-<details>
-<summary>实现与数据库映射</summary>
-
-- 前端路由：`/admin/ai-models`
-- Vue 页面或组件：[`AdminAiModelsView.vue`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-frontend/src/views/admin/AdminAiModelsView.vue)
-- TypeScript API：[`admin/aiModels.ts`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-frontend/src/api/admin/aiModels.ts)
-- 后端 Controller：[`AiModelConfigController.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/riketiku/ai/admin/AiModelConfigController.java)
-- 后端 Service：[`AiModelConfigService.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/riketiku/ai/admin/AiModelConfigService.java)、[`AiProviderService.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/riketiku/ai/AiProviderService.java)、[`GlmVisionProvider.java`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/java/com/riketiku/ai/vision/GlmVisionProvider.java)
-- 主要数据库表：`ai_mo_xing_pei_zhi`、`ai_diao_yong_ri_zhi`、`ai_shi_jue_shang_xia_wen`
-- Flyway：[`V12`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/resources/db/migration/V12__create_ai_call_log.sql)、[`V14`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/resources/db/migration/V14__create_ai_generation_and_model_tables.sql)、[`V16`](https://github.com/Fiesty-Abyss/rike-tiku/blob/feat/final-product-completion/rike-tiku-backend/src/main/resources/db/migration/V16__add_student_ai_runtime_choices_and_search_usage.sql)
-- 主要技术：DeepSeek Chat Completions、GLM-4.6V-Flash、智谱 Web Search、超时/重试、安全错误分类、metadata-only 日志
-
-</details>
-
-### 论文与参考
-
-- 可用于论文第 3 章技术架构、第 6 章 Provider 边界和第 7 章隐私治理。
-- [DeepSeek API](https://api-docs.deepseek.com/api/create-chat-completion)；[GLM-4.6V-Flash](https://docs.bigmodel.cn/cn/guide/models/free/glm-4.6v-flash)；[UNESCO 生成式 AI 教育指南](https://unesdoc.unesco.org/ark:/48223/pf0000386693)。
-
-## 10. 错题筛选、再做与软归档
-
-[![错题筛选与复习](docs/evidence/thesis-final/27-wrong-question-review.png)](docs/evidence/thesis-final/27-wrong-question-review.png)
-
-### 功能说明
-
-学生可按学科、知识点稳定 ID、状态和关键词筛选错题，并发起冻结单题的“再做一次”。做对后可软归档，历史答题、错误次数、掌握度与 AI 分析不会被删除，再次做错会重新激活。
-
-### 设计思路
-
-归档是学习状态而非数据删除；所有学生与 AI 可见题干统一清除经 Demo 标识确认的内部前缀，不误删“覆盖率”“覆盖范围”等正常正文。
-
-### 实现映射
-
-| 层次 | 精确实现 |
-|---|---|
-| 路由 / Vue | [`/student/wrong-questions` · `WrongQuestionsView.vue`](rike-tiku-frontend/src/views/student/WrongQuestionsView.vue) |
-| TypeScript API | [`student/practice.ts`](rike-tiku-frontend/src/api/student/practice.ts) |
-| Controller / Service | [`StudentPracticeController.java`](rike-tiku-backend/src/main/java/com/riketiku/xueshenglianxi/StudentPracticeController.java) · [`StudentPracticeService.java`](rike-tiku-backend/src/main/java/com/riketiku/xueshenglianxi/StudentPracticeService.java) |
-| 表 / Flyway | `cuo_ti_ji_lu`、`lian_xi_hui_hua`、`xue_sheng_da_ti` · [`V7`](rike-tiku-backend/src/main/resources/db/migration/V7__create_student_practice_and_wrong_question_tables.sql) |
-| 测试 / 技术 | [`StudentPracticeIntegrationTest.java`](rike-tiku-backend/src/test/java/com/riketiku/xueshenglianxi/StudentPracticeIntegrationTest.java) · 软归档、冻结快照、确定性判分 |
-
-### 论文写作提示与参考
-
-可用于第 4 章学习事实生命周期与第 5 章复习闭环；不能把归档写成删除历史。[MySQL 事务模型](https://dev.mysql.com/doc/refman/8.4/en/innodb-transaction-model.html)。
-
-## 11. 综合题专题单元与附件
-
-[![专题单元与图片题](docs/evidence/thesis-final/28-topic-units.png)](docs/evidence/thesis-final/28-topic-units.png)
-
-### 功能说明
-
-专题单元引用既有 `SUBJECTIVE + TOPIC_LEARNING` 题，按基础理解、情境迁移和综合提升三题组织；当前正式内容为 15 个单元、45 道原创计算/实验/流程/材料分析/综合大题。支持题干/解析附件、本地草稿、STANDARD、专题答疑和待审核专题变式。主观题不自动评分，草稿不上传。
-
-### 实现映射
-
-| 层次 | 精确实现 |
-|---|---|
-| 路由 / Vue / API | [`TopicLearningView.vue`](rike-tiku-frontend/src/views/student/TopicLearningView.vue) · [`topicLearning.ts`](rike-tiku-frontend/src/api/student/topicLearning.ts) |
-| Controller / Service | [`TopicLearningController.java`](rike-tiku-backend/src/main/java/com/riketiku/zhuantixuexi/TopicLearningController.java) · [`TopicLearningService.java`](rike-tiku-backend/src/main/java/com/riketiku/zhuantixuexi/TopicLearningService.java) |
-| 表 / Flyway | `zhuan_ti_xue_xi_dan_yuan`、`zhuan_ti_xue_xi_dan_yuan_ti_mu`、`ti_mu_fu_jian` · [`V26`](rike-tiku-backend/src/main/resources/db/migration/V26__add_topic_units_and_xai_vision_provider.sql) |
-| 测试 / 技术 | [`TopicLearningIntegrationTest.java`](rike-tiku-backend/src/test/java/com/riketiku/zhuantixuexi/TopicLearningIntegrationTest.java) · 应用层范围授权、安全附件、KaTeX |
-
-### 论文写作提示与参考
-
-可用于第 4 章专题单元模型与第 6 章多模态边界；不能声称 AI 对主观题评分。[UNESCO 生成式 AI 教育指南](https://unesdoc.unesco.org/ark:/48223/pf0000386693)。
-
-## 12. 私信、撤回与仅本人删除
-
-[![私信操作菜单](docs/evidence/thesis-final/31-message-actions.png)](docs/evidence/thesis-final/31-message-actions.png)
-
-### 功能说明
-
-发送者可在服务端五分钟窗口内撤回，双方均看到中性占位；任一参与者可仅从自己的列表隐藏消息，不影响对方和数据库审计事实。操作菜单使用居中的确认框，并明确两种语义。
-
-### 实现映射
-
-| 层次 | 精确实现 |
-|---|---|
-| 路由 / Vue / API | [`MessageConversationView.vue`](rike-tiku-frontend/src/views/messages/MessageConversationView.vue) · [`messages.ts`](rike-tiku-frontend/src/api/messages.ts) |
-| Controller / Service | [`SiXinController.java`](rike-tiku-backend/src/main/java/com/riketiku/sixin/SiXinController.java) · [`SiXinFuWu.java`](rike-tiku-backend/src/main/java/com/riketiku/sixin/SiXinFuWu.java) |
-| 表 / Flyway | `si_xin_hui_hua`、`si_xin_xiao_xi` · [`V22`](rike-tiku-backend/src/main/resources/db/migration/V22__add_message_recall_and_per_user_hiding.sql) |
-| 测试 / 技术 | [`MessageConversationView.spec.ts`](rike-tiku-frontend/src/views/messages/MessageConversationView.spec.ts) · 软隐藏、服务端时间、幂等冲突 |
-
-### 论文写作提示与参考
-
-可用于第 5 章通信交互和第 7 章审计保留；不能描述为物理删除。[OWASP Logging Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html)。
-
-## 13. 教师班级私有题库
-
-[![教师私有班级题库](docs/evidence/thesis-final/32-private-question-bank.png)](docs/evidence/thesis-final/32-private-question-bank.png)
-
-### 功能说明
-
-教师选择本人 ACTIVE 任课范围后新建、导入、编辑并发布班级私有题。学生仅能看到主班级与对应科目的私有 `PUBLISHED` 题；其他班级、其他教师及管理员普通题库 API 不返回其内容。
-
-### 实现映射
-
-| 层次 | 精确实现 |
-|---|---|
-| 路由 / Vue / API | [`TeacherPrivateQuestionBankView.vue`](rike-tiku-frontend/src/views/teacher/TeacherPrivateQuestionBankView.vue) · [`privateQuestions.ts`](rike-tiku-frontend/src/api/teacher/privateQuestions.ts) |
-| Controller / Service | [`TeacherPrivateQuestionController.java`](rike-tiku-backend/src/main/java/com/riketiku/tiku/teacher/TeacherPrivateQuestionController.java) · [`TeacherPrivateQuestionService.java`](rike-tiku-backend/src/main/java/com/riketiku/tiku/teacher/TeacherPrivateQuestionService.java) |
-| 表 / Flyway | `ti_mu`、`ren_ke_guan_xi`、`ti_mu_fu_jian` · [`V20`](rike-tiku-backend/src/main/resources/db/migration/V20__add_scoped_questions_and_topic_categories.sql) |
-| 测试 / 技术 | [`UserTeachingDatabaseModelTest.java`](rike-tiku-backend/src/test/java/com/riketiku/zhanghao/UserTeachingDatabaseModelTest.java) · 服务端范围复核、404 防枚举、安全下载 |
-
-### 论文写作提示与参考
-
-可用于第 4 章范围模型与第 7 章横向越权防护；这是应用层隔离，不是对数据库所有者的密码学不可见。[Spring Method Security](https://docs.spring.io/spring-security/reference/servlet/authorization/method-security.html)。
-
-## 14. 试卷发布、学生提交与画像
-
-[![试卷发布与质量评估](docs/evidence/thesis-final/34-paper-publish-quality.png)](docs/evidence/thesis-final/34-paper-publish-quality.png)
-
-### 功能说明
-
-教师把 READY 试卷发布到本人任课班级；系统冻结题目、选项、分值、答案、STANDARD 与附件元数据。手动组卷可加入已发布专题主观大题；学生自动保存草稿并幂等提交，客观题确定性判分，主观题保存为待人工处理且不计入自动得分；教师查看 SQL/规则计算的班级统计和学生画像。
-
-### 实现映射
-
-| 层次 | 精确实现 |
-|---|---|
-| 路由 / Vue / API | [`TeacherPaperBuilderView.vue`](rike-tiku-frontend/src/views/teacher/TeacherPaperBuilderView.vue)、[`StudentPapersView.vue`](rike-tiku-frontend/src/views/student/StudentPapersView.vue) · [`teacher/papers.ts`](rike-tiku-frontend/src/api/teacher/papers.ts)、[`student/papers.ts`](rike-tiku-frontend/src/api/student/papers.ts) |
-| Controller / Service | [`PaperAssignmentTeacherController.java`](rike-tiku-backend/src/main/java/com/riketiku/shijuan/PaperAssignmentTeacherController.java) · [`PaperAssignmentStudentController.java`](rike-tiku-backend/src/main/java/com/riketiku/shijuan/PaperAssignmentStudentController.java) · [`PaperAssignmentService.java`](rike-tiku-backend/src/main/java/com/riketiku/shijuan/PaperAssignmentService.java) |
-| 表 / Flyway | `shi_juan_fa_bu`、`shi_juan_fa_bu_ti_mu`、`shi_juan_ti_jiao`、`shi_juan_xue_sheng_da_ti` · [`V27`](rike-tiku-backend/src/main/resources/db/migration/V27__add_paper_publication_and_student_submissions.sql) |
-| 测试 / 技术 | [`PaperAssignmentIntegrationTest.java`](rike-tiku-backend/src/test/java/com/riketiku/shijuan/PaperAssignmentIntegrationTest.java) · 冻结快照、幂等、确定性判分、SQL 聚合 |
-
-### 论文写作提示与参考
-
-可用于第 4 章试卷事实模型、第 5 章发布链及第 6 章 AI 辅助质量建议；AI 不改题、不改分、不发布。[Spring Transaction Management](https://docs.spring.io/spring-framework/reference/data-access/transaction.html)。
-
-## 15. 知识卡片、零基础讲解与生成练习
-
-[![知识卡片学习页](docs/evidence/thesis-final/30-knowledge-cards.png)](docs/evidence/thesis-final/30-knowledge-cards.png)
-
-### 功能说明
-
-学生按学科、知识点和类型查看经审核的公式、方程式、二级结论、仪器、口诀、表格与笔记，并可收藏、标记掌握、请求零基础讲解或生成临时练习。生成题复用统一 Candidate Schema、Parser、新颖度和 PENDING 审核链。
-
-### 实现映射
-
-| 层次 | 精确实现 |
-|---|---|
-| 路由 / Vue / API | [`StudentKnowledgeCardsView.vue`](rike-tiku-frontend/src/views/student/StudentKnowledgeCardsView.vue) · [`knowledgeCards.ts`](rike-tiku-frontend/src/api/student/knowledgeCards.ts) |
-| Controller / Service | [`KnowledgeCardStudentController.java`](rike-tiku-backend/src/main/java/com/riketiku/zhishikapian/KnowledgeCardStudentController.java) · [`KnowledgeCardService.java`](rike-tiku-backend/src/main/java/com/riketiku/zhishikapian/KnowledgeCardService.java) · [`KnowledgeCardPracticeService.java`](rike-tiku-backend/src/main/java/com/riketiku/zhishikapian/KnowledgeCardPracticeService.java) |
-| 表 / Flyway | `gao_pin_kao_dian`、`gao_pin_kao_dian_shen_he_ji_lu`、`xue_sheng_zhi_shi_ka_pian_zhuang_tai`、`zhi_shi_ka_pian_lian_xi_shi_li` · [`V28`](rike-tiku-backend/src/main/resources/db/migration/V28__complete_reviewed_science_cards.sql)、[`V29`](rike-tiku-backend/src/main/resources/db/migration/V29__add_knowledge_card_practice_instances.sql) |
-| 测试 / 技术 | [`KnowledgeCardIntegrationTest.java`](rike-tiku-backend/src/test/java/com/riketiku/zhishikapian/KnowledgeCardIntegrationTest.java)、[`KnowledgeCardPracticeIntegrationTest.java`](rike-tiku-backend/src/test/java/com/riketiku/zhishikapian/KnowledgeCardPracticeIntegrationTest.java) · KaTeX、人工审核、确定性判分 |
-
-### 论文写作提示与参考
-
-可用于第 5 章知识支架和第 6 章受控生成；近年高频只由有年份、合法来源、非 Demo/AI 的真题统计，样本不足时不让 AI 猜测。[教育部普通高中课程方案和课程标准](http://www.moe.gov.cn/srcsite/A26/s8001/202006/t20200603_462199.html)。
-
-## 16. 操作日志检索
-
-[![操作日志分页检索](docs/evidence/thesis-final/35-operation-log-search.png)](docs/evidence/thesis-final/35-operation-log-search.png)
-
-### 功能说明
-
-管理员按日期、操作者、模块、动作、结果、业务对象和关键词分页检索 append-only 日志并受控导出。页面不会一次加载全部日志，也不提供修改单条历史的接口。
-
-### 实现映射
-
-| 层次 | 精确实现 |
-|---|---|
-| 路由 / Vue / API | [`OperationLogsView.vue`](rike-tiku-frontend/src/views/admin/OperationLogsView.vue) · [`operationLogs.ts`](rike-tiku-frontend/src/api/admin/operationLogs.ts) |
-| Controller / Service | [`GuanLiCaoZuoRiZhiController.java`](rike-tiku-backend/src/main/java/com/riketiku/guanlicaozuorizhi/GuanLiCaoZuoRiZhiController.java) · [`GuanLiCaoZuoRiZhiFuWu.java`](rike-tiku-backend/src/main/java/com/riketiku/guanlicaozuorizhi/GuanLiCaoZuoRiZhiFuWu.java) |
-| 表 / Flyway | `guan_li_cao_zuo_ri_zhi` · [`V11`](rike-tiku-backend/src/main/resources/db/migration/V11__create_admin_operation_log.sql) |
-| 测试 / 技术 | [`GuanLiCaoZuoRiZhiIntegrationTest.java`](rike-tiku-backend/src/test/java/com/riketiku/guanlicaozuorizhi/GuanLiCaoZuoRiZhiIntegrationTest.java) · 分页、筛选、详情与定向删除 |
-
-### 论文写作提示与参考
-
-可用于第 7 章可追责性；日志不保存密码、Key、Prompt、答案正文或 Base64。[OWASP Logging Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html)。
-
-## 17. 管理员学生导入与题库审核
-
-[![学生导入页面](docs/evidence/thesis-final/37-student-import.png)](docs/evidence/thesis-final/37-student-import.png)
-
-### 功能说明
-
-学生导入采用精确 7 列模板，题库导入采用精确 19 列模板；Preview 不写库，Confirm 重新解析、校验文件 hash 并以单事务写入。题目导入后只能进入 PENDING，必须人工审核后才能 PUBLISHED。
-
-### 实现映射
-
-| 层次 | 精确实现 |
-|---|---|
-| 路由 / Vue / API | [`StudentImportView.vue`](rike-tiku-frontend/src/views/admin/StudentImportView.vue) · [`admin/studentImport.ts`](rike-tiku-frontend/src/api/admin/studentImport.ts) |
-| Controller / Service | [`StudentImportController.java`](rike-tiku-backend/src/main/java/com/riketiku/xueshengdaoru/StudentImportController.java) · [`StudentImportService.java`](rike-tiku-backend/src/main/java/com/riketiku/xueshengdaoru/StudentImportService.java) |
-| 表 / Flyway | `dao_ru_pi_ci`、`ti_mu`、`ti_mu_shen_he_ji_lu`、`yong_hu`、`xue_sheng_dang_an` · [`V2`](rike-tiku-backend/src/main/resources/db/migration/V2__create_question_core_tables.sql)、[`V5`](rike-tiku-backend/src/main/resources/db/migration/V5__create_user_role_and_profile_tables.sql) |
-| 测试 / 技术 | [`FinalImportTemplatesIntegrationTest.java`](rike-tiku-backend/src/test/java/com/riketiku/tiku/daoru/FinalImportTemplatesIntegrationTest.java) · Apache POI、SHA-256、Preview/Confirm、事务 |
-
-### 论文写作提示与参考
-
-可用于第 5 章批量导入与第 7 章来源/权利门禁；Excel 导入不会训练模型。[Apache POI 官方文档](https://poi.apache.org/components/spreadsheet/)。
-
-## 18. 多视觉 Provider 显式配置
-
-[![GLM 与 xAI 视觉配置](docs/evidence/thesis-final/38-vision-provider-config.png)](docs/evidence/thesis-final/38-vision-provider-config.png)
-
-### 功能说明
-
-管理员可分别配置 GLM 与 xAI 的 VISION 模型、超时和受控模型代码，并显式选择当前 Provider；系统不隐式自动切换。配置页只显示 Key 是否存在，诊断区分认证、限流、参数、模型、账户、超时与响应结构错误。
-
-### 实现映射
-
-| 层次 | 精确实现 |
-|---|---|
-| 路由 / Vue / API | [`AdminAiModelsView.vue`](rike-tiku-frontend/src/views/admin/AdminAiModelsView.vue) · [`aiModels.ts`](rike-tiku-frontend/src/api/admin/aiModels.ts) |
-| Controller / Service | [`AiModelConfigController.java`](rike-tiku-backend/src/main/java/com/riketiku/ai/admin/AiModelConfigController.java) · [`AiModelConfigService.java`](rike-tiku-backend/src/main/java/com/riketiku/ai/admin/AiModelConfigService.java) |
-| 表 / Flyway | `ai_mo_xing_pei_zhi`、`ai_diao_yong_ri_zhi`、`ai_shi_jue_shang_xia_wen` · [`V26`](rike-tiku-backend/src/main/resources/db/migration/V26__add_topic_units_and_xai_vision_provider.sql) |
-| 测试 / 技术 | [`GlmVisionProviderTest.java`](rike-tiku-backend/src/test/java/com/riketiku/ai/vision/GlmVisionProviderTest.java)、[`XaiVisionProviderTest.java`](rike-tiku-backend/src/test/java/com/riketiku/ai/vision/XaiVisionProviderTest.java) · OpenAI-compatible 消息、raw Base64、安全错误映射、metadata-only 日志 |
-
-### 论文写作提示与参考
-
-可用于第 6 章可插拔 Provider 和降级设计；Mock 合同测试不等于真实调用。[智谱 GLM-4.6V-Flash](https://docs.bigmodel.cn/cn/guide/models/free/glm-4.6v-flash)；[xAI Vision](https://docs.x.ai/docs/guides/image-understanding)。
-
-## 工程、数据库与论文导航
-
-- 技术栈：Java 25、Spring Boot 4.1、Vue 3、TypeScript、MySQL 8.4、Flyway V1–V30。
-- 数据模型：50 张业务表；[字段/约束参考](docs/DATABASE_SCHEMA_REFERENCE.md)、[V29 历史纯结构快照](database/schema_snapshot_v29.sql)、[ER 模块图](database/diagrams/rike_tiku_er.md)。
-- Excel：[学生模板](docs/templates/student-import-template.xlsx)、[题目19列模板](docs/templates/question-import-template.xlsx)、[Preview/Confirm 指南](docs/EXCEL_IMPORT_GUIDE.md)。
-
-真实 Provider 状态以当前验收记录为准：DeepSeek variant、DeepSeek tutor、GLM Vision、xAI Vision、Web Search 均因没有可安全使用的轮换后凭据而为 `BLOCKED_EXTERNAL_PROVIDER`；Mock/Fake 只用于自动化，不记作真实调用。PR #34 用户人工验收已包含 `PRINT_USER_VERIFIED`；普通合并后的最终 main SHA 由 `FINAL_PROJECT_FACTS.md` 固化。
-
-## 演示账号与认证口径
-
-最终演示使用 [账号清单](docs/FINAL_DEMO_ACCOUNTS.md) 和 [数据卫生报告](docs/FINAL_AUTH_DATA_HYGIENE_REPORT.md) 作为唯一说明：203 班教师张生康为 `t2026004`，指定学生使用 `2026203001` 至 `2026203003`。本地默认/管理员重置口令由 `app.account.default-reset-password` 配置（当前本地值为 `a1234567`）；管理员新建、导入或恢复账户后，用户必须先修改初始密码才能进入正常业务，用户主动改密与管理员密码恢复流程继续保留。
-
-PR #37 已于 `2026-08-21T03:07:23Z` 以 ordinary merge 合入 `main`（merge commit `cb785631c359b88dc4841a9eeed3af14879516cb`）。当前产品事实、测试数字和演示数据边界以 [FINAL_PROJECT_FACTS.md](docs/FINAL_PROJECT_FACTS.md) 为准。
+代码以 [MIT License](LICENSE) 发布，© 2026 Fiesty-Abyss。题库与内容说明见 [CONTENT_NOTICE](CONTENT_NOTICE.md)。

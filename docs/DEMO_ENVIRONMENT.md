@@ -6,7 +6,7 @@
 
 - 默认目标库为 `rike_tiku_demo`；脚本和后端命令都会拒绝 `rike_tiku`、`mysql`、`information_schema`、`performance_schema`、`sys` 以及非法库名。
 - 数据库密码只从环境变量 `RIKE_TIKU_DB_PASSWORD` 读取，不写入仓库、不打印到日志。
-- 所有演示账号密码为 `a1234567`（数据库只保存 BCrypt 摘要）。**请勿在公网环境使用演示数据。**
+- 所有演示账号初始密码为 `a1234567`（数据库只保存 BCrypt 摘要），首次登录需修改。**请勿在公网环境使用演示数据。**
 
 ## 一键准备（Windows PowerShell）
 
@@ -56,7 +56,7 @@ cd ../rike-tiku-frontend && VITE_API_BASE_URL=http://localhost:18081/api/v1 npm 
 
 ## 固定账号
 
-登录入口：`http://localhost:18080/login`（或你配置的前端地址）。所有账号密码均为 `a1234567`。
+登录入口：`http://localhost:18080/login`（或你配置的前端地址）。所有账号的初始密码均为 `a1234567`；由于它等于系统配置的默认密码，**首次登录会要求先修改密码**（之后用新密码登录，重新执行 `seed` 会恢复初始密码）。
 
 | 账号 | 角色 | 说明 |
 |---|---|---|
