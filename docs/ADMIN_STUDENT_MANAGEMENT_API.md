@@ -32,7 +32,7 @@
 
 - `ids` 必填，允许 1～100 个正整数；重复 ID 自动去重。
 - 服务端先确认全部目标存在，再在单个事务中逐个生成独立 BCrypt 摘要；任一 ID 无效则整批回滚。
-- 默认值为本地项目配置 `app.account.default-reset-password`，可由 `RIKE_TIKU_DEFAULT_RESET_PASSWORD` 覆盖。当前默认值为 `a1234567`。
+- 默认值为本地配置 `app.account.default-reset-password`，可由 `RIKE_TIKU_DEFAULT_RESET_PASSWORD` 覆盖。当前默认值为 `a1234567`。
 - 恢复只修改密码摘要、首次登录标志和密码修改时间，不修改账号状态、学生档案、班级或学习事实。
 - 成功响应为 `resetCount`、仅本次返回的 `initialPassword` 与 `mustChangePassword=true`；响应禁止缓存。
 - `RESET_PASSWORD` / `BATCH_RESET_PASSWORD` 操作日志只记录类型、数量和业务 ID，不记录默认密码、摘要或姓名。

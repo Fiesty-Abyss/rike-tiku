@@ -756,7 +756,7 @@
 | `provider_dai_ma` | `varchar(32)` | 否 | `NULL` | MUL | DEEPSEEK/GLM |
 | `mo_xing_dai_ma` | `varchar(128)` | 否 | `NULL` | — | — |
 | `api_di_zhi` | `varchar(500)` | 否 | `NULL` | — | — |
-| `api_mi_yao` | `varchar(1000)` | 是 | `NULL` | — | 仅本地项目演示模式保存，API与日志禁止回显 |
+| `api_mi_yao` | `varchar(1000)` | 是 | `NULL` | — | 仅本地演示模式保存，API与日志禁止回显 |
 | `yong_tu` | `varchar(16)` | 否 | `NULL` | MUL | TEXT/VISION |
 | `shi_fou_qi_yong` | `tinyint(1)` | 否 | `0` | — | — |
 | `shi_fou_mo_ren` | `tinyint(1)` | 否 | `0` | — | — |

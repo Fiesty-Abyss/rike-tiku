@@ -124,7 +124,7 @@ Vite 启动参数为 `--host localhost --port 18080`。
 - 私信：V9 的两张表不预置聊天内容；浏览器验收消息可由 `reset` 清理，固定账号和组织关系保持可重复 seed。
 - 个人中心：V10 的简介和头像字段默认均为空，不在固定 seed 写入二进制头像；浏览器验收内容可由 `reset → seed` 完整清理。
 
-Demo360 均为项目原创的“项目自编演示题”，不复制网络题、高考真题或教材习题原文；除 `PHYSICS-S1` 的确定性 PNG 验收对象外，其余题目保持无附件。题目均为 `PUBLISHED + ONLINE_PRACTICE` 自动判分题，STANDARD 解析为 `PUBLISHED`。QUESTION、ANSWER、STANDARD_ANALYSIS 三项来源均为 `TEACHER_CREATED + USER_PROVIDED`，并有 SUBMITTED、APPROVED 审核轨迹。
+Demo360 均为项目原创的“RIKE 项目自编演示题”，不复制网络题、高考真题或教材习题原文；除 `PHYSICS-S1` 的确定性 PNG 验收对象外，其余题目保持无附件。题目均为 `PUBLISHED + ONLINE_PRACTICE` 自动判分题，STANDARD 解析为 `PUBLISHED`。QUESTION、ANSWER、STANDARD_ANALYSIS 三项来源均为 `TEACHER_CREATED + USER_PROVIDED`，并有 SUBMITTED、APPROVED 审核轨迹。
 
 最终 360 题只服务独立演示环境。V3.0 没有规定名为 MVP30 的 Excel 必须整体正式入库；MVP30 原始文件不修改，继续作为结构化导入能力验证素材，仓库中的网络候选题也未因本轮扩充而变为 `PUBLISHED`。
 
@@ -139,6 +139,6 @@ Demo360 均为项目原创的“项目自编演示题”，不复制网络题、
 `clean` 后演示账号、组织、题目和学习记录均被删除；`reset` 是库级重建，只允许对通过安全检查的演示库名执行。MVP30 原始 Excel 和正式 `rike_tiku` 不参与上述流程。
 ## 历史 PR #27 验收快照
 
-> 本节为历史阶段快照，当前项目状态请查看 [README](../README.md) 和 [开发状态](DEVELOPMENT_STATUS.md)。
+> 本节为历史阶段快照，当前项目状态请查看 [README](../README.md) 和 [CHANGELOG](../CHANGELOG.md)。
 
 当时分支为 `feat/non-ai-final-closure`，Draft PR #27。Flyway 为 V1–V11、27 张业务表；`reset`、`seed`、`validate`、`clean` 和 `final-acceptance` 继续受数据库名保护。最终人工验收只使用 `rike_tiku_demo`，不向正式 `rike_tiku` 写入题目或其他演示业务数据。该阶段机器口径为后端 133 个测试（0 failure、0 error、1 symbolic-link assumption skipped）、前端 49 文件 170/170、package/type-check/build/audit PASS、`acceptance-prepare → validate → smoke` PASS。第三轮机器浏览器截图见 `evidence/pr27-ui-round3/`；它不替代用户的真实 CAPTCHA 与视觉复验。

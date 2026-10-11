@@ -70,7 +70,7 @@ class DemoDataServiceIntegrationTest extends AdminQuestionIntegrationTestSupport
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM ren_ke_guan_xi r JOIN jiao_shi_dang_an t ON t.id=r.jiao_shi_id WHERE t.gong_hao='DEMO_T001'", Integer.class)).isEqualTo(3);
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM ti_mu WHERE ti_gan LIKE '【演示】%'", Integer.class))
                 .isEqualTo(DemoDataService.FINAL_DEMO_QUESTION_COUNT);
-        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM ti_mu_lai_yuan s JOIN ti_mu q ON q.id=s.ti_mu_id WHERE q.ti_gan LIKE '【演示】%' AND s.quan_li_zhuang_tai='USER_PROVIDED' AND s.lai_yuan_ming_cheng='项目自编演示题'", Integer.class))
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM ti_mu_lai_yuan s JOIN ti_mu q ON q.id=s.ti_mu_id WHERE q.ti_gan LIKE '【演示】%' AND s.quan_li_zhuang_tai='USER_PROVIDED' AND s.lai_yuan_ming_cheng='RIKE 项目自编演示题'", Integer.class))
                 .isEqualTo(DemoDataService.FINAL_DEMO_QUESTION_COUNT * 3);
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM ti_mu_shen_he_ji_lu r JOIN ti_mu q ON q.id=r.ti_mu_id WHERE q.ti_gan LIKE '【演示】%'", Integer.class))
                 .isEqualTo(DemoDataService.FINAL_DEMO_QUESTION_COUNT * 2);
@@ -272,7 +272,7 @@ class DemoDataServiceIntegrationTest extends AdminQuestionIntegrationTestSupport
         assertThat(jdbc.queryForObject("""
                 SELECT COUNT(*) FROM ti_mu_lai_yuan s JOIN ti_mu q ON q.id=s.ti_mu_id
                 WHERE q.ti_gan LIKE '【演示】变式：%' AND s.lai_yuan_lei_xing='TEACHER_CREATED'
-                  AND s.lai_yuan_ming_cheng='项目自编演示题'
+                  AND s.lai_yuan_ming_cheng='RIKE 项目自编演示题'
                   AND s.quan_li_zhuang_tai='USER_PROVIDED' AND TRIM(s.quan_li_yi_ju)<>'' AND s.yi_shan_chu=0
                 """, Integer.class)).isEqualTo(90);
         assertThat(jdbc.queryForObject("""

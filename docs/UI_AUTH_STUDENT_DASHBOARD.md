@@ -1,6 +1,6 @@
 # UI、统一登录与学生三科工作台
 
-> 本文包含历史阶段记录，当前项目状态请查看 [README](../README.md) 和 [开发状态](DEVELOPMENT_STATUS.md)。
+> 本文包含历史阶段记录，当前项目状态请查看 [README](../README.md) 和 [CHANGELOG](../CHANGELOG.md)。
 
 本模块已通过 PR #15 普通 merge 进入 `main`，merge commit 为 `12d636fde4afa198edc78eb0c295f5b88c8e3456`。PR #15 不修改 Flyway V1–V7，也不新增迁移。
 

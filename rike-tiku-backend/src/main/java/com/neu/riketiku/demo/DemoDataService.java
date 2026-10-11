@@ -29,7 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class DemoDataService {
     public static final String DEMO_PASSWORD = "a1234567";
-    public static final String RIGHTS_BASIS = "项目项目原创自编演示题，仅用于本地验收环境。";
+    public static final String RIGHTS_BASIS = "RIKE 项目原创自编演示题，仅用于本地演示环境。";
     public static final int BASE_DEMO_QUESTION_COUNT = 90;
     public static final int FINAL_DEMO_QUESTION_COUNT = BASE_DEMO_QUESTION_COUNT
             + DemoVariantQuestionBank.ACCEPTED_COUNT + DemoCurriculumQuestionBank.TOTAL_COUNT;
@@ -395,7 +395,7 @@ public class DemoDataService {
         expect("三项来源", FINAL_DEMO_QUESTION_COUNT * 3, count("""
                 SELECT COUNT(*) FROM ti_mu_lai_yuan s JOIN ti_mu q ON q.id=s.ti_mu_id
                 WHERE q.ti_gan LIKE '【演示】%' AND s.lai_yuan_lei_xing='TEACHER_CREATED'
-                  AND s.lai_yuan_ming_cheng='项目自编演示题'
+                  AND s.lai_yuan_ming_cheng='RIKE 项目自编演示题'
                   AND s.quan_li_zhuang_tai='USER_PROVIDED' AND s.quan_li_yi_ju IS NOT NULL
                   AND TRIM(s.quan_li_yi_ju)<>'' AND s.yi_shan_chu=0
                 """));
@@ -621,7 +621,7 @@ public class DemoDataService {
         jdbc.update("INSERT INTO ti_mu_zhi_shi_dian (ti_mu_id,zhi_shi_dian_id,shi_fou_zhu_yao,pai_xu) VALUES (?,?,1,1)", questionId, pointId);
         for (String contentType : List.of("QUESTION", "ANSWER", "STANDARD_ANALYSIS")) jdbc.update("""
                 INSERT INTO ti_mu_lai_yuan (ti_mu_id,nei_rong_lei_xing,lai_yuan_lei_xing,lai_yuan_ming_cheng,lai_yuan_di_zhi,quan_li_zhuang_tai,quan_li_yi_ju)
-                VALUES (?,?,'TEACHER_CREATED','项目自编演示题',NULL,'USER_PROVIDED',?)
+                VALUES (?,?,'TEACHER_CREATED','RIKE 项目自编演示题',NULL,'USER_PROVIDED',?)
                 """, questionId, contentType, RIGHTS_BASIS);
         jdbc.update("INSERT INTO ti_mu_shen_he_ji_lu (ti_mu_id,shen_he_dong_zuo,yuan_zhuang_tai,mu_biao_zhuang_tai,shen_he_ren_id,shen_he_yi_jian) VALUES (?,'SUBMITTED','DRAFT','PENDING',?,'演示题提交审核')", questionId, adminId);
         jdbc.update("INSERT INTO ti_mu_shen_he_ji_lu (ti_mu_id,shen_he_dong_zuo,yuan_zhuang_tai,mu_biao_zhuang_tai,shen_he_ren_id,shen_he_yi_jian) VALUES (?,'APPROVED','PENDING','PUBLISHED',?,'演示题审核通过')", questionId, adminId);
@@ -649,7 +649,7 @@ public class DemoDataService {
         jdbc.update("INSERT INTO ti_mu_zhi_shi_dian (ti_mu_id,zhi_shi_dian_id,shi_fou_zhu_yao,pai_xu) VALUES (?,?,1,1)", questionId, pointId);
         for (String contentType : List.of("QUESTION", "ANSWER", "STANDARD_ANALYSIS")) jdbc.update("""
                 INSERT INTO ti_mu_lai_yuan (ti_mu_id,nei_rong_lei_xing,lai_yuan_lei_xing,lai_yuan_ming_cheng,lai_yuan_di_zhi,quan_li_zhuang_tai,quan_li_yi_ju)
-                VALUES (?,?,'TEACHER_CREATED','项目自编演示题',NULL,'USER_PROVIDED',?)
+                VALUES (?,?,'TEACHER_CREATED','RIKE 项目自编演示题',NULL,'USER_PROVIDED',?)
                 """, questionId, contentType, RIGHTS_BASIS);
         jdbc.update("INSERT INTO ti_mu_shen_he_ji_lu (ti_mu_id,shen_he_dong_zuo,yuan_zhuang_tai,mu_biao_zhuang_tai,shen_he_ren_id,shen_he_yi_jian) VALUES (?,'SUBMITTED','DRAFT','PENDING',?,'专题演示题提交审核')", questionId, adminId);
         jdbc.update("INSERT INTO ti_mu_shen_he_ji_lu (ti_mu_id,shen_he_dong_zuo,yuan_zhuang_tai,mu_biao_zhuang_tai,shen_he_ren_id,shen_he_yi_jian) VALUES (?,'APPROVED','PENDING','PUBLISHED',?,'专题演示题审核通过')", questionId, adminId);

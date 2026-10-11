@@ -1,8 +1,8 @@
 # RIKE Aqua Future
 
-Status: PR #27 Round 4 现行设计系统。内部主题名：`mizuiro-aero`。
+Status: 现行设计系统。内部主题名：`mizuiro-aero`。
 
-## Round 4 Design docs
+## 设计原则
 
 1. RIKE 的主要用户是需要长时间做题、复盘与教学管理的高中物理、化学、生物学生、教师和管理员。
 2. 首次打开应先感到清澈、明亮、可触摸的科学世界，然后立即理解这是能真正练习与管理课程的工具。
@@ -18,7 +18,7 @@ Status: PR #27 Round 4 现行设计系统。内部主题名：`mizuiro-aero`。
 12. 动效只解释深度、学科转场、滚动进度、因果步骤和按压反馈；不阻止操作，不承载唯一信息。
 13. 桌面 Portal 允许 pinned scene、连续 scrub、轻量视差与光学 pointer response；移动端改为完整的自然纵向叙事。
 14. `prefers-reduced-motion` 下直接呈现最终静态构图，全部内容、导航和业务操作仍完整可用。
-15. `modern-minimal` 与 `Split Studio` 自 Round 4 起正式废弃；Round 3 只在文末作为人工验收失败的历史记录保留。
+15. `modern-minimal` 与 `Split Studio` 早期方向已废弃，不再作为现行规范。
 
 ## Product truth and scope
 
@@ -87,27 +87,3 @@ RIKE 面向高中物理、化学、生物的长时间学习与教学管理。题
 桌面增强条件为最小 64rem；低于 64rem 时取消 pinned、scrub parallax 和 pointer effect，Portal 变为完整自然纵向叙事，只保留一次性轻量 reveal。75rem、63.99rem、47.99rem 与 24.4rem 响应规则覆盖 1440、1280、1024、768 与 390px；移动端触控目标至少 44px，导航、CAPTCHA、题面和公式不得造成页面横向溢出。
 
 `prefers-reduced-motion: reduce` 同时由 GSAP `matchMedia` 和 CSS 处理：内容直接呈现最终静态构图，动画/transition 缩至 1ms，浏览器自然滚动不变。路由离开时移除 pointer listener，`gsap.context().revert()`、`matchMedia().revert()`，删除 `aqua-motion-ready`；ScrollTrigger 由 context 一并销毁，避免跨路由残留。
-
-## Evidence boundary
-
-Round 4 的截图、连续关键帧、motion review、console/page error 和响应式结论写入独立 `docs/evidence/pr27-ui-round4/`。静态截图不证明动画，机器浏览器也不替代用户对 Frutiger Aero、学科语义、滚动体验和真实 CAPTCHA 的最终人工验收。
-
-## Round 3 historical record — human rejected
-
-本节只保存第三轮设计与机器证据的来龙去脉，不是当前实现规范。用户在 Round 4 明确判定第三轮视觉人工验收失败：Portal 仍像普通极简 SaaS，首屏留白与 split composition 缺少科学世界，三科主要停留在 accent，旧 Hero blob 和动效不足以构成 Frutiger Aero 或连续滚动叙事。
-
-### Historical direction and assets
-
-第三轮内部方向为 `RIKE Aqua Liminal Future / Split Studio`：事实 Hero、物理、化学、生物、学习闭环与登录章节，冷灰纸面配钴蓝、梅紫灰和玉石绿。旧 Hero 是 Portal 内联 wave / molecule / vein SVG；旧三图为 `physics-optical-field.webp`（1600×1000，46,978 B）、`chemistry-glass-spectrum.webp`（1600×1000，31,988 B）与 `biology-living-network.webp`（1600×1000，99,490 B）。这些资产在 Round 4 已由四张 Aqua Future WebP 替换，不再作为当前页面依赖。
-
-第三轮 GSAP 只做短 Hero 入场、视口 reveal 与极小幅视差，明确不 pin、不做连续场景，也不做 pointer response。该策略是本次人工验收失败原因之一，不能覆盖前文 Round 4 motion contract。
-
-### Historical skill record
-
-第三轮曾读取并使用 Hallmark、Impeccable 与当时的旧 GSAP skill 集合，以 Split Studio、静态反模式检查和轻量 reveal 指导实现。这些记录只解释第三轮为什么形成当时方案；Round 4 未读取已移出活动目录的备份，也不把这些旧 skill 当作当前设计依据。项目现有 GSAP / ScrollTrigger 运行时依赖继续保留。
-
-### Historical evidence and retained business fixes
-
-第三轮 production-like 机器证据保留在 `docs/evidence/pr27-ui-round3/`，包括 Portal 1280/390、三科学生/教师环境、管理员 Dashboard、`0 / 38`、冻结完整答案、结构化 Topic 和 `50%` 判定。机器证据没有证明视觉人工通过。
-
-Round 4 只替换第三轮视觉方向；`0 / 38`、`AnswerDisplay` 冻结选项、Demo360 逐项解析、`StandardAnalysis`、Topic18 分段、ScientificText / KaTeX 与显式 accepted answers 判分继续保留，不得因视觉重构回退。
